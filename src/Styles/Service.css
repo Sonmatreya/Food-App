@@ -1,0 +1,83 @@
+.service {
+  text-align: center;
+  padding: 50px 20px;
+  background-color: #fff;
+}
+
+.serviceTitle {
+  font-family: 'Poppins', cursive;
+  font-size: 48px;
+  margin-bottom: 50px;
+  color: #d62828;
+}
+
+/* Grid Layout */
+.serviceGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+
+/* Service Card */
+.serviceCard {
+  flex: 1 1 40%;
+  max-width: 400px;
+  min-width: 280px;
+  background-color: #fff8f0;
+  padding: 30px 20px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  text-align: center;
+}
+
+.serviceCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 20px rgb(252, 3, 3);
+}
+
+.serviceCard h2 {
+  font-size: 24px;
+  margin: 15px 0;
+  color: #e63946;
+}
+
+.serviceCard p {
+  font-size: 15px;
+  color: #444;
+}
+
+/* Icon Styling */
+.serviceIcon {
+  font-size: 50px;
+  color: #f77f00;
+}
+.bookBtn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px;
+  background-color: #f90808;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.bookBtn:hover {
+  background-color: #c20606;
+}
+
+/* Responsive */
+@media only screen and (max-width: 700px) {
+  .serviceCard {
+    flex: 1 1 90%;
+  }
+
+  .serviceTitle {
+    font-size: 36px;
+  }
+}

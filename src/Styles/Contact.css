@@ -1,0 +1,152 @@
+.contact {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #fff;
+  color: #121619;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Left Banner Image */
+.contact .leftSide {
+  flex: 1 1 40%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+}
+
+/* Right Contact Form */
+.contact .rightSide {
+  flex: 1 1 60%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 40px;
+  box-sizing: border-box;
+}
+
+.rightSide h1 {
+  font-size: 36px;
+  color: #e63946;
+  margin-bottom: 10px;
+}
+
+.rightSide p {
+  font-size: 16px;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+label span {
+  color: red;
+  margin-left: 2px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  background-color: #f9f9f9;
+  color: #121619;
+  transition: border 0.3s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #e63946;
+  outline: none;
+  background-color: #fff;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Name field row (First + Last) */
+.name-fields {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.field-group {
+  flex: 1;
+  min-width: 220px;
+}
+
+/* Checkbox */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.checkbox-container input {
+  width: auto;
+  margin: 0;
+}
+
+/* Button */
+button[type="submit"] {
+  padding: 12px 20px;
+  font-size: 16px;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 160px;
+  transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+  background-color: #c62828;
+}
+
+/* Responsive layout */
+@media (max-width: 768px) {
+  .contact {
+    flex-direction: column;
+  }
+
+  .leftSide {
+    height: 250px;
+    flex: 1 1 100%;
+  }
+
+  .rightSide {
+    padding: 20px;
+    flex: 1 1 100%;
+  }
+
+  .rightSide h1 {
+    font-size: 28px;
+  }
+
+  .name-fields {
+    flex-direction: column;
+  }
+}

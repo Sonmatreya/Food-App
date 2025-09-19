@@ -1,0 +1,98 @@
+/* Menu Container */
+.menu {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: white;
+  min-height: 100vh;
+}
+
+/* Menu Title */
+.menuTitle {
+  font-family: cursive;
+  font-size: 50px;
+  margin-bottom: 30px;
+  color: rgb(252, 3, 3);
+}
+
+/* Menu Grid - 2 Columns on Desktop, 1 on Small Screens */
+.menuGrid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  width: 100%;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* Menu Card */
+.menuCard {
+  flex: 2 1 45%;   /* Two cards per row */
+  max-width: 450px;
+  min-width: 280px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  transition: transform 0.3s, box-shadow 0.3s;
+  margin-bottom: 30px;
+}
+
+.menuCard:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 6px 16px rgb(252, 3, 3);
+}
+
+/* Pizza Image */
+.menuImage {
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Card Content */
+.menuContent {
+  padding: 15px;
+}
+
+.menuContent h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #121619;
+}
+
+.menuContent p {
+  font-size: 16px;
+  color: #e63946;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* Order Button */
+.orderButton {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #f90808;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.orderButton:hover {
+  background-color: #d10606;
+}
+
+/* Responsive: 1 Column on Small Screens */
+@media only screen and (max-width: 650px) {
+  .menuCard {
+    flex: 1 1 90%;
+  }
+
+  .menuTitle {
+    font-size: 36px;
+  }
+}

@@ -1,0 +1,135 @@
+/* Overall footer container */
+.footer {
+  width: 100%;
+  max-width: 100vw;            /* Prevents overflowing the screen width */
+  overflow-x: hidden;
+  background-color: #121619;
+  color: white;
+  padding: 40px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 30px;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+/* Each section inside footer */
+.footer-section {
+  flex: 1 1 250px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+/* Section titles */
+.footer-section h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+  color: #f90808;
+}
+
+/* Text and links inside sections */
+.footer-section a {
+  text-decoration: none;
+  color: #ccc;
+}
+.footer-section a:hover {
+  color: #f90808;
+  text-decoration: none;
+}
+
+
+
+/* Social media icon area */
+.socialmedia {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* Social icons */
+.socialmedia a {
+  color: white;
+  font-size: 35px;
+  transition: color 0.3s;
+}
+
+/* Social hover color */
+.socialmedia a:hover {
+  color: #f90808;
+}
+
+/* Newsletter form container */
+.newsletter-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;             /* ✅ allows wrapping on small screens */
+  gap: 10px;
+  margin-top: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Newsletter email input */
+.newsletter-form input {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+  outline: none;
+  width: 100%;
+  max-width: 250px;             /* ✅ keeps input narrow on large screens */
+}
+
+/* Newsletter button */
+.newsletter-form button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: none;
+  background-color: #f90808;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+  max-width: 150px;             /* ✅ limits button width */
+}
+
+/* Newsletter button hover */
+.newsletter-form button:hover {
+  background-color: #d10606;
+}
+
+/* Footer copyright area */
+.footer-bottom {
+  width: 100%;
+  text-align: center;
+  padding-top: 20px;
+  font-size: 12px;
+  color: #888;
+}
+
+/* ✅ Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-section {
+    align-items: center;
+  }
+
+  .newsletter-form {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .newsletter-form input,
+  .newsletter-form button {
+    width: 100%;
+    max-width: none;
+  }
+}

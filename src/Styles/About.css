@@ -1,0 +1,188 @@
+/* General page styling */
+.about-page {
+  font-family: 'Poppins', sans-serif;
+  color: #121619;
+  background-color: #fff;
+  padding-bottom: 40px;
+}
+
+/* Hero Section */
+.hero-section {
+  position: relative;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-background {
+  width: 100%;
+  height: 100%;
+  background-image: url("D:\Food App\food-app\src\assets\about-pizza-bg.jpg");
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  color: #0e0e0e;
+  padding: 60px 20px;
+}
+
+.hero-background h1 {
+  font-size: 42px;
+  margin-bottom: 10px;
+}
+
+.hero-background p {
+  font-size: 18px;
+}
+
+/* Mission & Story Sections */
+.mission-section,
+.story-section,
+.why-choose-section,
+.testimonials-section,
+.hours-section,
+.location-section {
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: auto;
+  text-align: center;
+}
+
+.mission-section h2,
+.story-section h2,
+.why-choose-section h2,
+.testimonials-section h2,
+.hours-section h2,
+.location-section h2,
+.gallery-section h2,
+.team-section h2 {
+  font-size: 32px;
+  color: #e63946;
+  margin-bottom: 20px;
+}
+
+/* Team Section */
+.team-section {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.team-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.team-member {
+  width: 250px;
+  text-align: center;
+}
+.team-member:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgb(252, 3, 3);
+}
+
+.team-member img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.team-member h3 {
+  margin-top: 10px;
+  font-size: 20px;
+  color: #f90808;
+}
+
+.team-member p {
+  font-size: 14px;
+  color: #555;
+}
+
+/* Why Choose Us List */
+.why-choose-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.why-choose-section li {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+/* Gallery Section */
+.gallery-section {
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: auto;
+  text-align: center;
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 30px;
+}
+.gallery-grid img:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgb(252, 3, 3);
+}
+
+.gallery-grid img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* Testimonials */
+.testimonials-section blockquote {
+  font-style: italic;
+  background: #f6f6f6;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 800px;
+  border-left: 5px solid #f90808;
+  color: #333;
+}
+
+/* Hours */
+.hours-section p {
+  font-size: 18px;
+  margin: 8px 0;
+  color: #333;
+}
+
+/* Location */
+.location-section iframe {
+  width: 100%;
+  border: 0;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments */
+@media only screen and (max-width: 768px) {
+  .hero-background h1 {
+    font-size: 28px;
+  }
+
+  .hero-background p {
+    font-size: 16px;
+  }
+
+  .team-member {
+    width: 80%;
+  }
+
+  .team-member img {
+    height: 200px;
+  }
+}
