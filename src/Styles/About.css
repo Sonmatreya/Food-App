@@ -18,7 +18,7 @@
 .hero-background {
   width: 100%;
   height: 100%;
-  background-image: url("D:\Food App\food-app\src\assets\about-pizza-bg.jpg");
+  background-image: url("../assets/about-pizza-bg.jpg");
   background-size: cover;
   background-position: center;
   text-align: center;
