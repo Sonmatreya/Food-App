@@ -1,0 +1,373 @@
+.foodDetails {
+  min-height: calc(100vh - 80px);
+  padding: 70px 8%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 70px;
+  background: #f8f8f8;
+}
+
+/* =========================
+   IMAGE SECTION
+========================= */
+
+.foodDetailsImage {
+  width: 50%;
+  max-width: 560px;
+}
+
+.foodDetailsImage img {
+  width: 100%;
+  height: 500px;
+  object-fit: cover;
+  border-radius: 24px;
+  display: block;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  transition: transform 0.3s ease;
+}
+
+.foodDetailsImage img:hover {
+  transform: scale(1.02);
+}
+
+/* =========================
+   CONTENT SECTION
+========================= */
+
+.foodDetailsContent {
+  width: 50%;
+  max-width: 560px;
+}
+
+.foodCategory {
+  display: inline-block;
+  background: #ffe5e5;
+  color: #e63946;
+  padding: 7px 16px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.foodDetailsContent h1 {
+  font-size: 46px;
+  line-height: 1.15;
+  margin: 18px 0 12px;
+  color: #222;
+}
+
+.foodRating {
+  display: inline-block;
+  background: #fff3cd;
+  padding: 7px 13px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #765900;
+}
+
+.foodDetailsContent h2 {
+  font-size: 34px;
+  margin: 20px 0;
+  color: #e63946;
+}
+
+.foodDescription {
+  color: #666;
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 25px;
+}
+
+/* =========================
+   INGREDIENTS
+========================= */
+
+.ingredients {
+  margin: 25px 0;
+}
+
+.ingredients h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.ingredients ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.ingredients li {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* =========================
+   QUANTITY
+========================= */
+
+.quantitySection {
+  margin-top: 25px;
+}
+
+.quantitySection h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.quantityControls {
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 6px 10px;
+  border: 1px solid #ddd;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.quantityControls button {
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 7px;
+  background: #222;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.quantityControls button:hover {
+  background: #e63946;
+}
+
+.quantityControls span {
+  min-width: 30px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  display: inline-block;
+}
+
+/* =========================
+   TOTAL
+========================= */
+
+.orderSummary {
+  margin: 25px 0;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.orderSummary strong {
+  font-size: 23px;
+  color: #222;
+}
+
+/* =========================
+   ACTION BUTTONS
+========================= */
+
+.addToCartButton {
+  width: 100%;
+  max-width: 350px;
+  padding: 15px 25px;
+  border: none;
+  border-radius: 10px;
+  background: #e63946;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: block;
+}
+
+.addToCartButton:hover {
+  background: #c92535;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(230, 57, 70, 0.3);
+}
+
+.addToCartButton:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* =========================
+   BACK TO MENU
+========================= */
+
+.backToMenu {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 25px;
+  padding: 12px 22px;
+  border: 2px solid #e63946;
+  border-radius: 10px;
+  background: #fff;
+  color: #e63946;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+.backToMenu:hover {
+  background: #e63946;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(230, 57, 70, 0.2);
+}
+
+/* =========================
+   FOOD NOT FOUND
+========================= */
+
+.foodNotFound {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 30px;
+}
+
+.foodNotFound h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.foodNotFound p {
+  color: #666;
+}
+
+.foodNotFound button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  background: #e63946;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 1000px) {
+  .foodDetails {
+    padding: 50px 5%;
+    gap: 40px;
+  }
+
+  .foodDetailsContent h1 {
+    font-size: 38px;
+  }
+
+  .foodDetailsImage img {
+    height: 420px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 768px) {
+  .foodDetails {
+    flex-direction: column;
+    padding: 35px 5% 50px;
+    gap: 35px;
+    align-items: stretch;
+  }
+
+  .foodDetailsImage,
+  .foodDetailsContent {
+    width: 100%;
+    max-width: none;
+  }
+
+  .foodDetailsImage img {
+    height: 330px;
+    border-radius: 18px;
+  }
+
+  .foodDetailsContent h1 {
+    font-size: 34px;
+  }
+
+  .foodDetailsContent h2 {
+    font-size: 29px;
+  }
+
+  .addToCartButton {
+    max-width: none;
+  }
+
+  .backToMenu {
+    margin-top: 25px;
+  }
+}
+
+/* =========================
+   SMALL MOBILE
+========================= */
+
+@media (max-width: 480px) {
+  .foodDetails {
+    padding: 25px 18px 40px;
+  }
+
+  .foodDetailsImage img {
+    height: 270px;
+  }
+
+  .foodDetailsContent h1 {
+    font-size: 29px;
+  }
+
+  .foodDescription {
+    font-size: 15px;
+  }
+
+  .ingredients li {
+    font-size: 13px;
+  }
+
+  .quantityControls {
+    gap: 15px;
+  }
+
+  .quantityControls button {
+    width: 36px;
+    height: 36px;
+  }
+
+  .backToMenu {
+    width: fit-content;
+  }
+}
