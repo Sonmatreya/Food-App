@@ -6,17 +6,28 @@ import "../Styles/FoodDetails.css";
 
 function FoodDetails() {
   const { id } = useParams();
-  const food = MenuList.find((item) => item.id === Number(id));
+
+  const food = MenuList.find(
+    (item) => item.id === Number(id)
+  );
 
   const [quantity, setQuantity] = useState(1);
+  const [added, setAdded] = useState(false);
+  const [cookingRequest, setCookingRequest] = useState("");
 
   const { addToCart } = useCart();
 
   if (!food) {
     return (
       <div className="foodNotFound">
+        <div className="notFoundIcon">🍽️</div>
+
         <h1>Food Not Found</h1>
-        <p>The food item you are looking for does not exist.</p>
+
+        <p>
+          The food item you are looking for does not exist
+          or may have been removed.
+        </p>
 
         <Link to="/menu">
           <button>Back to Menu</button>
@@ -27,6 +38,7 @@ function FoodDetails() {
 
   const increaseQuantity = () => {
     setQuantity((currentQuantity) => currentQuantity + 1);
+    setAdded(false);
   };
 
   const decreaseQuantity = () => {
@@ -37,78 +49,423 @@ function FoodDetails() {
 
       return currentQuantity;
     });
+
+    setAdded(false);
+  };
+
+  const handleCookingRequestChange = (event) => {
+    const value = event.target.value;
+
+    if (value.length <= 100) {
+      setCookingRequest(value);
+      setAdded(false);
+    }
   };
 
   const totalPrice = food.price * quantity;
 
   const handleAddToCart = () => {
-    addToCart(food, quantity);
-    alert(`${food.name} added to cart!`);
+    addToCart(
+      food,
+      quantity,
+      cookingRequest.trim()
+    );
+
+    setAdded(true);
   };
 
   return (
-    <div className="foodDetails">
-      <div className="foodDetailsImage">
-        <img src={food.image} alt={food.name} />
-      </div>
+    <div className="foodDetailsPage">
 
-      <div className="foodDetailsContent">
-        <span className="foodCategory">{food.category}</span>
+      {/* ================= BREADCRUMB ================= */}
 
-        <h1>{food.name}</h1>
+      <div className="foodBreadcrumb">
 
-        <div className="foodRating">
-          ⭐ {food.rating} / 5
-        </div>
-
-        <h2>${food.price.toFixed(2)}</h2>
-
-        <p className="foodDescription">
-          {food.description}
-        </p>
-
-        <div className="ingredients">
-          <h3>Ingredients</h3>
-
-          <ul>
-            {food.ingredients.map((ingredient, index) => (
-              <li key={index}>{ingredient}</li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="quantitySection">
-          <h3>Quantity</h3>
-
-          <div className="quantityControls">
-            <button onClick={decreaseQuantity}>−</button>
-
-            <span>{quantity}</span>
-
-            <button onClick={increaseQuantity}>+</button>
-          </div>
-        </div>
-
-        <div className="orderSummary">
-          <strong>
-            Total: ${totalPrice.toFixed(2)}
-          </strong>
-        </div>
-
-        <button
-          className="addToCartButton"
-          onClick={handleAddToCart}
-          disabled={!food.isAvailable}
-        >
-          {food.isAvailable
-            ? "Add to Cart"
-            : "Currently Unavailable"}
-        </button>
-
-        <Link to="/menu" className="backToMenu">
-          ← Back to Menu
+        <Link to="/">
+          Home
         </Link>
+
+        <span>›</span>
+
+        <Link to="/menu">
+          Menu
+        </Link>
+
+        <span>›</span>
+
+        <span>
+          {food.name}
+        </span>
+
       </div>
+
+      {/* ================= PRODUCT ================= */}
+
+      <section className="foodDetails">
+
+        {/* ================= IMAGE ================= */}
+
+        <div className="foodDetailsImageWrapper">
+
+          <div
+            className="foodDetailsImage"
+            style={{
+              backgroundImage:
+                `url(${food.image})`,
+            }}
+          >
+
+            <div className="foodImageBadge">
+              ⭐ {food.rating}
+            </div>
+
+            {!food.isAvailable && (
+              <div className="unavailableBadge">
+                Currently Unavailable
+              </div>
+            )}
+
+          </div>
+
+        </div>
+
+        {/* ================= DETAILS ================= */}
+
+        <div className="foodDetailsContent">
+
+          <span className="foodCategory">
+            {food.category}
+          </span>
+
+          <h1>
+            {food.name}
+          </h1>
+
+          {/* ================= RATING ================= */}
+
+          <div className="foodRatingRow">
+
+            <span className="ratingStars">
+              ★★★★★
+            </span>
+
+            <strong>
+              {food.rating}
+            </strong>
+
+            <span className="ratingText">
+              Customer Rating
+            </span>
+
+          </div>
+
+          {/* ================= PRICE ================= */}
+
+          <div className="foodPrice">
+            ${food.price.toFixed(2)}
+          </div>
+
+          {/* ================= DESCRIPTION ================= */}
+
+          <p className="foodDescription">
+            {food.description}
+          </p>
+
+          {/* ================= FOOD INFORMATION ================= */}
+
+          <div className="foodInfoGrid">
+
+            <div className="foodInfoItem">
+
+              <span className="foodInfoIcon">
+                🚚
+              </span>
+
+              <div>
+                <strong>
+                  Fast Delivery
+                </strong>
+
+                <p>
+                  30–45 min
+                </p>
+              </div>
+
+            </div>
+
+            <div className="foodInfoItem">
+
+              <span className="foodInfoIcon">
+                🥗
+              </span>
+
+              <div>
+                <strong>
+                  Fresh Ingredients
+                </strong>
+
+                <p>
+                  Prepared fresh
+                </p>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* ================= INGREDIENTS ================= */}
+
+          <div className="ingredients">
+
+            <h3>
+              Ingredients
+            </h3>
+
+            <div className="ingredientList">
+
+              {food.ingredients.map(
+                (ingredient, index) => (
+                  <span
+                    className="ingredientTag"
+                    key={index}
+                  >
+                    ✓ {ingredient}
+                  </span>
+                )
+              )}
+
+            </div>
+
+          </div>
+
+          {/* ================= COOKING REQUEST ================= */}
+
+          <div className="cookingRequest">
+
+            <h3>
+              Add a cooking request{" "}
+              <span>
+                (optional)
+              </span>
+            </h3>
+
+            <p>
+              The restaurant will try its best to fulfil
+              your requests. However, refunds or
+              cancellations related to such requests
+              won't be possible.
+            </p>
+
+            <div className="cookingRequestInput">
+
+              <textarea
+                value={cookingRequest}
+                onChange={
+                  handleCookingRequestChange
+                }
+                placeholder="e.g. Don't make it too spicy"
+                maxLength={100}
+                disabled={!food.isAvailable}
+              />
+
+              <span>
+                {cookingRequest.length}/100
+              </span>
+
+            </div>
+
+          </div>
+
+          {/* ================= QUANTITY ================= */}
+
+          <div className="quantitySection">
+
+            <h3>
+              Quantity
+            </h3>
+
+            <div className="quantityControls">
+
+              <button
+                type="button"
+                onClick={decreaseQuantity}
+                disabled={!food.isAvailable}
+              >
+                −
+              </button>
+
+              <span>
+                {quantity}
+              </span>
+
+              <button
+                type="button"
+                onClick={increaseQuantity}
+                disabled={!food.isAvailable}
+              >
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* ================= ORDER SUMMARY ================= */}
+
+          <div className="orderSummary">
+
+            <div>
+
+              <span>
+                Price
+              </span>
+
+              <strong>
+                ${food.price.toFixed(2)}
+              </strong>
+
+            </div>
+
+            <div>
+
+              <span>
+                Quantity
+              </span>
+
+              <strong>
+                × {quantity}
+              </strong>
+
+            </div>
+
+            <div className="summaryTotal">
+
+              <span>
+                Total
+              </span>
+
+              <strong>
+                ${totalPrice.toFixed(2)}
+              </strong>
+
+            </div>
+
+          </div>
+
+          {/* ================= ADD TO CART ================= */}
+
+          <button
+            type="button"
+            className={
+              added
+                ? "addToCartButton added"
+                : "addToCartButton"
+            }
+            onClick={handleAddToCart}
+            disabled={!food.isAvailable}
+          >
+
+            {!food.isAvailable
+              ? "Currently Unavailable"
+              : added
+              ? "✓ Added to Cart"
+              : "Add to Cart"}
+
+          </button>
+
+          {/* ================= VIEW CART ================= */}
+
+          {added && (
+            <Link
+              to="/cart"
+              className="viewCartButton"
+            >
+              View Cart →
+            </Link>
+          )}
+
+          {/* ================= BACK ================= */}
+
+          <Link
+            to="/menu"
+            className="backToMenu"
+          >
+            ← Back to Menu
+          </Link>
+
+        </div>
+
+      </section>
+
+      {/* ================= EXTRA INFORMATION ================= */}
+
+      <section className="foodExtraSection">
+
+        <div className="foodExtraCard">
+
+          <span>
+            🍴
+          </span>
+
+          <div>
+
+            <h3>
+              Quality Food
+            </h3>
+
+            <p>
+              Carefully prepared using quality
+              ingredients.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="foodExtraCard">
+
+          <span>
+            ⚡
+          </span>
+
+          <div>
+
+            <h3>
+              Quick Preparation
+            </h3>
+
+            <p>
+              Your order is prepared fresh after
+              ordering.
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="foodExtraCard">
+
+          <span>
+            🔒
+          </span>
+
+          <div>
+
+            <h3>
+              Secure Ordering
+            </h3>
+
+            <p>
+              Your order information is handled
+              securely.
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
     </div>
   );
 }

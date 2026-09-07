@@ -1,39 +1,68 @@
-import React, { createContext, useContext, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+} from "react";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState([]);
 
-  // Add item to cart
-  const addToCart = (food, quantity = 1) => {
+  // ==========================================
+  // ADD ITEM TO CART
+  // ==========================================
+
+  const addToCart = (
+    food,
+    quantity = 1,
+    cookingRequest = ""
+  ) => {
     setCartItems((currentItems) => {
       const existingItem = currentItems.find(
         (item) => item.id === food.id
       );
 
+      // If item already exists
       if (existingItem) {
         return currentItems.map((item) =>
           item.id === food.id
             ? {
                 ...item,
-                quantity: item.quantity + quantity,
+
+                quantity:
+                  item.quantity + quantity,
+
+                // Update cooking request if a
+                // new request was provided
+                cookingRequest:
+                  cookingRequest ||
+                  item.cookingRequest ||
+                  "",
               }
             : item
         );
       }
 
+      // Add new item
       return [
         ...currentItems,
         {
           ...food,
+
           quantity: quantity,
+
+          cookingRequest:
+            cookingRequest || "",
         },
       ];
     });
   };
 
-  // Increase quantity
+  // ==========================================
+  // INCREASE QUANTITY
+  // ==========================================
+
   const increaseQuantity = (id) => {
     setCartItems((currentItems) =>
       currentItems.map((item) =>
@@ -47,7 +76,10 @@ export function CartProvider({ children }) {
     );
   };
 
-  // Decrease quantity
+  // ==========================================
+  // DECREASE QUANTITY
+  // ==========================================
+
   const decreaseQuantity = (id) => {
     setCartItems((currentItems) =>
       currentItems
@@ -59,24 +91,40 @@ export function CartProvider({ children }) {
               }
             : item
         )
-        .filter((item) => item.quantity > 0)
+        .filter(
+          (item) => item.quantity > 0
+        )
     );
   };
 
-  // Remove item
+  // ==========================================
+  // REMOVE ITEM
+  // ==========================================
+
   const removeFromCart = (id) => {
     setCartItems((currentItems) =>
-      currentItems.filter((item) => item.id !== id)
+      currentItems.filter(
+        (item) => item.id !== id
+      )
     );
   };
 
-  // Calculate total
+  // ==========================================
+  // CALCULATE CART TOTAL
+  // ==========================================
+
   const getCartTotal = () => {
     return cartItems.reduce(
-      (total, item) => total + item.price * item.quantity,
+      (total, item) =>
+        total +
+        item.price * item.quantity,
       0
     );
   };
+
+  // ==========================================
+  // CONTEXT
+  // ==========================================
 
   return (
     <CartContext.Provider
@@ -94,7 +142,10 @@ export function CartProvider({ children }) {
   );
 }
 
-// Custom hook
+// ==========================================
+// CUSTOM HOOK
+// ==========================================
+
 export function useCart() {
   return useContext(CartContext);
 }

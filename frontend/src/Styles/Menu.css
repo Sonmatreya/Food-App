@@ -1,98 +1,548 @@
-/* Menu Container */
-.menu {
-  text-align: center;
-  padding: 40px 20px;
-  background-color: white;
+/* =====================================================
+   MENU PAGE
+===================================================== */
+
+.menuPage {
   min-height: 100vh;
+  background: #fafafa;
+  color: #222;
 }
 
-/* Menu Title */
-.menuTitle {
-  font-family: cursive;
-  font-size: 50px;
-  margin-bottom: 30px;
-  color: rgb(252, 3, 3);
-}
+/* =====================================================
+   MENU HERO
+===================================================== */
 
-/* Menu Grid - 2 Columns on Desktop, 1 on Small Screens */
-.menuGrid {
+.menuHero {
+  min-height: 330px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-  width: 100%;
-  max-width: 1000px;
+  align-items: center;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(20, 20, 20, 0.95),
+      rgba(20, 20, 20, 0.65),
+      rgba(20, 20, 20, 0.3)
+    ),
+    url("../assets/pizza.jpeg");
+
+  background-size: cover;
+  background-position: center;
+}
+
+.menuHeroContent {
+  width: 84%;
+  max-width: 1250px;
   margin: auto;
 }
 
-/* Menu Card */
+.menuHeroContent > span {
+  color: #ff6b6b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.menuHeroContent h1 {
+  margin: 12px 0;
+  color: white;
+  font-size: 52px;
+  line-height: 1.1;
+  font-weight: 800;
+}
+
+.menuHeroContent p {
+  max-width: 570px;
+  margin: 0;
+  color: #dddddd;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+/* =====================================================
+   MENU SECTION
+===================================================== */
+
+.menuSection {
+  width: 84%;
+  max-width: 1250px;
+  margin: auto;
+  padding: 55px 0 90px;
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.menuSearchBox {
+  width: 100%;
+  max-width: 700px;
+  height: 58px;
+  margin: 0 auto 35px;
+  padding: 0 8px 0 18px;
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+
+  background: white;
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+}
+
+.menuSearchBox > span {
+  font-size: 19px;
+}
+
+.menuSearchBox input {
+  flex: 1;
+  height: 100%;
+  padding: 0 15px;
+
+  border: none;
+  outline: none;
+
+  color: #222;
+  background: transparent;
+  font-size: 15px;
+}
+
+.menuSearchBox input::placeholder {
+  color: #999;
+}
+
+.clearSearch {
+  width: 35px;
+  height: 35px;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f3f3f3;
+  color: #666;
+
+  cursor: pointer;
+}
+
+.clearSearch:hover {
+  background: #ffe5e5;
+  color: #e63946;
+}
+
+/* =====================================================
+   TOOLBAR
+===================================================== */
+
+.menuToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+
+  margin-bottom: 40px;
+}
+
+/* Categories */
+
+.categoryFilters {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.categoryFilter {
+  padding: 9px 17px;
+
+  border: 1px solid #dddddd;
+  border-radius: 25px;
+
+  background: white;
+  color: #555;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.categoryFilter:hover {
+  border-color: #e63946;
+  color: #e63946;
+}
+
+.categoryFilter.active {
+  border-color: #e63946;
+  background: #e63946;
+  color: white;
+}
+
+/* Sort */
+
+.sortBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  white-space: nowrap;
+}
+
+.sortBox label {
+  color: #777;
+  font-size: 13px;
+}
+
+.sortBox select {
+  height: 38px;
+  padding: 0 12px;
+
+  border: 1px solid #dddddd;
+  border-radius: 7px;
+
+  background: white;
+  color: #444;
+
+  outline: none;
+  cursor: pointer;
+}
+
+/* =====================================================
+   RESULT HEADER
+===================================================== */
+
+.menuResultHeader {
+  margin-bottom: 25px;
+}
+
+.menuResultHeader h2 {
+  margin: 0 0 5px;
+  color: #222;
+  font-size: 28px;
+}
+
+.menuResultHeader p {
+  margin: 0;
+  color: #888;
+  font-size: 13px;
+}
+
+/* =====================================================
+   FOOD GRID
+===================================================== */
+
+.menuGrid {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 25px;
+}
+
+/* =====================================================
+   FOOD CARD
+===================================================== */
+
 .menuCard {
-  flex: 2 1 45%;   /* Two cards per row */
-  max-width: 450px;
-  min-width: 280px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  transition: transform 0.3s, box-shadow 0.3s;
-  margin-bottom: 30px;
+
+  border: 1px solid #eeeeee;
+  border-radius: 15px;
+
+  background: white;
+
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.05);
+
+  transition: all 0.3s ease;
 }
 
 .menuCard:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 6px 16px rgb(252, 3, 3);
+  transform: translateY(-7px);
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
 }
 
-/* Pizza Image */
+/* Food image */
+
 .menuImage {
-  height: 200px;
+  width: 100%;
+  height: 230px;
+
   background-size: cover;
   background-position: center;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+
+  transition: transform 0.4s ease;
 }
 
-/* Card Content */
+.menuCard:hover .menuImage {
+  transform: scale(1.04);
+}
+
+/* Content */
+
 .menuContent {
-  padding: 15px;
+  padding: 20px;
+  text-align: left;
+}
+
+.menuCategory {
+  display: inline-block;
+
+  margin-bottom: 8px;
+
+  color: #e63946;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .menuContent h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
-  color: #121619;
+  margin: 0 0 8px;
+
+  color: #222;
+
+  font-size: 19px;
+  line-height: 1.3;
 }
 
-.menuContent p {
-  font-size: 16px;
-  color: #e63946;
-  font-weight: bold;
-  margin-bottom: 15px;
+.menuRating {
+  margin: 0 0 8px;
+
+  color: #555 !important;
+
+  font-size: 13px !important;
+  font-weight: 600 !important;
 }
 
-/* Order Button */
+.menuPrice {
+  margin: 0 0 16px;
+
+  color: #e63946 !important;
+
+  font-size: 20px !important;
+  font-weight: 800 !important;
+}
+
+/* Button */
+
 .orderButton {
-  padding: 8px 16px;
+  width: 100%;
+  height: 42px;
+
   border: none;
-  border-radius: 5px;
-  background-color: #f90808;
+  border-radius: 7px;
+
+  background: #222;
   color: white;
-  font-size: 14px;
+
+  font-size: 13px;
+  font-weight: 700;
+
   cursor: pointer;
-  transition: background-color 0.3s;
+
+  transition: all 0.3s ease;
 }
 
 .orderButton:hover {
-  background-color: #d10606;
+  background: #e63946;
 }
 
-/* Responsive: 1 Column on Small Screens */
-@media only screen and (max-width: 650px) {
-  .menuCard {
-    flex: 1 1 90%;
+.orderButton:disabled {
+  background: #aaa;
+  cursor: not-allowed;
+}
+
+/* Availability */
+
+.outOfStock {
+  margin: -5px 0 12px !important;
+
+  color: #d62828 !important;
+
+  font-size: 12px !important;
+}
+
+/* =====================================================
+   NO FOOD FOUND
+===================================================== */
+
+.noFoodFound {
+  min-height: 350px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  border: 1px dashed #dddddd;
+  border-radius: 15px;
+
+  background: white;
+}
+
+.noFoodIcon {
+  width: 70px;
+  height: 70px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 15px;
+
+  border-radius: 50%;
+
+  background: #fff1f1;
+
+  font-size: 32px;
+}
+
+.noFoodFound h2 {
+  margin: 0 0 8px;
+
+  color: #222;
+  font-size: 24px;
+}
+
+.noFoodFound p {
+  margin: 0;
+
+  color: #888;
+  font-size: 14px;
+}
+
+.noFoodFound button {
+  margin-top: 20px;
+
+  padding: 11px 20px;
+
+  border: none;
+  border-radius: 7px;
+
+  background: #e63946;
+  color: white;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.noFoodFound button:hover {
+  background: #c92535;
+}
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media only screen and (max-width: 1000px) {
+  .menuSection {
+    width: 90%;
   }
 
-  .menuTitle {
-    font-size: 36px;
+  .menuGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .menuToolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .sortBox {
+    align-self: flex-end;
+  }
+}
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media only screen and (max-width: 650px) {
+  .menuHero {
+    min-height: 300px;
+  }
+
+  .menuHeroContent {
+    width: 90%;
+  }
+
+  .menuHeroContent h1 {
+    font-size: 40px;
+  }
+
+  .menuHeroContent p {
+    font-size: 14px;
+  }
+
+  .menuSection {
+    width: 90%;
+    padding: 40px 0 60px;
+  }
+
+  .menuSearchBox {
+    height: 54px;
+  }
+
+  .menuToolbar {
+    gap: 20px;
+  }
+
+  .categoryFilters {
+    width: 100%;
+  }
+
+  .categoryFilter {
+    padding: 8px 13px;
+    font-size: 12px;
+  }
+
+  .sortBox {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .sortBox select {
+    flex: 1;
+    max-width: 220px;
+  }
+
+  .menuGrid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .menuImage {
+    height: 250px;
+  }
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media only screen and (max-width: 400px) {
+  .menuHeroContent h1 {
+    font-size: 34px;
+  }
+
+  .menuResultHeader h2 {
+    font-size: 24px;
+  }
+
+  .menuContent {
+    padding: 17px;
+  }
+
+  .menuImage {
+    height: 220px;
   }
 }

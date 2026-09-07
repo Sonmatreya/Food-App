@@ -13,9 +13,11 @@
     "@testing-library/user-event": "^13.5.0",
     "baseline-browser-mapping": "^2.10.22",
     "caniuse-lite": "^1.0.30001791",
+    "leaflet": "^1.9.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
+    "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.6.3",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
