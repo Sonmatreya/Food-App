@@ -27,26 +27,31 @@
 .cartPageHeader h1 {
   margin: 0 0 6px;
 
+  color: #222;
+
   font-size: 36px;
   font-weight: 700;
-
-  color: #222;
+  line-height: 1.2;
 }
 
 .cartPageHeader p {
   margin: 0;
 
-  font-size: 15px;
   color: #777;
+
+  font-size: 15px;
+  line-height: 1.5;
 }
 
 .cartPageHeader a {
-  text-decoration: none;
-
   color: #e63946;
+
+  font-size: 14px;
   font-weight: 600;
 
-  transition: 0.2s ease;
+  text-decoration: none;
+
+  transition: color 0.2s ease;
 }
 
 .cartPageHeader a:hover {
@@ -73,22 +78,22 @@
 .cartMain {
   display: flex;
   flex-direction: column;
+
   gap: 22px;
 }
 
 
 /* =========================================
-   CARD
+   COMMON CARD
 ========================================= */
 
 .cartCard {
-  background: #ffffff;
-
-  border-radius: 16px;
-
   padding: 24px;
 
+  background: #ffffff;
+
   border: 1px solid #eeeeee;
+  border-radius: 16px;
 
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
@@ -97,6 +102,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  gap: 15px;
 
   padding-bottom: 18px;
   margin-bottom: 4px;
@@ -107,15 +114,17 @@
 .cartCardHeader h2 {
   margin: 0;
 
+  color: #222;
+
   font-size: 20px;
   font-weight: 700;
-
-  color: #222;
+  line-height: 1.3;
 }
 
 .cartCardHeader span {
-  font-size: 14px;
   color: #777;
+
+  font-size: 14px;
 }
 
 
@@ -130,25 +139,25 @@
 
 .cartItem {
   display: grid;
-
   grid-template-columns: 110px minmax(0, 1fr) auto;
 
   gap: 20px;
 
-  align-items: center;
+  align-items: start;
 
   padding: 22px 0;
 
   border-bottom: 1px solid #eeeeee;
 }
 
-.cartItem:last-child {
-  border-bottom: none;
-  padding-bottom: 4px;
-}
-
 .cartItem:first-child {
   padding-top: 18px;
+}
+
+.cartItem:last-child {
+  padding-bottom: 4px;
+
+  border-bottom: none;
 }
 
 
@@ -162,10 +171,12 @@
 
   border-radius: 12px;
 
-  background-size: cover;
-  background-position: center;
-
   background-color: #eeeeee;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  flex-shrink: 0;
 }
 
 
@@ -182,33 +193,74 @@
 
   margin-bottom: 5px;
 
+  color: #e63946;
+
   font-size: 12px;
   font-weight: 600;
 
-  color: #e63946;
-
-  text-transform: uppercase;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .cartItemDetails h3 {
   margin: 0 0 6px;
 
-  font-size: 18px;
-  font-weight: 700;
+  overflow: hidden;
 
   color: #222;
 
-  white-space: nowrap;
-  overflow: hidden;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cartItemUnitPrice {
   margin: 0;
 
-  font-size: 14px;
   color: #777;
+
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+
+/* =========================================
+   COOKING REQUEST
+========================================= */
+
+.cartCookingRequest {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+
+  background: #fafafa;
+
+  border-left: 3px solid #e63946;
+  border-radius: 8px;
+}
+
+.cartCookingRequest span {
+  display: block;
+
+  margin-bottom: 3px;
+
+  color: #777;
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cartCookingRequest p {
+  margin: 0;
+
+  overflow-wrap: anywhere;
+
+  color: #444;
+
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 
@@ -234,44 +286,51 @@
   display: flex;
   align-items: center;
 
-  border: 1px solid #dddddd;
-
-  border-radius: 8px;
+  width: fit-content;
 
   overflow: hidden;
 
-  width: fit-content;
+  border: 1px solid #dddddd;
+  border-radius: 8px;
 }
 
 .cartQuantity button {
   width: 34px;
   height: 32px;
 
+  padding: 0;
+
   border: none;
+
   background: #ffffff;
-
-  font-size: 20px;
-
-  cursor: pointer;
 
   color: #333;
 
-  transition: 0.2s ease;
+  font-size: 20px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  transition: background 0.2s ease;
 }
 
 .cartQuantity button:hover {
   background: #f2f2f2;
 }
 
+.cartQuantity button:active {
+  background: #eaeaea;
+}
+
 .cartQuantity span {
   min-width: 36px;
 
-  text-align: center;
+  color: #222;
 
   font-size: 14px;
   font-weight: 600;
 
-  color: #222;
+  text-align: center;
 }
 
 
@@ -280,7 +339,10 @@
 ========================================= */
 
 .removeButton {
+  padding: 4px 0;
+
   border: none;
+
   background: transparent;
 
   color: #e63946;
@@ -290,13 +352,12 @@
 
   cursor: pointer;
 
-  padding: 4px 0;
-
-  transition: 0.2s ease;
+  transition: color 0.2s ease;
 }
 
 .removeButton:hover {
   color: #b91c2a;
+
   text-decoration: underline;
 }
 
@@ -310,10 +371,10 @@
 
   padding-top: 8px;
 
+  color: #222;
+
   font-size: 18px;
   font-weight: 700;
-
-  color: #222;
 
   white-space: nowrap;
 }
@@ -325,7 +386,6 @@
 
 .deliveryOptions {
   display: grid;
-
   grid-template-columns: 1fr 1fr;
 
   gap: 14px;
@@ -334,30 +394,38 @@
 }
 
 .deliveryOption {
+  width: 100%;
+
   display: flex;
   align-items: center;
 
   gap: 13px;
 
-  width: 100%;
-
   padding: 16px;
+
+  border: 2px solid #eeeeee;
+  border-radius: 12px;
 
   background: #ffffff;
 
-  border: 2px solid #eeeeee;
-
-  border-radius: 12px;
+  color: inherit;
 
   text-align: left;
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .deliveryOption:hover {
   border-color: #e63946;
+}
+
+.deliveryOption:active {
+  transform: scale(0.99);
 }
 
 .deliveryOption.active {
@@ -374,13 +442,13 @@
   align-items: center;
   justify-content: center;
 
+  flex-shrink: 0;
+
   border-radius: 50%;
 
   background: #f5f5f5;
 
   font-size: 21px;
-
-  flex-shrink: 0;
 }
 
 .deliveryOption.active .deliveryIcon {
@@ -388,22 +456,28 @@
 }
 
 .deliveryOption > span:nth-child(2) {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
 
-  gap: 4px;
-
   flex: 1;
+
+  gap: 4px;
 }
 
 .deliveryOption strong {
-  font-size: 15px;
   color: #222;
+
+  font-size: 15px;
+  font-weight: 700;
 }
 
 .deliveryOption small {
-  font-size: 12px;
   color: #777;
+
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 .deliveryCheck {
@@ -414,42 +488,40 @@
   align-items: center;
   justify-content: center;
 
-  border: 1px solid #cccccc;
+  flex-shrink: 0;
 
+  border: 1px solid #cccccc;
   border-radius: 50%;
+
+  color: #ffffff;
 
   font-size: 12px;
   font-weight: 700;
-
-  color: #ffffff;
 }
 
 .deliveryOption.active .deliveryCheck {
-  background: #e63946;
-
   border-color: #e63946;
+
+  background: #e63946;
 }
 
 
 /* =========================================
-   DELIVERY LOCATION NOTE
+   PICKUP INFORMATION
 ========================================= */
 
 .addressNote {
   margin-top: 18px;
-
   padding: 16px;
 
+  border: 1px solid #f5dfaa;
   border-radius: 10px;
 
   background: #fff8e8;
 
-  border: 1px solid #f5dfaa;
-
   color: #725b20;
 
   font-size: 14px;
-
   line-height: 1.6;
 }
 
@@ -466,13 +538,18 @@
   display: flex;
   align-items: center;
 
-  border: 1px solid #dddddd;
-
-  border-radius: 10px;
-
   overflow: hidden;
 
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+
   background: #ffffff;
+
+  transition: border-color 0.2s ease;
+}
+
+.couponInput:focus-within {
+  border-color: #e63946;
 }
 
 .couponInput > span {
@@ -482,18 +559,21 @@
 }
 
 .couponInput input {
-  flex: 1;
-
   min-width: 0;
+
+  flex: 1;
 
   padding: 13px 12px;
 
   border: none;
   outline: none;
 
-  font-size: 14px;
+  background: transparent;
 
   color: #222;
+
+  font-family: inherit;
+  font-size: 14px;
 }
 
 .couponInput input::placeholder {
@@ -508,6 +588,7 @@
   border: none;
 
   background: #222;
+
   color: #ffffff;
 
   font-size: 13px;
@@ -515,11 +596,17 @@
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition: background 0.2s ease;
 }
 
-.couponInput button:hover {
+.couponInput button:hover:not(:disabled) {
   background: #e63946;
+}
+
+.couponInput button:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
 }
 
 
@@ -531,6 +618,7 @@
   margin: 10px 0 0;
 
   font-size: 13px;
+  line-height: 1.5;
 }
 
 .couponMessage.success {
@@ -547,22 +635,21 @@
 ========================================= */
 
 .availableCoupons {
+  display: flex;
+  flex-direction: column;
+
+  gap: 8px;
+
   margin-top: 20px;
 }
 
 .availableCoupons > p {
-  margin: 0 0 10px;
+  margin: 0 0 2px;
+
+  color: #555;
 
   font-size: 13px;
   font-weight: 600;
-
-  color: #555;
-}
-
-.availableCoupons {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .availableCoupons > button {
@@ -575,7 +662,6 @@
   padding: 11px 13px;
 
   border: 1px dashed #dddddd;
-
   border-radius: 8px;
 
   background: #fafafa;
@@ -584,15 +670,20 @@
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .availableCoupons > button:hover {
   border-color: #e63946;
+
   background: #fff8f8;
 }
 
 .availableCoupons > button strong {
+  flex-shrink: 0;
+
   color: #e63946;
 
   font-size: 13px;
@@ -618,14 +709,12 @@
   gap: 12px;
 
   margin-top: 15px;
-
   padding: 13px;
 
+  border: 1px solid #ccebd7;
   border-radius: 10px;
 
   background: #f0fff5;
-
-  border: 1px solid #ccebd7;
 }
 
 .couponAppliedIcon {
@@ -635,6 +724,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
+  flex-shrink: 0;
 
   border-radius: 50%;
 
@@ -647,6 +738,8 @@
 }
 
 .appliedCoupon > div {
+  min-width: 0;
+
   flex: 1;
 }
 
@@ -659,12 +752,14 @@
 .appliedCoupon p {
   margin: 2px 0 0;
 
-  font-size: 12px;
-
   color: #777;
+
+  font-size: 12px;
 }
 
 .appliedCoupon button {
+  padding: 3px 0;
+
   border: none;
 
   background: transparent;
@@ -684,18 +779,16 @@
 
 .cartSummary {
   position: sticky;
-
   top: 90px;
+
+  padding: 24px;
 
   background: #ffffff;
 
+  border: 1px solid #eeeeee;
   border-radius: 16px;
 
-  border: 1px solid #eeeeee;
-
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
-
-  padding: 24px;
 }
 
 .summaryHeader {
@@ -707,10 +800,10 @@
 .summaryHeader h2 {
   margin: 0;
 
+  color: #222;
+
   font-size: 21px;
   font-weight: 700;
-
-  color: #222;
 }
 
 
@@ -734,13 +827,15 @@
 
   gap: 20px;
 
-  font-size: 14px;
-
   color: #666;
+
+  font-size: 14px;
+  line-height: 1.4;
 }
 
 .summaryRow strong {
   color: #222;
+
   font-weight: 600;
 }
 
@@ -756,7 +851,6 @@
 
 .freeDeliveryMessage {
   margin: 0 0 16px;
-
   padding: 11px;
 
   border-radius: 8px;
@@ -789,15 +883,17 @@
 ========================================= */
 
 .grandTotal {
-  font-size: 18px;
-
   color: #222;
+
+  font-size: 18px;
+  font-weight: 700;
 }
 
 .grandTotal strong {
-  font-size: 22px;
-
   color: #e63946;
+
+  font-size: 22px;
+  font-weight: 700;
 }
 
 
@@ -830,16 +926,16 @@
   gap: 12px;
 
   margin-top: 22px;
-
   padding: 15px 18px;
 
   border: none;
-
   border-radius: 10px;
 
   background: #e63946;
+
   color: #ffffff;
 
+  font-family: inherit;
   font-size: 15px;
   font-weight: 700;
 
@@ -847,13 +943,20 @@
 
   transition:
     background 0.2s ease,
-    transform 0.2s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .checkoutButton:hover {
   background: #c92735;
 
+  box-shadow: 0 6px 16px rgba(230, 57, 70, 0.18);
+
   transform: translateY(-1px);
+}
+
+.checkoutButton:active {
+  transform: translateY(0);
 }
 
 .checkoutButton span {
@@ -868,11 +971,11 @@
 .secureCheckout {
   margin: 13px 0 0;
 
-  text-align: center;
-
   color: #888;
 
   font-size: 12px;
+
+  text-align: center;
 }
 
 
@@ -885,15 +988,14 @@
 
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
 
   padding: 60px 20px;
 
-  text-align: center;
-
   background: #f8f8f8;
+
+  text-align: center;
 }
 
 .emptyCartIcon {
@@ -918,9 +1020,10 @@
 .emptyCart h1 {
   margin: 0 0 10px;
 
-  font-size: 30px;
-
   color: #222;
+
+  font-size: 30px;
+  font-weight: 700;
 }
 
 .emptyCart p {
@@ -929,28 +1032,34 @@
   color: #777;
 
   font-size: 15px;
+  line-height: 1.5;
 }
 
 .continueShopping {
   padding: 13px 24px;
 
   border: none;
-
   border-radius: 8px;
 
   background: #e63946;
+
   color: #ffffff;
 
+  font-family: inherit;
   font-size: 14px;
   font-weight: 600;
 
   cursor: pointer;
 
-  transition: 0.2s ease;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
 
 .continueShopping:hover {
   background: #c92735;
+
+  transform: translateY(-1px);
 }
 
 
@@ -1013,7 +1122,6 @@
 
   .cartPageHeader {
     align-items: flex-start;
-
     flex-direction: column;
 
     margin-bottom: 22px;
@@ -1041,9 +1149,13 @@
   .cartItemTotal {
     grid-column: 2;
 
-    padding-top: 0;
-
     justify-self: start;
+
+    padding-top: 0;
+  }
+
+  .cartCookingRequest {
+    margin-top: 9px;
   }
 
   .deliveryOptions {
@@ -1052,7 +1164,6 @@
 
   .availableCoupons > button {
     align-items: flex-start;
-
     flex-direction: column;
 
     gap: 5px;
@@ -1110,6 +1221,18 @@
 
   .cartItemTotal {
     font-size: 16px;
+  }
+
+  .cartCookingRequest {
+    padding: 8px 10px;
+  }
+
+  .cartCookingRequest span {
+    font-size: 10px;
+  }
+
+  .cartCookingRequest p {
+    font-size: 11px;
   }
 
   .couponInput input {
