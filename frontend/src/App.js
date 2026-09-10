@@ -15,88 +15,177 @@ import DeliveryAddress from "./Pages/DeliveryAddress";
 import Payment from "./Pages/Payment";
 import OrderSuccess from "./Pages/OrderSuccess";
 
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Profile from "./Pages/Profile";
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import { CartProvider } from "./context/CartContext";
+import { AuthProvider } from "./context/AuthContext";
+
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
-    <CartProvider>
-      <div className="App">
+    <AuthProvider>
+      <CartProvider>
+        <div className="App">
 
-        <BrowserRouter>
+          <BrowserRouter>
 
-          <Navbar />
+            <Navbar />
 
-          <Routes>
+            <Routes>
 
-            {/* Home */}
-            <Route
-              path="/"
-              element={<Home />}
-            />
+              {/* =========================
+                  PUBLIC - LOGIN
+              ========================= */}
 
-            {/* Menu */}
-            <Route
-              path="/menu"
-              element={<Menu />}
-            />
+              <Route
+                path="/login"
+                element={<Login />}
+              />
+              <Route
+                path="/register"
+                element={<Register />}
+             />
+             {/* PROTECTED - PROFILE */}
+              <Route
+               path="/profile"
+               element={
+               <ProtectedRoute>
+               <Profile />
+               </ProtectedRoute>
+               }
+             />  
+              {/* =========================
+                  PROTECTED - HOME
+              ========================= */}
 
-            {/* Food Details */}
-            <Route
-              path="/food/:id"
-              element={<FoodDetails />}
-            />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Cart */}
-            <Route
-              path="/cart"
-              element={<Cart />}
-            />
+              {/* =========================
+                  PROTECTED - MENU
+              ========================= */}
 
-            {/* Delivery Address */}
-            <Route
-              path="/delivery-address"
-              element={<DeliveryAddress />}
-            />
+              <Route
+                path="/menu"
+                element={
+                  <ProtectedRoute>
+                    <Menu />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Payment */}
-            <Route
-              path="/payment"
-              element={<Payment />}
-            />
+              {/* =========================
+                  PROTECTED - FOOD DETAILS
+              ========================= */}
 
-            {/* Order Success */}
-            <Route
-              path="/order-success"
-              element={<OrderSuccess />}
-            />
+              <Route
+                path="/food/:id"
+                element={
+                  <ProtectedRoute>
+                    <FoodDetails />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* About */}
-            <Route
-              path="/about"
-              element={<About />}
-            />
+              {/* =========================
+                  PROTECTED - CART
+              ========================= */}
 
-            {/* Services */}
-            <Route
-              path="/services"
-              element={<Services />}
-            />
+              <Route
+                path="/cart"
+                element={
+                  <ProtectedRoute>
+                    <Cart />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Contact */}
-            <Route
-              path="/contact"
-              element={<Contact />}
-            />
+              {/* =========================
+                  PROTECTED - DELIVERY ADDRESS
+              ========================= */}
 
-          </Routes>
+              <Route
+                path="/delivery-address"
+                element={
+                  <ProtectedRoute>
+                    <DeliveryAddress />
+                  </ProtectedRoute>
+                }
+              />
 
-          <Footer />
+              {/* =========================
+                  PROTECTED - PAYMENT
+              ========================= */}
 
-        </BrowserRouter>
+              <Route
+                path="/payment"
+                element={
+                  <ProtectedRoute>
+                    <Payment />
+                  </ProtectedRoute>
+                }
+              />
 
-      </div>
-    </CartProvider>
+              {/* =========================
+                  PROTECTED - ORDER SUCCESS
+              ========================= */}
+
+              <Route
+                path="/order-success"
+                element={
+                  <ProtectedRoute>
+                    <OrderSuccess />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* =========================
+                  PUBLIC - ABOUT
+              ========================= */}
+
+              <Route
+                path="/about"
+                element={<About />}
+              />
+
+              {/* =========================
+                  PUBLIC - SERVICES
+              ========================= */}
+
+              <Route
+                path="/services"
+                element={<Services />}
+              />
+
+              {/* =========================
+                  PUBLIC - CONTACT
+              ========================= */}
+
+              <Route
+                path="/contact"
+                element={<Contact />}
+              />
+
+            </Routes>
+
+            <Footer />
+
+          </BrowserRouter>
+
+        </div>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

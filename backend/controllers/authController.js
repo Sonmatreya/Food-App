@@ -11,6 +11,17 @@ const generateToken = (userId) => {
   );
 };
 
+// Set authentication cookie
+const setAuthCookie = (res, token) => {
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite:
+      process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+};
+
 // Register
 const register = async (req, res) => {
   try {
@@ -59,12 +70,7 @@ const register = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    setAuthCookie(res, token);
 
     res.status(201).json({
       success: true,
@@ -100,7 +106,8 @@ const login = async (req, res) => {
       });
     }
 
-    const identifier = email?.trim().toLowerCase() || phone?.trim();
+    const identifier =
+      email?.trim().toLowerCase() || phone?.trim();
 
     const query = email
       ? { email: identifier }
@@ -129,12 +136,7 @@ const login = async (req, res) => {
 
     const token = generateToken(user._id);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
+    setAuthCookie(res, token);
 
     res.json({
       success: true,
@@ -158,12 +160,39 @@ const login = async (req, res) => {
   }
 };
 
+// Google Login Success
+const googleLoginSuccess = (req, res) => {
+  try {
+    if (!req.user) {
+      return res.redirect(
+        "http://localhost:3000/login?google=failed"
+      );
+    }
+
+    const token = generateToken(req.user._id);
+
+    setAuthCookie(res, token);
+
+    return res.redirect("http://localhost:3000/");
+  } catch (error) {
+    console.error(
+      "Google login success error:",
+      error.message
+    );
+
+    return res.redirect(
+      "http://localhost:3000/login?google=failed"
+    );
+  }
+};
+
 // Logout
 const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    sameSite:
+      process.env.NODE_ENV === "production" ? "none" : "lax",
   });
 
   res.json({
@@ -210,6 +239,8 @@ const getMe = async (req, res) => {
 module.exports = {
   register,
   login,
+  googleLoginSuccess,
   logout,
   getMe,
-};                                
+  generateToken,
+};

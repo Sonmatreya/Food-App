@@ -1,0 +1,330 @@
+/* ================================
+   I'M NOT A ROBOT
+================================ */
+
+.robot-check {
+  margin: 4px 0 18px;
+
+  padding: 13px 14px;
+
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+
+  background: #fafafa;
+
+  text-align: left;
+}
+
+.robot-checkbox {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  cursor: pointer;
+
+  user-select: none;
+}
+
+.robot-checkbox input {
+  width: 18px;
+  height: 18px;
+
+  margin: 0;
+
+  cursor: pointer;
+
+  accent-color: #e31837;
+}
+
+.robot-text {
+  color: #333333;
+
+  font-size: 14px;
+  font-weight: 600;
+}
+
+
+/* ================================
+   CAPTCHA SECTION
+================================ */
+
+.captcha-section {
+  margin-bottom: 18px;
+
+  padding: 14px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  text-align: left;
+}
+
+.captcha-title {
+  margin-bottom: 10px;
+
+  color: #555555;
+
+  font-size: 12px;
+  font-weight: 600;
+}
+
+
+/* ================================
+   CAPTCHA IMAGE
+================================ */
+
+.captcha-image-row {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+}
+
+.captcha-image {
+  flex: 1;
+
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+
+  border: 1px solid #dddddd;
+  border-radius: 7px;
+
+  background: #f5f5f5;
+}
+
+.captcha-image svg {
+  display: block;
+
+  max-width: 100%;
+  height: 55px;
+}
+
+
+/* ================================
+   CAPTCHA REFRESH
+================================ */
+
+.captcha-refresh {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+
+  background: #ffffff;
+
+  color: #555555;
+
+  font-size: 22px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.captcha-refresh:hover:not(:disabled) {
+  border-color: #e31837;
+
+  background: #fff7f8;
+
+  color: #e31837;
+}
+
+.captcha-refresh:disabled {
+  opacity: 0.5;
+
+  cursor: not-allowed;
+}
+
+
+/* ================================
+   CAPTCHA INPUT
+================================ */
+
+.captcha-input-row {
+  display: flex;
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 10px;
+}
+
+.captcha-input-row input {
+  width: 100%;
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  padding: 12px 13px;
+
+  border: 1px solid #dddddd;
+  border-radius: 9px;
+
+  outline: none;
+
+  background: #ffffff;
+
+  color: #222222;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  letter-spacing: 1.5px;
+
+  text-transform: uppercase;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.captcha-input-row input::placeholder {
+  color: #aaaaaa;
+
+  letter-spacing: normal;
+
+  text-transform: none;
+
+  font-weight: 400;
+}
+
+.captcha-input-row input:focus {
+  border-color: #e31837;
+
+  box-shadow:
+    0 0 0 3px rgba(227, 24, 55, 0.10);
+}
+
+
+/* ================================
+   VOICE BUTTON
+================================ */
+
+.captcha-voice {
+  width: 45px;
+  height: 45px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid #dddddd;
+  border-radius: 9px;
+
+  background: #ffffff;
+
+  font-size: 19px;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.captcha-voice:hover:not(:disabled) {
+  border-color: #e31837;
+
+  background: #fff7f8;
+
+  transform: translateY(-1px);
+}
+
+.captcha-voice:disabled {
+  cursor: not-allowed;
+}
+
+.captcha-voice.listening {
+  border-color: #e31837;
+
+  background: #fff1f2;
+
+  animation: voice-pulse 1s infinite;
+}
+
+@keyframes voice-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(227, 24, 55, 0.25);
+  }
+
+  70% {
+    box-shadow: 0 0 0 7px rgba(227, 24, 55, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(227, 24, 55, 0);
+  }
+}
+
+
+/* ================================
+   VOICE STATUS
+================================ */
+
+.voice-status {
+  margin: 8px 0 0;
+
+  color: #e31837;
+
+  font-size: 11px;
+  font-weight: 600;
+
+  text-align: center;
+}
+
+
+/* ================================
+   MOBILE CAPTCHA
+================================ */
+
+@media (max-width: 600px) {
+
+  .robot-check {
+    padding: 12px;
+  }
+
+  .captcha-section {
+    padding: 12px;
+  }
+
+  .captcha-image {
+    height: 50px;
+  }
+
+  .captcha-image svg {
+    height: 50px;
+  }
+
+  .captcha-refresh {
+    width: 40px;
+    height: 40px;
+  }
+
+  .captcha-voice {
+    width: 43px;
+    height: 43px;
+  }
+
+}
