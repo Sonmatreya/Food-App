@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config/api";
 import "../Styles/Register.css";
-
-const API_URL = "http://localhost:5000";
 
 function Register() {
   const navigate = useNavigate();
@@ -108,15 +107,34 @@ function Register() {
 
   return (
     <div className="register-page">
-
       <div className="register-container">
 
-        <h1>Create Account</h1>
+  {/* HEADER */}
 
-        <p className="register-subtitle">
-          Create your account and start ordering
-          your favorite food
-        </p>
+  <div className="register-header">
+
+    <div className="register-logo">
+      🍴
+    </div>
+
+    <h1>
+      Create Account
+    </h1>
+
+    <p className="register-subtitle">
+      Create your account and start ordering
+      your favorite food
+    </p>
+
+  </div>
+      
+
+      
+
+      
+      
+      
+      
 
         {error && (
           <div className="register-error">

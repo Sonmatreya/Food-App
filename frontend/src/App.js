@@ -1,7 +1,22 @@
 import "./App.css";
 
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+} from "react-router-dom";
+
+// =========================================================
+// COMPONENTS
+// =========================================================
+
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
+import ProtectedRoute from "./Components/ProtectedRoute";
+
+// =========================================================
+// PAGES
+// =========================================================
 
 import Home from "./Pages/Home";
 import Menu from "./Pages/Menu";
@@ -10,97 +25,103 @@ import Services from "./Pages/Services";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+
 import Cart from "./Pages/Cart";
 import DeliveryAddress from "./Pages/DeliveryAddress";
 import Payment from "./Pages/Payment";
 import OrderSuccess from "./Pages/OrderSuccess";
-
-import Login from "./Pages/Login";
-import Register from "./Pages/Register";
 import Profile from "./Pages/Profile";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// =========================================================
+// CONTEXT
+// =========================================================
 
-import { CartProvider } from "./context/CartContext";
 import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 
-import ProtectedRoute from "./Components/ProtectedRoute";
+// =========================================================
+// APP
+// =========================================================
 
 function App() {
   return (
     <AuthProvider>
       <CartProvider>
+
         <div className="App">
 
           <BrowserRouter>
+
+            {/* =================================================
+                NAVBAR
+            ================================================= */}
 
             <Navbar />
 
             <Routes>
 
-              {/* =========================
-                  PUBLIC - LOGIN
-              ========================= */}
+              {/* =================================================
+                  PUBLIC ROUTES
+              ================================================= */}
+
+              <Route
+                path="/"
+                element={<Home />}
+              />
+
+              <Route
+                path="/menu"
+                element={<Menu />}
+              />
+
+              <Route
+                path="/food/:id"
+                element={<FoodDetails />}
+              />
+
+              <Route
+                path="/about"
+                element={<About />}
+              />
+
+              <Route
+                path="/services"
+                element={<Services />}
+              />
+
+              <Route
+                path="/contact"
+                element={<Contact />}
+              />
+
+              {/* =================================================
+                  AUTHENTICATION ROUTES
+              ================================================= */}
 
               <Route
                 path="/login"
                 element={<Login />}
               />
+
               <Route
                 path="/register"
                 element={<Register />}
-             />
-             {/* PROTECTED - PROFILE */}
+              />
               <Route
-               path="/profile"
-               element={
-               <ProtectedRoute>
-               <Profile />
-               </ProtectedRoute>
-               }
-             />  
-              {/* =========================
-                  PROTECTED - HOME
-              ========================= */}
-
-              <Route
-                path="/"
+                path="/profile"
                 element={
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
+                <ProtectedRoute>
+                <Profile />
+                </ProtectedRoute>
                 }
               />
 
-              {/* =========================
-                  PROTECTED - MENU
-              ========================= */}
-
-              <Route
-                path="/menu"
-                element={
-                  <ProtectedRoute>
-                    <Menu />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* =========================
-                  PROTECTED - FOOD DETAILS
-              ========================= */}
-
-              <Route
-                path="/food/:id"
-                element={
-                  <ProtectedRoute>
-                    <FoodDetails />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* =========================
-                  PROTECTED - CART
-              ========================= */}
+              {/* =================================================
+                  PROTECTED ROUTES
+                  User must be logged in
+              ================================================= */}
 
               <Route
                 path="/cart"
@@ -111,10 +132,6 @@ function App() {
                 }
               />
 
-              {/* =========================
-                  PROTECTED - DELIVERY ADDRESS
-              ========================= */}
-
               <Route
                 path="/delivery-address"
                 element={
@@ -123,10 +140,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-              {/* =========================
-                  PROTECTED - PAYMENT
-              ========================= */}
 
               <Route
                 path="/payment"
@@ -137,10 +150,6 @@ function App() {
                 }
               />
 
-              {/* =========================
-                  PROTECTED - ORDER SUCCESS
-              ========================= */}
-
               <Route
                 path="/order-success"
                 element={
@@ -150,40 +159,27 @@ function App() {
                 }
               />
 
-              {/* =========================
-                  PUBLIC - ABOUT
-              ========================= */}
+              {/* =================================================
+                  FALLBACK ROUTE
+              ================================================= */}
 
               <Route
-                path="/about"
-                element={<About />}
-              />
-
-              {/* =========================
-                  PUBLIC - SERVICES
-              ========================= */}
-
-              <Route
-                path="/services"
-                element={<Services />}
-              />
-
-              {/* =========================
-                  PUBLIC - CONTACT
-              ========================= */}
-
-              <Route
-                path="/contact"
-                element={<Contact />}
+                path="*"
+                element={<Home />}
               />
 
             </Routes>
+
+            {/* =================================================
+                FOOTER
+            ================================================= */}
 
             <Footer />
 
           </BrowserRouter>
 
         </div>
+
       </CartProvider>
     </AuthProvider>
   );

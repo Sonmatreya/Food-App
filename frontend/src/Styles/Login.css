@@ -1,197 +1,404 @@
-/* ================================
+/* =========================================================
+   LOGIN PAGE
+========================================================= */
+
+.login-page {
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  background: #f7f7f7;
+  box-sizing: border-box;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 430px;
+  padding: 32px;
+  background: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 18px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   LOGIN HEADER
+========================================================= */
+
+.login-header {
+  text-align: center;
+  margin-bottom: 26px;
+}
+
+.login-logo {
+  width: 58px;
+  height: 58px;
+  margin: 0 auto 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: #e31837;
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 800;
+}
+
+.login-header h1 {
+  margin: 0 0 7px;
+  color: #222222;
+  font-size: 28px;
+  font-weight: 750;
+}
+
+.login-header p {
+  margin: 0;
+  color: #777777;
+  font-size: 14px;
+}
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.login-form {
+  width: 100%;
+}
+
+.login-field {
+  margin-bottom: 17px;
+}
+
+.login-field label {
+  display: block;
+  margin-bottom: 7px;
+  color: #333333;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.login-field input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid #dcdcdc;
+  border-radius: 9px;
+  outline: none;
+  background: #ffffff;
+  color: #222222;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.login-field input::placeholder {
+  color: #aaaaaa;
+}
+
+.login-field input:focus {
+  border-color: #e31837;
+  box-shadow: 0 0 0 3px rgba(227, 24, 55, 0.1);
+}
+
+/* =========================================================
+   PASSWORD / FORGOT PASSWORD
+========================================================= */
+
+.login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: -3px 0 18px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #666666;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.remember-me input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: #e31837;
+  cursor: pointer;
+}
+
+.forgot-password {
+  border: none;
+  background: transparent;
+  color: #e31837;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   LOGIN BUTTON
+========================================================= */
+
+.login-button {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 9px;
+  background: #e31837;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  background: #c91430;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(227, 24, 55, 0.22);
+}
+
+.login-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.login-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   ERROR MESSAGE
+========================================================= */
+
+.login-error {
+  margin: 0 0 15px;
+  padding: 10px 12px;
+  border: 1px solid #f3b8c1;
+  border-radius: 8px;
+  background: #fff4f5;
+  color: #c91430;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   DIVIDER
+========================================================= */
+
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0;
+  color: #999999;
+  font-size: 12px;
+}
+
+.login-divider::before,
+.login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e5e5e5;
+}
+
+/* =========================================================
+   GOOGLE LOGIN
+========================================================= */
+
+.google-login-button {
+  width: 100%;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid #d9d9d9;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 14px;
+  font-weight: 650;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.google-login-button:hover {
+  border-color: #c7c7c7;
+  background: #fafafa;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.google-login-icon {
+  width: 19px;
+  height: 19px;
+}
+
+/* =========================================================
    I'M NOT A ROBOT
-================================ */
+========================================================= */
 
 .robot-check {
   margin: 4px 0 18px;
-
   padding: 13px 14px;
-
   border: 1px solid #dddddd;
   border-radius: 10px;
-
   background: #fafafa;
-
   text-align: left;
 }
 
 .robot-checkbox {
   display: flex;
   align-items: center;
-
   gap: 10px;
-
   cursor: pointer;
-
   user-select: none;
 }
 
 .robot-checkbox input {
   width: 18px;
   height: 18px;
-
   margin: 0;
-
   cursor: pointer;
-
   accent-color: #e31837;
 }
 
 .robot-text {
   color: #333333;
-
   font-size: 14px;
   font-weight: 600;
 }
 
-
-/* ================================
+/* =========================================================
    CAPTCHA SECTION
-================================ */
+========================================================= */
 
 .captcha-section {
   margin-bottom: 18px;
-
   padding: 14px;
-
   border: 1px solid #e5e5e5;
   border-radius: 10px;
-
   background: #ffffff;
-
   text-align: left;
 }
 
 .captcha-title {
   margin-bottom: 10px;
-
   color: #555555;
-
   font-size: 12px;
   font-weight: 600;
 }
 
-
-/* ================================
+/* =========================================================
    CAPTCHA IMAGE
-================================ */
+========================================================= */
 
 .captcha-image-row {
   display: flex;
   align-items: center;
-
   gap: 8px;
 }
 
 .captcha-image {
   flex: 1;
-
   height: 55px;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   overflow: hidden;
-
   border: 1px solid #dddddd;
   border-radius: 7px;
-
   background: #f5f5f5;
 }
 
 .captcha-image svg {
   display: block;
-
   max-width: 100%;
   height: 55px;
 }
 
-
-/* ================================
+/* =========================================================
    CAPTCHA REFRESH
-================================ */
+========================================================= */
 
 .captcha-refresh {
   width: 42px;
   height: 42px;
-
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border: 1px solid #dddddd;
   border-radius: 8px;
-
   background: #ffffff;
-
   color: #555555;
-
   font-size: 22px;
   font-weight: 600;
-
   cursor: pointer;
-
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
-    color 0.2s ease;
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .captcha-refresh:hover:not(:disabled) {
   border-color: #e31837;
-
   background: #fff7f8;
-
   color: #e31837;
+  transform: rotate(15deg);
 }
 
 .captcha-refresh:disabled {
   opacity: 0.5;
-
   cursor: not-allowed;
 }
 
-
-/* ================================
+/* =========================================================
    CAPTCHA INPUT
-================================ */
+========================================================= */
 
 .captcha-input-row {
   display: flex;
   align-items: center;
-
   gap: 8px;
-
   margin-top: 10px;
 }
 
 .captcha-input-row input {
   width: 100%;
   min-width: 0;
-
-  box-sizing: border-box;
-
-  padding: 12px 13px;
-
+  height: 45px;
+  padding: 0 13px;
   border: 1px solid #dddddd;
   border-radius: 9px;
-
   outline: none;
-
   background: #ffffff;
-
   color: #222222;
-
   font-size: 14px;
   font-weight: 600;
-
   letter-spacing: 1.5px;
-
   text-transform: uppercase;
-
+  box-sizing: border-box;
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease;
@@ -199,45 +406,32 @@
 
 .captcha-input-row input::placeholder {
   color: #aaaaaa;
-
   letter-spacing: normal;
-
   text-transform: none;
-
   font-weight: 400;
 }
 
 .captcha-input-row input:focus {
   border-color: #e31837;
-
-  box-shadow:
-    0 0 0 3px rgba(227, 24, 55, 0.10);
+  box-shadow: 0 0 0 3px rgba(227, 24, 55, 0.1);
 }
 
-
-/* ================================
-   VOICE BUTTON
-================================ */
+/* =========================================================
+   VOICE CAPTCHA
+========================================================= */
 
 .captcha-voice {
   width: 45px;
   height: 45px;
-
   flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   border: 1px solid #dddddd;
   border-radius: 9px;
-
   background: #ffffff;
-
   font-size: 19px;
-
   cursor: pointer;
-
   transition:
     background 0.2s ease,
     border-color 0.2s ease,
@@ -246,9 +440,7 @@
 
 .captcha-voice:hover:not(:disabled) {
   border-color: #e31837;
-
   background: #fff7f8;
-
   transform: translateY(-1px);
 }
 
@@ -258,9 +450,7 @@
 
 .captcha-voice.listening {
   border-color: #e31837;
-
   background: #fff1f2;
-
   animation: voice-pulse 1s infinite;
 }
 
@@ -278,31 +468,148 @@
   }
 }
 
-
-/* ================================
+/* =========================================================
    VOICE STATUS
-================================ */
+========================================================= */
 
 .voice-status {
   margin: 8px 0 0;
-
   color: #e31837;
-
   font-size: 11px;
   font-weight: 600;
-
   text-align: center;
 }
 
+/* =========================================================
+   REGISTER LINK
+========================================================= */
 
-/* ================================
-   MOBILE CAPTCHA
-================================ */
+.login-register {
+  margin: 22px 0 0;
+  color: #777777;
+  font-size: 13px;
+  text-align: center;
+}
+
+.login-register a {
+  color: #e31837;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.login-register a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================================
+   DARK MODE
+========================================================= */
+
+body.dark-mode .login-page {
+  background: #111111;
+}
+
+body.dark-mode .login-container {
+  border-color: #2d2d2d;
+  background: #1c1c1c;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .login-header h1 {
+  color: #ffffff;
+}
+
+body.dark-mode .login-header p,
+body.dark-mode .login-register {
+  color: #aaaaaa;
+}
+
+body.dark-mode .login-field label {
+  color: #dddddd;
+}
+
+body.dark-mode .login-field input,
+body.dark-mode .captcha-input-row input,
+body.dark-mode .captcha-refresh,
+body.dark-mode .captcha-voice,
+body.dark-mode .google-login-button {
+  border-color: #3a3a3a;
+  background: #242424;
+  color: #ffffff;
+}
+
+body.dark-mode .login-field input::placeholder,
+body.dark-mode .captcha-input-row input::placeholder {
+  color: #777777;
+}
+
+body.dark-mode .google-login-button {
+  color: #eeeeee;
+}
+
+body.dark-mode .login-divider {
+  color: #777777;
+}
+
+body.dark-mode .login-divider::before,
+body.dark-mode .login-divider::after {
+  background: #333333;
+}
+
+body.dark-mode .robot-check {
+  border-color: #363636;
+  background: #242424;
+}
+
+body.dark-mode .robot-text {
+  color: #eeeeee;
+}
+
+body.dark-mode .captcha-section {
+  border-color: #363636;
+  background: #1f1f1f;
+}
+
+body.dark-mode .captcha-title {
+  color: #aaaaaa;
+}
+
+body.dark-mode .captcha-image {
+  border-color: #3a3a3a;
+  background: #292929;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
 
 @media (max-width: 600px) {
+  .login-page {
+    min-height: calc(100vh - 65px);
+    padding: 25px 15px;
+  }
 
-  .robot-check {
-    padding: 12px;
+  .login-container {
+    padding: 25px 20px;
+    border-radius: 15px;
+  }
+
+  .login-header {
+    margin-bottom: 22px;
+  }
+
+  .login-header h1 {
+    font-size: 24px;
+  }
+
+  .login-logo {
+    width: 52px;
+    height: 52px;
+    font-size: 24px;
+  }
+
+  .login-options {
+    gap: 10px;
   }
 
   .captcha-section {
@@ -326,5 +633,4 @@
     width: 43px;
     height: 43px;
   }
-
 }

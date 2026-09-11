@@ -2,19 +2,45 @@ const express = require("express");
 
 const {
   generateCaptcha,
-  readCaptcha,
+  audioCaptcha,
   verifyCaptcha,
 } = require("../controllers/captchaController");
 
+const {
+  captchaGenerateLimiter,
+  captchaVerifyLimiter,
+} = require("../middleware/rateLimiters");
+
 const router = express.Router();
 
-// Generate CAPTCHA
-router.get("/generate", generateCaptcha);
+// =========================================================
+// GENERATE CAPTCHA
+// =========================================================
 
-// Read CAPTCHA aloud
-router.post("/read", readCaptcha);
+router.get(
+  "/generate",
+  captchaGenerateLimiter,
+  generateCaptcha
+);
 
-// Verify CAPTCHA
-router.post("/verify", verifyCaptcha);
+// =========================================================
+// AUDIO CAPTCHA
+// =========================================================
+
+router.get(
+  "/audio/:captchaId",
+  captchaGenerateLimiter,
+  audioCaptcha
+);
+
+// =========================================================
+// VERIFY CAPTCHA
+// =========================================================
+
+router.post(
+  "/verify",
+  captchaVerifyLimiter,
+  verifyCaptcha
+);
 
 module.exports = router;

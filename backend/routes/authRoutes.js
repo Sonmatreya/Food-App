@@ -1,5 +1,6 @@
 const express = require("express");
 const passport = require("../config/googleAuth");
+const { clientUrl } = require("../config/env");
 
 const {
   register,
@@ -10,6 +11,12 @@ const {
 } = require("../controllers/authController");
 
 const protect = require("../middleware/authMiddleware");
+const requireCaptcha = require("../middleware/requireCaptcha");
+const {
+  loginLimiter,
+  registerLimiter,
+  googleAuthLimiter,
+} = require("../middleware/rateLimiters");
 
 const router = express.Router();
 
@@ -17,9 +24,9 @@ const router = express.Router();
 // Normal Authentication
 // ===============================
 
-router.post("/register", register);
+router.post("/register", registerLimiter, register);
 
-router.post("/login", login);
+router.post("/login", loginLimiter, requireCaptcha, login);
 
 router.post("/logout", logout);
 
@@ -33,6 +40,7 @@ router.get("/me", protect, getMe);
 // Start Google Login
 router.get(
   "/google",
+  googleAuthLimiter,
   passport.authenticate("google", {
     scope: ["profile", "email"],
   })
@@ -41,10 +49,11 @@ router.get(
 // Google OAuth Callback
 router.get(
   "/google/callback",
+  googleAuthLimiter,
   passport.authenticate("google", {
     session: false,
     failureRedirect:
-      "http://localhost:3000/login?google=failed",
+      `${clientUrl}/login?google=failed`,
   }),
   googleLoginSuccess
 );

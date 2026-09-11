@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config/api";
 import "../Styles/Login.css";
-
-const API_URL = "http://localhost:5000";
 
 function Login() {
   const navigate = useNavigate();
@@ -14,37 +13,82 @@ function Login() {
     password: "",
   });
 
-  // CAPTCHA
+  // =========================================================
+  // CAPTCHA STATE
+  // =========================================================
+
   const [captchaId, setCaptchaId] = useState("");
   const [captchaImage, setCaptchaImage] = useState("");
   const [captchaAnswer, setCaptchaAnswer] = useState("");
 
-  // Robot verification
+  // =========================================================
+  // ROBOT VERIFICATION
+  // =========================================================
+
   const [robotChecked, setRobotChecked] = useState(false);
 
-  // CAPTCHA states
+  // =========================================================
+  // CAPTCHA STATES
+  // =========================================================
+
   const [captchaLoading, setCaptchaLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  // Login states
+  // =========================================================
+  // LOGIN STATES
+  // =========================================================
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // ========================================
+  // =========================================================
+  // AUDIO REF
+  // =========================================================
+
+  const audioRef = useRef(null);
+  const audioUrlRef = useRef(null);
+
+  // =========================================================
+  // CLEAN AUDIO
+  // =========================================================
+
+  const stopCaptchaAudio = () => {
+    try {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+        audioRef.current = null;
+      }
+
+      if (audioUrlRef.current) {
+        URL.revokeObjectURL(
+          audioUrlRef.current
+        );
+
+        audioUrlRef.current = null;
+      }
+    } catch (error) {
+      console.error(
+        "Audio cleanup error:",
+        error
+      );
+    }
+
+    setIsSpeaking(false);
+  };
+
+  // =========================================================
   // LOAD CAPTCHA
-  // ========================================
+  // =========================================================
 
   const loadCaptcha = async () => {
     try {
       setCaptchaLoading(true);
       setError("");
 
-      // Stop any existing speech
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopCaptchaAudio();
 
-      setIsSpeaking(false);
+      setCaptchaAnswer("");
 
       const response = await fetch(
         `${API_URL}/api/captcha/generate`
@@ -54,14 +98,13 @@ function Login() {
 
       if (!response.ok || !data.success) {
         throw new Error(
-          data.message || "Unable to load CAPTCHA"
+          data.message ||
+            "Unable to load CAPTCHA"
         );
       }
 
       setCaptchaId(data.captchaId);
       setCaptchaImage(data.captchaImage);
-      setCaptchaAnswer("");
-
     } catch (error) {
       console.error(
         "CAPTCHA loading error:",
@@ -76,34 +119,34 @@ function Login() {
     }
   };
 
-  // ========================================
-  // LOAD CAPTCHA WHEN LOGIN PAGE OPENS
-  // ========================================
+  // =========================================================
+  // PAGE LOAD
+  // =========================================================
 
   useEffect(() => {
     loadCaptcha();
 
     return () => {
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopCaptchaAudio();
     };
   }, []);
 
-  // ========================================
-  // FORM INPUT CHANGE
-  // ========================================
+  // =========================================================
+  // FORM INPUT
+  // =========================================================
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    const { name, value } = e.target;
+
+    setFormData((previousData) => ({
+      ...previousData,
+      [name]: value,
+    }));
   };
 
-  // ========================================
+  // =========================================================
   // CAPTCHA INPUT
-  // ========================================
+  // =========================================================
 
   const handleCaptchaChange = (e) => {
     const value = e.target.value
@@ -111,140 +154,136 @@ function Login() {
       .toUpperCase();
 
     setCaptchaAnswer(value);
+    setError("");
   };
 
-  // ========================================
+  // =========================================================
   // I'M NOT A ROBOT
-  // ========================================
+  // =========================================================
 
   const handleRobotCheck = () => {
     if (!robotChecked) {
       setRobotChecked(true);
       setError("");
+
+      loadCaptcha();
     } else {
       setRobotChecked(false);
+      setCaptchaAnswer("");
 
-      if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
+      stopCaptchaAudio();
 
-      setIsSpeaking(false);
+      setError("");
     }
   };
 
-  // ========================================
-  // READ CAPTCHA ALOUD
-  // ========================================
+  // =========================================================
+  // LISTEN TO CAPTCHA
+  // =========================================================
 
   const handleListenCaptcha = async () => {
+    if (!captchaId) {
+      setError(
+        "CAPTCHA is not ready. Please refresh the CAPTCHA."
+      );
+      return;
+    }
+
+    if (captchaLoading) {
+      setError(
+        "Please wait for the CAPTCHA to load."
+      );
+      return;
+    }
+
     try {
-      if (!captchaId) {
-        setError(
-          "CAPTCHA is not ready yet."
-        );
-        return;
-      }
-
-      if (
-        !("speechSynthesis" in window)
-      ) {
-        setError(
-          "Voice reading is not supported by this browser."
-        );
-        return;
-      }
-
       setError("");
+
+      // Stop previous audio
+      stopCaptchaAudio();
+
       setIsSpeaking(true);
 
-      // Stop previous speech
-      window.speechSynthesis.cancel();
-
-      // Ask backend for CAPTCHA text
       const response = await fetch(
-        `${API_URL}/api/captcha/read`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            captchaId,
-          }),
-        }
+        `${API_URL}/api/captcha/audio/${captchaId}`
       );
 
-      const data = await response.json();
+      if (!response.ok) {
+        let message =
+          "Unable to play CAPTCHA audio.";
 
-      if (!response.ok || !data.success) {
+        try {
+          const data = await response.json();
+
+          if (data.message) {
+            message = data.message;
+          }
+        } catch {
+          // Response was not JSON.
+        }
+
+        throw new Error(message);
+      }
+
+      const audioBlob =
+        await response.blob();
+
+      if (
+        !audioBlob ||
+        audioBlob.size === 0
+      ) {
         throw new Error(
-          data.message ||
-            "Unable to read CAPTCHA"
+          "The server returned empty audio."
         );
       }
 
-      const captchaText =
-        data.captchaText;
+      const audioUrl =
+        URL.createObjectURL(audioBlob);
 
-      /*
-        Add pauses between characters.
+      audioUrlRef.current = audioUrl;
 
-        Example:
-        A7K3P
+      const audio = new Audio(audioUrl);
 
-        Will be spoken as:
-        A ... 7 ... K ... 3 ... P
-      */
+      audioRef.current = audio;
 
-      const spokenText = captchaText
-        .split("")
-        .join(" ... ");
+      audio.preload = "auto";
+      audio.volume = 1;
 
-      const speech =
-        new SpeechSynthesisUtterance(
-          spokenText
-        );
-
-      speech.lang = "en-US";
-
-      // Slightly slower so characters
-      // are easier to understand.
-      speech.rate = 0.7;
-
-      speech.pitch = 1;
-      speech.volume = 1;
-
-      speech.onend = () => {
-        setIsSpeaking(false);
+      audio.onended = () => {
+        stopCaptchaAudio();
       };
 
-      speech.onerror = () => {
-        setIsSpeaking(false);
+      audio.onerror = () => {
+        console.error(
+          "CAPTCHA audio playback error"
+        );
+
+        stopCaptchaAudio();
 
         setError(
-          "Unable to read CAPTCHA aloud."
+          "Unable to play CAPTCHA audio. Please try again."
         );
       };
 
-      window.speechSynthesis.speak(
-        speech
-      );
-
+      await audio.play();
     } catch (error) {
       console.error(
-        "CAPTCHA voice reading error:",
+        "CAPTCHA audio error:",
         error
       );
 
-      setIsSpeaking(false);
+      stopCaptchaAudio();
 
-      setError(error.message);
+      setError(
+        error.message ||
+          "Unable to play CAPTCHA audio."
+      );
     }
   };
 
-  // ========================================
+  // =========================================================
   // VERIFY CAPTCHA
-  // ========================================
+  // =========================================================
 
   const verifyCaptcha = async () => {
     try {
@@ -271,28 +310,25 @@ function Login() {
         );
       }
 
-      return true;
-
+      return data.captchaProof;
     } catch (error) {
       setError(error.message);
 
-      // Generate a new CAPTCHA
       await loadCaptcha();
 
-      return false;
+      return null;
     }
   };
 
-  // ========================================
+  // =========================================================
   // LOGIN
-  // ========================================
+  // =========================================================
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
     setError("");
 
-    // Robot checkbox
     if (!robotChecked) {
       setError(
         "Please confirm that you are not a robot."
@@ -300,7 +336,6 @@ function Login() {
       return;
     }
 
-    // CAPTCHA
     if (!captchaAnswer.trim()) {
       setError(
         "Please enter the CAPTCHA code."
@@ -308,36 +343,56 @@ function Login() {
       return;
     }
 
+    if (!formData.email.trim()) {
+      setError(
+        "Please enter your email."
+      );
+      return;
+    }
+
+    if (!formData.password) {
+      setError(
+        "Please enter your password."
+      );
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // ------------------------------------
-      // STEP 1: VERIFY CAPTCHA
-      // ------------------------------------
+      // =====================================================
+      // STEP 1: CAPTCHA
+      // =====================================================
 
-      const captchaVerified =
+      const captchaProof =
         await verifyCaptcha();
 
-      if (!captchaVerified) {
+      if (!captchaProof) {
         setLoading(false);
         return;
       }
 
-      // ------------------------------------
+      // =====================================================
       // STEP 2: LOGIN
-      // ------------------------------------
+      // =====================================================
 
       const response = await fetch(
         `${API_URL}/api/auth/login`,
         {
           method: "POST",
+
           headers: {
             "Content-Type": "application/json",
+            "X-Captcha-Proof": captchaProof,
           },
+
           credentials: "include",
+
           body: JSON.stringify({
-            email: formData.email,
-            password: formData.password,
+            email:
+              formData.email.trim(),
+            password:
+              formData.password,
           }),
         }
       );
@@ -346,112 +401,130 @@ function Login() {
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Login failed"
+          data.message ||
+            "Login failed"
         );
       }
 
-      // Store logged-in user
+      // =====================================================
+      // SUCCESS
+      // =====================================================
+
       setUser(data.user);
 
-      // Go to home
       navigate("/");
-
     } catch (error) {
       console.error(
         "Login error:",
         error
       );
 
-      setError(error.message);
+      setError(
+        error.message ||
+          "Something went wrong. Please try again."
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  // ========================================
+  // =========================================================
   // GOOGLE LOGIN
-  // ========================================
+  // =========================================================
 
   const handleGoogleLogin = () => {
+    if (loading) {
+      return;
+    }
+
     window.location.href =
       `${API_URL}/api/auth/google`;
   };
 
-  // ========================================
+  // =========================================================
   // UI
-  // ========================================
+  // =========================================================
 
   return (
     <div className="login-page">
       <div className="login-container">
 
-        {/* TITLE */}
+        {/* HEADER */}
 
-        <h1>Welcome Back</h1>
+        <div className="login-header">
+          <div className="login-logo">
+            🍴
+          </div>
 
-        <p className="login-subtitle">
-          Login to continue ordering your
-          favorite food
-        </p>
+          <h1>
+            Welcome Back
+          </h1>
+
+          <p>
+            Login to continue ordering
+            your favorite food
+          </p>
+        </div>
 
         {/* ERROR */}
 
         {error && (
-          <div className="login-error">
+          <div
+            className="login-error"
+            role="alert"
+          >
             {error}
           </div>
         )}
 
-        <form onSubmit={handleLogin}>
+        {/* LOGIN FORM */}
 
-          {/* ============================
-              EMAIL
-          ============================ */}
+        <form
+          className="login-form"
+          onSubmit={handleLogin}
+        >
 
-          <div className="form-group">
+          {/* EMAIL */}
 
-            <label>
+          <div className="login-field">
+            <label htmlFor="login-email">
               Email
             </label>
 
             <input
+              id="login-email"
               type="email"
               name="email"
               placeholder="Enter your email"
               value={formData.email}
               onChange={handleChange}
+              autoComplete="email"
               required
             />
-
           </div>
 
-          {/* ============================
-              PASSWORD
-          ============================ */}
+          {/* PASSWORD */}
 
-          <div className="form-group">
-
-            <label>
+          <div className="login-field">
+            <label htmlFor="login-password">
               Password
             </label>
 
             <input
+              id="login-password"
               type="password"
               name="password"
               placeholder="Enter your password"
               value={formData.password}
               onChange={handleChange}
+              autoComplete="current-password"
               required
             />
-
           </div>
 
-          {/* ============================
-              I'M NOT A ROBOT
-          ============================ */}
+          {/* ROBOT CHECK */}
 
           <div className="robot-check">
-
             <label className="robot-checkbox">
 
               <input
@@ -467,12 +540,9 @@ function Login() {
               </span>
 
             </label>
-
           </div>
 
-          {/* ============================
-              CAPTCHA
-          ============================ */}
+          {/* CAPTCHA */}
 
           {robotChecked && (
             <div className="captcha-section">
@@ -481,25 +551,28 @@ function Login() {
                 Enter the code shown below
               </div>
 
-              {/* CAPTCHA IMAGE */}
+              {/* IMAGE */}
 
               <div className="captcha-image-row">
 
                 <div
                   className="captcha-image"
                   dangerouslySetInnerHTML={{
-                    __html: captchaImage,
+                    __html:
+                      captchaImage,
                   }}
+                  aria-label="CAPTCHA image"
                 />
-
-                {/* REFRESH */}
 
                 <button
                   type="button"
                   className="captcha-refresh"
                   onClick={loadCaptcha}
-                  disabled={captchaLoading}
+                  disabled={
+                    captchaLoading
+                  }
                   title="Get a new CAPTCHA"
+                  aria-label="Get a new CAPTCHA"
                 >
                   {captchaLoading
                     ? "..."
@@ -508,7 +581,7 @@ function Login() {
 
               </div>
 
-              {/* INPUT + SPEAKER */}
+              {/* INPUT + AUDIO */}
 
               <div className="captcha-input-row">
 
@@ -522,9 +595,8 @@ function Login() {
                   maxLength={5}
                   autoComplete="off"
                   aria-label="CAPTCHA code"
+                  required
                 />
-
-                {/* LISTEN */}
 
                 <button
                   type="button"
@@ -547,19 +619,14 @@ function Login() {
 
               </div>
 
-              {/* HELP TEXT */}
-
               <p className="captcha-help">
-                Can't see the code clearly?
-                Click 🔈 to hear the CAPTCHA.
+                Click 🔈 to hear the CAPTCHA characters.
               </p>
 
             </div>
           )}
 
-          {/* ============================
-              LOGIN BUTTON
-          ============================ */}
+          {/* LOGIN */}
 
           <button
             type="submit"
@@ -573,36 +640,34 @@ function Login() {
 
         </form>
 
-        {/* ============================
-            DIVIDER
-        ============================ */}
+        {/* DIVIDER */}
 
-        <div className="divider">
+        <div className="login-divider">
           <span>OR</span>
         </div>
 
-        {/* ============================
-            GOOGLE LOGIN
-        ============================ */}
+        {/* GOOGLE */}
 
         <button
           type="button"
           className="google-login-button"
-          onClick={handleGoogleLogin}
+          onClick={
+            handleGoogleLogin
+          }
+          disabled={loading}
         >
           <span className="google-icon">
             G
           </span>
 
-          Continue with Google
+          <span>
+            Continue with Google
+          </span>
         </button>
 
-        {/* ============================
-            REGISTER
-        ============================ */}
+        {/* REGISTER */}
 
-        <p className="register-text">
-
+        <p className="login-register">
           Don't have an account?{" "}
 
           <button
@@ -613,7 +678,6 @@ function Login() {
           >
             Create Account
           </button>
-
         </p>
 
       </div>

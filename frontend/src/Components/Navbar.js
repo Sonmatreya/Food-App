@@ -20,38 +20,72 @@ function Navbar() {
   const [isDarkMode, setIsDarkMode] = useState(true);
   const [scrolled, setScrolled] = useState(false);
 
-  const toggleNavbar = () => {
-    setIsOpen(!isOpen);
+  // ========================================
+  // MOBILE MENU
+  // ========================================
+
+  const closeMenu = () => {
+    setIsOpen(false);
   };
+
+  const toggleNavbar = () => {
+    setIsOpen((prev) => !prev);
+  };
+
+  // ========================================
+  // DARK MODE
+  // ========================================
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
+    setIsDarkMode((prev) => {
+      const newMode = !prev;
 
-    document.body.classList.toggle(
-      "light-mode",
-      !isDarkMode
-    );
+      document.body.classList.toggle(
+        "light-mode",
+        !newMode
+      );
+
+      return newMode;
+    });
   };
+
+  // ========================================
+  // LOGIN
+  // ========================================
 
   const handleLogin = () => {
-    setIsOpen(false);
+    closeMenu();
     navigate("/login");
   };
+
+  // ========================================
+  // LOGOUT
+  // ========================================
 
   const handleLogout = async () => {
-    setIsOpen(false);
+    closeMenu();
 
-    await logout();
-
-    navigate("/login");
+    try {
+      await logout();
+      navigate("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
+
+  // ========================================
+  // SCROLL EFFECT
+  // ========================================
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0);
+      setScrolled(window.scrollY > 10);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener(
+      "scroll",
+      handleScroll
+    );
 
     return () => {
       window.removeEventListener(
@@ -67,184 +101,219 @@ function Navbar() {
         scrolled ? "scrolled" : ""
       }`}
     >
-
-      {/* =========================
+      {/* =====================================
           LOGO
-      ========================= */}
+      ====================================== */}
 
       <div
         className="logo-container"
-        onClick={() => navigate("/")}
+        onClick={() => {
+          closeMenu();
+          navigate("/");
+        }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(event) => {
+          if (event.key === "Enter") {
+            closeMenu();
+            navigate("/");
+          }
+        }}
       >
         <img
           src={Logo}
-          alt="Logo"
+          alt="Food App Logo"
           className="App-logo"
         />
       </div>
 
-
-      {/* =========================
+      {/* =====================================
           SEARCH
-      ========================= */}
+      ====================================== */}
 
       <div className="search-container">
         <input
-          type="text"
-          placeholder="Search pizza..."
+          type="search"
+          placeholder="Search food..."
+          aria-label="Search food"
         />
       </div>
 
-
-      {/* =========================
-          MENU LINKS
-      ========================= */}
+      {/* =====================================
+          NAVIGATION
+      ====================================== */}
 
       <div
         className={`menu-links ${
           isOpen ? "active" : ""
         }`}
       >
+        {/* HOME */}
 
         <Link
           to="/"
-          onClick={() => setIsOpen(false)}
+          onClick={closeMenu}
         >
           Home
         </Link>
 
-
-        {/* =========================
-            MENU DROPDOWN
-        ========================= */}
+        {/* ===================================
+            MENU
+        =================================== */}
 
         <div className="dropdown">
-
-          <Link to="/menu">
+          <Link
+            to="/menu"
+            onClick={closeMenu}
+          >
             Menu
           </Link>
 
           <div className="dropdown-content">
-
-            <Link to="/menu/pizza">
+            <Link
+              to="/menu"
+              onClick={closeMenu}
+            >
               Pizza
             </Link>
 
-            <Link to="/menu/pasta">
+            <Link
+              to="/menu"
+              onClick={closeMenu}
+            >
               Pasta
             </Link>
 
-            <Link to="/menu/beverages">
+            <Link
+              to="/menu"
+              onClick={closeMenu}
+            >
               Beverages
             </Link>
 
-            <Link to="/menu/desserts">
+            <Link
+              to="/menu"
+              onClick={closeMenu}
+            >
               Desserts
             </Link>
-
           </div>
-
         </div>
 
-
-        {/* =========================
-            ABOUT DROPDOWN
-        ========================= */}
+        {/* ===================================
+            ABOUT
+        =================================== */}
 
         <div className="dropdown">
-
-          <Link to="/about">
+          <Link
+            to="/about"
+            onClick={closeMenu}
+          >
             About
           </Link>
 
           <div className="dropdown-content">
-
-            <Link to="/about/team">
+            <Link
+              to="/about"
+              onClick={closeMenu}
+            >
               Our Team
             </Link>
 
-            <Link to="/about/careers">
+            <Link
+              to="/about"
+              onClick={closeMenu}
+            >
               Careers
             </Link>
 
-            <Link to="/about/history">
+            <Link
+              to="/about"
+              onClick={closeMenu}
+            >
               History
             </Link>
-
           </div>
-
         </div>
 
-
-        {/* =========================
-            SERVICES DROPDOWN
-        ========================= */}
+        {/* ===================================
+            SERVICES
+        =================================== */}
 
         <div className="dropdown">
-
-          <Link to="/services">
+          <Link
+            to="/services"
+            onClick={closeMenu}
+          >
             Services
           </Link>
 
           <div className="dropdown-content">
-
-            <Link to="/services/custompizza">
+            <Link
+              to="/services"
+              onClick={closeMenu}
+            >
               Custom Pizzas
             </Link>
 
-            <Link to="/services/fastdelivery">
+            <Link
+              to="/services"
+              onClick={closeMenu}
+            >
               Fast Delivery
             </Link>
 
-            <Link to="/services/partycatering">
+            <Link
+              to="/services"
+              onClick={closeMenu}
+            >
               Party Catering
             </Link>
 
-            <Link to="/services/onlineorders">
+            <Link
+              to="/services"
+              onClick={closeMenu}
+            >
               Online Orders
             </Link>
-
           </div>
-
         </div>
 
-
-        {/* =========================
-            CONTACT
-        ========================= */}
+        {/* CONTACT */}
 
         <Link
           to="/contact"
-          onClick={() => setIsOpen(false)}
+          onClick={closeMenu}
         >
           Contact
         </Link>
 
-
-        {/* =========================
+        {/* ===================================
             CART
-        ========================= */}
+        =================================== */}
 
         <Link
           to="/cart"
-          onClick={() => setIsOpen(false)}
+          className="cart-link"
+          onClick={closeMenu}
+          aria-label="Shopping cart"
         >
           <ShoppingCartIcon className="icon" />
         </Link>
 
-
-        {/* =========================
-            AUTH BUTTON
-        ========================= */}
+        {/* ===================================
+            AUTH
+        =================================== */}
 
         {user ? (
           <div className="user-menu">
-
             <button
+              type="button"
               className="user-btn"
-              onClick={() =>
-                navigate("/profile")
-              }
+              onClick={() => {
+                closeMenu();
+                navigate("/profile");
+              }}
             >
               {user.profileImage ? (
                 <img
@@ -263,20 +332,21 @@ function Navbar() {
               )}
 
               <span className="user-name">
-                {user.name}
+                {user.name || "User"}
               </span>
             </button>
 
             <button
+              type="button"
               className="logout-btn"
               onClick={handleLogout}
             >
               Logout
             </button>
-
           </div>
         ) : (
           <button
+            type="button"
             className="login-btn"
             onClick={handleLogin}
           >
@@ -284,32 +354,42 @@ function Navbar() {
           </button>
         )}
 
-
-        {/* =========================
+        {/* ===================================
             DARK MODE
-        ========================= */}
+        =================================== */}
 
         <button
+          type="button"
           className="mode-toggle"
           onClick={toggleDarkMode}
+          aria-label={
+            isDarkMode
+              ? "Switch to light mode"
+              : "Switch to dark mode"
+          }
+          title={
+            isDarkMode
+              ? "Light mode"
+              : "Dark mode"
+          }
         >
           <Brightness4Icon className="icon" />
         </button>
-
       </div>
 
-
-      {/* =========================
+      {/* =====================================
           MOBILE MENU BUTTON
-      ========================= */}
+      ====================================== */}
 
       <button
+        type="button"
         className="toggle-button"
         onClick={toggleNavbar}
+        aria-label="Toggle navigation menu"
+        aria-expanded={isOpen}
       >
         <ReorderIcon />
       </button>
-
     </nav>
   );
 }

@@ -1,19 +1,53 @@
 const svgCaptcha = require("svg-captcha");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
+const Gtts = require("node-gtts");
 
-// Temporary in-memory CAPTCHA storage.
-// Later, for production/multiple server instances,
-// move this to Redis or another shared store.
+const { captchaSecret } = require("../config/env");
+
+// =========================================================
+// CAPTCHA STORAGE
+// =========================================================
+
+// In-memory storage is suitable for the current single-instance
+// development setup.
+//
+// For production horizontal scaling, move these stores to Redis
+// or another shared TTL-backed store.
 const captchaStore = new Map();
+const captchaProofStore = new Map();
 
-const CAPTCHA_EXPIRY = 5 * 60 * 1000; // 5 minutes
+const CAPTCHA_EXPIRY = 5 * 60 * 1000;
+const CAPTCHA_PROOF_EXPIRY = 5 * 60 * 1000;
 
-// ========================================
+// =========================================================
+// REMOVE EXPIRED ENTRIES
+// =========================================================
+
+const removeExpiredEntries = () => {
+  const now = Date.now();
+
+  for (const [captchaId, captchaData] of captchaStore) {
+    if (now > captchaData.expiresAt) {
+      captchaStore.delete(captchaId);
+    }
+  }
+
+  for (const [proofId, proofData] of captchaProofStore) {
+    if (now > proofData.expiresAt) {
+      captchaProofStore.delete(proofId);
+    }
+  }
+};
+
+// =========================================================
 // GENERATE CAPTCHA
-// ========================================
+// =========================================================
 
 const generateCaptcha = (req, res) => {
   try {
+    removeExpiredEntries();
+
     const captcha = svgCaptcha.create({
       size: 5,
       noise: 3,
@@ -23,47 +57,47 @@ const generateCaptcha = (req, res) => {
       height: 55,
       fontSize: 42,
       ignoreChars: "0o1iIl",
-      charPreset:
-        "ABCDEFGHJKLMNPQRSTUVWXYZ23456789",
+      charPreset: "ABCDEFGHJKLMNPQRSTUVWXYZ23456789",
     });
 
-    // Generate a random CAPTCHA ID
     const captchaId = crypto.randomUUID();
 
-    // Store CAPTCHA answer on server
     captchaStore.set(captchaId, {
       answer: captcha.text.toUpperCase(),
       expiresAt: Date.now() + CAPTCHA_EXPIRY,
-      audioRequested: false,
     });
 
-    // Send ONLY the ID and image
-    // Do NOT send the answer here.
-    res.json({
+    return res.json({
       success: true,
       captchaId,
       captchaImage: captcha.data,
     });
   } catch (error) {
-    console.error(
-      "CAPTCHA generation error:",
-      error
-    );
+    console.error("CAPTCHA generation error:", error);
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Unable to generate CAPTCHA",
     });
   }
 };
 
-// ========================================
-// READ CAPTCHA FOR ACCESSIBILITY
-// ========================================
+// =========================================================
+// AUDIO CAPTCHA
+// =========================================================
+//
+// The CAPTCHA answer stays on the backend.
+//
+// React only receives an audio/mpeg response.
+// The answer is NEVER returned as JSON.
+//
+// =========================================================
 
-const readCaptcha = (req, res) => {
+const audioCaptcha = (req, res) => {
   try {
-    const { captchaId } = req.body;
+    removeExpiredEntries();
+
+    const { captchaId } = req.params;
 
     if (!captchaId) {
       return res.status(400).json({
@@ -75,59 +109,82 @@ const readCaptcha = (req, res) => {
     const captchaData = captchaStore.get(captchaId);
 
     if (!captchaData) {
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
-        message: "CAPTCHA expired or invalid",
+        message: "CAPTCHA expired or invalid. Please refresh.",
       });
     }
 
-    // Check expiry
     if (Date.now() > captchaData.expiresAt) {
       captchaStore.delete(captchaId);
 
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "CAPTCHA expired. Please refresh.",
       });
     }
 
-    /*
-      Return the CAPTCHA text only when the user
-      explicitly requests accessibility reading.
+    const captchaText = captchaData.answer;
 
-      The frontend will use browser SpeechSynthesis
-      to speak these characters aloud.
-    */
+    // Spell the characters individually so the audio
+    // is understandable as a CAPTCHA.
+    //
+    // Example:
+    // ABC23
+    //
+    // becomes:
+    // "A B C 2 3"
+    const speechText = captchaText
+      .split("")
+      .join(" ");
 
-    captchaData.audioRequested = true;
+    const gtts = new Gtts("en");
 
-    return res.json({
-      success: true,
-      captchaText: captchaData.answer,
+    res.status(200);
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+
+    const audioStream = gtts.stream(speechText);
+
+    audioStream.on("error", (error) => {
+      console.error("CAPTCHA audio stream error:", error);
+
+      if (!res.headersSent) {
+        return res.status(500).json({
+          success: false,
+          message: "Unable to generate CAPTCHA audio",
+        });
+      }
+
+      res.end();
     });
+
+    audioStream.pipe(res);
   } catch (error) {
-    console.error(
-      "CAPTCHA read error:",
-      error
-    );
+    console.error("CAPTCHA audio error:", error);
 
-    res.status(500).json({
-      success: false,
-      message: "Unable to read CAPTCHA",
-    });
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        message: "Unable to generate CAPTCHA audio",
+      });
+    }
+
+    res.end();
   }
 };
 
-// ========================================
+// =========================================================
 // VERIFY CAPTCHA
-// ========================================
+// =========================================================
 
 const verifyCaptcha = (req, res) => {
   try {
-    const {
-      captchaId,
-      captchaAnswer,
-    } = req.body;
+    removeExpiredEntries();
+
+    const { captchaId, captchaAnswer } = req.body;
 
     if (!captchaId || !captchaAnswer) {
       return res.status(400).json({
@@ -138,20 +195,12 @@ const verifyCaptcha = (req, res) => {
 
     const captchaData = captchaStore.get(captchaId);
 
-    if (!captchaData) {
-      return res.status(400).json({
-        success: false,
-        message: "CAPTCHA expired or invalid",
-      });
-    }
-
-    // Check expiry before verification
-    if (Date.now() > captchaData.expiresAt) {
+    if (!captchaData || Date.now() > captchaData.expiresAt) {
       captchaStore.delete(captchaId);
 
       return res.status(400).json({
         success: false,
-        message: "CAPTCHA expired. Please refresh.",
+        message: "CAPTCHA expired or invalid. Please refresh.",
       });
     }
 
@@ -159,24 +208,44 @@ const verifyCaptcha = (req, res) => {
       .trim()
       .toUpperCase();
 
-    // Wrong answer
-    if (answer !== captchaData.answer) {
-      // Delete the CAPTCHA after an incorrect attempt
-      captchaStore.delete(captchaId);
+    // CAPTCHA is one-time-use.
+    captchaStore.delete(captchaId);
 
+    if (answer !== captchaData.answer) {
       return res.status(400).json({
         success: false,
         message: "Incorrect CAPTCHA. Please try again.",
       });
     }
 
-    // Correct answer
-    // Delete immediately so it cannot be reused.
-    captchaStore.delete(captchaId);
+    // =====================================================
+    // CAPTCHA PROOF
+    // =====================================================
+
+    const proofId = crypto.randomUUID();
+
+    const expiresAt =
+      Date.now() + CAPTCHA_PROOF_EXPIRY;
+
+    const captchaProof = jwt.sign(
+      {
+        purpose: "login",
+        proofId,
+      },
+      captchaSecret,
+      {
+        expiresIn: "5m",
+      }
+    );
+
+    captchaProofStore.set(proofId, {
+      expiresAt,
+    });
 
     return res.json({
       success: true,
       message: "CAPTCHA verified",
+      captchaProof,
     });
   } catch (error) {
     console.error(
@@ -184,19 +253,59 @@ const verifyCaptcha = (req, res) => {
       error
     );
 
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Unable to verify CAPTCHA",
     });
   }
 };
 
-// ========================================
-// EXPORT
-// ========================================
+// =========================================================
+// CONSUME CAPTCHA PROOF
+// =========================================================
+
+const consumeCaptchaProof = (captchaProof) => {
+  try {
+    removeExpiredEntries();
+
+    const decoded = jwt.verify(
+      captchaProof,
+      captchaSecret
+    );
+
+    if (
+      decoded.purpose !== "login" ||
+      !decoded.proofId
+    ) {
+      return false;
+    }
+
+    const proofData =
+      captchaProofStore.get(decoded.proofId);
+
+    if (
+      !proofData ||
+      Date.now() > proofData.expiresAt
+    ) {
+      return false;
+    }
+
+    // One-time proof
+    captchaProofStore.delete(decoded.proofId);
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+// =========================================================
+// EXPORTS
+// =========================================================
 
 module.exports = {
   generateCaptcha,
-  readCaptcha,
+  audioCaptcha,
   verifyCaptcha,
+  consumeCaptchaProof,
 };

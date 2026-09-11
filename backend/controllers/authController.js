@@ -1,12 +1,13 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
+const { jwtSecret, isProduction, clientUrl } = require("../config/env");
 
 // Generate JWT
 const generateToken = (userId) => {
   return jwt.sign(
     { userId },
-    process.env.JWT_SECRET,
+    jwtSecret,
     { expiresIn: "7d" }
   );
 };
@@ -15,9 +16,9 @@ const generateToken = (userId) => {
 const setAuthCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
     sameSite:
-      process.env.NODE_ENV === "production" ? "none" : "lax",
+      isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -165,7 +166,7 @@ const googleLoginSuccess = (req, res) => {
   try {
     if (!req.user) {
       return res.redirect(
-        "http://localhost:3000/login?google=failed"
+        `${clientUrl}/login?google=failed`
       );
     }
 
@@ -173,7 +174,7 @@ const googleLoginSuccess = (req, res) => {
 
     setAuthCookie(res, token);
 
-    return res.redirect("http://localhost:3000/");
+    return res.redirect(`${clientUrl}/`);
   } catch (error) {
     console.error(
       "Google login success error:",
@@ -181,7 +182,7 @@ const googleLoginSuccess = (req, res) => {
     );
 
     return res.redirect(
-      "http://localhost:3000/login?google=failed"
+      `${clientUrl}/login?google=failed`
     );
   }
 };
@@ -190,9 +191,9 @@ const googleLoginSuccess = (req, res) => {
 const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: isProduction,
     sameSite:
-      process.env.NODE_ENV === "production" ? "none" : "lax",
+      isProduction ? "none" : "lax",
   });
 
   res.json({

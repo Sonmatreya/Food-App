@@ -2,10 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const helmet = require("helmet");
 
 // Load environment variables FIRST
 dotenv.config();
 
+const env = require("./config/env");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const captchaRoutes = require("./routes/captchaRoutes");
@@ -13,16 +15,28 @@ const passport = require("./config/googleAuth");
 
 const app = express();
 
+app.disable("x-powered-by");
+app.set("trust proxy", env.trustProxy);
+app.use(helmet());
+
 // CORS
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin(origin, callback) {
+      if (!origin || env.corsOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Origin is not allowed by CORS"));
+    },
     credentials: true,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "X-Captcha-Proof"],
   })
 );
 
 // Body parser
-app.use(express.json());
+app.use(express.json({ limit: "100kb" }));
 
 // Cookies
 app.use(cookieParser());
@@ -42,8 +56,30 @@ app.get("/api/health", (req, res) => {
   });
 });
 
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "API route not found",
+  });
+});
+
+app.use((error, req, res, next) => {
+  if (error.message === "Origin is not allowed by CORS") {
+    return res.status(403).json({
+      success: false,
+      message: "Origin is not allowed by CORS",
+    });
+  }
+
+  console.error("Unhandled API error:", error);
+  return res.status(500).json({
+    success: false,
+    message: "Internal server error",
+  });
+});
+
 // Port
-const PORT = process.env.PORT || 5000;
+const PORT = env.port;
 
 // Start server
 const startServer = async () => {
