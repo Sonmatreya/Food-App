@@ -13,6 +13,7 @@ import {
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import ProtectedRoute from "./Components/ProtectedRoute";
+import AdminRoute from "./Components/AdminRoute";
 
 // =========================================================
 // PAGES
@@ -33,6 +34,13 @@ import DeliveryAddress from "./Pages/DeliveryAddress";
 import Payment from "./Pages/Payment";
 import OrderSuccess from "./Pages/OrderSuccess";
 import Profile from "./Pages/Profile";
+
+// =========================================================
+// ADMIN PAGES
+// =========================================================
+
+import AdminCustomers from "./Pages/AdminCustomers";
+import AdminCustomerDetails from "./Pages/AdminCustomerDetails";
 
 // =========================================================
 // CONTEXT
@@ -109,18 +117,45 @@ function App() {
                 path="/register"
                 element={<Register />}
               />
+
+              {/* =================================================
+                  USER PROFILE
+              ================================================= */}
+
               <Route
                 path="/profile"
                 element={
-                <ProtectedRoute>
-                <Profile />
-                </ProtectedRoute>
+                  <ProtectedRoute>
+                    <Profile />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* =================================================
+                  ADMIN ROUTES
+                  More specific route first
+              ================================================= */}
+
+              <Route
+                path="/admin/customers/:id"
+                element={
+                  <AdminRoute>
+                    <AdminCustomerDetails />
+                  </AdminRoute>
+                }
+              />
+
+              <Route
+                path="/admin/customers"
+                element={
+                  <AdminRoute>
+                    <AdminCustomers />
+                  </AdminRoute>
                 }
               />
 
               {/* =================================================
                   PROTECTED ROUTES
-                  User must be logged in
               ================================================= */}
 
               <Route

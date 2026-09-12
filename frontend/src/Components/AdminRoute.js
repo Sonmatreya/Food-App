@@ -1,15 +1,11 @@
 import React from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 function AdminRoute({ children }) {
-  const {
-    user,
-    loading,
-    isAdmin,
-  } = useAuth();
+  const { user, loading } = useAuth();
+  const location = useLocation();
 
-  // Wait for authentication check
   if (loading) {
     return (
       <div className="auth-loading">
@@ -19,27 +15,15 @@ function AdminRoute({ children }) {
     );
   }
 
-  // Not logged in
   if (!user) {
-    return (
-      <Navigate
-        to="/login"
-        replace
-      />
-    );
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
-  // Logged in but not admin
-  if (!isAdmin) {
-    return (
-      <Navigate
-        to="/"
-        replace
-      />
-    );
+  if (user.role !== "admin") {
+    console.log("AdminRoute blocked user:", user);
+    return <Navigate to="/" replace />;
   }
 
-  // Admin
   return children;
 }
 
