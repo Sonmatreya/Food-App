@@ -151,7 +151,7 @@ function App() {
               />
 
               <Route
-                path="/order-success"
+                path="/order-success/:orderId"
                 element={
                   <ProtectedRoute>
                     <OrderSuccess />

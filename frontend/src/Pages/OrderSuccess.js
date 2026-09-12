@@ -1,12 +1,103 @@
-import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useParams, useLocation } from "react-router-dom";
+import { API_URL } from "../config/api";
 import "../Styles/OrderSuccess.css";
 
-function OrderSuccess() {
-  const location = useLocation();
-  const orderData = location.state;
+const STATUS_TIMELINE = {
+  placed: { completed: 0, active: 0 },
+  confirmed: { completed: 1, active: 1 },
+  preparing: { completed: 1, active: 1 },
+  ready: { completed: 2, active: 2 },
+  out_for_delivery: { completed: 2, active: 2 },
+  delivered: { completed: 4, active: -1 },
+  picked_up: { completed: 4, active: -1 },
+  cancelled: { completed: 0, active: -1 },
+};
 
-  if (!orderData) {
+const ACTIVE_STATUSES = [
+  "placed",
+  "confirmed",
+  "preparing",
+  "ready",
+  "out_for_delivery",
+];
+
+function OrderSuccess() {
+  const { orderId } = useParams();
+  const routerLocation = useLocation();
+
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // Fetch the real order from the backend
+  useEffect(() => {
+    const fetchOrder = async () => {
+      try {
+        const response = await fetch(
+          `${API_URL}/api/orders/${orderId}`,
+          {
+            method: "GET",
+            credentials: "include",
+          }
+        );
+
+        let data = {};
+
+        try {
+          data = await response.json();
+        } catch {
+          // Non-JSON response
+        }
+
+        if (!response.ok || !data.success || !data.order) {
+          setError(
+            response.status === 401
+              ? "Your session has expired. Please log in again to view your order."
+              : data.message ||
+                "We could not find your order information."
+          );
+          setOrder(null);
+        } else {
+          setOrder(data.order);
+          setError("");
+        }
+      } catch (fetchError) {
+        console.error("Fetch order error:", fetchError);
+
+        setError(
+          "Unable to reach the server. Please check your connection."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (orderId) {
+      fetchOrder();
+    } else {
+      setError("We could not find your order information.");
+      setLoading(false);
+    }
+  }, [orderId]);
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="orderSuccessEmpty">
+        <div className="orderSuccessEmptyIcon">⏳</div>
+
+        <h1>Loading your order...</h1>
+
+        <p>
+          Please wait while we fetch your order details.
+        </p>
+      </div>
+    );
+  }
+
+  // Error / not-found state
+  if (error || !order) {
     return (
       <div className="orderSuccessEmpty">
         <div className="orderSuccessEmptyIcon">📦</div>
@@ -14,8 +105,8 @@ function OrderSuccess() {
         <h1>Order Information Not Found</h1>
 
         <p>
-          We could not find your order information.
-          Please place an order first.
+          {error ||
+            "We could not find your order information. Please place an order first."}
         </p>
 
         <Link to="/menu">
@@ -27,16 +118,65 @@ function OrderSuccess() {
     );
   }
 
+  // Real order data from the backend — aliased so the
+  // existing display markup below stays unchanged
   const {
-    orderId,
-    cartItems = [],
-    grandTotal = 0,
+    orderNumber,
+    items = [],
+    pricing = {},
     deliveryType = "delivery",
     paymentMethod = "upi",
     address = {},
-    locationText = "",
-    orderDate,
-  } = orderData;
+    location = {},
+    createdAt,
+  } = order;
+
+  const locationText = location.locationText || "";
+  const grandTotal = pricing.grandTotal ?? 0;
+  const orderDate = createdAt;
+  const cartItems = items;
+
+  // Phase 2D — celebration hero only right after checkout
+  const justPlaced = Boolean(
+    routerLocation.state?.justPlaced
+  );
+
+  const isPickup = deliveryType === "pickup";
+
+  const statusProgress =
+    STATUS_TIMELINE[order.status] ||
+    STATUS_TIMELINE.placed;
+
+  const completedCount = statusProgress.completed;
+  const activeIndex = statusProgress.active;
+
+  const showEstimatedTime =
+    ACTIVE_STATUSES.includes(order.status);
+
+  const timelineSteps = [
+    {
+      icon: "✓",
+      title: "Order Confirmed",
+      subtitle: "Your order has been received",
+    },
+    {
+      icon: "🍳",
+      title: "Preparing",
+      subtitle: "Restaurant is preparing your food",
+    },
+    {
+      icon: isPickup ? "🏪" : "🛵",
+      title: isPickup ? "Ready for Pickup" : "On the Way",
+      subtitle: isPickup
+        ? "We will keep your order ready"
+        : "Your order will be delivered",
+    },
+    {
+      icon: isPickup ? "🧾" : "🏠",
+      title: isPickup ? "Collected" : "Delivered",
+      subtitle: "Enjoy your food",
+    },
+  ];
 
   const paymentMethodNames = {
     upi: "UPI",
@@ -58,110 +198,82 @@ function OrderSuccess() {
 
       {/* ================= SUCCESS MESSAGE ================= */}
 
-      <div className="successHero">
+      <div
+        className={`successHero ${
+          justPlaced ? "" : "neutral"
+        }`}
+      >
 
         <div className="successIcon">
-          ✓
+          {justPlaced ? "✓" : "🧾"}
         </div>
 
         <h1>
-          Order Placed Successfully!
+          {justPlaced
+            ? "Order Placed Successfully!"
+            : "Order Details"}
         </h1>
 
         <p>
-          Thank you for your order. Your food is
-          being prepared.
+          {justPlaced
+            ? "Thank you for your order. Your food is being prepared."
+            : `Placed on ${formattedDate}`}
         </p>
 
         <div className="orderNumber">
-          Order ID: <strong>{orderId}</strong>
+          Order ID: <strong>{orderNumber}</strong>
         </div>
 
       </div>
 
       {/* ================= ORDER STATUS ================= */}
 
-      <div className="orderStatusCard">
+      {order.status === "cancelled" ? (
+        <div className="orderCancelledBanner">
+          <strong>⚠️ Order Cancelled</strong>
 
-        <div className="statusStep completed">
-
-          <div className="statusIcon">
-            ✓
-          </div>
-
-          <div>
-            <strong>
-              Order Confirmed
-            </strong>
-
-            <span>
-              Your order has been received
-            </span>
-          </div>
-
+          <p>
+            This order was cancelled. If this was
+            unexpected, please contact support.
+          </p>
         </div>
+      ) : (
+        <div className="orderStatusCard">
+          {timelineSteps.map((step, index) => (
+            <React.Fragment key={step.title}>
+              {index > 0 && (
+                <div
+                  className={`statusLine ${
+                    index <= completedCount
+                      ? "active"
+                      : ""
+                  }`}
+                ></div>
+              )}
 
-        <div className="statusLine active"></div>
+              <div
+                className={`statusStep ${
+                  index < completedCount
+                    ? "completed"
+                    : index === activeIndex
+                    ? "active"
+                    : ""
+                }`}
+              >
+                <div className="statusIcon">
+                  {step.icon}
+                </div>
 
-        <div className="statusStep active">
+                <div>
+                  <strong>{step.title}</strong>
 
-          <div className="statusIcon">
-            🍳
-          </div>
-
-          <div>
-            <strong>
-              Preparing
-            </strong>
-
-            <span>
-              Restaurant is preparing your food
-            </span>
-          </div>
-
+                  <span>{step.subtitle}</span>
+                </div>
+              </div>
+            </React.Fragment>
+          ))}
         </div>
-
-        <div className="statusLine"></div>
-
-        <div className="statusStep">
-
-          <div className="statusIcon">
-            🛵
-          </div>
-
-          <div>
-            <strong>
-              On the Way
-            </strong>
-
-            <span>
-              Your order will be delivered
-            </span>
-          </div>
-
-        </div>
-
-        <div className="statusLine"></div>
-
-        <div className="statusStep">
-
-          <div className="statusIcon">
-            🏠
-          </div>
-
-          <div>
-            <strong>
-              Delivered
-            </strong>
-
-            <span>
-              Enjoy your food
-            </span>
-          </div>
-
-        </div>
-
-      </div>
+      )}
 
       {/* ================= MAIN CONTENT ================= */}
 
@@ -195,7 +307,7 @@ function OrderSuccess() {
 
                 <div
                   className="successOrderItem"
-                  key={item.id}
+                  key={item.foodId || item.name}
                 >
 
                   <div
@@ -274,9 +386,9 @@ function OrderSuccess() {
                     </p>
                   )}
 
-                  {address.address && (
+                  {address.addressLine && (
                     <p>
-                      {address.address}
+                      {address.addressLine}
                     </p>
                   )}
 
@@ -416,7 +528,7 @@ function OrderSuccess() {
           <div className="successTotal">
 
             <span>
-              Total Paid
+              Total Amount
             </span>
 
             <strong>
@@ -425,39 +537,41 @@ function OrderSuccess() {
 
           </div>
 
-          <div className="estimatedTime">
+          {showEstimatedTime && (
+            <div className="estimatedTime">
 
-            <span>
-              ⏱️
-            </span>
+              <span>
+                ⏱️
+              </span>
 
-            <div>
+              <div>
 
-              <strong>
-                Estimated Delivery
-              </strong>
+                <strong>
+                  Estimated Delivery
+                </strong>
 
-              <p>
-                30 - 45 minutes
-              </p>
+                <p>
+                  30 - 45 minutes
+                </p>
+
+              </div>
 
             </div>
-
-          </div>
+          )}
 
           <Link
             to="/menu"
             className="successPrimaryButton"
           >
-            Order More Food
+            {justPlaced ? "Order More Food" : "Browse Menu"}
             <span>→</span>
           </Link>
 
           <Link
-            to="/"
+            to={justPlaced ? "/" : "/profile"}
             className="successSecondaryButton"
           >
-            Back to Home
+            {justPlaced ? "Back to Home" : "Back to My Orders"}
           </Link>
 
         </aside>
@@ -466,22 +580,24 @@ function OrderSuccess() {
 
       {/* ================= FOOTER MESSAGE ================= */}
 
-      <div className="successThankYou">
+      {justPlaced && (
+        <div className="successThankYou">
 
-        <div>
-          🍕
+          <div>
+            🍕
+          </div>
+
+          <h2>
+            Thank you for ordering with us!
+          </h2>
+
+          <p>
+            We hope you enjoy your meal. Have a
+            wonderful day!
+          </p>
+
         </div>
-
-        <h2>
-          Thank you for ordering with us!
-        </h2>
-
-        <p>
-          We hope you enjoy your meal. Have a
-          wonderful day!
-        </p>
-
-      </div>
+      )}
 
     </div>
   );

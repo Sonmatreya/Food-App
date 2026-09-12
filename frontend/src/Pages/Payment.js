@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { API_URL } from "../config/api";
+import { useCart } from "../context/CartContext";
 import "../Styles/Payment.css";
 
 function Payment() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { clearCart } = useCart();
 
   const orderData = location.state;
 
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [upiId, setUpiId] = useState("");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  const [orderError, setOrderError] = useState("");
 
   /*
     If someone directly opens /payment without coming
@@ -58,31 +62,97 @@ function Payment() {
     0
   );
 
-  const handlePlaceOrder = () => {
-    /*
-      Frontend-only stage:
-      We are not processing a real payment yet.
+  const handlePlaceOrder = async () => {
+    if (isPlacingOrder) {
+      return;
+    }
 
-      Later, this function will call the backend
-      and integrate Razorpay/Stripe securely.
-    */
-
+    setOrderError("");
     setIsPlacingOrder(true);
 
-    setTimeout(() => {
-      const orderId =
-        "ORD" +
-        Date.now().toString().slice(-8);
+    try {
+      // Backend recomputes all pricing — client totals
+      // are never sent or trusted.
+      const response = await fetch(
+        `${API_URL}/api/orders`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            items: cartItems.map((item) => ({
+              foodId: String(item.id ?? ""),
+              name: item.name,
+              category: item.category ?? "",
+              price: item.price,
+              quantity: item.quantity,
+              cookingRequest: item.cookingRequest ?? "",
+              image: /^https?:\/\//.test(item.image ?? "")
+                ? item.image
+                : "",
+            })),
+            deliveryType,
+            address:
+              deliveryType === "delivery"
+                ? {
+                    name: address.name,
+                    phone: address.phone,
+                    addressLine: address.addressLine,
+                    city: address.city,
+                    pincode: address.pincode,
+                  }
+                : undefined,
+            location:
+              deliveryType === "delivery"
+                ? { latitude, longitude, locationText }
+                : undefined,
+            paymentMethod,
+            couponCode: coupon?.code ?? "",
+          }),
+        }
+      );
 
-      navigate("/order-success", {
-        state: {
-          ...orderData,
-          orderId,
-          paymentMethod,
-          orderDate: new Date().toISOString(),
-        },
+      let data = {};
+
+      try {
+        data = await response.json();
+      } catch {
+        // Non-JSON response
+      }
+
+      if (response.status === 401) {
+        setOrderError(
+          "Your session has expired. Please log in again."
+        );
+        return;
+      }
+
+      if (!response.ok || !data.success || !data.order) {
+        setOrderError(
+          data.message ||
+            "Unable to place your order. Please try again."
+        );
+        return;
+      }
+
+      // Order saved on the server — clear the cart and
+      // show the real order confirmation.
+      clearCart();
+
+      navigate(`/order-success/${data.order.id}`, {
+        state: { justPlaced: true },
       });
-    }, 1000);
+    } catch (placeError) {
+      console.error("Place order error:", placeError);
+
+      setOrderError(
+        "Unable to reach the server. Please check your connection and try again."
+      );
+    } finally {
+      setIsPlacingOrder(false);
+    }
   };
 
   return (
@@ -205,9 +275,9 @@ function Payment() {
                     </p>
                   )}
 
-                  {address.address && (
+                  {address.addressLine && (
                     <p>
-                      {address.address}
+                      {address.addressLine}
                     </p>
                   )}
 
@@ -739,6 +809,24 @@ function Payment() {
           </div>
 
           {/* PLACE ORDER */}
+
+          {orderError && (
+            <div
+              role="alert"
+              style={{
+                margin: "0 0 12px",
+                padding: "10px 12px",
+                borderRadius: "8px",
+                background: "#fdecec",
+                border: "1px solid #f5c6cb",
+                color: "#b31226",
+                fontSize: "12px",
+                lineHeight: 1.4,
+              }}
+            >
+              {orderError}
+            </div>
+          )}
 
           <button
             type="button"

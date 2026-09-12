@@ -8,6 +8,7 @@ const {
   googleLoginSuccess,
   logout,
   getMe,
+  updateProfile,
 } = require("../controllers/authController");
 
 const protect = require("../middleware/authMiddleware");
@@ -31,6 +32,9 @@ router.post("/login", loginLimiter, requireCaptcha, login);
 router.post("/logout", logout);
 
 router.get("/me", protect, getMe);
+
+// Update own profile (name, phone)
+router.put("/profile", protect, updateProfile);
 
 
 // ===============================

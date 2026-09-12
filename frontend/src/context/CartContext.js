@@ -110,6 +110,14 @@ export function CartProvider({ children }) {
   };
 
   // ==========================================
+  // CLEAR CART (after successful order)
+  // ==========================================
+
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
+  // ==========================================
   // CALCULATE CART TOTAL
   // ==========================================
 
@@ -135,6 +143,7 @@ export function CartProvider({ children }) {
         decreaseQuantity,
         removeFromCart,
         getCartTotal,
+        clearCart,
       }}
     >
       {children}

@@ -95,6 +95,44 @@ export const AuthProvider = ({ children }) => {
   };
 
   // =========================================================
+  // UPDATE PROFILE
+  // =========================================================
+
+  const updateProfile = async (profileData) => {
+    const response = await fetch(
+      `${API_URL}/api/auth/profile`,
+      {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profileData),
+      }
+    );
+
+    let data = {};
+
+    try {
+      data = await response.json();
+    } catch {
+      // Non-JSON response
+    }
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.message || "Profile update failed"
+      );
+    }
+
+    if (data.user) {
+      setUser(data.user);
+    }
+
+    return data.user;
+  };
+
+  // =========================================================
   // AUTHENTICATION HELPERS
   // =========================================================
 
@@ -120,6 +158,7 @@ export const AuthProvider = ({ children }) => {
 
         logout,
         checkAuth,
+        updateProfile,
 
         isAuthenticated,
         isAdmin,

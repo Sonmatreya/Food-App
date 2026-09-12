@@ -23,6 +23,18 @@ const setAuthCookie = (res, token) => {
   });
 };
 
+// Whitelisted public user shape — mirrors the objects returned by
+// register / login / getMe. Never exposes password or internal fields.
+// Used only by updateProfile.
+const buildProfileResponse = (user) => ({
+  id: user._id,
+  name: user.name,
+  email: user.email,
+  phone: user.phone,
+  role: user.role,
+  profileImage: user.profileImage,
+});
+
 // Register
 const register = async (req, res) => {
   try {
@@ -237,11 +249,155 @@ const getMe = async (req, res) => {
   }
 };
 
+// Update own profile (Phase 1: name and phone ONLY)
+const updateProfile = async (req, res) => {
+  try {
+    // Identity comes ONLY from the auth middleware — never from the body
+    const userId = req.user.userId;
+
+    const currentUser = await User.findById(userId);
+
+    if (!currentUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const { name, phone } = req.body || {};
+
+    const setUpdate = {};
+    const unsetUpdate = {};
+
+    // ---------------- NAME ----------------
+    if (name !== undefined) {
+      const trimmedName = String(name).trim();
+
+      if (trimmedName.length < 2 || trimmedName.length > 50) {
+        return res.status(400).json({
+          success: false,
+          message: "Name must be between 2 and 50 characters",
+        });
+      }
+
+      setUpdate.name = trimmedName;
+    }
+
+    // ---------------- PHONE ----------------
+    if (phone !== undefined) {
+      const trimmedPhone = String(phone).trim();
+
+      if (trimmedPhone === "") {
+        // Clearing phone is only allowed when an email exists
+        // as an alternative login identifier
+        if (!currentUser.email) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Phone cannot be removed because it is your only login identifier",
+          });
+        }
+
+        // $unset removes the field so the sparse unique index stays valid
+        unsetUpdate.phone = "";
+      } else {
+        // Normalize: strip spaces, hyphens and parentheses
+        //   "+91 98765 43210" -> "+919876543210"
+        //   "98765-43210"     -> "9876543210"
+        //   "(555) 123-4567"  -> "5551234567"
+        const normalizedPhone = trimmedPhone.replace(/[\s\-()]/g, "");
+
+        // Optional "+" followed by 7–15 digits
+        if (!/^\+?[0-9]{7,15}$/.test(normalizedPhone)) {
+          return res.status(400).json({
+            success: false,
+            message:
+              "Please enter a valid phone number (7-15 digits, optional +)",
+          });
+        }
+
+        // Duplicate-phone check (excluding the current user)
+        const phoneOwner = await User.findOne({
+          phone: normalizedPhone,
+          _id: { $ne: userId },
+        });
+
+        if (phoneOwner) {
+          return res.status(409).json({
+            success: false,
+            message: "This phone number is already in use",
+          });
+        }
+
+        // Store the normalized phone number
+        setUpdate.phone = normalizedPhone;
+      }
+    }
+
+    // ---------------- APPLY UPDATE ----------------
+    if (
+      Object.keys(setUpdate).length === 0 &&
+      Object.keys(unsetUpdate).length === 0
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "No valid profile fields to update",
+      });
+    }
+
+    const updateQuery = {};
+
+    if (Object.keys(setUpdate).length > 0) {
+      updateQuery.$set = setUpdate;
+    }
+
+    if (Object.keys(unsetUpdate).length > 0) {
+      updateQuery.$unset = unsetUpdate;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(userId, updateQuery, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.json({
+      success: true,
+      message: "Profile updated successfully",
+      user: buildProfileResponse(updatedUser),
+    });
+  } catch (error) {
+    // Duplicate key — phone unique index race condition
+    if (error.code === 11000) {
+      return res.status(409).json({
+        success: false,
+        message: "This phone number is already in use",
+      });
+    }
+
+    if (error.name === "ValidationError") {
+      const firstError = Object.values(error.errors)[0];
+
+      return res.status(400).json({
+        success: false,
+        message: firstError?.message || "Invalid profile data",
+      });
+    }
+
+    console.error("Update profile error:", error.message);
+
+    res.status(500).json({
+      success: false,
+      message: "Profile update failed",
+    });
+  }
+};
+
 module.exports = {
   register,
   login,
   googleLoginSuccess,
   logout,
   getMe,
+  updateProfile,
   generateToken,
 };

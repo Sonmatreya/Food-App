@@ -811,3 +811,75 @@
     font-size: 20px;
   }
 }
+
+/* =========================================================
+   PHASE 2D - NEUTRAL HERO (order details mode)
+========================================================= */
+
+.successHero.neutral .successIcon {
+  border-color: #eef1f5;
+
+  background: #f5f6f8;
+
+  color: #555555;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+/* =========================================================
+   PHASE 2D - CANCELLED BANNER
+========================================================= */
+
+.orderCancelledBanner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 6px;
+
+  margin-bottom: 30px;
+  padding: 20px 24px;
+
+  border: 1px solid #f5c6cb;
+  border-radius: 15px;
+
+  background: #fdf0f1;
+
+  text-align: center;
+
+  box-sizing: border-box;
+}
+
+.orderCancelledBanner strong {
+  color: #b31226;
+
+  font-size: 15px;
+  font-weight: 750;
+}
+
+.orderCancelledBanner p {
+  margin: 0;
+
+  color: #8a4a52;
+
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+@media (max-width: 600px) {
+  .orderCancelledBanner {
+    margin-bottom: 22px;
+
+    padding: 15px;
+
+    border-radius: 12px;
+  }
+
+  .orderCancelledBanner strong {
+    font-size: 13px;
+  }
+
+  .orderCancelledBanner p {
+    font-size: 11px;
+  }
+}

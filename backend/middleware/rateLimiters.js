@@ -13,4 +13,6 @@ module.exports = {
   captchaGenerateLimiter: createLimiter({ windowMs: 15 * 60 * 1000, limit: 30 }),
   captchaVerifyLimiter: createLimiter({ windowMs: 15 * 60 * 1000, limit: 15 }),
   googleAuthLimiter: createLimiter({ windowMs: 15 * 60 * 1000, limit: 20 }),
+  otpGenerateLimiter: createLimiter({ windowMs: 15 * 60 * 1000, limit: 6 }),
+  otpVerifyLimiter: createLimiter({ windowMs: 10 * 60 * 1000, limit: 10 }),
 };

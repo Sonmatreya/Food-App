@@ -1,0 +1,276 @@
+/* =========================================================
+   FOOD APP - EDIT PROFILE MODAL
+   Responsive: Desktop / Tablet / Mobile
+========================================================= */
+
+.edit-profile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background: rgba(0, 0, 0, 0.45);
+
+  animation: edit-profile-fade 0.18s ease;
+}
+
+@keyframes edit-profile-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.edit-profile-modal {
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100vh - 40px);
+
+  overflow-y: auto;
+
+  padding: 24px;
+
+  background: #ffffff;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+
+  box-sizing: border-box;
+
+  animation: edit-profile-pop 0.18s ease;
+}
+
+@keyframes edit-profile-pop {
+  from {
+    transform: translateY(10px) scale(0.98);
+
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+
+    opacity: 1;
+  }
+}
+
+.edit-profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 12px;
+}
+
+.edit-profile-header h2 {
+  margin: 0;
+
+  color: #212121;
+
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.edit-profile-close {
+  width: 32px;
+  height: 32px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+
+  background: #f5f5f5;
+
+  color: #555555;
+
+  font-size: 15px;
+
+  cursor: pointer;
+}
+
+.edit-profile-close:hover {
+  background: #eeeeee;
+}
+
+.edit-profile-subtitle {
+  margin: 6px 0 18px;
+
+  color: #888888;
+
+  font-size: 12px;
+}
+
+.edit-profile-alert {
+  margin: 0 0 14px;
+
+  padding: 10px 12px;
+
+  border-radius: 8px;
+
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.edit-profile-alert.error {
+  background: #fdecec;
+
+  border: 1px solid #f5c6cb;
+
+  color: #b31226;
+}
+
+.edit-profile-alert.success {
+  background: #e8f6ee;
+
+  border: 1px solid #b7dfc8;
+
+  color: #198754;
+}
+
+.edit-profile-field {
+  margin-bottom: 15px;
+}
+
+.edit-profile-field label {
+  display: block;
+
+  margin-bottom: 6px;
+
+  color: #444444;
+
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.edit-profile-field input {
+  width: 100%;
+  min-height: 44px;
+
+  padding: 0 12px;
+
+  border: 1px solid #dddddd;
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: #212121;
+
+  font-size: 14px;
+
+  box-sizing: border-box;
+
+  transition: border 0.15s ease;
+}
+
+.edit-profile-field input:focus {
+  outline: none;
+
+  border-color: #e31837;
+}
+
+.edit-profile-field input:disabled {
+  background: #f7f7f7;
+
+  cursor: not-allowed;
+}
+
+.edit-profile-field small {
+  display: block;
+
+  margin-top: 5px;
+
+  color: #999999;
+
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.edit-profile-actions {
+  display: flex;
+
+  gap: 10px;
+
+  margin-top: 20px;
+}
+
+.edit-profile-cancel,
+.edit-profile-save {
+  min-height: 44px;
+
+  padding: 0 18px;
+
+  border-radius: 8px;
+
+  font-size: 13px;
+  font-weight: 650;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.edit-profile-cancel {
+  border: 1px solid #e1e1e1;
+
+  background: #ffffff;
+
+  color: #333333;
+}
+
+.edit-profile-cancel:hover {
+  background: #f7f7f7;
+}
+
+.edit-profile-save {
+  flex: 1;
+
+  border: 1px solid #e31837;
+
+  background: #e31837;
+
+  color: #ffffff;
+}
+
+.edit-profile-save:hover {
+  background: #c91530;
+}
+
+.edit-profile-save:disabled,
+.edit-profile-cancel:disabled {
+  opacity: 0.65;
+
+  cursor: not-allowed;
+}
+
+/* =========================================================
+   MOBILE — bottom sheet style
+========================================================= */
+
+@media (max-width: 600px) {
+  .edit-profile-backdrop {
+    padding: 0;
+
+    align-items: flex-end;
+  }
+
+  .edit-profile-modal {
+    max-width: 100%;
+    max-height: calc(100vh - 60px);
+
+    padding: 20px 16px;
+
+    border-radius: 16px 16px 0 0;
+  }
+}
