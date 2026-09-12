@@ -12,6 +12,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const captchaRoutes = require("./routes/captchaRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const adminCustomerRoutes = require("./routes/adminCustomerRoutes");
 const passport = require("./config/googleAuth");
 
 const app = express();
@@ -31,7 +32,7 @@ app.use(
       return callback(new Error("Origin is not allowed by CORS"));
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "X-Captcha-Proof"],
   })
 );
@@ -49,6 +50,7 @@ app.use(passport.initialize());
 app.use("/api/auth", authRoutes);
 app.use("/api/captcha", captchaRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/admin/customers", adminCustomerRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
