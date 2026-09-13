@@ -2,7 +2,7 @@ const User = require("../models/User");
 
 const requireAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user.userId);
+    const user = await User.findById(req.user.userId).select("role").lean();
 
     if (!user || user.role !== "admin") {
       return res.status(403).json({
@@ -14,8 +14,7 @@ const requireAdmin = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("Admin middleware error:", error.message);
-
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: "Unable to verify admin access",
     });

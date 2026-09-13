@@ -12,8 +12,9 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const captchaRoutes = require("./routes/captchaRoutes");
 const orderRoutes = require("./routes/orderRoutes");
-const passport = require("./config/googleAuth");
 const adminCustomerRoutes = require("./routes/adminCustomerRoutes");
+const adminOrderRoutes = require("./routes/adminOrderRoutes");
+const passport = require("./config/googleAuth");
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/captcha", captchaRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin/customers", adminCustomerRoutes);
+app.use("/api/admin/orders", adminOrderRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
