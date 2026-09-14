@@ -59,11 +59,11 @@ function App() {
   const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
-    // Give the moving-food startup buffer enough time to be visible,
-    // while keeping the app opening quick.
+    // Keep the premium moving-food intro visible long enough
+    // to complete its entrance and smooth exit transition.
     const timer = setTimeout(() => {
       setShowLoader(false);
-    }, 2400);
+    }, 3600);
 
     return () => clearTimeout(timer);
   }, []);
