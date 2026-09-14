@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import "./App.css";
 
 import {
@@ -14,6 +15,7 @@ import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import AdminRoute from "./Components/AdminRoute";
+import AppLoader from "./Components/AppLoader";
 
 // =========================================================
 // PAGES
@@ -54,169 +56,188 @@ import { CartProvider } from "./context/CartContext";
 // =========================================================
 
 function App() {
+  const [showLoader, setShowLoader] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLoader(false);
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
-    <AuthProvider>
-      <CartProvider>
+    <>
+      {/* =================================================
+          STARTUP BUFFER
+          Short branded opening overlay
+      ================================================= */}
 
-        <div className="App">
+      {showLoader && <AppLoader />}
 
-          <BrowserRouter>
+      <AuthProvider>
+        <CartProvider>
 
-            {/* =================================================
-                NAVBAR
-            ================================================= */}
+          <div className="App">
 
-            <Navbar />
-
-            <Routes>
-
-              {/* =================================================
-                  PUBLIC ROUTES
-              ================================================= */}
-
-              <Route
-                path="/"
-                element={<Home />}
-              />
-
-              <Route
-                path="/menu"
-                element={<Menu />}
-              />
-
-              <Route
-                path="/food/:id"
-                element={<FoodDetails />}
-              />
-
-              <Route
-                path="/about"
-                element={<About />}
-              />
-
-              <Route
-                path="/services"
-                element={<Services />}
-              />
-
-              <Route
-                path="/contact"
-                element={<Contact />}
-              />
+            <BrowserRouter>
 
               {/* =================================================
-                  AUTHENTICATION ROUTES
+                  NAVBAR
               ================================================= */}
 
-              <Route
-                path="/login"
-                element={<Login />}
-              />
+              <Navbar />
 
-              <Route
-                path="/register"
-                element={<Register />}
-              />
+              <Routes>
+
+                {/* =================================================
+                    PUBLIC ROUTES
+                ================================================= */}
+
+                <Route
+                  path="/"
+                  element={<Home />}
+                />
+
+                <Route
+                  path="/menu"
+                  element={<Menu />}
+                />
+
+                <Route
+                  path="/food/:id"
+                  element={<FoodDetails />}
+                />
+
+                <Route
+                  path="/about"
+                  element={<About />}
+                />
+
+                <Route
+                  path="/services"
+                  element={<Services />}
+                />
+
+                <Route
+                  path="/contact"
+                  element={<Contact />}
+                />
+
+                {/* =================================================
+                    AUTHENTICATION ROUTES
+                ================================================= */}
+
+                <Route
+                  path="/login"
+                  element={<Login />}
+                />
+
+                <Route
+                  path="/register"
+                  element={<Register />}
+                />
+
+                {/* =================================================
+                    USER PROFILE
+                ================================================= */}
+
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* =================================================
+                    ADMIN ROUTES
+                    More specific route first
+                ================================================= */}
+
+                <Route
+                  path="/admin/customers/:id"
+                  element={
+                    <AdminRoute>
+                      <AdminCustomerDetails />
+                    </AdminRoute>
+                  }
+                />
+
+                <Route
+                  path="/admin/customers"
+                  element={
+                    <AdminRoute>
+                      <AdminCustomers />
+                    </AdminRoute>
+                  }
+                />
+
+                {/* =================================================
+                    PROTECTED ROUTES
+                ================================================= */}
+
+                <Route
+                  path="/cart"
+                  element={
+                    <ProtectedRoute>
+                      <Cart />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/delivery-address"
+                  element={
+                    <ProtectedRoute>
+                      <DeliveryAddress />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/payment"
+                  element={
+                    <ProtectedRoute>
+                      <Payment />
+                    </ProtectedRoute>
+                  }
+                />
+
+                <Route
+                  path="/order-success/:orderId"
+                  element={
+                    <ProtectedRoute>
+                      <OrderSuccess />
+                    </ProtectedRoute>
+                  }
+                />
+
+                {/* =================================================
+                    FALLBACK ROUTE
+                ================================================= */}
+
+                <Route
+                  path="*"
+                  element={<Home />}
+                />
+
+              </Routes>
 
               {/* =================================================
-                  USER PROFILE
+                  FOOTER
               ================================================= */}
 
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
+              <Footer />
 
-              {/* =================================================
-                  ADMIN ROUTES
-                  More specific route first
-              ================================================= */}
+            </BrowserRouter>
 
-              <Route
-                path="/admin/customers/:id"
-                element={
-                  <AdminRoute>
-                    <AdminCustomerDetails />
-                  </AdminRoute>
-                }
-              />
+          </div>
 
-              <Route
-                path="/admin/customers"
-                element={
-                  <AdminRoute>
-                    <AdminCustomers />
-                  </AdminRoute>
-                }
-              />
-
-              {/* =================================================
-                  PROTECTED ROUTES
-              ================================================= */}
-
-              <Route
-                path="/cart"
-                element={
-                  <ProtectedRoute>
-                    <Cart />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/delivery-address"
-                element={
-                  <ProtectedRoute>
-                    <DeliveryAddress />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/payment"
-                element={
-                  <ProtectedRoute>
-                    <Payment />
-                  </ProtectedRoute>
-                }
-              />
-
-              <Route
-                path="/order-success/:orderId"
-                element={
-                  <ProtectedRoute>
-                    <OrderSuccess />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* =================================================
-                  FALLBACK ROUTE
-              ================================================= */}
-
-              <Route
-                path="*"
-                element={<Home />}
-              />
-
-            </Routes>
-
-            {/* =================================================
-                FOOTER
-            ================================================= */}
-
-            <Footer />
-
-          </BrowserRouter>
-
-        </div>
-
-      </CartProvider>
-    </AuthProvider>
+        </CartProvider>
+      </AuthProvider>
+    </>
   );
 }
 

@@ -1,66 +1,129 @@
+/* =========================================
+   FOOD APP - STARTUP BUFFER
+   Short branded overlay
+   ========================================= */
+
 .app-loader {
   position: fixed;
   inset: 0;
-  z-index: 99999;
+  z-index: 999999;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
   background: #ffffff;
+
+  pointer-events: none;
+
+  animation: app-loader-fade-out 0.18s ease forwards;
+  animation-delay: 0.20s;
 }
 
-.loader-content {
+
+/* =========================================
+   LOGO
+   ========================================= */
+
+.app-loader-logo {
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  width: 86px;
+  height: 86px;
+
+  opacity: 0;
+  transform: scale(0.82);
+
+  animation: app-loader-logo-in 0.20s
+    cubic-bezier(0.22, 1, 0.36, 1)
+    forwards;
 }
 
-.loader-logo {
-  font-size: 48px;
-  margin-bottom: 15px;
 
-  animation: loader-bounce 0.8s infinite alternate;
+.app-loader-logo img {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
 }
 
-.loader-spinner {
-  width: 34px;
-  height: 34px;
 
-  border: 4px solid #eeeeee;
-  border-top: 4px solid #e31837;
+/* =========================================
+   LOGO ENTER
+   ========================================= */
 
-  border-radius: 50%;
+@keyframes app-loader-logo-in {
 
-  animation: loader-spin 0.7s linear infinite;
-}
-
-.loader-content p {
-  margin-top: 12px;
-
-  font-size: 14px;
-  font-weight: 600;
-
-  color: #555555;
-}
-
-@keyframes loader-spin {
-  from {
-    transform: rotate(0deg);
+  0% {
+    opacity: 0;
+    transform: scale(0.82);
   }
 
-  to {
-    transform: rotate(360deg);
+  70% {
+    opacity: 1;
+    transform: scale(1.04);
+  }
+
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 
-@keyframes loader-bounce {
-  from {
-    transform: translateY(0);
+
+/* =========================================
+   BUFFER DISAPPEAR
+   ========================================= */
+
+@keyframes app-loader-fade-out {
+
+  0% {
+    opacity: 1;
+    visibility: visible;
   }
 
-  to {
-    transform: translateY(-6px);
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 600px) {
+
+  .app-loader-logo {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+
+/* =========================================
+   REDUCED MOTION
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .app-loader,
+  .app-loader-logo {
+    animation: none;
+  }
+
+  .app-loader-logo {
+    opacity: 1;
+    transform: none;
+  }
+
+  .app-loader {
+    opacity: 0;
+    visibility: hidden;
   }
 }
