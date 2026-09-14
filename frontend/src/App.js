@@ -26,52 +26,29 @@ import AdminCustomerDetails from "./Pages/AdminCustomerDetails";
 import AdminOrders from "./Pages/AdminOrders";
 import AdminOrderDetails from "./Pages/AdminOrderDetails";
 import AdminMenu from "./Pages/AdminMenu";
+import AdminCoupons from "./Pages/AdminCoupons";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
 function AppRoutes() {
   const location = useLocation();
   const isAdminRoute = location.pathname === "/admin" || location.pathname.startsWith("/admin/");
-
-  return (
-    <div className="App">
-      {!isAdminRoute && <Navbar />}
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/menu" element={<Menu />} />
-        <Route path="/food/:id" element={<FoodDetails />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="orders" element={<AdminOrders />} />
-          <Route path="orders/:id" element={<AdminOrderDetails />} />
-          <Route path="customers" element={<AdminCustomers />} />
-          <Route path="customers/:id" element={<AdminCustomerDetails />} />
-          <Route path="menu" element={<AdminMenu />} />
-        </Route>
-        <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
-        <Route path="/delivery-address" element={<ProtectedRoute><DeliveryAddress /></ProtectedRoute>} />
-        <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-        <Route path="/order-success/:orderId" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
-        <Route path="*" element={<Home />} />
-      </Routes>
-      {!isAdminRoute && <Footer />}
-    </div>
-  );
+  return <div className="App">
+    {!isAdminRoute && <Navbar />}
+    <Routes>
+      <Route path="/" element={<Home />} /><Route path="/menu" element={<Menu />} /><Route path="/food/:id" element={<FoodDetails />} />
+      <Route path="/about" element={<About />} /><Route path="/services" element={<Services />} /><Route path="/contact" element={<Contact />} />
+      <Route path="/login" element={<Login />} /><Route path="/register" element={<Register />} />
+      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+      <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
+        <Route index element={<AdminDashboard />} /><Route path="orders" element={<AdminOrders />} /><Route path="orders/:id" element={<AdminOrderDetails />} />
+        <Route path="customers" element={<AdminCustomers />} /><Route path="customers/:id" element={<AdminCustomerDetails />} /><Route path="menu" element={<AdminMenu />} /><Route path="coupons" element={<AdminCoupons />} />
+      </Route>
+      <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} /><Route path="/delivery-address" element={<ProtectedRoute><DeliveryAddress /></ProtectedRoute>} />
+      <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} /><Route path="/order-success/:orderId" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} /><Route path="*" element={<Home />} />
+    </Routes>
+    {!isAdminRoute && <Footer />}
+  </div>;
 }
-
-function App() {
-  const [showLoader, setShowLoader] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setShowLoader(false), 3600);
-    return () => clearTimeout(timer);
-  }, []);
-  return <>{showLoader && <AppLoader />}<AuthProvider><CartProvider><BrowserRouter><AppRoutes /></BrowserRouter></CartProvider></AuthProvider></>;
-}
-
+function App() { const [showLoader, setShowLoader] = useState(true); useEffect(() => { const timer = setTimeout(() => setShowLoader(false), 3600); return () => clearTimeout(timer); }, []); return <><>{showLoader && <AppLoader />}</><AuthProvider><CartProvider><BrowserRouter><AppRoutes /></BrowserRouter></CartProvider></AuthProvider></>; }
 export default App;
