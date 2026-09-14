@@ -1,0 +1,98 @@
+/* Shared Admin Panel theme — matches the customer panel palette */
+:root {
+  --admin-red: #e63946;
+  --admin-red-dark: #c92735;
+  --admin-red-soft: #fff1f2;
+  --admin-green: #198754;
+  --admin-green-dark: #146c43;
+  --admin-green-soft: #effaf3;
+  --admin-white: #ffffff;
+  --admin-bg: #f8f8f8;
+  --admin-text: #222222;
+  --admin-muted: #777777;
+  --admin-border: #eeeeee;
+}
+
+.admin-shell { background: var(--admin-bg) !important; color: var(--admin-text) !important; }
+.admin-sidebar { background: var(--admin-red) !important; color: #fff !important; box-shadow: 4px 0 18px rgba(230,57,70,.14); }
+.admin-brand { border-bottom-color: rgba(255,255,255,.22) !important; }
+.admin-brand span { color: rgba(255,255,255,.82) !important; }
+.admin-sidebar-link { color: rgba(255,255,255,.88) !important; }
+.admin-sidebar-link:hover { background: rgba(255,255,255,.13) !important; color:#fff !important; }
+.admin-sidebar-link.active { background:#fff !important; color:var(--admin-red) !important; box-shadow:0 4px 12px rgba(0,0,0,.12); }
+.admin-sidebar-link.active .admin-sidebar-icon { color:var(--admin-red) !important; }
+.admin-back-store, .admin-logout { color:#fff !important; }
+.admin-back-store:hover, .admin-logout:hover { background:rgba(255,255,255,.13) !important; color:#fff !important; }
+.admin-topbar { background:#fff !important; border-bottom:1px solid var(--admin-border) !important; box-shadow:0 2px 12px rgba(0,0,0,.04); }
+.admin-topbar p { color:var(--admin-green) !important; }
+.admin-topbar h1 { color:var(--admin-text) !important; }
+.admin-user-avatar { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; border:1px solid #ccebd7; }
+.admin-content { background:var(--admin-bg); }
+
+.admin-dashboard-page, .admin-customers-page, .admin-orders-page, .admin-order-details-page, .admin-customer-details-page { color:var(--admin-text) !important; background:transparent !important; }
+.admin-dashboard-eyebrow, .admin-orders-eyebrow, .admin-customer-details-eyebrow { color:var(--admin-green) !important; }
+.admin-dashboard-intro h2, .admin-customers-header h1, .admin-orders-header h1, .admin-order-details-header h1, .admin-customer-details-header h1 { color:var(--admin-text) !important; }
+
+.admin-dashboard-card, .admin-dashboard-note, .admin-customers-table-wrapper, .admin-order-card, .admin-order-details-card, .admin-customer-details-card, .admin-customer-summary-card, .admin-orders-state, .admin-order-details-state, .admin-customer-details-state { background:#fff !important; border-color:var(--admin-border) !important; box-shadow:0 5px 20px rgba(0,0,0,.05) !important; }
+.admin-dashboard-card { border-top:4px solid var(--admin-red) !important; }
+.admin-dashboard-card-icon { background:var(--admin-red-soft) !important; color:var(--admin-red) !important; }
+.admin-dashboard-card-heading span, .admin-dashboard-badge { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; }
+.admin-dashboard-card button { color:var(--admin-red) !important; }
+.admin-dashboard-note { border-left-color:var(--admin-green) !important; }
+
+.admin-orders-filters input:focus, .admin-orders-filters select:focus, .admin-order-status-card select:focus { border-color:var(--admin-green) !important; box-shadow:0 0 0 3px rgba(25,135,84,.1); }
+.admin-orders-filter-button, .admin-orders-customers-link, .admin-order-details-retry { background:var(--admin-red) !important; color:#fff !important; }
+.admin-orders-filter-button:hover, .admin-orders-customers-link:hover, .admin-order-details-retry:hover { background:var(--admin-red-dark) !important; }
+.admin-orders-reset-button { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; border:1px solid #ccebd7 !important; }
+.admin-orders-reset-button:hover { background:#dff3e6 !important; }
+.admin-order-card { border-left:4px solid var(--admin-red) !important; }
+.admin-order-card-actions button { background:var(--admin-red) !important; color:#fff !important; }
+.admin-order-card-actions button:hover:not(:disabled) { background:var(--admin-red-dark) !important; }
+.admin-order-card-actions select { border-color:#ddd; }
+.admin-orders-pagination button:hover:not(:disabled) { border-color:var(--admin-green) !important; color:var(--admin-green-dark) !important; }
+
+.admin-order-details-back, .admin-customer-details-back { color:var(--admin-muted) !important; }
+.admin-order-details-back:hover, .admin-customer-details-back:hover { color:var(--admin-red) !important; }
+.admin-order-details-card-header, .admin-order-item, .admin-order-pricing .grand, .admin-customer-orders-header, .admin-customer-order-row { border-color:var(--admin-border) !important; }
+.admin-order-details-info-grid>div, .admin-customer-info-item { background:#fafafa !important; }
+.admin-order-payment-badge { background:var(--admin-green-soft) !important; }
+.admin-order-payment-badge strong, .admin-order-handover h2 { color:var(--admin-green) !important; }
+.admin-order-handover { border-color:#ccebd7 !important; background:var(--admin-green-soft) !important; }
+.admin-order-details-status { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
+
+.admin-customer-details-verification.is-verified { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; border:1px solid #ccebd7; }
+.admin-customer-details-verification.is-not-verified { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; border:1px solid #ffd1d5; }
+.admin-customer-avatar { background:var(--admin-red-soft) !important; color:var(--admin-red) !important; }
+.admin-customer-summary-card { border-top:4px solid var(--admin-green) !important; }
+.admin-customer-summary-card strong, .admin-customer-spent { color:var(--admin-green-dark) !important; }
+.admin-customer-order-count { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; }
+.admin-customer-order-status { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
+
+.admin-customers-table-wrapper { border-top:4px solid var(--admin-red) !important; }
+.admin-customers-table th { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
+.admin-customers-table tbody tr:hover { background:#fff9f9 !important; box-shadow:inset 4px 0 0 var(--admin-green) !important; }
+.admin-customer-number { background:var(--admin-green-soft) !important; border-color:#ccebd7 !important; color:var(--admin-green-dark) !important; }
+.admin-customer-details-button, .admin-customers-retry-button { background:var(--admin-red) !important; color:#fff !important; }
+.admin-customers-load-more-button { background:var(--admin-green) !important; color:#fff !important; }
+.admin-customers-load-more-button:hover:not(:disabled) { background:var(--admin-green-dark) !important; }
+
+.admin-customers-spinner, .admin-orders-spinner, .admin-order-details-spinner, .admin-customer-details-spinner { border-top-color:var(--admin-red) !important; border-right-color:var(--admin-green) !important; }
+.admin-customers-inline-error, .admin-orders-error, .admin-order-details-error { border-left-color:var(--admin-red) !important; background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
+
+@media (max-width:560px) {
+  .admin-sidebar { background:var(--admin-red) !important; }
+  .admin-sidebar-link.active { background:#fff !important; color:var(--admin-red) !important; }
+}
+
+@media (prefers-color-scheme:dark) {
+  .admin-shell { background:#151515 !important; color:#f5f5f5 !important; }
+  .admin-sidebar { background:#b91c2a !important; }
+  .admin-sidebar-link.active { background:#fff !important; color:var(--admin-red-dark) !important; }
+  .admin-topbar { background:#1f1f1f !important; border-color:#333 !important; }
+  .admin-topbar h1, .admin-dashboard-intro h2, .admin-customers-header h1, .admin-orders-header h1, .admin-order-details-header h1, .admin-customer-details-header h1 { color:#fff !important; }
+  .admin-content, .admin-dashboard-page, .admin-customers-page, .admin-orders-page, .admin-order-details-page, .admin-customer-details-page { background:#151515 !important; }
+  .admin-dashboard-card, .admin-dashboard-note, .admin-customers-table-wrapper, .admin-order-card, .admin-order-details-card, .admin-customer-details-card, .admin-customer-summary-card, .admin-orders-state, .admin-order-details-state, .admin-customer-details-state { background:#1f1f1f !important; border-color:#333 !important; }
+  .admin-dashboard-card-heading span, .admin-dashboard-badge, .admin-customer-number, .admin-customer-order-count { background:#123522 !important; color:#8be0aa !important; }
+  .admin-customers-table th { background:#3b1015 !important; color:#ff9aa4 !important; }
+  .admin-orders-filters input, .admin-orders-filters select, .admin-order-status-card select { background:#242424 !important; color:#fff !important; border-color:#444 !important; }
+}
