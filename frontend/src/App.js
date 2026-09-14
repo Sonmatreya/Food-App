@@ -59,88 +59,35 @@ function App() {
   const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
+    // Give the moving-food startup buffer enough time to be visible,
+    // while keeping the app opening quick.
     const timer = setTimeout(() => {
       setShowLoader(false);
-    }, 200);
+    }, 2400);
 
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <>
-      {/* =================================================
-          STARTUP BUFFER
-          Short branded opening overlay
-      ================================================= */}
-
       {showLoader && <AppLoader />}
 
       <AuthProvider>
         <CartProvider>
-
           <div className="App">
-
             <BrowserRouter>
-
-              {/* =================================================
-                  NAVBAR
-              ================================================= */}
-
               <Navbar />
 
               <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/menu" element={<Menu />} />
+                <Route path="/food/:id" element={<FoodDetails />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/contact" element={<Contact />} />
 
-                {/* =================================================
-                    PUBLIC ROUTES
-                ================================================= */}
-
-                <Route
-                  path="/"
-                  element={<Home />}
-                />
-
-                <Route
-                  path="/menu"
-                  element={<Menu />}
-                />
-
-                <Route
-                  path="/food/:id"
-                  element={<FoodDetails />}
-                />
-
-                <Route
-                  path="/about"
-                  element={<About />}
-                />
-
-                <Route
-                  path="/services"
-                  element={<Services />}
-                />
-
-                <Route
-                  path="/contact"
-                  element={<Contact />}
-                />
-
-                {/* =================================================
-                    AUTHENTICATION ROUTES
-                ================================================= */}
-
-                <Route
-                  path="/login"
-                  element={<Login />}
-                />
-
-                <Route
-                  path="/register"
-                  element={<Register />}
-                />
-
-                {/* =================================================
-                    USER PROFILE
-                ================================================= */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
                 <Route
                   path="/profile"
@@ -150,11 +97,6 @@ function App() {
                     </ProtectedRoute>
                   }
                 />
-
-                {/* =================================================
-                    ADMIN ROUTES
-                    More specific route first
-                ================================================= */}
 
                 <Route
                   path="/admin/customers/:id"
@@ -173,10 +115,6 @@ function App() {
                     </AdminRoute>
                   }
                 />
-
-                {/* =================================================
-                    PROTECTED ROUTES
-                ================================================= */}
 
                 <Route
                   path="/cart"
@@ -214,27 +152,12 @@ function App() {
                   }
                 />
 
-                {/* =================================================
-                    FALLBACK ROUTE
-                ================================================= */}
-
-                <Route
-                  path="*"
-                  element={<Home />}
-                />
-
+                <Route path="*" element={<Home />} />
               </Routes>
 
-              {/* =================================================
-                  FOOTER
-              ================================================= */}
-
               <Footer />
-
             </BrowserRouter>
-
           </div>
-
         </CartProvider>
       </AuthProvider>
     </>
