@@ -6,106 +6,78 @@ import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined
 import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import BannerImage from "../assets/pizza.jpeg";
 import { MenuList } from "../helpers/MenuList";
 import "../Styles/Home.css";
 
 function Home() {
-  const availableFoods = MenuList.filter((food) => food.isAvailable !== false);
-  const popularFoods = [...availableFoods].sort((a, b) => b.rating - a.rating).slice(0, 4);
-  const categories = [...new Set(availableFoods.map((food) => food.category))].slice(0, 6);
-  const categoryIcons = ["🍕", "🍔", "🍝", "🍜", "🥗", "🥤"];
-
+  const popularFoods = MenuList.slice(0, 4);
+  const categories = [
+    { icon: "🍕", name: "Pizza", count: "12+ dishes" },
+    { icon: "🍔", name: "Burgers", count: "10+ dishes" },
+    { icon: "🍝", name: "Pasta", count: "8+ dishes" },
+    { icon: "🍜", name: "Noodles", count: "6+ dishes" },
+    { icon: "🥗", name: "Healthy", count: "10+ dishes" },
+    { icon: "🥤", name: "Drinks", count: "15+ drinks" },
+  ];
+  const benefits = [
+    { icon: <LocalShippingOutlinedIcon />, title: "Fast delivery", text: "Fresh food delivered to your door without the long wait." },
+    { icon: <VerifiedOutlinedIcon />, title: "Quality first", text: "Carefully selected ingredients and meals prepared with care." },
+    { icon: <AccessTimeOutlinedIcon />, title: "Easy ordering", text: "Browse, customize and place your order in just a few steps." },
+  ];
   return (
     <main className="homePage">
-      <section className="homeHero">
-        <div className="homeHeroImage" style={{ backgroundImage: `url(${BannerImage})` }} />
-        <div className="homeHeroOverlay" />
-        <div className="homeHeroContent">
-          <div className="homeHeroCopy">
-            <span className="homeEyebrow"><span /> FRESH FOOD · EASY ORDERING</span>
-            <h1>Good food,<br /><em>made simple.</em></h1>
-            <p>Choose your favourite meal, customize it your way, and order it for delivery or pickup.</p>
-            <div className="homeHeroActions">
-              <Link to="/menu" className="homePrimaryButton">Explore menu <ArrowForwardIcon /></Link>
-              <Link to="/menu" className="homeSecondaryButton">View today's food</Link>
-            </div>
-            <div className="homeHeroFacts">
-              <span><StarRoundedIcon /> Top rated choices</span>
-              <span><AccessTimeOutlinedIcon /> Fast ordering</span>
-              <span><VerifiedOutlinedIcon /> Secure checkout</span>
+      <section className="heroSection">
+        <div className="heroBackgroundImage" style={{ backgroundImage: `url(${BannerImage})` }} />
+        <div className="heroShade" />
+        <div className="heroContent">
+          <div className="heroText">
+            <div className="heroSmallText"><span className="heroLiveDot" />Freshly prepared · Fast delivery</div>
+            <h1>Your cravings,<br /><em>delivered.</em></h1>
+            <p>Discover something delicious, order in a few taps and let us bring your next favourite meal straight to your doorstep.</p>
+            <form className="heroSearch" onSubmit={(event) => event.preventDefault()}>
+              <SearchRoundedIcon className="searchIcon" />
+              <input placeholder="Search for pizza, burgers, pasta..." aria-label="Search food" />
+              <Link to="/menu"><button type="button">Find food</button></Link>
+            </form>
+            <div className="heroTrustRow">
+              <div><StarRoundedIcon /><span><strong>4.8</strong> rating</span></div>
+              <div><AccessTimeOutlinedIcon /><span><strong>30 min</strong> delivery</span></div>
+              <div><VerifiedOutlinedIcon /><span><strong>100%</strong> fresh</span></div>
             </div>
           </div>
-          <div className="homeHeroFeature">
-            <div className="featureImage"><img src={BannerImage} alt="Fresh pizza" /><span><StarRoundedIcon /> Featured</span></div>
-            <div className="featureInfo">
-              <div><small>POPULAR CHOICE</small><h2>Freshly made pizza</h2><p>Hot, satisfying and ready for your next order.</p></div>
-              <strong>$15.99</strong>
+          <div className="heroVisual">
+            <div className="heroVisualGlow" />
+            <div className="heroFoodCard">
+              <div className="heroFoodImageWrap"><img src={BannerImage} alt="Featured fresh pizza" /><span className="heroFoodBadge"><StarRoundedIcon /> Top choice</span></div>
+              <div className="heroFoodInfo"><div><span>FEATURED TODAY</span><h3>Fresh & Delicious Pizza</h3><p>Premium ingredients · Made fresh</p></div><strong>$15.99</strong></div>
+              <Link to="/menu" className="heroFoodButton">Explore menu <ArrowForwardIcon /></Link>
             </div>
-            <Link to="/menu" className="featureLink">Order now <ArrowForwardIcon /></Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="homeTrustBar">
-        <div><LocalShippingOutlinedIcon /><span><b>Free delivery</b> on orders over $40</span></div>
-        <div><AccessTimeOutlinedIcon /><span><b>Quick service</b> from order to doorstep</span></div>
-        <div><VerifiedOutlinedIcon /><span><b>Secure payment</b> throughout checkout</span></div>
-      </section>
-
-      <section className="homeSection homeCategories">
-        <div className="homeSectionHead"><div><small>EXPLORE</small><h2>What are you in the mood for?</h2></div><Link to="/menu">See all <ArrowForwardIcon /></Link></div>
-        <div className="homeCategoryGrid">
-          {categories.map((category, index) => (
-            <Link to="/menu" className="homeCategoryCard" key={category}>
-              <span className="homeCategoryIcon">{categoryIcons[index % categoryIcons.length]}</span>
-              <div><h3>{category}</h3><p>Browse dishes</p></div>
-              <ArrowForwardIcon />
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="homePopular">
-        <div className="homeSection homeSectionInner">
-          <div className="homeSectionHead"><div><small>FROM OUR MENU</small><h2>Popular right now</h2></div><Link to="/menu">View full menu <ArrowForwardIcon /></Link></div>
-          <div className="homeFoodGrid">
-            {popularFoods.map((food) => (
-              <article className="homeFoodCard" key={food.id}>
-                <Link to={`/food/${food.id}`} className="homeFoodImage"><img src={food.image} alt={food.name} /><span><StarRoundedIcon /> {food.rating}</span></Link>
-                <div className="homeFoodBody">
-                  <small>{food.category}</small>
-                  <Link to={`/food/${food.id}`}><h3>{food.name}</h3></Link>
-                  <p>{food.description}</p>
-                  <div className="homeFoodBottom"><b>${Number(food.price).toFixed(2)}</b><Link to={`/food/${food.id}`}><AddRoundedIcon /> Add</Link></div>
-                </div>
-              </article>
-            ))}
+            <div className="floatingDeliveryCard"><span className="deliveryCheck">✓</span><div><strong>On-time delivery</strong><small>Your food is on the way</small></div></div>
           </div>
         </div>
       </section>
-
-      <section className="homeSection homeExperience">
-        <div className="homeExperienceCopy"><small>WHY FOOD APP</small><h2>Everything you need to order with confidence.</h2><p>A clean ordering flow from browsing to checkout, with clear food details, secure payments and order tracking.</p><Link to="/menu" className="homeDarkButton">Start ordering <ArrowForwardIcon /></Link></div>
-        <div className="homeBenefits">
-          <div><LocalShippingOutlinedIcon /><h3>Delivery or pickup</h3><p>Choose the fulfilment option that works for you.</p></div>
-          <div><VerifiedOutlinedIcon /><h3>Clear checkout</h3><p>Review address, pricing and payment before placing an order.</p></div>
-          <div><AccessTimeOutlinedIcon /><h3>Order tracking</h3><p>Follow your order from preparation through handover.</p></div>
-          <div><StarRoundedIcon /><h3>Made for food lovers</h3><p>Simple browsing without unnecessary distractions.</p></div>
-        </div>
+      <section className="quickInfoBar">
+        <div><LocalShippingOutlinedIcon /><div><strong>Free delivery</strong><span>On orders over $40</span></div></div>
+        <div><VerifiedOutlinedIcon /><div><strong>Secure checkout</strong><span>Safe & protected payment</span></div></div>
+        <div><AccessTimeOutlinedIcon /><div><strong>Open every day</strong><span>Fresh food when you want it</span></div></div>
       </section>
-
-      <section className="homeOffer">
-        <div><small>WELCOME OFFER</small><h2>20% off your first order</h2><p>Use <b>WELCOME20</b> at checkout when your order meets the offer minimum.</p><Link to="/menu">Browse food <ArrowForwardIcon /></Link></div>
-        <div className="homeOfferBadge"><b>20%</b><span>OFF</span></div>
+      <section className="categorySection">
+        <div className="sectionHeading"><div><span>EXPLORE MENU</span><h2>What are you craving?</h2></div><Link to="/menu" className="viewAllLink">See full menu <ArrowForwardIcon /></Link></div>
+        <div className="categoryGrid">{categories.map((category) => <Link to="/menu" className="categoryCard" key={category.name}><div className="categoryIcon">{category.icon}</div><div className="categoryMeta"><h3>{category.name}</h3><p>{category.count}</p></div><span className="categoryArrow"><ArrowForwardIcon /></span></Link>)}</div>
       </section>
-
-      <section className="homeFinalCta">
-        <div><small>READY WHEN YOU ARE</small><h2>Find something you'll love.</h2></div>
-        <Link to="/menu">Open the menu <ArrowForwardIcon /></Link>
+      <section className="popularSection">
+        <div className="sectionHeading"><div><span>POPULAR RIGHT NOW</span><h2>People are loving these</h2></div><Link to="/menu" className="viewAllLink">View all dishes <ArrowForwardIcon /></Link></div>
+        <div className="foodGrid">{popularFoods.map((food) => <article className="foodCard" key={food.id}><Link to={`/food/${food.id}`} className="foodCardImage"><img src={food.image} alt={food.name} /><span className="foodRating"><StarRoundedIcon /> {food.rating}</span></Link><div className="foodCardContent"><div className="foodCardTopline"><span className="foodCategory">{food.category}</span><span>Fresh</span></div><Link to={`/food/${food.id}`}><h3>{food.name}</h3></Link><p>{food.description}</p><div className="foodCardBottom"><strong>${food.price.toFixed(2)}</strong><Link to={`/food/${food.id}`} className="addFoodButton"><AddRoundedIcon /> Add</Link></div></div></article>)}</div>
       </section>
+      <section className="whySection">
+        <div className="whyContent"><div className="whyText"><span>THE FOOD APP DIFFERENCE</span><h2>Good food should feel <em>effortless.</em></h2><p>Everything is designed around one simple idea: make ordering great food quick, clear and enjoyable from the first tap to the last bite.</p><Link to="/menu" className="whyButton">Start ordering <ArrowForwardIcon /></Link></div><div className="benefitGrid">{benefits.map((benefit) => <div className="benefitCard" key={benefit.title}><div className="benefitIcon">{benefit.icon}</div><h3>{benefit.title}</h3><p>{benefit.text}</p></div>)}<div className="benefitQuote"><StarRoundedIcon /><strong>Made for people who take food seriously.</strong><span>— The Food App team</span></div></div></div>
+      </section>
+      <section className="offerSection"><div className="offerContent"><span>WELCOME TO FOOD APP</span><h2>Your first order<br /><em>just got better.</em></h2><p>Use <strong>WELCOME20</strong> at checkout and get 20% off your first order.</p><Link to="/menu"><button>Claim the offer <ArrowForwardIcon /></button></Link></div><div className="offerCircle"><span>20</span><small>% OFF</small><b>FIRST ORDER</b></div></section>
+      <section className="reviewSection"><div className="sectionHeading reviewHeading"><div><span>REAL PEOPLE · REAL CRAVINGS</span><h2>Loved after the first bite.</h2></div></div><div className="reviewGrid">{[["A","Arjun Sharma","The food was fresh, delicious and arrived much faster than I expected. Definitely ordering again!"],["P","Priya Das","Amazing taste and a really smooth ordering experience. The pizza was absolutely delicious."],["R","Rahul Singh","Great variety and a simple checkout. Everything from browsing to delivery felt easy."]].map(([initial,name,text]) => <article className="reviewCard" key={name}><div className="reviewStars"><StarRoundedIcon /><StarRoundedIcon /><StarRoundedIcon /><StarRoundedIcon /><StarRoundedIcon /></div><p>“{text}”</p><div className="reviewUser"><div className="reviewAvatar">{initial}</div><div><h4>{name}</h4><span>Verified customer</span></div></div></article>)}</div></section>
+      <section className="finalCta"><div><span>WHAT ARE YOU WAITING FOR?</span><h2>There is always room<br />for something delicious.</h2></div><Link to="/menu"><button>Browse the menu <ArrowForwardIcon /></button></Link></section>
     </main>
   );
 }
-
 export default Home;
