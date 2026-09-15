@@ -41,19 +41,12 @@ const promoteToAdmin = async (req, res) => {
     const { id } = req.params;
 
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid user ID",
-      });
+      return res.status(400).json({ success: false, message: "Invalid user ID" });
     }
 
     const user = await User.findById(id);
-
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     if (String(user._id) === String(req.user.userId)) {
@@ -87,7 +80,52 @@ const promoteToAdmin = async (req, res) => {
   }
 };
 
+const demoteToCustomer = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid user ID" });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+
+    if (String(user._id) === String(req.user.userId)) {
+      return res.status(400).json({
+        success: false,
+        message: "You cannot change your own admin role",
+      });
+    }
+
+    if (user.role !== "admin") {
+      return res.status(409).json({
+        success: false,
+        message: "This user is already a customer",
+      });
+    }
+
+    user.role = "customer";
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: `${user.name || "User"} is now a customer`,
+      user: buildStaffUser(user),
+    });
+  } catch (error) {
+    console.error("Demote user error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Unable to change user to customer",
+    });
+  }
+};
+
 module.exports = {
   getStaff,
   promoteToAdmin,
+  demoteToCustomer,
 };
