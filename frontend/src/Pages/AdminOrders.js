@@ -10,8 +10,6 @@ const STATUS_OPTIONS = [
   "preparing",
   "ready",
   "out_for_delivery",
-  "delivered",
-  "picked_up",
   "cancelled",
 ];
 
@@ -141,6 +139,8 @@ const AdminOrders = () => {
         <select value={filters.status} onChange={(e) => setFilters((current) => ({ ...current, status: e.target.value }))} aria-label="Filter by order status">
           <option value="">All statuses</option>
           {STATUS_OPTIONS.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}
+          <option value="delivered">Delivered</option>
+          <option value="picked_up">Picked Up</option>
         </select>
         <select value={filters.paymentStatus} onChange={(e) => setFilters((current) => ({ ...current, paymentStatus: e.target.value }))} aria-label="Filter by payment status">
           <option value="">All payments</option>
@@ -191,6 +191,7 @@ const AdminOrders = () => {
                   <div className="admin-order-card-actions">
                     <select value={order.status || ""} disabled={completed || updatingId === orderId} onChange={(e) => updateStatus(orderId, e.target.value)} aria-label={`Update ${order.orderNumber || "order"} status`}>
                       {STATUS_OPTIONS.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}
+                      {completed && <option value={order.status}>{statusLabel(order.status)}</option>}
                     </select>
                     <button type="button" onClick={() => navigate(`/admin/orders/${orderId}`)} disabled={!orderId}>View Details</button>
                   </div>
