@@ -11,6 +11,15 @@ const OPERATIONAL_STATUSES = [
   "cancelled",
 ];
 
+const STATUS_TRANSITIONS = {
+  placed: ["confirmed", "cancelled"],
+  confirmed: ["preparing", "cancelled"],
+  preparing: ["ready", "cancelled"],
+  ready: ["cancelled"],
+  out_for_delivery: [],
+  cancelled: [],
+};
+
 const buildAdminOrderResponse = (order) => ({
   id: order._id,
   orderNumber: order.orderNumber || "",
@@ -94,40 +103,22 @@ const getAdminOrders = async (req, res) => {
     const filter = {};
 
     if (status) {
-      if (![
-        "placed",
-        "confirmed",
-        "preparing",
-        "ready",
-        "out_for_delivery",
-        "delivered",
-        "cancelled",
-        "picked_up",
-      ].includes(status)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid order status",
-        });
+      if (!["placed", "confirmed", "preparing", "ready", "out_for_delivery", "delivered", "cancelled", "picked_up"].includes(status)) {
+        return res.status(400).json({ success: false, message: "Invalid order status" });
       }
       filter.status = status;
     }
 
     if (paymentStatus) {
       if (!["pending", "cod_pending", "paid", "failed"].includes(paymentStatus)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid payment status",
-        });
+        return res.status(400).json({ success: false, message: "Invalid payment status" });
       }
       filter.paymentStatus = paymentStatus;
     }
 
     if (deliveryType) {
       if (!["delivery", "pickup"].includes(deliveryType)) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid delivery type",
-        });
+        return res.status(400).json({ success: false, message: "Invalid delivery type" });
       }
       filter.deliveryType = deliveryType;
     }
@@ -140,86 +131,44 @@ const getAdminOrders = async (req, res) => {
           { email: { $regex: search, $options: "i" } },
           { phone: { $regex: search, $options: "i" } },
         ],
-      })
-        .select("_id")
-        .lean();
+      }).select("_id").lean();
 
       const userIds = matchingUsers.map((user) => user._id);
-      const searchConditions = [
-        { orderNumber: { $regex: search, $options: "i" } },
-      ];
-
-      if (userIds.length > 0) {
-        searchConditions.push({ userId: { $in: userIds } });
-      }
-
+      const searchConditions = [{ orderNumber: { $regex: search, $options: "i" } }];
+      if (userIds.length > 0) searchConditions.push({ userId: { $in: userIds } });
       filter.$or = searchConditions;
     }
 
     const skip = (page - 1) * limit;
 
     const [orders, total] = await Promise.all([
-      Order.find(filter)
-        .populate("userId", "_id name email phone")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
+      Order.find(filter).populate("userId", "_id name email phone").sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
       Order.countDocuments(filter),
     ]);
 
     return res.status(200).json({
       success: true,
       orders: orders.map(buildAdminOrderResponse),
-      pagination: {
-        page,
-        limit,
-        total,
-        totalPages: Math.ceil(total / limit) || 1,
-        hasMore: page * limit < total,
-      },
+      pagination: { page, limit, total, totalPages: Math.ceil(total / limit) || 1, hasMore: page * limit < total },
     });
   } catch (error) {
     console.error("Get admin orders error:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Unable to load orders",
-    });
+    return res.status(500).json({ success: false, message: "Unable to load orders" });
   }
 };
 
 const getAdminOrderDetails = async (req, res) => {
   try {
     const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ success: false, message: "Order not found" });
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+    const order = await Order.findById(id).populate("userId", "_id name email phone").lean();
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
 
-    const order = await Order.findById(id)
-      .populate("userId", "_id name email phone")
-      .lean();
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
-    return res.status(200).json({
-      success: true,
-      order: buildAdminOrderResponse(order),
-    });
+    return res.status(200).json({ success: true, order: buildAdminOrderResponse(order) });
   } catch (error) {
     console.error("Get admin order details error:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Unable to load order details",
-    });
+    return res.status(500).json({ success: false, message: "Unable to load order details" });
   }
 };
 
@@ -228,41 +177,34 @@ const updateAdminOrderStatus = async (req, res) => {
     const { id } = req.params;
     const requestedStatus = String(req.body?.status || "").trim();
 
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
-
+    if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ success: false, message: "Order not found" });
     if (!OPERATIONAL_STATUSES.includes(requestedStatus)) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Admin can set placed, confirmed, preparing, ready, out_for_delivery, or cancelled",
-      });
+      return res.status(400).json({ success: false, message: "Invalid operational order status" });
     }
 
     const order = await Order.findById(id);
-
-    if (!order) {
-      return res.status(404).json({
-        success: false,
-        message: "Order not found",
-      });
-    }
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
 
     if (["delivered", "picked_up"].includes(order.status)) {
-      return res.status(409).json({
-        success: false,
-        message: "Completed orders cannot be changed",
-      });
+      return res.status(409).json({ success: false, message: "Completed orders cannot be changed" });
     }
 
-    if (order.status === "cancelled" && requestedStatus !== "cancelled") {
+    if (requestedStatus === order.status) {
+      return res.status(200).json({ success: true, message: "Order status unchanged", order: buildAdminOrderResponse(await Order.findById(order._id).populate("userId", "_id name email phone").lean()) });
+    }
+
+    const allowedNextStatuses = [...(STATUS_TRANSITIONS[order.status] || [])];
+
+    // A pickup order goes from Ready directly to handover verification.
+    // A delivery order may move from Ready to Out for Delivery.
+    if (order.status === "ready" && order.deliveryType === "delivery") {
+      allowedNextStatuses.push("out_for_delivery");
+    }
+
+    if (!allowedNextStatuses.includes(requestedStatus)) {
       return res.status(409).json({
         success: false,
-        message: "Cancelled orders cannot be reopened",
+        message: `Invalid status transition: ${order.status} → ${requestedStatus}`,
       });
     }
 
@@ -280,9 +222,7 @@ const updateAdminOrderStatus = async (req, res) => {
     order.status = requestedStatus;
     await order.save();
 
-    const populated = await Order.findById(order._id)
-      .populate("userId", "_id name email phone")
-      .lean();
+    const populated = await Order.findById(order._id).populate("userId", "_id name email phone").lean();
 
     return res.status(200).json({
       success: true,
@@ -291,15 +231,8 @@ const updateAdminOrderStatus = async (req, res) => {
     });
   } catch (error) {
     console.error("Update admin order status error:", error.message);
-    return res.status(500).json({
-      success: false,
-      message: "Unable to update order status",
-    });
+    return res.status(500).json({ success: false, message: "Unable to update order status" });
   }
 };
 
-module.exports = {
-  getAdminOrders,
-  getAdminOrderDetails,
-  updateAdminOrderStatus,
-};
+module.exports = { getAdminOrders, getAdminOrderDetails, updateAdminOrderStatus };
