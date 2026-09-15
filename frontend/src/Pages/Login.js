@@ -201,15 +201,19 @@ function Login() {
         throw new Error(data.message || "Login failed");
       }
 
-      setUser(data.user);
+      const loggedInUser = data.user;
+      setUser(loggedInUser);
 
-      // Send administrators to the separate Admin Panel.
-      // Normal users continue to the customer store.
-      if (data.user?.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/");
+      // Use a full browser navigation after authentication. This lets
+      // AuthContext load the newly-created session from /api/auth/me
+      // before AdminRoute makes its access decision, avoiding a stale
+      // pre-login state redirect.
+      if (loggedInUser?.role === "admin") {
+        window.location.replace("/admin");
+        return;
       }
+
+      window.location.replace("/");
     } catch (error) {
       console.error("Login error:", error);
       setError(error.message || "Something went wrong. Please try again.");
