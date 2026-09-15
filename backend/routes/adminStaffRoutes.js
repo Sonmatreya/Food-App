@@ -1,7 +1,11 @@
 const express = require("express");
 const protect = require("../middleware/authMiddleware");
 const requireAdmin = require("../middleware/adminMiddleware");
-const { getStaff, promoteToAdmin } = require("../controllers/adminStaffController");
+const {
+  getStaff,
+  promoteToAdmin,
+  demoteToCustomer,
+} = require("../controllers/adminStaffController");
 
 const router = express.Router();
 
@@ -14,5 +18,8 @@ router.get("/", getStaff);
 
 // PATCH /api/admin/staff/:id/promote
 router.patch("/:id/promote", promoteToAdmin);
+
+// PATCH /api/admin/staff/:id/demote
+router.patch("/:id/demote", demoteToCustomer);
 
 module.exports = router;
