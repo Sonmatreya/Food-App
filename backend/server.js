@@ -14,6 +14,7 @@ const captchaRoutes = require("./routes/captchaRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const adminCustomerRoutes = require("./routes/adminCustomerRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
+const adminStaffRoutes = require("./routes/adminStaffRoutes");
 const passport = require("./config/googleAuth");
 
 const app = express();
@@ -53,6 +54,7 @@ app.use("/api/captcha", captchaRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin/customers", adminCustomerRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
+app.use("/api/admin/staff", adminStaffRoutes);
 
 // Health check
 app.get("/api/health", (req, res) => {
