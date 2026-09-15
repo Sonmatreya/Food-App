@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../config/api";
 import "../Styles/AdminOrderDetails.css";
 
-const statuses = ["placed", "confirmed", "preparing", "ready", "out_for_delivery", "delivered", "picked_up", "cancelled"];
+const operationalStatuses = ["placed", "confirmed", "preparing", "ready", "out_for_delivery", "cancelled"];
 const label = (value) => String(value || "unknown").split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join(" ");
 const money = (value) => Number(value || 0).toLocaleString("en-IN", { style: "currency", currency: "INR" });
 const dateTime = (value) => value ? new Date(value).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
@@ -62,9 +62,10 @@ const AdminOrderDetails = () => {
       {error && <div className="admin-order-details-error" role="alert">{error}</div>}
 
       <section className="admin-order-details-card admin-order-status-card">
-        <div><h2>Order Status</h2><p>Update the operational stage for this order.</p></div>
+        <div><h2>Order Status</h2><p>Update the operational stage for this order. Delivered and picked-up are completed through handover verification.</p></div>
         <select value={order.status || ""} disabled={completed || saving} onChange={(event) => updateStatus(event.target.value)} aria-label="Update order status">
-          {statuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}
+          {operationalStatuses.map((status) => <option key={status} value={status}>{label(status)}</option>)}
+          {completed && <option value={order.status}>{label(order.status)}</option>}
         </select>
       </section>
 
