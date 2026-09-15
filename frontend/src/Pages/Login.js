@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_URL } from "../config/api";
 import "../Styles/Login.css";
+import "../Styles/PasswordToggle.css";
 
 function Login() {
   const navigate = useNavigate();
