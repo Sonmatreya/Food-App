@@ -27,6 +27,7 @@ import AdminOrders from "./Pages/AdminOrders";
 import AdminOrderDetails from "./Pages/AdminOrderDetails";
 import AdminMenu from "./Pages/AdminMenu";
 import AdminCoupons from "./Pages/AdminCoupons";
+import AdminStaff from "./Pages/AdminStaff";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
@@ -42,7 +43,7 @@ function AppRoutes() {
       <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
         <Route index element={<AdminDashboard />} /><Route path="orders" element={<AdminOrders />} /><Route path="orders/:id" element={<AdminOrderDetails />} />
-        <Route path="customers" element={<AdminCustomers />} /><Route path="customers/:id" element={<AdminCustomerDetails />} /><Route path="menu" element={<AdminMenu />} /><Route path="coupons" element={<AdminCoupons />} />
+        <Route path="customers" element={<AdminCustomers />} /><Route path="customers/:id" element={<AdminCustomerDetails />} /><Route path="menu" element={<AdminMenu />} /><Route path="coupons" element={<AdminCoupons />} /><Route path="staff" element={<AdminStaff />} />
       </Route>
       <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} /><Route path="/delivery-address" element={<ProtectedRoute><DeliveryAddress /></ProtectedRoute>} />
       <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} /><Route path="/order-success/:orderId" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} /><Route path="*" element={<Home />} />
