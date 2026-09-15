@@ -1,5 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import LocalShippingOutlinedIcon from "@mui/icons-material/LocalShippingOutlined";
+import VerifiedOutlinedIcon from "@mui/icons-material/VerifiedOutlined";
+import StarRoundedIcon from "@mui/icons-material/StarRounded";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import BannerImage from "../assets/pizza.jpeg";
 import { MenuList } from "../helpers/MenuList";
 import "../Styles/Home.css";
@@ -8,412 +15,197 @@ function Home() {
   const popularFoods = MenuList.slice(0, 4);
 
   const categories = [
+    { icon: "🍕", name: "Pizza", count: "12+ dishes" },
+    { icon: "🍔", name: "Burgers", count: "10+ dishes" },
+    { icon: "🍝", name: "Pasta", count: "8+ dishes" },
+    { icon: "🍜", name: "Noodles", count: "6+ dishes" },
+    { icon: "🥗", name: "Healthy", count: "10+ dishes" },
+    { icon: "🥤", name: "Drinks", count: "15+ drinks" },
+  ];
+
+  const benefits = [
     {
-      icon: "🍕",
-      name: "Pizza",
-      count: "12+ Items",
+      icon: <LocalShippingOutlinedIcon />,
+      title: "Fast delivery",
+      text: "Fresh food delivered to your door without the long wait.",
     },
     {
-      icon: "🍔",
-      name: "Burgers",
-      count: "10+ Items",
+      icon: <VerifiedOutlinedIcon />,
+      title: "Quality first",
+      text: "Carefully selected ingredients and meals prepared with care.",
     },
     {
-      icon: "🍝",
-      name: "Pasta",
-      count: "8+ Items",
-    },
-    {
-      icon: "🍜",
-      name: "Noodles",
-      count: "6+ Items",
-    },
-    {
-      icon: "🥗",
-      name: "Healthy",
-      count: "10+ Items",
-    },
-    {
-      icon: "🥤",
-      name: "Drinks",
-      count: "15+ Items",
+      icon: <AccessTimeOutlinedIcon />,
+      title: "Easy ordering",
+      text: "Browse, customize and place your order in just a few steps.",
     },
   ];
 
   return (
-    <div className="homePage">
-
-      {/* ================= HERO ================= */}
-      <section
-        className="heroSection"
-        style={{ backgroundImage: `url(${BannerImage})` }}
-      >
-        <div className="heroOverlay"></div>
+    <main className="homePage">
+      <section className="heroSection">
+        <div className="heroBackgroundImage" style={{ backgroundImage: `url(${BannerImage})` }} />
+        <div className="heroShade" />
 
         <div className="heroContent">
           <div className="heroText">
-            <span className="heroSmallText">
-              🍴 Delicious food is waiting for you
-            </span>
+            <div className="heroSmallText">
+              <span className="heroLiveDot" />
+              Freshly prepared · Fast delivery
+            </div>
 
             <h1>
-              Good Food.
+              Your cravings,
               <br />
-              Good Mood.
+              <em>delivered.</em>
             </h1>
 
             <p>
-              Discover delicious meals, order your favourites and enjoy
-              fresh food delivered right to your doorstep.
+              Discover something delicious, order in a few taps and let us
+              bring your next favourite meal straight to your doorstep.
             </p>
 
-            <div className="heroSearch">
-              <span className="searchIcon">🔍</span>
+            <form className="heroSearch" onSubmit={(event) => event.preventDefault()}>
+              <SearchRoundedIcon className="searchIcon" />
+              <input placeholder="Search for pizza, burgers, pasta..." aria-label="Search food" />
+              <Link to="/menu"><button type="button">Find food</button></Link>
+            </form>
 
-              <input
-                type="text"
-                placeholder="Search for food, dishes or restaurants..."
-              />
-
-              <Link to="/menu">
-                <button>Search</button>
-              </Link>
-            </div>
-
-            <div className="heroButtons">
-              <Link to="/menu">
-                <button className="primaryHeroButton">
-                  Order Now →
-                </button>
-              </Link>
-
-              <Link to="/menu">
-                <button className="secondaryHeroButton">
-                  Explore Menu
-                </button>
-              </Link>
-            </div>
-
-            <div className="heroStats">
-              <div>
-                <strong>500+</strong>
-                <span>Happy Customers</span>
-              </div>
-
-              <div>
-                <strong>50+</strong>
-                <span>Food Items</span>
-              </div>
-
-              <div>
-                <strong>4.8</strong>
-                <span>Customer Rating</span>
-              </div>
+            <div className="heroTrustRow">
+              <div><StarRoundedIcon /><span><strong>4.8</strong> rating</span></div>
+              <div><AccessTimeOutlinedIcon /><span><strong>30 min</strong> delivery</span></div>
+              <div><VerifiedOutlinedIcon /><span><strong>100%</strong> fresh</span></div>
             </div>
           </div>
 
-          <div className="heroFoodCard">
-            <div className="heroFoodBadge">
-              ⭐ Top Rated
-            </div>
-
-            <img src={BannerImage} alt="Featured Pizza" />
-
-            <div className="heroFoodInfo">
-              <div>
-                <h3>Fresh & Delicious Pizza</h3>
-                <p>Made with premium ingredients</p>
+          <div className="heroVisual">
+            <div className="heroVisualGlow" />
+            <div className="heroFoodCard">
+              <div className="heroFoodImageWrap">
+                <img src={BannerImage} alt="Featured fresh pizza" />
+                <span className="heroFoodBadge"><StarRoundedIcon /> Top choice</span>
               </div>
-
-              <strong>$15.99</strong>
+              <div className="heroFoodInfo">
+                <div>
+                  <span>FEATURED TODAY</span>
+                  <h3>Fresh & Delicious Pizza</h3>
+                  <p>Premium ingredients · Made fresh</p>
+                </div>
+                <strong>$15.99</strong>
+              </div>
+              <Link to="/menu" className="heroFoodButton">Explore menu <ArrowForwardIcon /></Link>
             </div>
-
-            <Link to="/menu">
-              <button className="heroFoodButton">
-                View Menu
-              </button>
-            </Link>
+            <div className="floatingDeliveryCard">
+              <span className="deliveryCheck">✓</span>
+              <div><strong>On-time delivery</strong><small>Your food is on the way</small></div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* ================= CATEGORIES ================= */}
+      <section className="quickInfoBar">
+        <div><LocalShippingOutlinedIcon /><div><strong>Free delivery</strong><span>On orders over $40</span></div></div>
+        <div><VerifiedOutlinedIcon /><div><strong>Secure checkout</strong><span>Safe & protected payment</span></div></div>
+        <div><AccessTimeOutlinedIcon /><div><strong>Open every day</strong><span>Fresh food when you want it</span></div></div>
+      </section>
+
       <section className="categorySection">
         <div className="sectionHeading">
-          <div>
-            <span>EXPLORE</span>
-            <h2>What are you craving?</h2>
-          </div>
-
-          <Link to="/menu" className="viewAllLink">
-            View All →
-          </Link>
+          <div><span>EXPLORE MENU</span><h2>What are you craving?</h2></div>
+          <Link to="/menu" className="viewAllLink">See full menu <ArrowForwardIcon /></Link>
         </div>
-
         <div className="categoryGrid">
-          {categories.map((category, index) => (
-            <Link
-              to="/menu"
-              className="categoryCard"
-              key={index}
-            >
-              <div className="categoryIcon">
-                {category.icon}
-              </div>
-
-              <div>
-                <h3>{category.name}</h3>
-                <p>{category.count}</p>
-              </div>
-
-              <span className="categoryArrow">→</span>
+          {categories.map((category) => (
+            <Link to="/menu" className="categoryCard" key={category.name}>
+              <div className="categoryIcon">{category.icon}</div>
+              <div className="categoryMeta"><h3>{category.name}</h3><p>{category.count}</p></div>
+              <span className="categoryArrow"><ArrowForwardIcon /></span>
             </Link>
           ))}
         </div>
       </section>
 
-      {/* ================= POPULAR FOOD ================= */}
       <section className="popularSection">
         <div className="sectionHeading">
-          <div>
-            <span>OUR SPECIALS</span>
-            <h2>Popular dishes</h2>
-          </div>
-
-          <Link to="/menu" className="viewAllLink">
-            View All →
-          </Link>
+          <div><span>POPULAR RIGHT NOW</span><h2>People are loving these</h2></div>
+          <Link to="/menu" className="viewAllLink">View all dishes <ArrowForwardIcon /></Link>
         </div>
-
         <div className="foodGrid">
           {popularFoods.map((food) => (
-            <div className="foodCard" key={food.id}>
-
-              <div className="foodCardImage">
+            <article className="foodCard" key={food.id}>
+              <Link to={`/food/${food.id}`} className="foodCardImage">
                 <img src={food.image} alt={food.name} />
-
-                <span className="foodRating">
-                  ⭐ {food.rating}
-                </span>
-              </div>
-
+                <span className="foodRating"><StarRoundedIcon /> {food.rating}</span>
+              </Link>
               <div className="foodCardContent">
-                <span className="foodCategory">
-                  {food.category}
-                </span>
-
-                <h3>{food.name}</h3>
-
+                <div className="foodCardTopline"><span className="foodCategory">{food.category}</span><span>Fresh</span></div>
+                <Link to={`/food/${food.id}`}><h3>{food.name}</h3></Link>
                 <p>{food.description}</p>
-
                 <div className="foodCardBottom">
                   <strong>${food.price.toFixed(2)}</strong>
-
-                  <Link to={`/food/${food.id}`}>
-                    <button>View →</button>
-                  </Link>
+                  <Link to={`/food/${food.id}`} className="addFoodButton"><AddRoundedIcon /> Add</Link>
                 </div>
               </div>
-
-            </div>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* ================= WHY CHOOSE US ================= */}
       <section className="whySection">
         <div className="whyContent">
-
           <div className="whyText">
-            <span>WHY CHOOSE US</span>
-
-            <h2>
-              We make your food
-              <br />
-              experience better.
-            </h2>
-
-            <p>
-              From carefully prepared meals to fast delivery, we focus
-              on giving you a simple and enjoyable food ordering
-              experience.
-            </p>
-
-            <Link to="/menu">
-              <button className="whyButton">
-                Start Ordering →
-              </button>
-            </Link>
+            <span>THE FOOD APP DIFFERENCE</span>
+            <h2>Good food should feel <em>effortless.</em></h2>
+            <p>Everything is designed around one simple idea: make ordering great food quick, clear and enjoyable from the first tap to the last bite.</p>
+            <Link to="/menu" className="whyButton">Start ordering <ArrowForwardIcon /></Link>
           </div>
-
           <div className="benefitGrid">
-
-            <div className="benefitCard">
-              <div className="benefitIcon">🚚</div>
-              <h3>Fast Delivery</h3>
-              <p>
-                Get your favourite food delivered quickly and safely.
-              </p>
-            </div>
-
-            <div className="benefitCard">
-              <div className="benefitIcon">🥗</div>
-              <h3>Fresh Food</h3>
-              <p>
-                Fresh ingredients and delicious meals prepared daily.
-              </p>
-            </div>
-
-            <div className="benefitCard">
-              <div className="benefitIcon">🔒</div>
-              <h3>Secure Payment</h3>
-              <p>
-                Safe and secure payment options for every order.
-              </p>
-            </div>
-
-            <div className="benefitCard">
-              <div className="benefitIcon">⭐</div>
-              <h3>Best Quality</h3>
-              <p>
-                Quality food and service that you can trust.
-              </p>
-            </div>
-
+            {benefits.map((benefit) => (
+              <div className="benefitCard" key={benefit.title}>
+                <div className="benefitIcon">{benefit.icon}</div>
+                <h3>{benefit.title}</h3>
+                <p>{benefit.text}</p>
+              </div>
+            ))}
+            <div className="benefitQuote"><StarRoundedIcon /><strong>Made for people who take food seriously.</strong><span>— The Food App team</span></div>
           </div>
-
         </div>
       </section>
 
-      {/* ================= OFFER ================= */}
       <section className="offerSection">
-
         <div className="offerContent">
-          <span>LIMITED TIME OFFER</span>
-
-          <h2>
-            Get 20% OFF
-            <br />
-            on your first order
-          </h2>
-
-          <p>
-            Order your favourite food today and enjoy a special
-            discount on your first purchase.
-          </p>
-
-          <Link to="/menu">
-            <button>
-              Order Now →
-            </button>
-          </Link>
+          <span>WELCOME TO FOOD APP</span>
+          <h2>Your first order<br /><em>just got better.</em></h2>
+          <p>Use <strong>WELCOME20</strong> at checkout and get 20% off your first order.</p>
+          <Link to="/menu"><button>Claim the offer <ArrowForwardIcon /></button></Link>
         </div>
-
-        <div className="offerCircle">
-          <span>20%</span>
-          <small>OFF</small>
-        </div>
-
+        <div className="offerCircle"><span>20</span><small>% OFF</small><b>FIRST ORDER</b></div>
       </section>
 
-      {/* ================= REVIEWS ================= */}
       <section className="reviewSection">
-
         <div className="sectionHeading reviewHeading">
-          <div>
-            <span>WHAT OUR CUSTOMERS SAY</span>
-            <h2>Loved by food lovers</h2>
-          </div>
+          <div><span>REAL PEOPLE · REAL CRAVINGS</span><h2>Loved after the first bite.</h2></div>
         </div>
-
         <div className="reviewGrid">
-
-          <div className="reviewCard">
-            <div className="reviewStars">
-              ★★★★★
-            </div>
-
-            <p>
-              "The food was fresh, delicious and arrived much faster
-              than I expected. Definitely ordering again!"
-            </p>
-
-            <div className="reviewUser">
-              <div className="reviewAvatar">A</div>
-
-              <div>
-                <h4>Arjun Sharma</h4>
-                <span>Verified Customer</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="reviewCard">
-            <div className="reviewStars">
-              ★★★★★
-            </div>
-
-            <p>
-              "Amazing taste and very easy ordering experience.
-              The pizza was absolutely delicious."
-            </p>
-
-            <div className="reviewUser">
-              <div className="reviewAvatar">P</div>
-
-              <div>
-                <h4>Priya Das</h4>
-                <span>Verified Customer</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="reviewCard">
-            <div className="reviewStars">
-              ★★★★★
-            </div>
-
-            <p>
-              "Great variety of food and the checkout process is
-              really simple. Highly recommended!"
-            </p>
-
-            <div className="reviewUser">
-              <div className="reviewAvatar">R</div>
-
-              <div>
-                <h4>Rahul Singh</h4>
-                <span>Verified Customer</span>
-              </div>
-            </div>
-          </div>
-
+          {[
+            ["A", "Arjun Sharma", "The food was fresh, delicious and arrived much faster than I expected. Definitely ordering again!"],
+            ["P", "Priya Das", "Amazing taste and a really smooth ordering experience. The pizza was absolutely delicious."],
+            ["R", "Rahul Singh", "Great variety and a simple checkout. Everything from browsing to delivery felt easy."],
+          ].map(([initial, name, text]) => (
+            <article className="reviewCard" key={name}>
+              <div className="reviewStars"><StarRoundedIcon /><StarRoundedIcon /><StarRoundedIcon /><StarRoundedIcon /><StarRoundedIcon /></div>
+              <p>“{text}”</p>
+              <div className="reviewUser"><div className="reviewAvatar">{initial}</div><div><h4>{name}</h4><span>Verified customer</span></div></div>
+            </article>
+          ))}
         </div>
-
       </section>
 
-      {/* ================= FINAL CTA ================= */}
       <section className="finalCta">
-
-        <div>
-          <span>READY TO ORDER?</span>
-
-          <h2>
-            Your next delicious
-            <br />
-            meal is just a click away.
-          </h2>
-        </div>
-
-        <Link to="/menu">
-          <button>
-            Browse Menu →
-          </button>
-        </Link>
-
+        <div><span>WHAT ARE YOU WAITING FOR?</span><h2>There is always room<br />for something delicious.</h2></div>
+        <Link to="/menu"><button>Browse the menu <ArrowForwardIcon /></button></Link>
       </section>
-
-    </div>
+    </main>
   );
 }
 
