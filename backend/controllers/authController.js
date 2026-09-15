@@ -17,8 +17,7 @@ const setAuthCookie = (res, token) => {
   res.cookie("token", token, {
     httpOnly: true,
     secure: isProduction,
-    sameSite:
-      isProduction ? "none" : "lax",
+    sameSite: isProduction ? "none" : "lax",
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -119,12 +118,9 @@ const login = async (req, res) => {
       });
     }
 
-    const identifier =
-      email?.trim().toLowerCase() || phone?.trim();
+    const identifier = email?.trim().toLowerCase() || phone?.trim();
 
-    const query = email
-      ? { email: identifier }
-      : { phone: identifier };
+    const query = email ? { email: identifier } : { phone: identifier };
 
     const user = await User.findOne(query).select("+password");
 
@@ -135,10 +131,7 @@ const login = async (req, res) => {
       });
     }
 
-    const passwordMatched = await bcrypt.compare(
-      password,
-      user.password
-    );
+    const passwordMatched = await bcrypt.compare(password, user.password);
 
     if (!passwordMatched) {
       return res.status(401).json({
@@ -177,25 +170,23 @@ const login = async (req, res) => {
 const googleLoginSuccess = (req, res) => {
   try {
     if (!req.user) {
-      return res.redirect(
-        `${clientUrl}/login?google=failed`
-      );
+      return res.redirect(`${clientUrl}/login?google=failed`);
     }
 
     const token = generateToken(req.user._id);
 
     setAuthCookie(res, token);
 
-    return res.redirect(`${clientUrl}/`);
-  } catch (error) {
-    console.error(
-      "Google login success error:",
-      error.message
-    );
+    // Google authentication already gives us the complete User document,
+    // including the database role. Send admins directly to the admin panel
+    // instead of always sending every Google user to the customer home page.
+    const destination = req.user.role === "admin" ? "/admin" : "/";
 
-    return res.redirect(
-      `${clientUrl}/login?google=failed`
-    );
+    return res.redirect(`${clientUrl}${destination}`);
+  } catch (error) {
+    console.error("Google login success error:", error.message);
+
+    return res.redirect(`${clientUrl}/login?google=failed`);
   }
 };
 
@@ -204,8 +195,7 @@ const logout = (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
     secure: isProduction,
-    sameSite:
-      isProduction ? "none" : "lax",
+    sameSite: isProduction ? "none" : "lax",
   });
 
   res.json({
@@ -217,9 +207,7 @@ const logout = (req, res) => {
 // Get current user
 const getMe = async (req, res) => {
   try {
-    const user = await User.findById(req.user.userId).select(
-      "-password"
-    );
+    const user = await User.findById(req.user.userId).select("-password");
 
     if (!user) {
       return res.status(404).json({
