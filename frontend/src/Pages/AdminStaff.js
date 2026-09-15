@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { API_URL } from "../config/api";
+import { useAuth } from "../context/AuthContext";
 import "../Styles/AdminStaff.css";
 
 const formatDate = (value) => {
@@ -15,6 +16,7 @@ const formatDate = (value) => {
 };
 
 const AdminStaff = () => {
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
   const [summary, setSummary] = useState({ total: 0, admins: 0, customers: 0 });
   const [search, setSearch] = useState("");
@@ -58,28 +60,33 @@ const AdminStaff = () => {
     });
   }, [users, search, roleFilter]);
 
-  const promote = async (user) => {
-    if (!user?.id || user.role === "admin") return;
-    const confirmed = window.confirm(`Make ${user.name || user.email} an admin?`);
+  const changeRole = async (user) => {
+    if (!user?.id || user.id === currentUser?.id) return;
+
+    const isAdmin = user.role === "admin";
+    const actionText = isAdmin ? "make this admin account a customer" : "make this customer an admin";
+    const confirmed = window.confirm(`Are you sure you want to ${actionText}?\n\n${user.name || user.email}`);
     if (!confirmed) return;
 
     setWorkingId(user.id);
     setError("");
     setSuccess("");
+
     try {
-      const response = await fetch(`${API_URL}/api/admin/staff/${user.id}/promote`, {
+      const endpoint = isAdmin ? "demote" : "promote";
+      const response = await fetch(`${API_URL}/api/admin/staff/${user.id}/${endpoint}`, {
         method: "PATCH",
         credentials: "include",
         headers: { Accept: "application/json" },
       });
       const data = await response.json();
       if (!response.ok || !data.success) {
-        throw new Error(data.message || "Unable to promote user");
+        throw new Error(data.message || "Unable to change user role");
       }
-      setSuccess(data.message || "User promoted to admin");
+      setSuccess(data.message || "User role updated successfully");
       await loadStaff();
-    } catch (promoteError) {
-      setError(promoteError.message || "Unable to promote user");
+    } catch (roleError) {
+      setError(roleError.message || "Unable to change user role");
     } finally {
       setWorkingId("");
     }
@@ -111,7 +118,7 @@ const AdminStaff = () => {
       </div>
 
       <div className="admin-staff-security-note">
-        <span>✓</span><div><strong>Secure role management</strong><p>New registrations remain customers. Only an authenticated admin can promote a registered account to admin.</p></div>
+        <span>✓</span><div><strong>Secure role management</strong><p>New registrations remain customers. Admins can promote trusted accounts or return another admin account to customer access. You cannot change your own role.</p></div>
       </div>
 
       <div className="admin-staff-toolbar">
@@ -120,20 +127,32 @@ const AdminStaff = () => {
       </div>
 
       <div className="admin-staff-card">
-        <div className="admin-staff-card-head"><div><span>Account directory</span><h3>{filteredUsers.length} account{filteredUsers.length !== 1 ? "s" : ""}</h3></div><small>Promote trusted accounts only.</small></div>
+        <div className="admin-staff-card-head"><div><span>Account directory</span><h3>{filteredUsers.length} account{filteredUsers.length !== 1 ? "s" : ""}</h3></div><small>Manage trusted account access.</small></div>
         <div className="admin-staff-table-wrap">
           <table className="admin-staff-table">
             <thead><tr><th>Account</th><th>Contact</th><th>Role</th><th>Registered</th><th>Action</th></tr></thead>
             <tbody>
-              {filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td><div className="admin-staff-user"><div className="admin-staff-avatar">{(user.name || user.email || "U").charAt(0).toUpperCase()}</div><div><strong>{user.name || "Unnamed User"}</strong><small>{user.email || "No email"}</small></div></div></td>
-                  <td>{user.phone || "—"}</td>
-                  <td><span className={`admin-staff-role ${user.role === "admin" ? "admin" : "customer"}`}>{user.role === "admin" ? "Admin" : "Customer"}</span></td>
-                  <td>{formatDate(user.createdAt)}</td>
-                  <td>{user.role === "admin" ? <span className="admin-staff-current">Administrator</span> : <button type="button" className="admin-staff-promote" onClick={() => promote(user)} disabled={workingId === user.id}>{workingId === user.id ? "Promoting..." : "Make Admin"}</button>}</td>
-                </tr>
-              ))}
+              {filteredUsers.map((account) => {
+                const isCurrentUser = account.id === currentUser?.id;
+                const isAdmin = account.role === "admin";
+                return (
+                  <tr key={account.id}>
+                    <td><div className="admin-staff-user"><div className="admin-staff-avatar">{(account.name || account.email || "U").charAt(0).toUpperCase()}</div><div><strong>{account.name || "Unnamed User"}</strong><small>{account.email || "No email"}</small></div></div></td>
+                    <td>{account.phone || "—"}</td>
+                    <td><span className={`admin-staff-role ${isAdmin ? "admin" : "customer"}`}>{isAdmin ? "Admin" : "Customer"}</span></td>
+                    <td>{formatDate(account.createdAt)}</td>
+                    <td>
+                      {isCurrentUser ? (
+                        <span className="admin-staff-current">Your Account</span>
+                      ) : (
+                        <button type="button" className={isAdmin ? "admin-staff-demote" : "admin-staff-promote"} onClick={() => changeRole(account)} disabled={workingId === account.id}>
+                          {workingId === account.id ? "Updating..." : isAdmin ? "Make Customer" : "Make Admin"}
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {!filteredUsers.length && <div className="admin-staff-empty"><strong>No matching accounts</strong><p>Try a different search or role filter.</p></div>}
