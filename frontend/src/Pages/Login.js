@@ -9,6 +9,7 @@ function Login() {
   const { setUser } = useAuth();
 
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [showPassword, setShowPassword] = useState(false);
   const [captchaId, setCaptchaId] = useState("");
   const [captchaImage, setCaptchaImage] = useState("");
   const [captchaAnswer, setCaptchaAnswer] = useState("");
@@ -204,10 +205,6 @@ function Login() {
       const loggedInUser = data.user;
       setUser(loggedInUser);
 
-      // Use a full browser navigation after authentication. This lets
-      // AuthContext load the newly-created session from /api/auth/me
-      // before AdminRoute makes its access decision, avoiding a stale
-      // pre-login state redirect.
       if (loggedInUser?.role === "admin") {
         window.location.replace("/admin");
         return;
@@ -246,7 +243,12 @@ function Login() {
 
           <div className="login-field">
             <label htmlFor="login-password">Password</label>
-            <input id="login-password" type="password" name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} autoComplete="current-password" required />
+            <div className="password-input-wrapper">
+              <input id="login-password" type={showPassword ? "text" : "password"} name="password" placeholder="Enter your password" value={formData.password} onChange={handleChange} autoComplete="current-password" required />
+              <button type="button" className="password-toggle" onClick={() => setShowPassword((previous) => !previous)} aria-label={showPassword ? "Hide password" : "Show password"} title={showPassword ? "Hide password" : "Show password"}>
+                {showPassword ? "🙈" : "👁️"}
+              </button>
+            </div>
           </div>
 
           <div className="robot-check">
