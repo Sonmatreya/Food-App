@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Icons
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -28,8 +28,11 @@ function Home() {
      1. STATE AND CART
      ======================================================= */
 
+  const navigate = useNavigate();
   const { addToCart } = useCart();
+
   const [addedFoodIds, setAddedFoodIds] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
 
 
   /* =======================================================
@@ -88,6 +91,19 @@ function Home() {
      3. EVENT HANDLERS
      ======================================================= */
 
+  const handleSearch = (event) => {
+    event.preventDefault();
+
+    const trimmedSearch = searchTerm.trim();
+
+    if (!trimmedSearch) {
+      navigate("/menu");
+      return;
+    }
+
+    navigate(`/menu?search=${encodeURIComponent(trimmedSearch)}`);
+  };
+
   const handleAddToCart = (food) => {
     addToCart(food, 1);
 
@@ -138,18 +154,18 @@ function Home() {
             </p>
 
             {/* Hero search */}
-            <form
-              className="heroSearch"
-              onSubmit={(event) => event.preventDefault()}
-            >
+            <form className="heroSearch" onSubmit={handleSearch}>
               <SearchRoundedIcon className="searchIcon" />
+
               <input
+                type="text"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Search for pizza, burgers, pasta..."
                 aria-label="Search food"
               />
-              <Link to="/menu">
-                <button type="button">Find food</button>
-              </Link>
+
+              <button type="submit">Find food</button>
             </form>
 
             {/* Trust information */}
@@ -257,7 +273,7 @@ function Home() {
         <div className="categoryGrid">
           {categories.map((category) => (
             <Link
-              to="/menu"
+              to={`/menu?category=${encodeURIComponent(category.name)}`}
               className="categoryCard"
               key={category.name}
             >
@@ -403,11 +419,9 @@ function Home() {
             Use <strong>WELCOME20</strong> at checkout and get 20% off
             your first order.
           </p>
-          <Link to="/menu">
-            <button type="button">
-              Claim the offer
-              <ArrowForwardIcon />
-            </button>
+          <Link to="/menu" className="offerButton">
+            Claim the offer
+            <ArrowForwardIcon />
           </Link>
         </div>
 
@@ -469,11 +483,9 @@ function Home() {
           </h2>
         </div>
 
-        <Link to="/menu">
-          <button type="button">
-            Browse the menu
-            <ArrowForwardIcon />
-          </button>
+        <Link to="/menu" className="finalCtaButton">
+          Browse the menu
+          <ArrowForwardIcon />
         </Link>
       </section>
     </main>
