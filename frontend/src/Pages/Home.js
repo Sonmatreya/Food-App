@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -9,9 +9,13 @@ import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import BannerImage from "../assets/pizza.jpeg";
 import { MenuList } from "../helpers/MenuList";
+import { useCart } from "../context/CartContext";
 import "../Styles/Home.css";
 
 function Home() {
+  const { addToCart } = useCart();
+  const [addedFoodIds, setAddedFoodIds] = useState([]);
+
   const popularFoods = MenuList.slice(0, 4);
   const categories = [
     { icon: "🍕", name: "Pizza", count: "12+ dishes" },
@@ -26,6 +30,16 @@ function Home() {
     { icon: <VerifiedOutlinedIcon />, title: "Quality first", text: "Carefully selected ingredients and meals prepared with care." },
     { icon: <AccessTimeOutlinedIcon />, title: "Easy ordering", text: "Browse, customize and place your order in just a few steps." },
   ];
+
+  const handleAddToCart = (food) => {
+    addToCart(food, 1);
+    setAddedFoodIds((currentIds) =>
+      currentIds.includes(food.id)
+        ? currentIds
+        : [...currentIds, food.id]
+    );
+  };
+
   return (
     <main className="homePage">
       <section className="heroSection">
@@ -69,7 +83,38 @@ function Home() {
       </section>
       <section className="popularSection">
         <div className="sectionHeading"><div><span>POPULAR RIGHT NOW</span><h2>People are loving these</h2></div><Link to="/menu" className="viewAllLink">View all dishes <ArrowForwardIcon /></Link></div>
-        <div className="foodGrid">{popularFoods.map((food) => <article className="foodCard" key={food.id}><Link to={`/food/${food.id}`} className="foodCardImage"><img src={food.image} alt={food.name} /><span className="foodRating"><StarRoundedIcon /> {food.rating}</span></Link><div className="foodCardContent"><div className="foodCardTopline"><span className="foodCategory">{food.category}</span><span>Fresh</span></div><Link to={`/food/${food.id}`}><h3>{food.name}</h3></Link><p>{food.description}</p><div className="foodCardBottom"><strong>${food.price.toFixed(2)}</strong><Link to={`/food/${food.id}`} className="addFoodButton"><AddRoundedIcon /> Add</Link></div></div></article>)}</div>
+        <div className="foodGrid">{popularFoods.map((food) => {
+          const isAdded = addedFoodIds.includes(food.id);
+
+          return (
+            <article className="foodCard" key={food.id}>
+              <Link to={`/food/${food.id}`} className="foodCardImage">
+                <img src={food.image} alt={food.name} />
+                <span className="foodRating"><StarRoundedIcon /> {food.rating}</span>
+              </Link>
+              <div className="foodCardContent">
+                <div className="foodCardTopline"><span className="foodCategory">{food.category}</span><span>Fresh</span></div>
+                <Link to={`/food/${food.id}`}><h3>{food.name}</h3></Link>
+                <p>{food.description}</p>
+                <div className="foodCardBottom">
+                  <strong>${food.price.toFixed(2)}</strong>
+                  <button
+                    type="button"
+                    className="addFoodButton"
+                    onClick={() => handleAddToCart(food)}
+                    style={{
+                      background: isAdded ? "#2f8f5b" : "#ff5a36",
+                      color: "#fff",
+                    }}
+                    aria-label={isAdded ? `${food.name} added to cart` : `Add ${food.name} to cart`}
+                  >
+                    <AddRoundedIcon /> {isAdded ? "Added" : "Add"}
+                  </button>
+                </div>
+              </div>
+            </article>
+          );
+        })}</div>
       </section>
       <section className="whySection">
         <div className="whyContent"><div className="whyText"><span>THE FOOD APP DIFFERENCE</span><h2>Good food should feel <em>effortless.</em></h2><p>Everything is designed around one simple idea: make ordering great food quick, clear and enjoyable from the first tap to the last bite.</p><Link to="/menu" className="whyButton">Start ordering <ArrowForwardIcon /></Link></div><div className="benefitGrid">{benefits.map((benefit) => <div className="benefitCard" key={benefit.title}><div className="benefitIcon">{benefit.icon}</div><h3>{benefit.title}</h3><p>{benefit.text}</p></div>)}<div className="benefitQuote"><StarRoundedIcon /><strong>Made for people who take food seriously.</strong><span>— The Food App team</span></div></div></div>
@@ -80,4 +125,5 @@ function Home() {
     </main>
   );
 }
+
 export default Home;
