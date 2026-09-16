@@ -100,12 +100,8 @@ function Home() {
                   <strong>${food.price.toFixed(2)}</strong>
                   <button
                     type="button"
-                    className="addFoodButton"
+                    className={`addFoodButton ${isAdded ? "added" : ""}`}
                     onClick={() => handleAddToCart(food)}
-                    style={{
-                      background: isAdded ? "#2f8f5b" : "#ff5a36",
-                      color: "#fff",
-                    }}
                     aria-label={isAdded ? `${food.name} added to cart` : `Add ${food.name} to cart`}
                   >
                     <AddRoundedIcon /> {isAdded ? "Added" : "Add"}
