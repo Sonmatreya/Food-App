@@ -102,6 +102,10 @@ function Home() {
                     type="button"
                     className={`addFoodButton ${isAdded ? "added" : ""}`}
                     onClick={() => handleAddToCart(food)}
+                    style={{
+                      backgroundColor: isAdded ? "#16a34a" : "#e31837",
+                      color: "#ffffff",
+                    }}
                     aria-label={isAdded ? `${food.name} added to cart` : `Add ${food.name} to cart`}
                   >
                     <AddRoundedIcon /> {isAdded ? "Added" : "Add"}
