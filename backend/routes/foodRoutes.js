@@ -7,6 +7,7 @@ const {
   createFood,
   updateFood,
   deleteFood,
+  seedStarterFoods,
 } = require("../controllers/foodController");
 
 const router = express.Router();
@@ -17,6 +18,7 @@ router.get("/:id", getFoodById);
 
 // Admin catalogue management
 router.post("/", protect, requireAdmin, createFood);
+router.post("/seed", protect, requireAdmin, seedStarterFoods);
 router.put("/:id", protect, requireAdmin, updateFood);
 router.delete("/:id", protect, requireAdmin, deleteFood);
 
