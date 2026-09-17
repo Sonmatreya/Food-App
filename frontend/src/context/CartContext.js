@@ -1,13 +1,37 @@
 import React, {
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
 const CartContext = createContext();
+const CART_STORAGE_KEY = "food-app-cart";
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+      if (!savedCart) return [];
+
+      const parsedCart = JSON.parse(savedCart);
+      return Array.isArray(parsedCart) ? parsedCart : [];
+    } catch (error) {
+      console.error("Unable to restore cart:", error);
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        CART_STORAGE_KEY,
+        JSON.stringify(cartItems)
+      );
+    } catch (error) {
+      console.error("Unable to save cart:", error);
+    }
+  }, [cartItems]);
 
   // ==========================================
   // ADD ITEM TO CART
@@ -23,18 +47,12 @@ export function CartProvider({ children }) {
         (item) => item.id === food.id
       );
 
-      // If item already exists
       if (existingItem) {
         return currentItems.map((item) =>
           item.id === food.id
             ? {
                 ...item,
-
-                quantity:
-                  item.quantity + quantity,
-
-                // Update cooking request if a
-                // new request was provided
+                quantity: item.quantity + quantity,
                 cookingRequest:
                   cookingRequest ||
                   item.cookingRequest ||
@@ -44,16 +62,12 @@ export function CartProvider({ children }) {
         );
       }
 
-      // Add new item
       return [
         ...currentItems,
         {
           ...food,
-
-          quantity: quantity,
-
-          cookingRequest:
-            cookingRequest || "",
+          quantity,
+          cookingRequest: cookingRequest || "",
         },
       ];
     });
@@ -91,9 +105,7 @@ export function CartProvider({ children }) {
               }
             : item
         )
-        .filter(
-          (item) => item.quantity > 0
-        )
+        .filter((item) => item.quantity > 0)
     );
   };
 
@@ -103,9 +115,7 @@ export function CartProvider({ children }) {
 
   const removeFromCart = (id) => {
     setCartItems((currentItems) =>
-      currentItems.filter(
-        (item) => item.id !== id
-      )
+      currentItems.filter((item) => item.id !== id)
     );
   };
 
@@ -124,15 +134,10 @@ export function CartProvider({ children }) {
   const getCartTotal = () => {
     return cartItems.reduce(
       (total, item) =>
-        total +
-        item.price * item.quantity,
+        total + item.price * item.quantity,
       0
     );
   };
-
-  // ==========================================
-  // CONTEXT
-  // ==========================================
 
   return (
     <CartContext.Provider
@@ -150,10 +155,6 @@ export function CartProvider({ children }) {
     </CartContext.Provider>
   );
 }
-
-// ==========================================
-// CUSTOM HOOK
-// ==========================================
 
 export function useCart() {
   return useContext(CartContext);
