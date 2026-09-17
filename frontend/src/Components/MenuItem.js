@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import "../Styles/Menu.css";
 
@@ -46,27 +45,19 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
           <p className="outOfStock">Currently Unavailable</p>
         )}
 
-        <div className="menuCardActions">
-          <Link to={`/food/${id}`} className="detailsLink">
-            <button className="orderButton detailsButton" type="button">
-              View Details
-            </button>
-          </Link>
-
-          <button
-            className={`orderButton addCardButton${added ? " added" : ""}`}
-            type="button"
-            onClick={handleAddToCart}
-            disabled={!isAvailable}
-            aria-live="polite"
-          >
-            {!isAvailable
-              ? "Unavailable"
-              : added
-                ? "✓ Added to Cart"
-                : "Add to Cart"}
-          </button>
-        </div>
+        <button
+          className={`orderButton addCardButton${added ? " added" : ""}`}
+          type="button"
+          onClick={handleAddToCart}
+          disabled={!isAvailable}
+          aria-live="polite"
+        >
+          {!isAvailable
+            ? "Unavailable"
+            : added
+              ? "✓ Added to Cart"
+              : "Add to Cart"}
+        </button>
       </div>
     </div>
   );
