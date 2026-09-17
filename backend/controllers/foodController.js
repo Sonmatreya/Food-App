@@ -1,4 +1,5 @@
 const Food = require("../models/Food");
+const starterFoods = require("../data/starterFoods");
 
 const sanitizeFoodPayload = (body = {}) => ({
   name: typeof body.name === "string" ? body.name.trim() : body.name,
@@ -34,9 +35,7 @@ const getFoods = async (req, res, next) => {
     if (available === "false") filter.isAvailable = false;
     if (featured === "true") filter.isFeatured = true;
 
-    if (search && search.trim()) {
-      filter.$text = { $search: search.trim() };
-    }
+    if (search && search.trim()) filter.$text = { $search: search.trim() };
 
     const foods = await Food.find(filter).sort({ isFeatured: -1, createdAt: -1 }).lean();
     return res.json({ success: true, count: foods.length, foods });
@@ -96,10 +95,34 @@ const deleteFood = async (req, res, next) => {
   }
 };
 
+const seedStarterFoods = async (req, res, next) => {
+  try {
+    const existingNames = new Set(
+      (await Food.find({ name: { $in: starterFoods.map((food) => food.name) } }).select("name").lean()).map((food) => food.name.toLowerCase())
+    );
+
+    const foodsToInsert = starterFoods.filter((food) => !existingNames.has(food.name.toLowerCase()));
+    if (!foodsToInsert.length) {
+      return res.json({ success: true, insertedCount: 0, skippedCount: starterFoods.length, message: "Starter catalogue is already loaded." });
+    }
+
+    const inserted = await Food.insertMany(foodsToInsert, { ordered: false });
+    return res.status(201).json({
+      success: true,
+      insertedCount: inserted.length,
+      skippedCount: starterFoods.length - inserted.length,
+      message: "Starter catalogue loaded successfully.",
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
 module.exports = {
   getFoods,
   getFoodById,
   createFood,
   updateFood,
   deleteFood,
+  seedStarterFoods,
 };
