@@ -1,11 +1,5 @@
 const Coupon = require("../models/Coupon");
 
-const DEFAULT_COUPONS = [
-  { code: "WELCOME20", type: "percentage", value: 20, minimum: 20, active: true },
-  { code: "SAVE10", type: "fixed", value: 10, minimum: 30, active: true },
-  { code: "FOOD5", type: "fixed", value: 5, minimum: 15, active: true },
-];
-
 const sanitize = (body = {}) => ({
   code: String(body.code || "").trim().toUpperCase().replace(/\s+/g, ""),
   type: body.type === "fixed" ? "fixed" : "percentage",
@@ -22,43 +16,86 @@ const validate = (coupon) => {
   return null;
 };
 
-const serialize = (coupon) => ({ id: coupon._id, code: coupon.code, type: coupon.type, value: coupon.value, minimum: coupon.minimum, active: coupon.active, createdAt: coupon.createdAt, updatedAt: coupon.updatedAt });
-
-const ensureDefaultCoupons = async () => {
-  const count = await Coupon.countDocuments();
-  if (count > 0) return;
-  await Coupon.insertMany(DEFAULT_COUPONS, { ordered: false });
-  console.log("Default coupons initialized");
-};
+const serialize = (coupon) => ({
+  id: coupon._id,
+  code: coupon.code,
+  type: coupon.type,
+  value: coupon.value,
+  minimum: coupon.minimum,
+  active: coupon.active,
+  createdAt: coupon.createdAt,
+  updatedAt: coupon.updatedAt,
+});
 
 const getCoupons = async (req, res, next) => {
-  try { const coupons = await Coupon.find({ active: true }).sort({ createdAt: -1 }).lean(); res.json({ success: true, coupons: coupons.map(serialize) }); }
-  catch (error) { next(error); }
-};
-const getAdminCoupons = async (req, res, next) => {
-  try { const coupons = await Coupon.find().sort({ createdAt: -1 }).lean(); res.json({ success: true, coupons: coupons.map(serialize) }); }
-  catch (error) { next(error); }
-};
-const createCoupon = async (req, res, next) => {
   try {
-    const payload = sanitize(req.body); const validationError = validate(payload);
-    if (validationError) return res.status(400).json({ success: false, message: validationError });
-    const coupon = await Coupon.create({ ...payload, value: Number(payload.value.toFixed(2)), minimum: Number(payload.minimum.toFixed(2)) });
-    return res.status(201).json({ success: true, coupon: serialize(coupon) });
-  } catch (error) { if (error.code === 11000) return res.status(409).json({ success: false, message: "Coupon code already exists." }); return next(error); }
-};
-const updateCoupon = async (req, res, next) => {
-  try {
-    const payload = sanitize(req.body); const validationError = validate(payload);
-    if (validationError) return res.status(400).json({ success: false, message: validationError });
-    const coupon = await Coupon.findByIdAndUpdate(req.params.id, { ...payload, value: Number(payload.value.toFixed(2)), minimum: Number(payload.minimum.toFixed(2)) }, { new: true, runValidators: true }).lean();
-    if (!coupon) return res.status(404).json({ success: false, message: "Coupon not found." });
-    return res.json({ success: true, coupon: serialize(coupon) });
-  } catch (error) { if (error.code === 11000) return res.status(409).json({ success: false, message: "Coupon code already exists." }); return next(error); }
-};
-const deleteCoupon = async (req, res, next) => {
-  try { const coupon = await Coupon.findByIdAndDelete(req.params.id); if (!coupon) return res.status(404).json({ success: false, message: "Coupon not found." }); return res.json({ success: true, message: "Coupon deleted successfully." }); }
-  catch (error) { next(error); }
+    const coupons = await Coupon.find({ active: true }).sort({ createdAt: -1 }).lean();
+    res.json({ success: true, coupons: coupons.map(serialize) });
+  } catch (error) {
+    next(error);
+  }
 };
 
-module.exports = { getCoupons, getAdminCoupons, createCoupon, updateCoupon, deleteCoupon, ensureDefaultCoupons };
+const getAdminCoupons = async (req, res, next) => {
+  try {
+    const coupons = await Coupon.find().sort({ createdAt: -1 }).lean();
+    res.json({ success: true, coupons: coupons.map(serialize) });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createCoupon = async (req, res, next) => {
+  try {
+    const payload = sanitize(req.body);
+    const validationError = validate(payload);
+    if (validationError) return res.status(400).json({ success: false, message: validationError });
+
+    const coupon = await Coupon.create({
+      ...payload,
+      value: Number(payload.value.toFixed(2)),
+      minimum: Number(payload.minimum.toFixed(2)),
+    });
+
+    res.status(201).json({ success: true, coupon: serialize(coupon) });
+  } catch (error) {
+    if (error.code === 11000) return res.status(409).json({ success: false, message: "Coupon code already exists." });
+    next(error);
+  }
+};
+
+const updateCoupon = async (req, res, next) => {
+  try {
+    const payload = sanitize(req.body);
+    const validationError = validate(payload);
+    if (validationError) return res.status(400).json({ success: false, message: validationError });
+
+    const coupon = await Coupon.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...payload,
+        value: Number(payload.value.toFixed(2)),
+        minimum: Number(payload.minimum.toFixed(2)),
+      },
+      { new: true, runValidators: true }
+    ).lean();
+
+    if (!coupon) return res.status(404).json({ success: false, message: "Coupon not found." });
+    res.json({ success: true, coupon: serialize(coupon) });
+  } catch (error) {
+    if (error.code === 11000) return res.status(409).json({ success: false, message: "Coupon code already exists." });
+    next(error);
+  }
+};
+
+const deleteCoupon = async (req, res, next) => {
+  try {
+    const coupon = await Coupon.findByIdAndDelete(req.params.id);
+    if (!coupon) return res.status(404).json({ success: false, message: "Coupon not found." });
+    res.json({ success: true, message: "Coupon deleted successfully." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { getCoupons, getAdminCoupons, createCoupon, updateCoupon, deleteCoupon };
