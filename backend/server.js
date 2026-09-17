@@ -14,7 +14,6 @@ const orderRoutes = require("./routes/orderRoutes");
 const foodRoutes = require("./routes/foodRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const couponRoutes = require("./routes/couponRoutes");
-const { ensureDefaultCoupons } = require("./controllers/couponController");
 const adminCustomerRoutes = require("./routes/adminCustomerRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const adminStaffRoutes = require("./routes/adminStaffRoutes");
@@ -59,7 +58,6 @@ const PORT = env.port;
 const startServer = async () => {
   try {
     await connectDB();
-    await ensureDefaultCoupons();
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (error) {
     console.error("Server startup failed");
