@@ -97,19 +97,45 @@ const deleteFood = async (req, res, next) => {
 
 const seedStarterFoods = async (req, res, next) => {
   try {
-    const existingNames = new Set(
-      (await Food.find({ name: { $in: starterFoods.map((food) => food.name) } }).select("name").lean()).map((food) => food.name.toLowerCase())
-    );
+    const starterNames = starterFoods.map((food) => food.name);
+    const existingFoods = await Food.find({ name: { $in: starterNames } }).select("name image").lean();
+    const existingByName = new Map(existingFoods.map((food) => [food.name.toLowerCase(), food]));
 
-    const foodsToInsert = starterFoods.filter((food) => !existingNames.has(food.name.toLowerCase()));
-    if (!foodsToInsert.length) {
-      return res.json({ success: true, insertedCount: 0, skippedCount: starterFoods.length, message: "Starter catalogue is already loaded." });
+    const foodsToInsert = starterFoods.filter((food) => !existingByName.has(food.name.toLowerCase()));
+    const inserted = foodsToInsert.length
+      ? await Food.insertMany(foodsToInsert, { ordered: false })
+      : [];
+
+    const imageUpdates = starterFoods.filter((food) => {
+      const existing = existingByName.get(food.name.toLowerCase());
+      return existing && food.image && existing.image !== food.image;
+    });
+
+    if (imageUpdates.length) {
+      await Promise.all(
+        imageUpdates.map((food) =>
+          Food.updateOne(
+            { name: food.name },
+            { $set: { image: food.image } }
+          )
+        )
+      );
     }
 
-    const inserted = await Food.insertMany(foodsToInsert, { ordered: false });
+    if (!inserted.length && !imageUpdates.length) {
+      return res.json({
+        success: true,
+        insertedCount: 0,
+        updatedImageCount: 0,
+        skippedCount: starterFoods.length,
+        message: "Starter catalogue is already loaded.",
+      });
+    }
+
     return res.status(201).json({
       success: true,
       insertedCount: inserted.length,
+      updatedImageCount: imageUpdates.length,
       skippedCount: starterFoods.length - inserted.length,
       message: "Starter catalogue loaded successfully.",
     });
