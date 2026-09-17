@@ -1,59 +1,86 @@
-import React, { useState } from "react";
-import { MenuList } from "../helpers/MenuList";
+import React, { useEffect, useMemo, useState } from "react";
 import MenuItem from "../Components/MenuItem";
+import { API_URL } from "../config/api";
 import "../Styles/Menu.css";
 
 function Menu() {
+  const [foods, setFoods] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("default");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  // Get unique categories from menu data
-  const categories = [
-    "All",
-    ...new Set(MenuList.map((item) => item.category)),
-  ];
+  useEffect(() => {
+    let cancelled = false;
 
-  // Filter food
-  let filteredFoods = MenuList.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const loadFoods = async () => {
+      try {
+        setLoading(true);
+        setError("");
 
-    const matchesCategory =
-      selectedCategory === "All" ||
-      item.category === selectedCategory;
+        const response = await fetch(`${API_URL}/api/foods?available=true`, {
+          credentials: "include",
+        });
+        const data = await response.json();
 
-    return matchesSearch && matchesCategory;
-  });
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Unable to load menu.");
+        }
 
-  // Sort food
-  if (sortOption === "lowToHigh") {
-    filteredFoods.sort((a, b) => a.price - b.price);
-  }
+        if (!cancelled) setFoods(Array.isArray(data.foods) ? data.foods : []);
+      } catch (requestError) {
+        if (!cancelled) {
+          setError(requestError.message || "Unable to load menu.");
+          setFoods([]);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
 
-  if (sortOption === "highToLow") {
-    filteredFoods.sort((a, b) => b.price - a.price);
-  }
+    loadFoods();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  if (sortOption === "rating") {
-    filteredFoods.sort((a, b) => b.rating - a.rating);
-  }
+  const categories = useMemo(
+    () => ["All", ...new Set(foods.map((item) => item.category).filter(Boolean))],
+    [foods]
+  );
+
+  const filteredFoods = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    const result = foods.filter((item) => {
+      const searchableText = `${item.name || ""} ${item.description || ""} ${item.category || ""}`.toLowerCase();
+      const matchesSearch = !query || searchableText.includes(query);
+      const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+
+    if (sortOption === "lowToHigh") return [...result].sort((a, b) => a.price - b.price);
+    if (sortOption === "highToLow") return [...result].sort((a, b) => b.price - a.price);
+    if (sortOption === "rating") return [...result].sort((a, b) => b.rating - a.rating);
+    return result;
+  }, [foods, searchTerm, selectedCategory, sortOption]);
+
+  const resetFilters = () => {
+    setSearchTerm("");
+    setSelectedCategory("All");
+    setSortOption("default");
+  };
 
   return (
     <div className="menuPage">
-
-      {/* ================= HEADER ================= */}
       <section className="menuHero">
         <div className="menuHeroContent">
           <span>OUR MENU</span>
-
           <h1>
             Find your favourite
             <br />
             food
           </h1>
-
           <p>
             Explore delicious meals prepared with fresh ingredients
             and choose something perfect for your next meal.
@@ -61,42 +88,35 @@ function Menu() {
         </div>
       </section>
 
-      {/* ================= MENU CONTENT ================= */}
       <section className="menuSection">
-
-        {/* Search */}
         <div className="menuSearchBox">
           <span>🔍</span>
-
           <input
             type="text"
             placeholder="Search for food..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(event) => setSearchTerm(event.target.value)}
+            aria-label="Search food"
           />
-
           {searchTerm && (
             <button
+              type="button"
               className="clearSearch"
               onClick={() => setSearchTerm("")}
+              aria-label="Clear search"
             >
               ✕
             </button>
           )}
         </div>
 
-        {/* Filters */}
         <div className="menuToolbar">
-
           <div className="categoryFilters">
             {categories.map((category) => (
               <button
+                type="button"
                 key={category}
-                className={
-                  selectedCategory === category
-                    ? "categoryFilter active"
-                    : "categoryFilter"
-                }
+                className={selectedCategory === category ? "categoryFilter active" : "categoryFilter"}
                 onClick={() => setSelectedCategory(category)}
               >
                 {category}
@@ -106,44 +126,45 @@ function Menu() {
 
           <div className="sortBox">
             <label htmlFor="sort">Sort:</label>
-
-            <select
-              id="sort"
-              value={sortOption}
-              onChange={(e) => setSortOption(e.target.value)}
-            >
+            <select id="sort" value={sortOption} onChange={(event) => setSortOption(event.target.value)}>
               <option value="default">Recommended</option>
               <option value="rating">Top Rated</option>
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
             </select>
           </div>
-
         </div>
 
-        {/* Results information */}
         <div className="menuResultHeader">
           <div>
-            <h2>
-              {selectedCategory === "All"
-                ? "Popular Food"
-                : selectedCategory}
-            </h2>
-
+            <h2>{selectedCategory === "All" ? "Popular Food" : selectedCategory}</h2>
             <p>
-              {filteredFoods.length} food item
-              {filteredFoods.length !== 1 ? "s" : ""} available
+              {loading ? "Loading menu..." : `${filteredFoods.length} food item${filteredFoods.length !== 1 ? "s" : ""} available`}
             </p>
           </div>
         </div>
 
-        {/* Food Grid */}
-        {filteredFoods.length > 0 ? (
+        {loading ? (
+          <div className="noFoodFound">
+            <div className="noFoodIcon">🍽️</div>
+            <h2>Loading menu...</h2>
+            <p>Fetching the latest food catalogue.</p>
+          </div>
+        ) : error ? (
+          <div className="noFoodFound">
+            <div className="noFoodIcon">⚠️</div>
+            <h2>Unable to load menu</h2>
+            <p>{error}</p>
+            <button type="button" onClick={() => window.location.reload()}>
+              Try Again
+            </button>
+          </div>
+        ) : filteredFoods.length > 0 ? (
           <div className="menuGrid">
             {filteredFoods.map((menuItem) => (
               <MenuItem
-                key={menuItem.id}
-                id={menuItem.id}
+                key={menuItem._id}
+                id={menuItem._id}
                 image={menuItem.image}
                 name={menuItem.name}
                 price={menuItem.price}
@@ -156,24 +177,13 @@ function Menu() {
         ) : (
           <div className="noFoodFound">
             <div className="noFoodIcon">🍽️</div>
-
             <h2>No food found</h2>
-
-            <p>
-              We couldn't find any food matching your search.
-            </p>
-
-            <button
-              onClick={() => {
-                setSearchTerm("");
-                setSelectedCategory("All");
-              }}
-            >
+            <p>We couldn't find any food matching your search or filter.</p>
+            <button type="button" onClick={resetFilters}>
               View All Food
             </button>
           </div>
         )}
-
       </section>
     </div>
   );
