@@ -1,34 +1,84 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { MenuList } from "../helpers/MenuList";
 import { useCart } from "../context/CartContext";
+import { API_URL } from "../config/api";
 import "../Styles/FoodDetails.css";
+
+const FALLBACK_IMAGE = "https://loremflickr.com/800/600/food?lock=999";
 
 function FoodDetails() {
   const { id } = useParams();
-
-  const food = MenuList.find((item) => item.id === Number(id));
-
+  const [food, setFood] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [cookingRequest, setCookingRequest] = useState("");
 
   const { addToCart } = useCart();
 
-  if (!food) {
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadFood = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(`${API_URL}/api/foods/${id}`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Unable to load food details.");
+        }
+
+        if (!cancelled) setFood(data.food);
+      } catch (requestError) {
+        if (!cancelled) {
+          setFood(null);
+          setError(requestError.message || "Unable to load food details.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    loadFood();
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
+
+  if (loading) {
     return (
       <div className="foodNotFound">
         <div className="notFoundIcon">🍽️</div>
-        <h1>Food Not Found</h1>
-        <p>
-          The food item you are looking for does not exist or may have been removed.
-        </p>
+        <h1>Loading Food...</h1>
+        <p>Fetching the latest food details.</p>
+      </div>
+    );
+  }
+
+  if (!food) {
+    return (
+      <div className="foodNotFound">
+        <div className="notFoundIcon">{error ? "⚠️" : "🍽️"}</div>
+        <h1>{error ? "Unable to Load Food" : "Food Not Found"}</h1>
+        <p>{error || "The food item you are looking for does not exist or may have been removed."}</p>
         <Link to="/menu">
           <button type="button">Back to Menu</button>
         </Link>
       </div>
     );
   }
+
+  const imageUrl = food.image || FALLBACK_IMAGE;
+  const rating = Number(food.rating || 0);
+  const price = Number(food.price || 0);
+  const totalPrice = price * quantity;
+  const ingredients = Array.isArray(food.ingredients) ? food.ingredients : [];
 
   const increaseQuantity = () => {
     setQuantity((currentQuantity) => currentQuantity + 1);
@@ -47,8 +97,6 @@ function FoodDetails() {
       setAdded(false);
     }
   };
-
-  const totalPrice = food.price * quantity;
 
   const handleAddToCart = () => {
     addToCart(food, quantity, cookingRequest.trim());
@@ -69,9 +117,11 @@ function FoodDetails() {
         <div className="foodDetailsImageWrapper">
           <div
             className="foodDetailsImage"
-            style={{ backgroundImage: `url(${food.image})` }}
+            style={{ backgroundImage: `url("${imageUrl}")` }}
+            role="img"
+            aria-label={food.name}
           >
-            <div className="foodImageBadge">⭐ {food.rating}</div>
+            <div className="foodImageBadge">⭐ {rating.toFixed(1)}</div>
             {!food.isAvailable && (
               <div className="unavailableBadge">Currently Unavailable</div>
             )}
@@ -85,11 +135,11 @@ function FoodDetails() {
 
           <div className="foodRatingRow">
             <span className="ratingStars">★★★★★</span>
-            <strong>{food.rating}</strong>
+            <strong>{rating.toFixed(1)}</strong>
             <span className="ratingText">Customer Rating</span>
           </div>
 
-          <div className="foodPrice">${food.price.toFixed(2)}</div>
+          <div className="foodPrice">${price.toFixed(2)}</div>
 
           <p className="foodDescription">{food.description}</p>
 
@@ -113,8 +163,8 @@ function FoodDetails() {
           <div className="ingredients">
             <h3>Ingredients</h3>
             <div className="ingredientList">
-              {food.ingredients.map((ingredient, index) => (
-                <span className="ingredientTag" key={index}>
+              {ingredients.map((ingredient, index) => (
+                <span className="ingredientTag" key={`${ingredient}-${index}`}>
                   ✓ {ingredient}
                 </span>
               ))}
@@ -167,7 +217,7 @@ function FoodDetails() {
           <div className="orderSummary">
             <div>
               <span>Price</span>
-              <strong>${food.price.toFixed(2)}</strong>
+              <strong>${price.toFixed(2)}</strong>
             </div>
             <div>
               <span>Quantity</span>
