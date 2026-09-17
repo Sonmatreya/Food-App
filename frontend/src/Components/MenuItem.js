@@ -1,13 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useCart } from "../context/CartContext";
 import "../Styles/Menu.css";
 
 function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
+  const { addToCart } = useCart();
+  const [added, setAdded] = useState(false);
+
+  const food = {
+    id,
+    image,
+    name,
+    price,
+    category,
+    rating,
+    isAvailable,
+  };
+
+  const handleAddToCart = () => {
+    if (!isAvailable) return;
+
+    addToCart(food, 1);
+    setAdded(true);
+  };
+
   return (
     <div className="menuCard">
       <div
         className="menuImage"
         style={{ backgroundImage: `url(${image})` }}
+        role="img"
+        aria-label={name}
       ></div>
 
       <div className="menuContent">
@@ -23,11 +46,27 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
           <p className="outOfStock">Currently Unavailable</p>
         )}
 
-        <Link to={`/food/${id}`}>
-          <button className="orderButton" disabled={!isAvailable}>
-            {isAvailable ? "View Details" : "Unavailable"}
+        <div className="menuCardActions">
+          <Link to={`/food/${id}`} className="detailsLink">
+            <button className="orderButton detailsButton" type="button">
+              View Details
+            </button>
+          </Link>
+
+          <button
+            className={`orderButton addCardButton${added ? " added" : ""}`}
+            type="button"
+            onClick={handleAddToCart}
+            disabled={!isAvailable}
+            aria-live="polite"
+          >
+            {!isAvailable
+              ? "Unavailable"
+              : added
+                ? "✓ Added to Cart"
+                : "Add to Cart"}
           </button>
-        </Link>
+        </div>
       </div>
     </div>
   );
