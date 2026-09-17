@@ -1,30 +1,16 @@
-import React, { useState } from "react";
-import { useCart } from "../context/CartContext";
+import React from "react";
+import { Link } from "react-router-dom";
 import "../Styles/Menu.css";
 
 function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
-  const { addToCart } = useCart();
-  const [added, setAdded] = useState(false);
-
-  const food = {
-    id,
-    image,
-    name,
-    price,
-    category,
-    rating,
-    isAvailable,
-  };
-
-  const handleAddToCart = () => {
-    if (!isAvailable) return;
-
-    addToCart(food, 1);
-    setAdded(true);
-  };
+  const numericPrice = Number(price);
 
   return (
-    <div className="menuCard">
+    <Link
+      to={`/food/${id}`}
+      className="menuCard"
+      aria-label={`View details for ${name}`}
+    >
       <div
         className="menuImage"
         style={{ backgroundImage: `url(${image})` }}
@@ -34,32 +20,17 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
 
       <div className="menuContent">
         <span className="menuCategory">{category}</span>
-
         <h2>{name}</h2>
-
-        <p className="menuRating">⭐ {rating}</p>
-
-        <p className="menuPrice">${price.toFixed(2)}</p>
+        <p className="menuRating">⭐ {Number(rating || 0).toFixed(1)}</p>
+        <p className="menuPrice">
+          {Number.isFinite(numericPrice) ? `$${numericPrice.toFixed(2)}` : "Price unavailable"}
+        </p>
 
         {!isAvailable && (
           <p className="outOfStock">Currently Unavailable</p>
         )}
-
-        <button
-          className={`orderButton addCardButton${added ? " added" : ""}`}
-          type="button"
-          onClick={handleAddToCart}
-          disabled={!isAvailable}
-          aria-live="polite"
-        >
-          {!isAvailable
-            ? "Unavailable"
-            : added
-              ? "✓ Added to Cart"
-              : "Add to Cart"}
-        </button>
       </div>
-    </div>
+    </Link>
   );
 }
 
