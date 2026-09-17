@@ -7,9 +7,7 @@ import "../Styles/FoodDetails.css";
 function FoodDetails() {
   const { id } = useParams();
 
-  const food = MenuList.find(
-    (item) => item.id === Number(id)
-  );
+  const food = MenuList.find((item) => item.id === Number(id));
 
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
@@ -21,16 +19,12 @@ function FoodDetails() {
     return (
       <div className="foodNotFound">
         <div className="notFoundIcon">🍽️</div>
-
         <h1>Food Not Found</h1>
-
         <p>
-          The food item you are looking for does not exist
-          or may have been removed.
+          The food item you are looking for does not exist or may have been removed.
         </p>
-
         <Link to="/menu">
-          <button>Back to Menu</button>
+          <button type="button">Back to Menu</button>
         </Link>
       </div>
     );
@@ -42,20 +36,12 @@ function FoodDetails() {
   };
 
   const decreaseQuantity = () => {
-    setQuantity((currentQuantity) => {
-      if (currentQuantity > 1) {
-        return currentQuantity - 1;
-      }
-
-      return currentQuantity;
-    });
-
+    setQuantity((currentQuantity) => Math.max(1, currentQuantity - 1));
     setAdded(false);
   };
 
   const handleCookingRequestChange = (event) => {
     const value = event.target.value;
-
     if (value.length <= 100) {
       setCookingRequest(value);
       setAdded(false);
@@ -65,407 +51,183 @@ function FoodDetails() {
   const totalPrice = food.price * quantity;
 
   const handleAddToCart = () => {
-    addToCart(
-      food,
-      quantity,
-      cookingRequest.trim()
-    );
-
+    addToCart(food, quantity, cookingRequest.trim());
     setAdded(true);
   };
 
   return (
     <div className="foodDetailsPage">
-
-      {/* ================= BREADCRUMB ================= */}
-
       <div className="foodBreadcrumb">
-
-        <Link to="/">
-          Home
-        </Link>
-
+        <Link to="/">Home</Link>
         <span>›</span>
-
-        <Link to="/menu">
-          Menu
-        </Link>
-
+        <Link to="/menu">Menu</Link>
         <span>›</span>
-
-        <span>
-          {food.name}
-        </span>
-
+        <span>{food.name}</span>
       </div>
 
-      {/* ================= PRODUCT ================= */}
-
       <section className="foodDetails">
-
-        {/* ================= IMAGE ================= */}
-
         <div className="foodDetailsImageWrapper">
-
           <div
             className="foodDetailsImage"
-            style={{
-              backgroundImage:
-                `url(${food.image})`,
-            }}
+            style={{ backgroundImage: `url(${food.image})` }}
           >
-
-            <div className="foodImageBadge">
-              ⭐ {food.rating}
-            </div>
-
+            <div className="foodImageBadge">⭐ {food.rating}</div>
             {!food.isAvailable && (
-              <div className="unavailableBadge">
-                Currently Unavailable
-              </div>
+              <div className="unavailableBadge">Currently Unavailable</div>
             )}
-
           </div>
-
         </div>
 
-        {/* ================= DETAILS ================= */}
-
         <div className="foodDetailsContent">
+          <span className="foodCategory">{food.category}</span>
 
-          <span className="foodCategory">
-            {food.category}
-          </span>
-
-          <h1>
-            {food.name}
-          </h1>
-
-          {/* ================= RATING ================= */}
+          <h1>{food.name}</h1>
 
           <div className="foodRatingRow">
-
-            <span className="ratingStars">
-              ★★★★★
-            </span>
-
-            <strong>
-              {food.rating}
-            </strong>
-
-            <span className="ratingText">
-              Customer Rating
-            </span>
-
+            <span className="ratingStars">★★★★★</span>
+            <strong>{food.rating}</strong>
+            <span className="ratingText">Customer Rating</span>
           </div>
 
-          {/* ================= PRICE ================= */}
+          <div className="foodPrice">${food.price.toFixed(2)}</div>
 
-          <div className="foodPrice">
-            ${food.price.toFixed(2)}
-          </div>
-
-          {/* ================= DESCRIPTION ================= */}
-
-          <p className="foodDescription">
-            {food.description}
-          </p>
-
-          {/* ================= FOOD INFORMATION ================= */}
+          <p className="foodDescription">{food.description}</p>
 
           <div className="foodInfoGrid">
-
             <div className="foodInfoItem">
-
-              <span className="foodInfoIcon">
-                🚚
-              </span>
-
+              <span className="foodInfoIcon">🚚</span>
               <div>
-                <strong>
-                  Fast Delivery
-                </strong>
-
-                <p>
-                  30–45 min
-                </p>
+                <strong>Fast Delivery</strong>
+                <p>30–45 min</p>
               </div>
-
             </div>
-
             <div className="foodInfoItem">
-
-              <span className="foodInfoIcon">
-                🥗
-              </span>
-
+              <span className="foodInfoIcon">🥗</span>
               <div>
-                <strong>
-                  Fresh Ingredients
-                </strong>
-
-                <p>
-                  Prepared fresh
-                </p>
+                <strong>Fresh Ingredients</strong>
+                <p>Prepared fresh</p>
               </div>
-
             </div>
-
           </div>
-
-          {/* ================= INGREDIENTS ================= */}
 
           <div className="ingredients">
-
-            <h3>
-              Ingredients
-            </h3>
-
+            <h3>Ingredients</h3>
             <div className="ingredientList">
-
-              {food.ingredients.map(
-                (ingredient, index) => (
-                  <span
-                    className="ingredientTag"
-                    key={index}
-                  >
-                    ✓ {ingredient}
-                  </span>
-                )
-              )}
-
+              {food.ingredients.map((ingredient, index) => (
+                <span className="ingredientTag" key={index}>
+                  ✓ {ingredient}
+                </span>
+              ))}
             </div>
-
           </div>
 
-          {/* ================= COOKING REQUEST ================= */}
-
           <div className="cookingRequest">
-
             <h3>
-              Add a cooking request{" "}
-              <span>
-                (optional)
-              </span>
+              Add a cooking request <span>(optional)</span>
             </h3>
-
             <p>
-              The restaurant will try its best to fulfil
-              your requests. However, refunds or
-              cancellations related to such requests
-              won't be possible.
+              The restaurant will try its best to fulfil your requests. However,
+              refunds or cancellations related to such requests won't be possible.
             </p>
-
             <div className="cookingRequestInput">
-
               <textarea
                 value={cookingRequest}
-                onChange={
-                  handleCookingRequestChange
-                }
+                onChange={handleCookingRequestChange}
                 placeholder="e.g. Don't make it too spicy"
                 maxLength={100}
                 disabled={!food.isAvailable}
               />
-
-              <span>
-                {cookingRequest.length}/100
-              </span>
-
+              <span>{cookingRequest.length}/100</span>
             </div>
-
           </div>
 
-          {/* ================= QUANTITY ================= */}
-
           <div className="quantitySection">
-
-            <h3>
-              Quantity
-            </h3>
-
+            <h3>Quantity</h3>
             <div className="quantityControls">
-
               <button
                 type="button"
                 onClick={decreaseQuantity}
-                disabled={!food.isAvailable}
+                disabled={!food.isAvailable || quantity === 1}
+                aria-label="Decrease quantity"
               >
                 −
               </button>
-
-              <span>
-                {quantity}
-              </span>
-
+              <span>{quantity}</span>
               <button
                 type="button"
                 onClick={increaseQuantity}
                 disabled={!food.isAvailable}
+                aria-label="Increase quantity"
               >
                 +
               </button>
-
             </div>
-
           </div>
-
-          {/* ================= ORDER SUMMARY ================= */}
 
           <div className="orderSummary">
-
             <div>
-
-              <span>
-                Price
-              </span>
-
-              <strong>
-                ${food.price.toFixed(2)}
-              </strong>
-
+              <span>Price</span>
+              <strong>${food.price.toFixed(2)}</strong>
             </div>
-
             <div>
-
-              <span>
-                Quantity
-              </span>
-
-              <strong>
-                × {quantity}
-              </strong>
-
+              <span>Quantity</span>
+              <strong>× {quantity}</strong>
             </div>
-
             <div className="summaryTotal">
-
-              <span>
-                Total
-              </span>
-
-              <strong>
-                ${totalPrice.toFixed(2)}
-              </strong>
-
+              <span>Total</span>
+              <strong>${totalPrice.toFixed(2)}</strong>
             </div>
-
           </div>
-
-          {/* ================= ADD TO CART ================= */}
 
           <button
             type="button"
-            className={
-              added
-                ? "addToCartButton added"
-                : "addToCartButton"
-            }
+            className={added ? "addToCartButton added" : "addToCartButton"}
             onClick={handleAddToCart}
             disabled={!food.isAvailable}
+            aria-live="polite"
           >
-
             {!food.isAvailable
               ? "Currently Unavailable"
               : added
               ? "✓ Added to Cart"
               : "Add to Cart"}
-
           </button>
 
-          {/* ================= VIEW CART ================= */}
-
           {added && (
-            <Link
-              to="/cart"
-              className="viewCartButton"
-            >
+            <Link to="/cart" className="viewCartButton">
               View Cart →
             </Link>
           )}
 
-          {/* ================= BACK ================= */}
-
-          <Link
-            to="/menu"
-            className="backToMenu"
-          >
+          <Link to="/menu" className="backToMenu">
             ← Back to Menu
           </Link>
-
         </div>
-
       </section>
-
-      {/* ================= EXTRA INFORMATION ================= */}
 
       <section className="foodExtraSection">
-
         <div className="foodExtraCard">
-
-          <span>
-            🍴
-          </span>
-
+          <span>🍴</span>
           <div>
-
-            <h3>
-              Quality Food
-            </h3>
-
-            <p>
-              Carefully prepared using quality
-              ingredients.
-            </p>
-
+            <h3>Quality Food</h3>
+            <p>Carefully prepared using quality ingredients.</p>
           </div>
-
         </div>
-
         <div className="foodExtraCard">
-
-          <span>
-            ⚡
-          </span>
-
+          <span>⚡</span>
           <div>
-
-            <h3>
-              Quick Preparation
-            </h3>
-
-            <p>
-              Your order is prepared fresh after
-              ordering.
-            </p>
-
+            <h3>Quick Preparation</h3>
+            <p>Your order is prepared fresh after ordering.</p>
           </div>
-
         </div>
-
         <div className="foodExtraCard">
-
-          <span>
-            🔒
-          </span>
-
+          <span>🔒</span>
           <div>
-
-            <h3>
-              Secure Ordering
-            </h3>
-
-            <p>
-              Your order information is handled
-              securely.
-            </p>
-
+            <h3>Secure Ordering</h3>
+            <p>Your order information is handled securely.</p>
           </div>
-
         </div>
-
       </section>
-
     </div>
   );
 }
