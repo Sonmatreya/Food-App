@@ -13,29 +13,25 @@ const captchaRoutes = require("./routes/captchaRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const foodRoutes = require("./routes/foodRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
+const couponRoutes = require("./routes/couponRoutes");
 const adminCustomerRoutes = require("./routes/adminCustomerRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const adminStaffRoutes = require("./routes/adminStaffRoutes");
 const passport = require("./config/googleAuth");
 
 const app = express();
-
 app.disable("x-powered-by");
 app.set("trust proxy", env.trustProxy);
 app.use(helmet());
-
-app.use(
-  cors({
-    origin(origin, callback) {
-      if (!origin || env.corsOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error("Origin is not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "X-Captcha-Proof"],
-  })
-);
-
+app.use(cors({
+  origin(origin, callback) {
+    if (!origin || env.corsOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("Origin is not allowed by CORS"));
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "X-Captcha-Proof"],
+}));
 app.use(express.json({ limit: "100kb" }));
 app.use(cookieParser());
 app.use(passport.initialize());
@@ -45,29 +41,20 @@ app.use("/api/captcha", captchaRoutes);
 app.use("/api/foods", foodRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/coupons", couponRoutes);
 app.use("/api/admin/customers", adminCustomerRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/staff", adminStaffRoutes);
 
-app.get("/api/health", (req, res) => {
-  res.json({ success: true, message: "Food App API is running" });
-});
-
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: "API route not found" });
-});
-
+app.get("/api/health", (req, res) => res.json({ success: true, message: "Food App API is running" }));
+app.use((req, res) => res.status(404).json({ success: false, message: "API route not found" }));
 app.use((error, req, res, next) => {
-  if (error.message === "Origin is not allowed by CORS") {
-    return res.status(403).json({ success: false, message: "Origin is not allowed by CORS" });
-  }
-
+  if (error.message === "Origin is not allowed by CORS") return res.status(403).json({ success: false, message: "Origin is not allowed by CORS" });
   console.error("Unhandled API error:", error);
   return res.status(500).json({ success: false, message: "Internal server error" });
 });
 
 const PORT = env.port;
-
 const startServer = async () => {
   try {
     await connectDB();
@@ -77,5 +64,4 @@ const startServer = async () => {
     process.exit(1);
   }
 };
-
 startServer();
