@@ -51,7 +51,7 @@ function Cart() {
     if (!enteredCode) return setCouponMessage("Please enter a coupon code.");
     const coupon = availableCoupons.find((item) => item.code === enteredCode && item.active);
     if (!coupon) return setCouponMessage("Invalid or inactive coupon code. Please try another one.");
-    if (subtotal < Number(coupon.minimum)) return setCouponMessage(`Minimum order value for this coupon is $${Number(coupon.minimum).toFixed(2)}.`);
+    if (subtotal < Number(coupon.minimum)) return setCouponMessage(`Minimum order value for this coupon is ₹${Number(coupon.minimum).toFixed(2)}.`);
     setAppliedCoupon(coupon);
     setCouponCode(coupon.code);
     setCouponMessage(`Coupon ${coupon.code} applied successfully!`);
@@ -113,7 +113,7 @@ function Cart() {
 
         <aside className="cartSummary"><div className="summaryHeader"><h2>Order Summary</h2></div><div className="summaryRows">
           <div className="summaryRow"><span>Subtotal</span><strong>₹{subtotal.toFixed(2)}</strong></div>
-          {discount > 0 && <div className="summaryRow discountRow"><span>Discount</span><strong>-${discount.toFixed(2)}</strong></div>}
+          {discount > 0 && <div className="summaryRow discountRow"><span>Discount</span><strong>-₹${discount.toFixed(2)}</strong></div>}
           <div className="summaryRow"><span>Delivery Fee</span><strong>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee.toFixed(2)}`}</strong></div>
           <div className="summaryRow"><span>Service Fee</span><strong>₹{serviceFee.toFixed(2)}</strong></div>
           <div className="summaryRow"><span>Tax</span><strong>₹{tax.toFixed(2)}</strong></div>
