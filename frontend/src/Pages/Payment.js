@@ -757,7 +757,7 @@ function Payment() {
               </span>
 
               <strong>
-                ${subtotal.toFixed(2)}
+                ₹{subtotal.toFixed(2)}
               </strong>
 
             </div>
@@ -800,7 +800,7 @@ function Payment() {
               </span>
 
               <strong>
-                {serviceFee.toFixed(2)}
+                ₹{serviceFee.toFixed(2)}
               </strong>
 
             </div>
@@ -812,7 +812,7 @@ function Payment() {
               </span>
 
               <strong>
-                {tax.toFixed(2)}
+                ₹{tax.toFixed(2)}
               </strong>
 
             </div>
@@ -837,7 +837,7 @@ function Payment() {
             </span>
 
             <strong>
-              {grandTotal.toFixed(2)}
+              ₹{grandTotal.toFixed(2)}
             </strong>
 
           </div>
