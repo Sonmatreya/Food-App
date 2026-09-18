@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Coupon = require("../models/Coupon");
+const Food = require("../models/Food");
 
 const DELIVERY_FEE = 2.99;
 const FREE_DELIVERY_THRESHOLD = 40;
@@ -41,24 +42,61 @@ const generateOrderNumber = () => `ORD-${Date.now().toString(36).toUpperCase()}$
 
 const sanitizeItems = (rawItems) => {
   if (!Array.isArray(rawItems) || !rawItems.length || rawItems.length > 50) return null;
+
   const items = [];
   for (const raw of rawItems) {
-    const name = String(raw?.name ?? "").trim();
-    const price = Number(raw?.price);
+    const foodId = String(raw?.foodId ?? "").trim();
     const quantity = Number(raw?.quantity);
-    if (!name || name.length > 100 || !Number.isFinite(price) || price < 0 || !Number.isInteger(quantity) || quantity < 1 || quantity > 50) return null;
-    let image = String(raw?.image ?? "").trim();
-    if (!/^https?:\/\//i.test(image) || image.length > 500) image = "";
+
+    if (!mongoose.Types.ObjectId.isValid(foodId) || !Number.isInteger(quantity) || quantity < 1 || quantity > 50) {
+      return null;
+    }
+
     items.push({
-      foodId: String(raw?.foodId ?? "").trim().slice(0, 50),
-      name: name.slice(0, 100),
-      category: String(raw?.category ?? "").trim().slice(0, 50),
-      price: round2(price),
+      foodId,
       quantity,
       cookingRequest: String(raw?.cookingRequest ?? "").trim().slice(0, 200),
-      image,
     });
   }
+
+  return items;
+};
+
+const hydrateOrderItems = async (rawItems) => {
+  const foodIds = [...new Set(rawItems.map((item) => item.foodId))];
+  const foods = await Food.find({
+    _id: { $in: foodIds },
+  }).lean();
+
+  const foodMap = new Map(foods.map((food) => [String(food._id), food]));
+
+  const items = [];
+  for (const raw of rawItems) {
+    const food = foodMap.get(raw.foodId);
+
+    if (!food) {
+      const error = new Error("One or more selected food items no longer exist");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    if (!food.isAvailable) {
+      const error = new Error(`${food.name} is currently unavailable`);
+      error.statusCode = 409;
+      throw error;
+    }
+
+    items.push({
+      foodId: String(food._id),
+      name: food.name,
+      category: food.category,
+      price: round2(food.price),
+      quantity: raw.quantity,
+      cookingRequest: raw.cookingRequest,
+      image: /^https?:\/\//i.test(food.image || "") && food.image.length <= 500 ? food.image : "",
+    });
+  }
+
   return items;
 };
 
@@ -81,8 +119,9 @@ const createOrder = async (req, res) => {
   try {
     const userId = req.user.userId;
     const body = req.body || {};
-    const items = sanitizeItems(body.items);
-    if (!items) return res.status(400).json({ success: false, message: "Order must contain valid items (name, price, quantity 1-50, max 50 items)" });
+    const rawItems = sanitizeItems(body.items);
+    if (!rawItems) return res.status(400).json({ success: false, message: "Order must contain valid food items and quantities" });
+    const items = await hydrateOrderItems(rawItems);
 
     const deliveryType = body.deliveryType === "pickup" ? "pickup" : "delivery";
     let address = { name: "", phone: "", addressLine: "", city: "", pincode: "" };
@@ -133,7 +172,7 @@ const createOrder = async (req, res) => {
     return res.status(201).json({ success: true, message: "Order placed successfully", order: buildOrderResponse(order) });
   } catch (error) {
     console.error("Create order error:", error.message);
-    return res.status(500).json({ success: false, message: "Unable to place order" });
+    return res.status(error.statusCode || 500).json({ success: false, message: error.statusCode ? error.message : "Unable to place order" });
   }
 };
 
