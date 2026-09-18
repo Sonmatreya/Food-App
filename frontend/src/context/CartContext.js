@@ -8,6 +8,8 @@ import React, {
 const CartContext = createContext();
 const CART_STORAGE_KEY = "food-app-cart";
 
+const getFoodId = (food) => food?._id || food?.id || food?.cartItemId || "";
+
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(() => {
     try {
@@ -44,12 +46,12 @@ export function CartProvider({ children }) {
   ) => {
     setCartItems((currentItems) => {
       const existingItem = currentItems.find(
-        (item) => item.id === food.id
+        (item) => getFoodId(item) === String(getFoodId(food))
       );
 
       if (existingItem) {
         return currentItems.map((item) =>
-          item.id === food.id
+          getFoodId(item) === String(getFoodId(food))
             ? {
                 ...item,
                 quantity: item.quantity + quantity,
@@ -80,7 +82,7 @@ export function CartProvider({ children }) {
   const increaseQuantity = (id) => {
     setCartItems((currentItems) =>
       currentItems.map((item) =>
-        item.id === id
+        getFoodId(item) === String(id)
           ? {
               ...item,
               quantity: item.quantity + 1,
@@ -115,7 +117,7 @@ export function CartProvider({ children }) {
 
   const removeFromCart = (id) => {
     setCartItems((currentItems) =>
-      currentItems.filter((item) => item.id !== id)
+      currentItems.filter((item) => getFoodId(item) !== String(id))
     );
   };
 
