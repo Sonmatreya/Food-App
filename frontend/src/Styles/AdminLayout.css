@@ -1,80 +1,85 @@
-.admin-shell {
-  min-height: 100vh;
-  display: flex;
-  background: #f6f7f5;
-  color: #202124;
+.admin-shell{min-height:100vh;display:flex;background:#f5f6f8;color:#171a1f;font-family:inherit}
+.admin-sidebar{width:252px;min-height:100vh;position:sticky;top:0;z-index:30;display:flex;flex-direction:column;box-sizing:border-box;padding:20px 14px 14px;background:#17191d;color:#fff;border-right:1px solid #25282e}
+.admin-sidebar-brand{display:flex;align-items:center;justify-content:space-between;padding:0 6px 24px}
+.admin-brand{display:flex;align-items:center;gap:11px;width:100%;padding:0;border:0;background:transparent;color:#fff;text-align:left;cursor:pointer}
+.admin-brand-mark{width:39px;height:39px;display:grid;place-items:center;flex:0 0 39px;border-radius:11px;background:#e63946;color:#fff;font-size:20px;box-shadow:0 7px 18px rgba(230,57,70,.24)}
+.admin-brand-copy strong{display:block;font-size:18px;line-height:1;font-weight:800;letter-spacing:-.04em}
+.admin-brand-copy strong span{color:#e63946}
+.admin-brand-copy small{display:block;margin-top:5px;color:#8f959f;font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
+.admin-nav-label{padding:0 12px;margin:4px 0 9px;color:#6f7680;font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.admin-sidebar-nav{display:grid;gap:4px}
+.admin-sidebar-link{position:relative;display:flex;align-items:center;gap:12px;min-height:43px;padding:0 11px;border:1px solid transparent;border-radius:10px;color:#aeb3bc;text-decoration:none;font-size:12px;font-weight:650;transition:background .18s ease,color .18s ease,border-color .18s ease}
+.admin-sidebar-link:hover{background:#22252b;color:#fff;border-color:#2c3037}
+.admin-sidebar-link.active{background:#2a1b1f;color:#fff;border-color:#4a252b}
+.admin-sidebar-link.active:before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:3px;border-radius:0 4px 4px 0;background:#e63946}
+.admin-sidebar-icon{width:17px;height:17px;flex:0 0 17px;font-size:16px}
+.admin-sidebar-link.active .admin-sidebar-icon{color:#ff6570}
+.admin-sidebar-chevron{margin-left:auto;color:#555b65;font-size:13px;opacity:0;transition:opacity .18s}
+.admin-sidebar-link:hover .admin-sidebar-chevron,.admin-sidebar-link.active .admin-sidebar-chevron{opacity:1}
+.admin-sidebar-link.active .admin-sidebar-chevron{color:#c65a63}
+.admin-sidebar-spacer{flex:1}
+.admin-sidebar-store{padding:14px 0 12px;border-top:1px solid #292c32;border-bottom:1px solid #292c32}
+.admin-store-card{padding:13px 13px 12px;border:1px solid #2d3138;border-radius:11px;background:#1d2025}
+.admin-store-status{display:flex;align-items:center;gap:7px;color:#8fd3aa;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.admin-store-status i{width:6px;height:6px;border-radius:50%;background:#35b66d;box-shadow:0 0 0 3px rgba(53,182,109,.1)}
+.admin-store-card strong{display:block;margin:9px 0 9px;font-size:11px;color:#e7e9ec}
+.admin-store-card button{display:flex;align-items:center;gap:4px;border:0;padding:0;background:transparent;color:#ff6872;font:inherit;font-size:10px;font-weight:800;cursor:pointer}
+.admin-store-card button svg{font-size:11px}
+.admin-sidebar-footer{display:flex;align-items:center;gap:8px;padding-top:13px}
+.admin-sidebar-account{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
+.admin-user-avatar{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;border-radius:9px;background:#30252a;color:#ff7b84;border:1px solid #4a3035;font-size:12px;font-weight:800}
+.admin-sidebar-account strong,.admin-sidebar-account span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-sidebar-account strong{color:#e9ebee;font-size:10px}
+.admin-sidebar-account span{margin-top:3px;color:#737a85;font-size:9px}
+.admin-logout{width:32px;height:32px;display:grid;place-items:center;border:1px solid #30343b;border-radius:8px;background:#1d2025;color:#8f96a0;cursor:pointer}
+.admin-logout:hover{background:#302024;color:#ff6972;border-color:#542a31}
+.admin-main-area{flex:1;min-width:0}
+.admin-topbar{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 30px;background:#fff;border-bottom:1px solid #e7e9ed;box-sizing:border-box}
+.admin-breadcrumb{display:flex;align-items:center;gap:8px;min-width:0;color:#858b95;font-size:11px}
+.admin-breadcrumb svg{font-size:11px;color:#b0b5bc}
+.admin-breadcrumb strong{color:#24272c;font-size:12px;font-weight:750}
+.admin-topbar-actions{display:flex;align-items:center;gap:11px}
+.admin-topbar-store{padding:8px 12px;border:1px solid #e1e4e8;border-radius:8px;background:#fff;color:#505660;font:inherit;font-size:10px;font-weight:700;cursor:pointer}
+.admin-topbar-store:hover{border-color:#e63946;color:#e63946}
+.admin-topbar-avatar{width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:#f5e8ea;color:#d32f3b;font-size:11px;font-weight:800}
+.admin-content{width:min(1500px,100%);margin:0 auto;padding:28px 30px 46px;box-sizing:border-box}
+.admin-content>.admin-customers-page,.admin-content>.admin-orders-page,.admin-content>.admin-order-details-page,.admin-content>.admin-customer-details-page{margin:0;padding:0;max-width:none}
+.admin-mobile-menu,.admin-mobile-close,.admin-mobile-overlay{display:none}
+@media(max-width:900px){
+ .admin-sidebar{width:76px;padding:18px 10px}
+ .admin-sidebar-brand{padding-left:0;padding-right:0;justify-content:center}
+ .admin-brand{justify-content:center}
+ .admin-brand-copy,.admin-nav-label,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:none}
+ .admin-sidebar-link{justify-content:center;padding:0}
+ .admin-sidebar-link.active:before{left:-10px}
+ .admin-sidebar-footer{justify-content:center}
+ .admin-topbar{padding:0 20px}
+ .admin-content{padding:22px 20px 38px}
 }
-.admin-sidebar {
-  width: 250px;
-  min-height: 100vh;
-  position: sticky;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  background: #fff;
-  color: #202124;
-  padding: 20px 15px;
-  box-sizing: border-box;
-  border-right: 1px solid #e7e9e6;
-  box-shadow: 4px 0 22px rgba(25,40,30,.04);
+@media(max-width:620px){
+ .admin-shell{display:block}
+ .admin-mobile-overlay{position:fixed;inset:0;z-index:39;display:block;border:0;background:rgba(0,0,0,.42);cursor:pointer}
+ .admin-sidebar{position:fixed;left:0;top:0;bottom:0;width:260px;min-height:100vh;transform:translateX(-105%);transition:transform .22s ease;box-shadow:12px 0 35px rgba(0,0,0,.18)}
+ .admin-sidebar.is-open{transform:translateX(0)}
+ .admin-sidebar-brand{justify-content:space-between}
+ .admin-brand{justify-content:flex-start}
+ .admin-brand-copy,.admin-nav-label,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:block}
+ .admin-sidebar-link{justify-content:flex-start;padding:0 11px}
+ .admin-sidebar-link.active:before{left:-14px}
+ .admin-sidebar-footer{justify-content:flex-start}
+ .admin-mobile-close{display:grid;place-items:center;width:32px;height:32px;border:1px solid #30343b;border-radius:8px;background:#1d2025;color:#aeb3bc;cursor:pointer}
+ .admin-mobile-menu{display:grid;place-items:center;width:34px;height:34px;border:1px solid #e1e4e8;border-radius:8px;background:#fff;color:#4e545d;cursor:pointer}
+ .admin-topbar{height:62px;padding:0 14px;gap:10px}
+ .admin-breadcrumb span{display:none}
+ .admin-breadcrumb svg{display:none}
+ .admin-breadcrumb strong{font-size:12px}
+ .admin-topbar-store{display:none}
+ .admin-content{padding:18px 13px 30px}
 }
-.admin-brand { display:flex; align-items:center; gap:11px; padding:5px 8px 22px; border-bottom:1px solid #eceeeb; }
-.admin-brand img { width:43px; height:43px; object-fit:contain; border-radius:12px; background:#fff5f5; padding:4px; }
-.admin-brand strong,.admin-brand span { display:block; }
-.admin-brand strong { font-size:17px; }
-.admin-brand span { margin-top:3px; color:#198754; font-size:11px; font-weight:700; }
-.admin-sidebar-nav { display:grid; gap:5px; margin-top:20px; }
-.admin-sidebar-link { min-height:45px; display:flex; align-items:center; gap:12px; padding:0 13px; border-radius:11px; color:#68706b; text-decoration:none; font-size:14px; font-weight:650; border:1px solid transparent; transition:.2s ease; }
-.admin-sidebar-link:hover { background:#f4faf6; color:#198754; border-color:#dcefe4; transform:translateX(2px); }
-.admin-sidebar-link.active { background:#fff1f2; color:#e63946; border-color:#ffd7da; box-shadow:0 4px 12px rgba(230,57,70,.07); }
-.admin-sidebar-icon { width:23px; text-align:center; font-size:17px; line-height:1; }
-.admin-sidebar-bottom { margin-top:auto; display:grid; gap:7px; padding-top:18px; border-top:1px solid #eceeeb; }
-.admin-back-store,.admin-logout { width:100%; min-height:41px; border:1px solid #e2e5e2; border-radius:10px; background:#fff; color:#626863; cursor:pointer; font:inherit; font-size:13px; font-weight:650; text-align:left; padding:0 12px; transition:.2s ease; }
-.admin-back-store:hover { background:#f4faf6; color:#198754; border-color:#cfe8d8; }
-.admin-logout:hover { background:#fff1f2; color:#e63946; border-color:#ffd1d5; }
-.admin-main-area { flex:1; min-width:0; }
-.admin-topbar { min-height:76px; display:flex; align-items:center; justify-content:space-between; gap:20px; padding:14px 30px; background:rgba(255,255,255,.96); border-bottom:1px solid #e7e9e6; box-sizing:border-box; }
-.admin-topbar p { margin:0 0 3px; color:#198754; font-size:10px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
-.admin-topbar h1 { margin:0; font-size:21px; }
-.admin-user-summary { display:flex; align-items:center; gap:10px; }
-.admin-user-avatar { width:39px; height:39px; display:grid; place-items:center; border-radius:50%; background:#eaf7ef; color:#198754; border:1px solid #ccebd8; font-weight:800; }
-.admin-user-summary strong,.admin-user-summary span { display:block; }
-.admin-user-summary strong { font-size:13px; }
-.admin-user-summary span { margin-top:2px; color:#858b87; font-size:11px; }
-.admin-content { width:min(1440px,100%); margin:0 auto; padding:28px 30px 44px; box-sizing:border-box; }
-.admin-content > .admin-customers-page,.admin-content > .admin-orders-page,.admin-content > .admin-order-details-page,.admin-content > .admin-customer-details-page { margin:0; padding:0; max-width:none; }
-@media (max-width:900px) {
-  .admin-sidebar { width:82px; padding:18px 10px; }
-  .admin-brand { justify-content:center; padding-left:0; padding-right:0; }
-  .admin-brand div { display:none; }
-  .admin-sidebar-link { justify-content:center; padding:0; }
-  .admin-sidebar-icon { width:auto; }
-  .admin-back-store,.admin-logout { padding:0; text-align:center; font-size:0; }
-  .admin-back-store::before { content:"←"; font-size:18px; }
-  .admin-logout::before { content:"↪"; font-size:18px; }
-  .admin-topbar { padding:14px 20px; }
-  .admin-content { padding:22px 20px 36px; }
-}
-@media (max-width:560px) {
-  .admin-shell { display:block; }
-  .admin-sidebar { width:100%; min-height:auto; position:sticky; z-index:20; top:0; padding:9px 10px; }
-  .admin-brand,.admin-sidebar-bottom { display:none; }
-  .admin-sidebar-nav { display:flex; gap:5px; margin:0; overflow-x:auto; }
-  .admin-sidebar-link { flex:0 0 auto; min-width:48px; min-height:42px; }
-  .admin-sidebar-link.active { min-width:82px; padding:0 10px; }
-  .admin-topbar { min-height:66px; padding:12px 15px; }
-  .admin-user-summary > div:last-child { display:none; }
-  .admin-content { padding:18px 15px 30px; }
-}
-@media (prefers-color-scheme:dark) {
-  .admin-shell { background:#111412; color:#f2f4f2; }
-  .admin-sidebar { background:#171a18; border-right-color:#2a302c; color:#f2f4f2; }
-  .admin-brand,.admin-sidebar-bottom { border-color:#2a302c; }
-  .admin-brand span,.admin-topbar p { color:#4fba7a; }
-  .admin-sidebar-link { color:#aeb6b0; }
-  .admin-sidebar-link:hover { background:#19251e; color:#66cf91; border-color:#284b35; }
-  .admin-sidebar-link.active { background:#351d21; color:#ff6d77; border-color:#5a292f; }
-  .admin-back-store,.admin-logout { background:#191d1a; color:#aeb6b0; border-color:#303731; }
-  .admin-topbar { background:#171a18; border-bottom-color:#2a302c; }
-  .admin-user-avatar { background:#1d3325; color:#63c88b; border-color:#315d40; }
+@media(prefers-color-scheme:dark){
+ .admin-shell{background:#111316;color:#f4f5f7}
+ .admin-topbar{background:#191b1f;border-color:#292d34}
+ .admin-breadcrumb strong{color:#f2f3f5}
+ .admin-topbar-store{background:#1f2227;border-color:#353a42;color:#c1c5cb}
+ .admin-topbar-avatar{background:#342126;color:#ff7881}
 }
