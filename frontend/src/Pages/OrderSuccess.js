@@ -114,7 +114,7 @@ function OrderSuccess() {
         throw new Error(data.message || "Unable to generate handover code.");
       }
       setHandoverCode(data.handover.code);
-      setHandoverMessage("Show this 6-digit code to the delivery partner or restaurant staff.");
+      setHandoverMessage("Show this 6-digit code to ${isPickup ? "restaurant staff" : "the delivery partner"}.");
     } catch (handoverError) {
       setHandoverError(handoverError.message);
     } finally {
@@ -514,11 +514,11 @@ function OrderSuccess() {
           </div>
 
           {/* HANDOVER CODE */}
-          {["ready", "out_for_delivery"].includes(order.status) && (
+          {((isPickup && order.status === "ready") || (!isPickup && order.status === "out_for_delivery")) && (
             <div className="successCard handoverCard">
               <div className="successCardHeader">
                 <h2>Order Handover</h2>
-                <p>Generate a one-time code when you are ready to receive or collect your order.</p>
+                <p>Generate a one-time code when you are ready to ${isPickup ? "collect your order" : "receive your delivery"}.</p>
               </div>
 
               {handoverCode ? (
