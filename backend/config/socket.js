@@ -1,7 +1,7 @@
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 
-const { jwtSecret, corsOrigins } = require("./config/env");
+const { jwtSecret, corsOrigins } = require("./env");
 
 const USER_ROOM_PREFIX = "user:";
 
