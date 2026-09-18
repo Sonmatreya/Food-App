@@ -6,6 +6,7 @@ const {
   getAdminOrders,
   getAdminOrderDetails,
   updateAdminOrderStatus,
+  getAdminDashboardSummary,
 } = require("../controllers/adminOrderController");
 
 const router = express.Router();
@@ -13,6 +14,9 @@ const router = express.Router();
 // Every admin order endpoint requires authentication and admin access.
 router.use(protect);
 router.use(requireAdmin);
+
+// GET /api/admin/orders/dashboard-summary
+router.get("/dashboard-summary", getAdminDashboardSummary);
 
 // GET /api/admin/orders
 router.get("/", getAdminOrders);
