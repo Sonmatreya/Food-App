@@ -518,7 +518,7 @@ function OrderSuccess() {
             <div className="successCard handoverCard">
               <div className="successCardHeader">
                 <h2>Order Handover</h2>
-                <p>Generate a one-time code when you are ready to ${isPickup ? "collect your order" : "receive your delivery"}.</p>
+                <p>Generate a one-time code when you are ready to {isPickup ? "collect your order" : "receive your delivery"}.</p>
               </div>
 
               {handoverCode ? (
