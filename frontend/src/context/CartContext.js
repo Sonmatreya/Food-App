@@ -10,6 +10,23 @@ const CART_STORAGE_KEY = "food-app-cart";
 
 const getFoodId = (food) => food?._id || food?.id || food?.cartItemId || "";
 
+const isValidFoodId = (id) =>
+  /^[a-f\\d]{24}$/i.test(String(id || "").trim());
+
+const normalizeCartItems = (items) =>
+  Array.isArray(items)
+    ? items
+        .filter((item) => isValidFoodId(getFoodId(item)))
+        .map((item) => ({
+          ...item,
+          quantity:
+            Number.isInteger(Number(item.quantity)) && Number(item.quantity) > 0
+              ? Number(item.quantity)
+              : 1,
+          cookingRequest: String(item.cookingRequest || "").slice(0, 100),
+        }))
+    : [];
+
 export function CartProvider({ children }) {
   const [cartItems, setCartItems] = useState(() => {
     try {
@@ -17,7 +34,7 @@ export function CartProvider({ children }) {
       if (!savedCart) return [];
 
       const parsedCart = JSON.parse(savedCart);
-      return Array.isArray(parsedCart) ? parsedCart : [];
+      return normalizeCartItems(parsedCart);
     } catch (error) {
       console.error("Unable to restore cart:", error);
       return [];
@@ -44,17 +61,29 @@ export function CartProvider({ children }) {
     quantity = 1,
     cookingRequest = ""
   ) => {
+    const foodId = getFoodId(food);
+
+    if (!isValidFoodId(foodId)) {
+      console.error("Cannot add food without a valid MongoDB food ID.");
+      return;
+    }
+
+    const safeQuantity =
+      Number.isInteger(Number(quantity)) && Number(quantity) > 0
+        ? Number(quantity)
+        : 1;
+
     setCartItems((currentItems) => {
       const existingItem = currentItems.find(
-        (item) => getFoodId(item) === String(getFoodId(food))
+        (item) => getFoodId(item) === String(foodId)
       );
 
       if (existingItem) {
         return currentItems.map((item) =>
-          getFoodId(item) === String(getFoodId(food))
+          getFoodId(item) === String(foodId)
             ? {
                 ...item,
-                quantity: item.quantity + quantity,
+                quantity: item.quantity + safeQuantity,
                 cookingRequest:
                   cookingRequest ||
                   item.cookingRequest ||
@@ -68,7 +97,7 @@ export function CartProvider({ children }) {
         ...currentItems,
         {
           ...food,
-          quantity,
+          quantity: safeQuantity,
           cookingRequest: cookingRequest || "",
         },
       ];
@@ -100,7 +129,7 @@ export function CartProvider({ children }) {
     setCartItems((currentItems) =>
       currentItems
         .map((item) =>
-          item.id === id
+          getFoodId(item) === String(id)
             ? {
                 ...item,
                 quantity: item.quantity - 1,
