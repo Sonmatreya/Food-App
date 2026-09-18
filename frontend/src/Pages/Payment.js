@@ -122,6 +122,7 @@ function Payment() {
                 ? { latitude, longitude, locationText }
                 : undefined,
             paymentMethod,
+            demoCardNumber: paymentMethod === "demo" ? demoCardNumber : undefined,
             couponCode: coupon?.code ?? "",
           }),
         }
