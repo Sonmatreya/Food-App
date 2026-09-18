@@ -85,6 +85,26 @@ const AdminOrderDetails = () => {
       <section className="admin-order-details-card"><div className="admin-order-details-card-header"><div><h2>Customer</h2><p>Customer information associated with this order.</p></div></div><div className="admin-order-details-info-grid"><div><span>Name</span><strong>{customer.name || "—"}</strong></div><div><span>Email</span><strong>{customer.email || "—"}</strong></div><div><span>Phone</span><strong>{customer.phone || "—"}</strong></div></div></section>
       <section className="admin-order-details-card"><div className="admin-order-details-card-header"><div><h2>Items</h2><p>{itemsCount} item{itemsCount === 1 ? "" : "s"} in this order.</p></div></div><div className="admin-order-items">{(order.items || []).map((item, index) => <div className="admin-order-item" key={`${item.foodId || item.name}-${index}`}><div className="admin-order-item-image">{item.image ? <img src={item.image} alt="" /> : <span>🍽️</span>}</div><div className="admin-order-item-main"><strong>{item.name || "Food item"}</strong><span>{item.category || ""}{item.cookingRequest ? ` · ${item.cookingRequest}` : ""}</span><small>{money(item.price)} × {item.quantity}</small></div><strong>{money(Number(item.price || 0) * Number(item.quantity || 0))}</strong></div>)}</div></section>
       <div className="admin-order-details-two-column"><section className="admin-order-details-card"><div className="admin-order-details-card-header"><div><h2>Fulfillment</h2><p>{order.deliveryType === "pickup" ? "Customer pickup" : "Delivery information"}</p></div></div>{order.deliveryType === "delivery" && order.address ? <div className="admin-order-address"><strong>{order.address.name || "Delivery Address"}</strong><span>{order.address.phone || ""}</span><span>{order.address.addressLine || ""}</span><span>{order.address.city || ""} {order.address.pincode || ""}</span></div> : <div className="admin-order-pickup">Customer will collect this order from the restaurant.</div>}</section><section className="admin-order-details-card"><div className="admin-order-details-card-header"><div><h2>Payment</h2><p>Payment and pricing summary.</p></div></div><div className="admin-order-pricing"><div><span>Subtotal</span><strong>{money(pricing.subtotal)}</strong></div><div><span>Discount</span><strong>-{money(pricing.discount)}</strong></div><div><span>Delivery Fee</span><strong>{money(pricing.deliveryFee)}</strong></div><div><span>Service Fee</span><strong>{money(pricing.serviceFee)}</strong></div><div><span>Tax</span><strong>{money(pricing.tax)}</strong></div><div className="grand"><span>Total</span><strong>{money(pricing.grandTotal)}</strong></div></div><div className="admin-order-payment-badge"><span>{String(order.paymentMethod || "—").toUpperCase()}</span><strong>{label(order.paymentStatus)}</strong></div></section></div>
+      <section className="admin-order-details-card">
+        <div className="admin-order-details-card-header">
+          <div><h2>Status History</h2><p>Operational audit trail for this order.</p></div>
+        </div>
+        <div className="admin-order-history">
+          {(Array.isArray(order.statusHistory) && order.statusHistory.length
+            ? order.statusHistory
+            : [{ status: order.status, changedAt: order.createdAt }]
+          ).map((entry, index, history) => (
+            <div className="admin-order-history-item" key={String(entry.changedAt) + "-" + index}>
+              <div className="admin-order-history-dot"></div>
+              <div className="admin-order-history-content">
+                <strong>{label(entry.status)}</strong>
+                <span>{dateTime(entry.changedAt)}</span>
+              </div>
+              {index < history.length - 1 && <div className="admin-order-history-line"></div>}
+            </div>
+          ))}
+        </div>
+      </section>
       {order.handover?.verifiedAt && <section className="admin-order-details-card admin-order-handover"><h2>Handover Verification</h2><p>Customer handover OTP was verified on {dateTime(order.handover.verifiedAt)}.</p></section>}
     </main>
   );
