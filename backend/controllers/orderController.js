@@ -146,7 +146,7 @@ const createOrder = async (req, res) => {
     }
 
     const paymentMethod = body.paymentMethod;
-    if (paymentMethod === "demo" && String(body.demoCardNumber ?? "").replace(/\\D/g, "") !== "4111111111111111") return res.status(400).json({ success: false, message: "Invalid demo payment card" });
+    if (paymentMethod === "demo" && String(body.demoCardNumber ?? "").replace(/\D/g, "") !== "4111111111111111") return res.status(400).json({ success: false, message: "Invalid demo payment card" });
     if (!["upi", "card", "netbanking", "cod", "demo"].includes(paymentMethod)) return res.status(400).json({ success: false, message: "Invalid payment method" });
     if (paymentMethod === "cod" && deliveryType === "pickup") return res.status(400).json({ success: false, message: "Cash on Delivery is only available for delivery orders" });
 
