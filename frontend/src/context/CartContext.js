@@ -11,7 +11,7 @@ const CART_STORAGE_KEY = "food-app-cart";
 const getFoodId = (food) => food?._id || food?.id || food?.cartItemId || "";
 
 const isValidFoodId = (id) =>
-  /^[a-f\\d]{24}$/i.test(String(id || "").trim());
+  /^[a-f\d]{24}$/i.test(String(id || "").trim());
 
 const normalizeCartItems = (items) =>
   Array.isArray(items)
