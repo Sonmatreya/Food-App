@@ -37,11 +37,10 @@ const couponSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-couponSchema.pre("validate", function (next) {
+couponSchema.pre("validate", function () {
   if (this.type === "percentage" && this.value > 100) {
-    return next(new Error("Percentage discount cannot exceed 100"));
+    throw new Error("Percentage discount cannot exceed 100");
   }
-  next();
 });
 
 module.exports = mongoose.model("Coupon", couponSchema);
