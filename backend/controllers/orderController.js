@@ -135,7 +135,15 @@ const createOrder = async (req, res) => {
         city: String(raw.city ?? "").trim().slice(0, 100),
         pincode: String(raw.pincode ?? "").trim().slice(0, 10),
       };
-      if (!address.name || !address.phone || !address.addressLine || !address.city || !address.pincode) return res.status(400).json({ success: false, message: "Complete delivery address (name, phone, address, city, pincode) is required" });
+      if (!address.name || !address.phone || !address.addressLine || !address.city || !address.pincode) {
+        return res.status(400).json({ success: false, message: "Complete delivery address (name, phone, address, city, pincode) is required" });
+      }
+      if (!/^\\d{10}$/.test(address.phone.replace(/\\D/g, ""))) {
+        return res.status(400).json({ success: false, message: "Please enter a valid 10-digit phone number" });
+      }
+      if (!/^\\d{6}$/.test(address.pincode)) {
+        return res.status(400).json({ success: false, message: "Please enter a valid 6-digit PIN code" });
+      }
       const latitude = Number(body.location?.latitude);
       const longitude = Number(body.location?.longitude);
       location = {
