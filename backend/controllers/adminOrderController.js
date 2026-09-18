@@ -250,4 +250,32 @@ const updateAdminOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = { getAdminOrders, getAdminOrderDetails, updateAdminOrderStatus };
+const getAdminDashboardSummary = async (req, res) => {
+  try {
+    const now = new Date();
+    const indiaDate = now.toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" });
+    const todayStart = new Date(indiaDate + "T00:00:00+05:30");
+    const tomorrowStart = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
+
+    const [totalOrders, totalCustomers, todayRevenue, pendingOrders, recentOrders] = await Promise.all([
+      Order.countDocuments({}),
+      User.countDocuments({ role: "customer" }),
+      Order.aggregate([
+        { $match: { createdAt: { $gte: todayStart, $lt: tomorrowStart }, status: { $ne: "cancelled" } } },
+        { $group: { _id: null, total: { $sum: "$pricing.grandTotal" } } },
+      ]),
+      Order.countDocuments({ status: { $in: ["placed", "confirmed", "preparing", "ready", "out_for_delivery"] } }),
+      Order.find({}).populate("userId", "_id name email phone").sort({ createdAt: -1 }).limit(5).lean(),
+    ]);
+
+    return res.status(200).json({
+      success: true,
+      stats: { totalOrders, customers: totalCustomers, revenueToday: Number(todayRevenue[0]?.total || 0), pendingOrders },
+      recentOrders: recentOrders.map(buildAdminOrderResponse),
+    });
+  } catch (error) {
+    console.error("Get admin dashboard summary error:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to load dashboard summary" });
+  }
+};
+module.exports = { getAdminOrders, getAdminOrderDetails, updateAdminOrderStatus, getAdminDashboardSummary };
