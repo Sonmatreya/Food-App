@@ -25,6 +25,11 @@ const buildOrderResponse = (order) => ({
   paymentStatus: order.paymentStatus,
   status: order.status,
   createdAt: order.createdAt,
+  updatedAt: order.updatedAt,
+  statusHistory: Array.isArray(order.statusHistory) ? order.statusHistory.map((entry) => ({
+    status: entry.status,
+    changedAt: entry.changedAt,
+  })) : [],
   handover: {
     verifiedAt: order.handover?.verifiedAt || null,
     expiresAt: order.handover?.expiresAt || null,
@@ -118,7 +123,7 @@ const createOrder = async (req, res) => {
     let order = null;
     for (let attempt = 0; attempt < 3 && !order; attempt += 1) {
       try {
-        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, deliveryType, address, location, paymentMethod, paymentStatus: paymentMethod === "cod" ? "cod_pending" : "pending", status: "placed" });
+        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, deliveryType, address, location, paymentMethod, paymentStatus: paymentMethod === "cod" ? "cod_pending" : "pending", status: "placed", statusHistory: [{ status: "placed", changedAt: new Date(), changedBy: userId }] });
       } catch (error) {
         if (error.code === 11000 && attempt < 2) continue;
         throw error;
