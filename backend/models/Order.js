@@ -160,6 +160,34 @@ const orderSchema = new mongoose.Schema(
       default: "placed",
     },
 
+    // Operational status audit trail
+    statusHistory: {
+      type: [
+        {
+          status: {
+            type: String,
+            enum: [
+              "placed",
+              "confirmed",
+              "preparing",
+              "ready",
+              "out_for_delivery",
+              "delivered",
+              "cancelled",
+              "picked_up",
+            ],
+          },
+          changedAt: { type: Date, default: Date.now },
+          changedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+          },
+        },
+      ],
+      default: [],
+    },
+
     // =========================================================
     // HANDOVER OTP (Phase 2E)
     // One-time code the customer shows at delivery/pickup
