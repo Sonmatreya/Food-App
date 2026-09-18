@@ -75,7 +75,7 @@ function Payment() {
     setDemoPaymentState("idle");
     if (paymentMethod === "demo") {
       const cardDigits = demoCardNumber.replace(/\D/g, "");
-      if (!/^4111111111111111$/.test(cardDigits) || !/^\\d{2}\\/\\d{2}$/.test(demoExpiry) || !/^\\d{3}$/.test(demoCvv)) {
+      if (!/^4111111111111111$/.test(cardDigits) || !/^\d{2}\/\d{2}$/.test(demoExpiry) || !/^\\d{3}$/.test(demoCvv)) {
         setOrderError("Use the demo card 4111 1111 1111 1111, expiry MM/YY and a 3-digit CVV.");
         return;
       }
@@ -731,7 +731,7 @@ function Payment() {
                 </div>
 
                 <strong>
-                  $
+                  ₹
                   {(
                     item.price *
                     item.quantity
@@ -773,7 +773,7 @@ function Payment() {
                 </span>
 
                 <strong>
-                  -${discount.toFixed(2)}
+                  -₹{discount.toFixed(2)}
                 </strong>
 
               </div>
