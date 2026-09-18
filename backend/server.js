@@ -1,3 +1,4 @@
+const http = require("http");
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
@@ -18,8 +19,12 @@ const adminCustomerRoutes = require("./routes/adminCustomerRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const adminStaffRoutes = require("./routes/adminStaffRoutes");
 const passport = require("./config/googleAuth");
+const { initializeSocket } = require("./config/socket");
 
 const app = express();
+const httpServer = http.createServer(app);
+const io = initializeSocket(httpServer);
+app.set("io", io);
 app.disable("x-powered-by");
 app.set("trust proxy", env.trustProxy);
 app.use(helmet());
@@ -58,7 +63,7 @@ const PORT = env.port;
 const startServer = async () => {
   try {
     await connectDB();
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (error) {
     console.error("Server startup failed");
     process.exit(1);
