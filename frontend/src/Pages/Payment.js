@@ -13,6 +13,10 @@ function Payment() {
 
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [upiId, setUpiId] = useState("");
+  const [demoCardNumber, setDemoCardNumber] = useState("");
+  const [demoExpiry, setDemoExpiry] = useState("");
+  const [demoCvv, setDemoCvv] = useState("");
+  const [demoPaymentState, setDemoPaymentState] = useState("idle");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderError, setOrderError] = useState("");
 
@@ -68,6 +72,15 @@ function Payment() {
     }
 
     setOrderError("");
+    setDemoPaymentState("idle");
+    if (paymentMethod === "demo") {
+      const cardDigits = demoCardNumber.replace(/\\D/g, "");
+      if (!/^4111111111111111$/.test(cardDigits) || !/^\\d{2}\\/\\d{2}$/.test(demoExpiry) || !/^\\d{3}$/.test(demoCvv)) {
+        setOrderError("Use the demo card 4111 1111 1111 1111, expiry MM/YY and a 3-digit CVV.");
+        return;
+      }
+      setDemoPaymentState("processing");
+    }
     setIsPlacingOrder(true);
 
     try {
@@ -477,6 +490,26 @@ function Payment() {
 
               </button>
 
+              {/* DEMO PAYMENT */}
+
+              <button
+                type="button"
+                className={`paymentMethod ${paymentMethod === "demo" ? "active" : ""}`}
+                onClick={() => {
+                  setPaymentMethod("demo");
+                  setOrderError("");
+                }}
+              >
+                <div className="paymentMethodIcon">🧪</div>
+                <div className="paymentMethodInfo">
+                  <strong>Demo Payment</strong>
+                  <span>Test checkout — no real money is charged</span>
+                </div>
+                <div className="paymentMethodRadio">
+                  {paymentMethod === "demo" ? "●" : "○"}
+                </div>
+              </button>
+
               {/* CASH ON DELIVERY */}
 
               {deliveryType === "delivery" && (
@@ -838,11 +871,11 @@ function Payment() {
             {isPlacingOrder ? (
               <>
                 <span className="loadingSpinner"></span>
-                Processing...
+                {paymentMethod === "demo" ? "Processing Demo Payment..." : "Processing..."}
               </>
             ) : (
               <>
-                Place Order
+                {paymentMethod === "demo" ? "Pay ₹" + grandTotal.toFixed(2) : "Place Order"}
                 <span>→</span>
               </>
             )}
