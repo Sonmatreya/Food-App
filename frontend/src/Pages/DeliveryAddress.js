@@ -314,8 +314,9 @@ function DeliveryAddress() {
       return;
     }
 
-    if (!address.phone.trim()) {
-      alert("Please enter your phone number.");
+    const phoneDigits = address.phone.replace(/\\D/g, "");
+    if (!/^\\d{10}$/.test(phoneDigits)) {
+      alert("Please enter a valid 10-digit phone number.");
       return;
     }
 
@@ -329,8 +330,8 @@ function DeliveryAddress() {
       return;
     }
 
-    if (!address.pincode.trim()) {
-      alert("Please enter your PIN code.");
+    if (!/^\\d{6}$/.test(address.pincode.trim())) {
+      alert("Please enter a valid 6-digit PIN code.");
       return;
     }
 
