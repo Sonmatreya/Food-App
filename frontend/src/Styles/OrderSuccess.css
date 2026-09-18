@@ -883,3 +883,147 @@
     font-size: 11px;
   }
 }
+
+/* =========================================================
+   HANDOVER CODE
+========================================================= */
+
+.handoverCard {
+  border-color: #dfe9f6;
+}
+
+.handoverCodeBox {
+  padding: 18px;
+  border: 1px dashed #c7d6e8;
+  border-radius: 12px;
+  background: #f7faff;
+  text-align: center;
+}
+
+.handoverCodeBox span {
+  display: block;
+  margin-bottom: 7px;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.handoverCodeBox strong {
+  display: block;
+  color: #222;
+  font-size: 34px;
+  letter-spacing: 8px;
+}
+
+.handoverCodeBox p {
+  margin: 9px 0 0;
+  color: #667085;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.handoverGenerateButton {
+  width: 100%;
+  min-height: 45px;
+  padding: 11px 15px;
+  border: none;
+  border-radius: 9px;
+  background: #e63946;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.handoverGenerateButton:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.handoverVerifyBox {
+  margin-top: 14px;
+}
+
+.handoverVerifyBox label {
+  display: block;
+  margin-bottom: 7px;
+  color: #333;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.handoverVerifyRow {
+  display: flex;
+  gap: 9px;
+}
+
+.handoverVerifyRow input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 11px 12px;
+  border: 1px solid #d8d8d8;
+  border-radius: 8px;
+  outline: none;
+  font-size: 15px;
+  letter-spacing: 3px;
+}
+
+.handoverVerifyRow input:focus {
+  border-color: #e63946;
+}
+
+.handoverVerifyRow button {
+  flex-shrink: 0;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #198754;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.handoverVerifyRow button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.handoverSuccessMessage,
+.handoverErrorMessage {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.handoverSuccessMessage {
+  border: 1px solid #cfe8d8;
+  background: #f3fbf6;
+  color: #247a43;
+}
+
+.handoverErrorMessage {
+  border: 1px solid #f2c7cc;
+  background: #fff5f6;
+  color: #b31226;
+}
+
+@media (max-width: 600px) {
+  .handoverCodeBox strong {
+    font-size: 28px;
+    letter-spacing: 6px;
+  }
+
+  .handoverVerifyRow {
+    flex-direction: column;
+  }
+
+  .handoverVerifyRow button {
+    width: 100%;
+  }
+}
