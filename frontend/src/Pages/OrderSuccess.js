@@ -106,7 +106,7 @@ function OrderSuccess() {
     setHandoverCode("");
     try {
       const response = await fetch(
-        API_URL + "/api/orders/" + orderId + "/handover/generate",
+        API_URL + "/api/orders/" + orderId + "/handover-code",
         { method: "POST", credentials: "include" }
       );
       const data = await response.json();
@@ -129,7 +129,7 @@ function OrderSuccess() {
     setHandoverError("");
     try {
       const response = await fetch(
-        API_URL + "/api/orders/" + orderId + "/handover/verify",
+        API_URL + "/api/orders/" + orderId + "/handover-verify",
         {
           method: "POST",
           credentials: "include",
