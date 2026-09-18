@@ -254,6 +254,7 @@ function OrderSuccess() {
     card: "Credit / Debit Card",
     netbanking: "Net Banking",
     cod: "Cash on Delivery",
+    demo: "Demo Payment",
   };
 
   const formattedPaymentMethod =
@@ -585,6 +586,8 @@ function OrderSuccess() {
                 <p>
                   {paymentMethod === "cod"
                     ? "Payment will be collected when your order is delivered."
+                    : paymentMethod === "demo"
+                    ? "Demo payment completed successfully. No real money was charged."
                     : "Payment will be processed securely through the payment gateway."}
                 </p>
 
