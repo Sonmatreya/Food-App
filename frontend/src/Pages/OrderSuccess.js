@@ -407,7 +407,7 @@ function OrderSuccess() {
                   </div>
 
                   <strong>
-                    $
+                    ₹
                     {(
                       item.price *
                       item.quantity
