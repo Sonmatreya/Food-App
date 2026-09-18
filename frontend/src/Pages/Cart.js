@@ -120,7 +120,7 @@ function Cart() {
         </div>
         {deliveryType === "delivery" && deliveryFee === 0 && <p className="freeDeliveryMessage">🎉 You unlocked FREE delivery!</p>}
         <div className="summaryDivider"></div><div className="summaryRow grandTotal"><span>Total</span><strong>₹{grandTotal.toFixed(2)}</strong></div>
-        {discount > 0 && <p className="totalSavings">You saved ${discount.toFixed(2)}</p>}
+        {discount > 0 && <p className="totalSavings">You saved ₹{discount.toFixed(2)}</p>}
         <button type="button" className="checkoutButton" onClick={handleProceedToCheckout}>{deliveryType === "delivery" ? "Proceed to Address" : "Proceed to Checkout"}<span>→</span></button><p className="secureCheckout">🔒 Secure checkout</p></aside>
       </div>
     </div>
