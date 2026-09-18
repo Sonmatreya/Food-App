@@ -11,7 +11,10 @@ const SERVICE_FEE = 1.49;
 const TAX_RATE = 0.05;
 const OTP_TTL_MS = 15 * 60 * 1000;
 const OTP_MAX_ATTEMPTS = 5;
-const ACTIVE_HANDOVER_STATUSES = ["placed", "confirmed", "preparing", "ready", "out_for_delivery"];
+const HANDOVER_STATUSES = {
+  delivery: "out_for_delivery",
+  pickup: "ready",
+};
 const round2 = (value) => Math.round(value * 100) / 100;
 
 const buildOrderResponse = (order) => ({
@@ -217,7 +220,17 @@ const generateHandoverCode = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).json({ success: false, message: "Order not found" });
     const order = await Order.findOne({ _id: id, userId: req.user.userId });
     if (!order) return res.status(404).json({ success: false, message: "Order not found" });
-    if (!ACTIVE_HANDOVER_STATUSES.includes(order.status)) return res.status(409).json({ success: false, message: order.status === "cancelled" ? "This order was cancelled" : "Handover was already completed for this order" });
+    const requiredHandoverStatus = HANDOVER_STATUSES[order.deliveryType];
+    if (order.status !== requiredHandoverStatus) {
+      return res.status(409).json({
+        success: false,
+        message: order.status === "cancelled"
+          ? "This order was cancelled"
+          : order.deliveryType === "pickup"
+          ? "Handover code is available when your pickup order is ready"
+          : "Handover code is available when your order is out for delivery",
+      });
+    }
     const code = crypto.randomInt(100000, 1000000).toString();
     const now = new Date();
     order.handover = { codeHash: await bcrypt.hash(code, 10), expiresAt: new Date(now.getTime() + OTP_TTL_MS), attempts: 0, generatedAt: now, verifiedAt: null };
@@ -238,6 +251,15 @@ const verifyHandoverCode = async (req, res) => {
     const order = await Order.findOne({ _id: id, userId: req.user.userId });
     if (!order) return res.status(404).json({ success: false, message: "Order not found" });
     if (["delivered", "picked_up"].includes(order.status) || order.handover?.verifiedAt) return res.status(409).json({ success: false, message: "Handover was already completed for this order" });
+    const requiredHandoverStatus = HANDOVER_STATUSES[order.deliveryType];
+    if (order.status !== requiredHandoverStatus) {
+      return res.status(409).json({
+        success: false,
+        message: order.deliveryType === "pickup"
+          ? "Handover can be confirmed when your pickup order is ready"
+          : "Handover can be confirmed when your order is out for delivery",
+      });
+    }
     if (order.status === "cancelled") return res.status(409).json({ success: false, message: "This order was cancelled" });
     const handover = order.handover;
     if (!handover?.codeHash) return res.status(400).json({ success: false, message: "No handover code has been generated yet. Please generate one first." });
@@ -258,7 +280,7 @@ const verifyHandoverCode = async (req, res) => {
     const newStatus = order.deliveryType === "pickup" ? "picked_up" : "delivered";
     const verifiedAt = new Date();
     const updatedOrder = await Order.findOneAndUpdate(
-      { _id: order._id, userId: req.user.userId, status: { $in: ACTIVE_HANDOVER_STATUSES }, "handover.verifiedAt": null },
+      { _id: order._id, userId: req.user.userId, status: requiredHandoverStatus, "handover.verifiedAt": null },
       {
         $set: {
           status: newStatus,
