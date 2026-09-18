@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const User = require("../models/User");
+const { getUserRoom } = require("../config/socket");
 
 const OPERATIONAL_STATUSES = [
   "placed",
@@ -238,6 +239,23 @@ const updateAdminOrderStatus = async (req, res) => {
     const populated = await Order.findById(order._id)
       .populate("userId", "_id name email phone")
       .lean();
+    // Notify the customer immediately after the status is persisted.
+    // The event is sent only to the authenticated customer room.
+    const io = req.app.get("io");
+    if (io && populated?.userId?._id) {
+      io.to(getUserRoom(populated.userId._id)).emit("order:status-updated", {
+        orderId: String(populated._id),
+        orderNumber: populated.orderNumber || "",
+        status: populated.status || "",
+        statusHistory: Array.isArray(populated.statusHistory)
+          ? populated.statusHistory.map((entry) => ({
+              status: entry.status,
+              changedAt: entry.changedAt,
+            }))
+          : [],
+        updatedAt: populated.updatedAt || null,
+      });
+    }
 
     return res.status(200).json({
       success: true,
