@@ -222,7 +222,17 @@ const updateAdminOrderStatus = async (req, res) => {
     order.status = requestedStatus;
     await order.save();
 
-    const populated = await Order.findById(order._id).populate("userId", "_id name email phone").lean();
+    order.statusHistory = Array.isArray(order.statusHistory) ? order.statusHistory : [];
+    order.statusHistory.push({
+      status: requestedStatus,
+      changedAt: new Date(),
+      changedBy: req.user.userId,
+    });
+    await order.save();
+
+    const populated = await Order.findById(order._id)
+      .populate("userId", "_id name email phone")
+      .lean();
 
     return res.status(200).json({
       success: true,
