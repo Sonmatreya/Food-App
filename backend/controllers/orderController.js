@@ -156,7 +156,7 @@ const createOrder = async (req, res) => {
       coupon = await Coupon.findOne({ code: couponCode, active: true }).lean();
       if (!coupon) return res.status(400).json({ success: false, message: "Invalid or inactive coupon code" });
       const subtotal = round2(items.reduce((sum, item) => sum + item.price * item.quantity, 0));
-      if (subtotal < coupon.minimum) return res.status(400).json({ success: false, message: `Minimum order value for coupon ${coupon.code} is $${coupon.minimum.toFixed(2)}` });
+      if (subtotal < coupon.minimum) return res.status(400).json({ success: false, message: `Minimum order value for coupon ${coupon.code} is ₹${coupon.minimum.toFixed(2)}` });
     }
 
     const pricing = computePricing(items, deliveryType, coupon);
