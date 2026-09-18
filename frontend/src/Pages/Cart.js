@@ -40,7 +40,7 @@ function Cart() {
 
   useEffect(() => {
     if (appliedCoupon && subtotal < Number(appliedCoupon.minimum)) {
-      setCouponMessage(`Coupon ${appliedCoupon.code} was removed because the minimum order value is $${Number(appliedCoupon.minimum).toFixed(2)}.`);
+      setCouponMessage(`Coupon ${appliedCoupon.code} was removed because the minimum order value is ₹${Number(appliedCoupon.minimum).toFixed(2)}.`);
       setAppliedCoupon(null);
       setCouponCode("");
     }
@@ -59,7 +59,24 @@ function Cart() {
 
   const handleRemoveCoupon = () => { setAppliedCoupon(null); setCouponCode(""); setCouponMessage(""); };
   const handleSelectCoupon = (coupon) => { setCouponCode(coupon.code); setCouponMessage(""); };
-  const handleProceedToCheckout = () => navigate("/delivery-address", { state: { cartItems, subtotal, discount, deliveryFee, serviceFee, tax, grandTotal, deliveryType, coupon: appliedCoupon } });
+  const handleProceedToCheckout = () => {
+    const checkoutState = {
+      cartItems,
+      subtotal,
+      discount,
+      deliveryFee,
+      serviceFee,
+      tax,
+      grandTotal,
+      deliveryType,
+      coupon: appliedCoupon,
+    };
+
+    // Pickup orders do not need a delivery address.
+    navigate(deliveryType === "pickup" ? "/payment" : "/delivery-address", {
+      state: checkoutState,
+    });
+  };
   const getCartItemKey = (item) => item.cartItemId || item.id;
 
   if (!cartItems.length) return <div className="emptyCart"><div className="emptyCartIcon">🛒</div><h1>Your Cart is Empty</h1><p>Looks like you haven't added anything to your cart yet.</p><Link to="/menu"><button className="continueShopping">Browse Menu</button></Link></div>;
@@ -72,11 +89,11 @@ function Cart() {
           <div className="cartCard"><div className="cartCardHeader"><h2>Order Items</h2><span>{totalQuantity} {totalQuantity === 1 ? "item" : "items"}</span></div><div className="cartItems">
             {cartItems.map((item) => <div className="cartItem" key={getCartItemKey(item)}>
               <div className="cartItemImage" style={{ backgroundImage: `url(${item.image})` }}></div>
-              <div className="cartItemDetails"><span className="cartItemCategory">{item.category}</span><h3>{item.name}</h3><p className="cartItemUnitPrice">${Number(item.price).toFixed(2)} each</p>
+              <div className="cartItemDetails"><span className="cartItemCategory">{item.category}</span><h3>{item.name}</h3><p className="cartItemUnitPrice">₹${Number(item.price).toFixed(2)} each</p>
                 {item.cookingRequest && <div className="cartCookingRequest"><span>Cooking request:</span><p>{item.cookingRequest}</p></div>}
                 <div className="cartItemBottom"><div className="cartQuantity"><button type="button" onClick={() => decreaseQuantity(item.id)} aria-label={`Decrease quantity of ${item.name}`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => increaseQuantity(item.id)} aria-label={`Increase quantity of ${item.name}`}>+</button></div><button type="button" className="removeButton" onClick={() => removeFromCart(item.id)}>Remove</button></div>
               </div>
-              <div className="cartItemTotal">${(item.price * item.quantity).toFixed(2)}</div>
+              <div className="cartItemTotal">₹{(item.price * item.quantity).toFixed(2)}</div>
             </div>)}
           </div></div>
 
@@ -89,20 +106,20 @@ function Cart() {
           <div className="cartCard"><div className="cartCardHeader"><h2>Offers & Coupons</h2></div><div className="couponBox">
             <div className="couponInput"><span>🏷️</span><input type="text" value={couponCode} onChange={(event) => { setCouponCode(event.target.value.toUpperCase()); setCouponMessage(""); }} onKeyDown={(event) => event.key === "Enter" && handleApplyCoupon()} placeholder="Enter coupon code" maxLength={20}/><button type="button" onClick={handleApplyCoupon} disabled={!couponCode.trim() || couponLoading}>Apply</button></div>
             {couponMessage && <p className={`couponMessage ${appliedCoupon ? "success" : "error"}`}>{couponMessage}</p>}
-            <div className="availableCoupons"><p>Available Coupons</p>{availableCoupons.map((coupon) => <button type="button" key={coupon.id || coupon.code} onClick={() => handleSelectCoupon(coupon)}><strong>{coupon.code}</strong><span>{coupon.type === "percentage" ? `${coupon.value}% OFF` : `$${Number(coupon.value).toFixed(2)} OFF`} on orders above ${Number(coupon.minimum).toFixed(2)}</span></button>)}{!couponLoading && !availableCoupons.length && <small>No active coupons available right now.</small>}</div>
+            <div className="availableCoupons"><p>Available Coupons</p>{availableCoupons.map((coupon) => <button type="button" key={coupon.id || coupon.code} onClick={() => handleSelectCoupon(coupon)}><strong>{coupon.code}</strong><span>{coupon.type === "percentage" ? `${coupon.value}% OFF` : `₹${Number(coupon.value).toFixed(2)} OFF`} on orders above ${Number(coupon.minimum).toFixed(2)}</span></button>)}{!couponLoading && !availableCoupons.length && <small>No active coupons available right now.</small>}</div>
             {appliedCoupon && <div className="appliedCoupon"><span className="couponAppliedIcon">✓</span><div><strong>{appliedCoupon.code}</strong><p>Coupon applied</p></div><button type="button" onClick={handleRemoveCoupon}>Remove</button></div>}
           </div></div>
         </div>
 
         <aside className="cartSummary"><div className="summaryHeader"><h2>Order Summary</h2></div><div className="summaryRows">
-          <div className="summaryRow"><span>Subtotal</span><strong>${subtotal.toFixed(2)}</strong></div>
+          <div className="summaryRow"><span>Subtotal</span><strong>₹{subtotal.toFixed(2)}</strong></div>
           {discount > 0 && <div className="summaryRow discountRow"><span>Discount</span><strong>-${discount.toFixed(2)}</strong></div>}
-          <div className="summaryRow"><span>Delivery Fee</span><strong>{deliveryFee === 0 ? "FREE" : `$${deliveryFee.toFixed(2)}`}</strong></div>
-          <div className="summaryRow"><span>Service Fee</span><strong>${serviceFee.toFixed(2)}</strong></div>
-          <div className="summaryRow"><span>Tax</span><strong>${tax.toFixed(2)}</strong></div>
+          <div className="summaryRow"><span>Delivery Fee</span><strong>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee.toFixed(2)}`}</strong></div>
+          <div className="summaryRow"><span>Service Fee</span><strong>₹{serviceFee.toFixed(2)}</strong></div>
+          <div className="summaryRow"><span>Tax</span><strong>₹{tax.toFixed(2)}</strong></div>
         </div>
         {deliveryType === "delivery" && deliveryFee === 0 && <p className="freeDeliveryMessage">🎉 You unlocked FREE delivery!</p>}
-        <div className="summaryDivider"></div><div className="summaryRow grandTotal"><span>Total</span><strong>${grandTotal.toFixed(2)}</strong></div>
+        <div className="summaryDivider"></div><div className="summaryRow grandTotal"><span>Total</span><strong>₹{grandTotal.toFixed(2)}</strong></div>
         {discount > 0 && <p className="totalSavings">You saved ${discount.toFixed(2)}</p>}
         <button type="button" className="checkoutButton" onClick={handleProceedToCheckout}>{deliveryType === "delivery" ? "Proceed to Address" : "Proceed to Checkout"}<span>→</span></button><p className="secureCheckout">🔒 Secure checkout</p></aside>
       </div>
