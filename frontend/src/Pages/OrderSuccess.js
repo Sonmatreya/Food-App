@@ -29,6 +29,11 @@ function OrderSuccess() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [handoverCode, setHandoverCode] = useState("");
+  const [enteredHandoverCode, setEnteredHandoverCode] = useState("");
+  const [handoverMessage, setHandoverMessage] = useState("");
+  const [handoverError, setHandoverError] = useState("");
+  const [handoverLoading, setHandoverLoading] = useState(false);
 
   // Fetch the real order from the backend
   useEffect(() => {
@@ -80,6 +85,72 @@ function OrderSuccess() {
       setLoading(false);
     }
   }, [orderId]);
+
+  const refreshOrder = async () => {
+    const response = await fetch(
+      API_URL + "/api/orders/" + orderId,
+      { method: "GET", credentials: "include" }
+    );
+    const data = await response.json();
+    if (!response.ok || !data.success || !data.order) {
+      throw new Error(data.message || "Unable to refresh order.");
+    }
+    setOrder(data.order);
+  };
+
+  const handleGenerateHandoverCode = async () => {
+    if (handoverLoading) return;
+    setHandoverLoading(true);
+    setHandoverMessage("");
+    setHandoverError("");
+    setHandoverCode("");
+    try {
+      const response = await fetch(
+        API_URL + "/api/orders/" + orderId + "/handover/generate",
+        { method: "POST", credentials: "include" }
+      );
+      const data = await response.json();
+      if (!response.ok || !data.success || !data.handover?.code) {
+        throw new Error(data.message || "Unable to generate handover code.");
+      }
+      setHandoverCode(data.handover.code);
+      setHandoverMessage("Show this 6-digit code to the delivery partner or restaurant staff.");
+    } catch (handoverError) {
+      setHandoverError(handoverError.message);
+    } finally {
+      setHandoverLoading(false);
+    }
+  };
+
+  const handleVerifyHandoverCode = async () => {
+    if (handoverLoading) return;
+    setHandoverLoading(true);
+    setHandoverMessage("");
+    setHandoverError("");
+    try {
+      const response = await fetch(
+        API_URL + "/api/orders/" + orderId + "/handover/verify",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code: enteredHandoverCode }),
+        }
+      );
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to verify handover code.");
+      }
+      setEnteredHandoverCode("");
+      setHandoverCode("");
+      setHandoverMessage(data.message || "Handover confirmed successfully.");
+      await refreshOrder();
+    } catch (handoverError) {
+      setHandoverError(handoverError.message);
+    } finally {
+      setHandoverLoading(false);
+    }
+  };
 
   // Loading state
   if (loading) {
@@ -440,6 +511,52 @@ function OrderSuccess() {
             )}
 
           </div>
+
+          {/* HANDOVER CODE */}
+          {["ready", "out_for_delivery"].includes(order.status) && (
+            <div className="successCard handoverCard">
+              <div className="successCardHeader">
+                <h2>Order Handover</h2>
+                <p>Generate a one-time code when you are ready to receive or collect your order.</p>
+              </div>
+
+              {handoverCode ? (
+                <div className="handoverCodeBox">
+                  <span>Your Handover Code</span>
+                  <strong>{handoverCode}</strong>
+                  <p>{handoverMessage}</p>
+                </div>
+              ) : (
+                <button type="button" className="handoverGenerateButton" onClick={handleGenerateHandoverCode} disabled={handoverLoading}>
+                  {handoverLoading ? "Generating..." : "Generate 6-Digit Code"}
+                </button>
+              )}
+
+              {handoverCode && (
+                <div className="handoverVerifyBox">
+                  <label htmlFor="handoverCode">Enter code after handover</label>
+                  <div className="handoverVerifyRow">
+                    <input
+                      id="handoverCode"
+                      type="text"
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      maxLength="6"
+                      value={enteredHandoverCode}
+                      onChange={(event) => setEnteredHandoverCode(event.target.value.replace(/\D/g, "").slice(0, 6))}
+                      placeholder="6-digit code"
+                    />
+                    <button type="button" onClick={handleVerifyHandoverCode} disabled={handoverLoading || enteredHandoverCode.length !== 6}>
+                      {handoverLoading ? "Verifying..." : "Confirm Handover"}
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {handoverMessage && !handoverCode && <div className="handoverSuccessMessage">{handoverMessage}</div>}
+              {handoverError && <div className="handoverErrorMessage" role="alert">{handoverError}</div>}
+            </div>
+          )}
 
           {/* PAYMENT INFORMATION */}
 
