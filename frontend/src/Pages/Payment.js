@@ -96,7 +96,7 @@ function Payment() {
           },
           body: JSON.stringify({
             items: cartItems.map((item) => ({
-              foodId: String(item.id ?? ""),
+              foodId: String(item._id ?? item.id ?? ""),
               name: item.name,
               category: item.category ?? "",
               price: item.price,
@@ -707,7 +707,7 @@ function Payment() {
 
               <div
                 className="paymentItem"
-                key={item.id}
+                key={item._id || item.id}
               >
 
                 <div
