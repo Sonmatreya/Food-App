@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { API_URL } from "../config/api";
+import { createSocket } from "../config/socket";
 import "../Styles/OrderSuccess.css";
 
 const STATUS_TIMELINE = {
@@ -34,6 +35,7 @@ function OrderSuccess() {
   const [handoverMessage, setHandoverMessage] = useState("");
   const [handoverError, setHandoverError] = useState("");
   const [handoverLoading, setHandoverLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
 
   // Fetch the real order from the backend
   useEffect(() => {
@@ -98,6 +100,57 @@ function OrderSuccess() {
     setOrder(data.order);
   };
 
+  // Keep this order page synchronized with admin status changes in real time.
+  // The REST refresh on connect also reconciles status changes missed while offline.
+  useEffect(() => {
+    if (!orderId) return undefined;
+
+    const socket = createSocket();
+
+    const handleConnect = () => {
+      setSocketConnected(true);
+      refreshOrder().catch((refreshError) => {
+        console.error("Order refresh after socket connection failed:", refreshError);
+      });
+    };
+
+    const handleDisconnect = () => setSocketConnected(false);
+
+    const handleStatusUpdate = (payload) => {
+      if (String(payload?.orderId || "") !== String(orderId)) return;
+
+      setOrder((currentOrder) => {
+        if (!currentOrder) return currentOrder;
+        return {
+          ...currentOrder,
+          status: payload.status || currentOrder.status,
+          statusHistory: Array.isArray(payload.statusHistory)
+            ? payload.statusHistory
+            : currentOrder.statusHistory,
+          updatedAt: payload.updatedAt || currentOrder.updatedAt,
+        };
+      });
+    };
+
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("connect_error", (socketError) => {
+      setSocketConnected(false);
+      console.error("Order status socket error:", socketError.message);
+    });
+    socket.on("order:status-updated", handleStatusUpdate);
+    socket.connect();
+
+    return () => {
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("connect_error");
+      socket.off("order:status-updated", handleStatusUpdate);
+      socket.disconnect();
+      setSocketConnected(false);
+    };
+  }, [orderId]);
+
   const handleGenerateHandoverCode = async () => {
     if (handoverLoading) return;
     setHandoverLoading(true);
@@ -114,7 +167,7 @@ function OrderSuccess() {
         throw new Error(data.message || "Unable to generate handover code.");
       }
       setHandoverCode(data.handover.code);
-      setHandoverMessage("Show this 6-digit code to ${isPickup ? "restaurant staff" : "the delivery partner"}.");
+      setHandoverMessage("Show this 6-digit code to " + (isPickup ? "restaurant staff" : "the delivery partner") + ".");
     } catch (handoverError) {
       setHandoverError(handoverError.message);
     } finally {
@@ -311,7 +364,10 @@ function OrderSuccess() {
         </div>
       ) : (
         <div className="orderStatusCard">
-          {timelineSteps.map((step, index) => (
+          <div className="orderLiveStatus" role="status" aria-live="polite">
+            <span className={socketConnected ? "orderLiveDot connected" : "orderLiveDot"}></span>
+            {socketConnected ? "Live order updates" : "Reconnecting to live updates..."}
+          </div>          {timelineSteps.map((step, index) => (
             <React.Fragment key={step.title}>
               {index > 0 && (
                 <div
