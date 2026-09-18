@@ -107,7 +107,8 @@ const createOrder = async (req, res) => {
     }
 
     const paymentMethod = body.paymentMethod;
-    if (!["upi", "card", "netbanking", "cod"].includes(paymentMethod)) return res.status(400).json({ success: false, message: "Invalid payment method" });
+    if (paymentMethod === "demo" && String(body.demoCardNumber ?? "").replace(/\\D/g, "") !== "4111111111111111") return res.status(400).json({ success: false, message: "Invalid demo payment card" });
+    if (!["upi", "card", "netbanking", "cod", "demo"].includes(paymentMethod)) return res.status(400).json({ success: false, message: "Invalid payment method" });
     if (paymentMethod === "cod" && deliveryType === "pickup") return res.status(400).json({ success: false, message: "Cash on Delivery is only available for delivery orders" });
 
     const couponCode = String(body.couponCode ?? "").trim().toUpperCase();
@@ -123,7 +124,7 @@ const createOrder = async (req, res) => {
     let order = null;
     for (let attempt = 0; attempt < 3 && !order; attempt += 1) {
       try {
-        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, deliveryType, address, location, paymentMethod, paymentStatus: paymentMethod === "cod" ? "cod_pending" : "pending", status: "placed", statusHistory: [{ status: "placed", changedAt: new Date(), changedBy: userId }] });
+        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, deliveryType, address, location, paymentMethod, paymentStatus: paymentMethod === "cod" ? "cod_pending" : paymentMethod === "demo" ? "paid" : "pending", status: "placed", statusHistory: [{ status: "placed", changedAt: new Date(), changedBy: userId }] });
       } catch (error) {
         if (error.code === 11000 && attempt < 2) continue;
         throw error;
