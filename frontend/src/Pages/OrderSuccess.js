@@ -594,7 +594,7 @@ function OrderSuccess() {
               </div>
 
               <strong>
-                ${grandTotal.toFixed(2)}
+                {grandTotal.toFixed(2)}
               </strong>
 
             </div>
@@ -652,7 +652,7 @@ function OrderSuccess() {
             </span>
 
             <strong>
-              ${grandTotal.toFixed(2)}
+              {grandTotal.toFixed(2)}
             </strong>
 
           </div>
