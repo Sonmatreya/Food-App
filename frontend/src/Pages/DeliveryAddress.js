@@ -699,11 +699,11 @@ function DeliveryAddress() {
 
           <div className="deliverySummaryItems">
 
-            {cartItems.map((item) => (
+            {cartItems.map((item, index) => (
 
               <div
                 className="deliverySummaryItem"
-                key={item.id}
+                key={`${item._id || item.id || item.cartItemId || "item"}-${index}`}
               >
 
                 <div
