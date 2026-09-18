@@ -220,7 +220,6 @@ const updateAdminOrderStatus = async (req, res) => {
     }
 
     order.status = requestedStatus;
-    await order.save();
 
     order.statusHistory = Array.isArray(order.statusHistory) ? order.statusHistory : [];
     order.statusHistory.push({
