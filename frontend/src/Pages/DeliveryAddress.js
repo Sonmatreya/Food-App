@@ -744,7 +744,7 @@ function DeliveryAddress() {
           <div className="summaryRow">
             <span>Subtotal</span>
             <strong>
-              {subtotal.toFixed(2)}
+              ₹{subtotal.toFixed(2)}
             </strong>
           </div>
 
