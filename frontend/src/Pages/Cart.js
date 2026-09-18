@@ -89,7 +89,7 @@ function Cart() {
           <div className="cartCard"><div className="cartCardHeader"><h2>Order Items</h2><span>{totalQuantity} {totalQuantity === 1 ? "item" : "items"}</span></div><div className="cartItems">
             {cartItems.map((item) => <div className="cartItem" key={getCartItemKey(item)}>
               <div className="cartItemImage" style={{ backgroundImage: `url(${item.image})` }}></div>
-              <div className="cartItemDetails"><span className="cartItemCategory">{item.category}</span><h3>{item.name}</h3><p className="cartItemUnitPrice">₹${Number(item.price).toFixed(2)} each</p>
+              <div className="cartItemDetails"><span className="cartItemCategory">{item.category}</span><h3>{item.name}</h3><p className="cartItemUnitPrice">₹{Number(item.price).toFixed(2)} each</p>
                 {item.cookingRequest && <div className="cartCookingRequest"><span>Cooking request:</span><p>{item.cookingRequest}</p></div>}
                 <div className="cartItemBottom"><div className="cartQuantity"><button type="button" onClick={() => decreaseQuantity(item.id)} aria-label={`Decrease quantity of ${item.name}`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => increaseQuantity(item.id)} aria-label={`Increase quantity of ${item.name}`}>+</button></div><button type="button" className="removeButton" onClick={() => removeFromCart(item.id)}>Remove</button></div>
               </div>
@@ -106,7 +106,7 @@ function Cart() {
           <div className="cartCard"><div className="cartCardHeader"><h2>Offers & Coupons</h2></div><div className="couponBox">
             <div className="couponInput"><span>🏷️</span><input type="text" value={couponCode} onChange={(event) => { setCouponCode(event.target.value.toUpperCase()); setCouponMessage(""); }} onKeyDown={(event) => event.key === "Enter" && handleApplyCoupon()} placeholder="Enter coupon code" maxLength={20}/><button type="button" onClick={handleApplyCoupon} disabled={!couponCode.trim() || couponLoading}>Apply</button></div>
             {couponMessage && <p className={`couponMessage ${appliedCoupon ? "success" : "error"}`}>{couponMessage}</p>}
-            <div className="availableCoupons"><p>Available Coupons</p>{availableCoupons.map((coupon) => <button type="button" key={coupon.id || coupon.code} onClick={() => handleSelectCoupon(coupon)}><strong>{coupon.code}</strong><span>{coupon.type === "percentage" ? `${coupon.value}% OFF` : `₹${Number(coupon.value).toFixed(2)} OFF`} on orders above ₹${Number(coupon.minimum).toFixed(2)}</span></button>)}{!couponLoading && !availableCoupons.length && <small>No active coupons available right now.</small>}</div>
+            <div className="availableCoupons"><p>Available Coupons</p>{availableCoupons.map((coupon) => <button type="button" key={coupon.id || coupon.code} onClick={() => handleSelectCoupon(coupon)}><strong>{coupon.code}</strong><span>{coupon.type === "percentage" ? `${coupon.value}% OFF` : `₹${Number(coupon.value).toFixed(2)} OFF`} on orders above ₹{Number(coupon.minimum).toFixed(2)}</span></button>)}{!couponLoading && !availableCoupons.length && <small>No active coupons available right now.</small>}</div>
             {appliedCoupon && <div className="appliedCoupon"><span className="couponAppliedIcon">✓</span><div><strong>{appliedCoupon.code}</strong><p>Coupon applied</p></div><button type="button" onClick={handleRemoveCoupon}>Remove</button></div>}
           </div></div>
         </div>
