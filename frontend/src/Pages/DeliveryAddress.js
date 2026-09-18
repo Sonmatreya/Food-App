@@ -719,14 +719,14 @@ function DeliveryAddress() {
                   </strong>
 
                   <span>
-                    {item.quantity} × $
+                    {item.quantity} × ₹
                     {item.price.toFixed(2)}
                   </span>
 
                 </div>
 
                 <strong>
-                  $
+                  ₹
                   {(
                     item.price *
                     item.quantity
@@ -744,7 +744,7 @@ function DeliveryAddress() {
           <div className="summaryRow">
             <span>Subtotal</span>
             <strong>
-              ${subtotal.toFixed(2)}
+              {subtotal.toFixed(2)}
             </strong>
           </div>
 
@@ -756,7 +756,7 @@ function DeliveryAddress() {
               </span>
 
               <strong>
-                -${discount.toFixed(2)}
+                -₹{discount.toFixed(2)}
               </strong>
 
             </div>
@@ -771,7 +771,7 @@ function DeliveryAddress() {
             <strong>
               {deliveryFee === 0
                 ? "FREE"
-                : `$${deliveryFee.toFixed(2)}`}
+                : `₹${deliveryFee.toFixed(2)}`}
             </strong>
 
           </div>
@@ -783,7 +783,7 @@ function DeliveryAddress() {
             </span>
 
             <strong>
-              ${serviceFee.toFixed(2)}
+              ₹{serviceFee.toFixed(2)}
             </strong>
 
           </div>
@@ -795,7 +795,7 @@ function DeliveryAddress() {
             </span>
 
             <strong>
-              ${tax.toFixed(2)}
+              ₹{tax.toFixed(2)}
             </strong>
 
           </div>
@@ -809,7 +809,7 @@ function DeliveryAddress() {
             </span>
 
             <strong>
-              ${grandTotal.toFixed(2)}
+              ₹{grandTotal.toFixed(2)}
             </strong>
 
           </div>
