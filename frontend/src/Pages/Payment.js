@@ -185,11 +185,11 @@ function Payment() {
         </div>
 
         <Link
-          to="/delivery-address"
-          state={orderData}
+          to={deliveryType === "delivery" ? "/delivery-address" : "/cart"}
+          state={deliveryType === "delivery" ? orderData : undefined}
           className="backToAddress"
         >
-          ← Change Address
+          {deliveryType === "delivery" ? "← Change Address" : "← Back to Cart"}
         </Link>
 
       </div>
