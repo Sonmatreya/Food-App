@@ -76,6 +76,12 @@ const buildAdminOrderResponse = (order) => ({
   createdAt: order.createdAt || null,
   updatedAt: order.updatedAt || null,
   cancelledAt: order.cancelledAt || null,
+  statusHistory: Array.isArray(order.statusHistory)
+    ? order.statusHistory.map((entry) => ({
+        status: entry.status,
+        changedAt: entry.changedAt,
+      }))
+    : [],
   handover: {
     verifiedAt: order.handover?.verifiedAt || null,
     expiresAt: order.handover?.expiresAt || null,
