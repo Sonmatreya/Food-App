@@ -77,7 +77,7 @@ function Cart() {
       state: checkoutState,
     });
   };
-  const getCartItemKey = (item) => item.cartItemId || item.id;
+  const getCartItemKey = (item) => item.cartItemId || item._id || item.id;
 
   if (!cartItems.length) return <div className="emptyCart"><div className="emptyCartIcon">🛒</div><h1>Your Cart is Empty</h1><p>Looks like you haven't added anything to your cart yet.</p><Link to="/menu"><button className="continueShopping">Browse Menu</button></Link></div>;
 
@@ -87,14 +87,14 @@ function Cart() {
       <div className="cartLayout">
         <div className="cartMain">
           <div className="cartCard"><div className="cartCardHeader"><h2>Order Items</h2><span>{totalQuantity} {totalQuantity === 1 ? "item" : "items"}</span></div><div className="cartItems">
-            {cartItems.map((item) => <div className="cartItem" key={getCartItemKey(item)}>
+            {cartItems.map((item) => { const itemId = getCartItemKey(item); return <div className="cartItem" key={itemId}>
               <div className="cartItemImage" style={{ backgroundImage: `url(${item.image})` }}></div>
               <div className="cartItemDetails"><span className="cartItemCategory">{item.category}</span><h3>{item.name}</h3><p className="cartItemUnitPrice">₹{Number(item.price).toFixed(2)} each</p>
                 {item.cookingRequest && <div className="cartCookingRequest"><span>Cooking request:</span><p>{item.cookingRequest}</p></div>}
-                <div className="cartItemBottom"><div className="cartQuantity"><button type="button" onClick={() => decreaseQuantity(item.id)} aria-label={`Decrease quantity of ${item.name}`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => increaseQuantity(item.id)} aria-label={`Increase quantity of ${item.name}`}>+</button></div><button type="button" className="removeButton" onClick={() => removeFromCart(item.id)}>Remove</button></div>
+                <div className="cartItemBottom"><div className="cartQuantity"><button type="button" onClick={() => decreaseQuantity(itemId)} aria-label={`Decrease quantity of ${item.name}`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => increaseQuantity(itemId)} aria-label={`Increase quantity of ${item.name}`}>+</button></div><button type="button" className="removeButton" onClick={() => removeFromCart(itemId)}>Remove</button></div>
               </div>
               <div className="cartItemTotal">₹{(item.price * item.quantity).toFixed(2)}</div>
-            </div>)}
+            </div>; })}
           </div></div>
 
           <div className="cartCard"><div className="cartCardHeader"><h2>Delivery Method</h2></div><div className="deliveryOptions">
