@@ -138,10 +138,10 @@ const createOrder = async (req, res) => {
       if (!address.name || !address.phone || !address.addressLine || !address.city || !address.pincode) {
         return res.status(400).json({ success: false, message: "Complete delivery address (name, phone, address, city, pincode) is required" });
       }
-      if (!/^\\d{10}$/.test(address.phone.replace(/\\D/g, ""))) {
+      if (!/^\d{10}$/.test(address.phone.replace(/\D/g, ""))) {
         return res.status(400).json({ success: false, message: "Please enter a valid 10-digit phone number" });
       }
-      if (!/^\\d{6}$/.test(address.pincode)) {
+      if (!/^\d{6}$/.test(address.pincode)) {
         return res.status(400).json({ success: false, message: "Please enter a valid 6-digit PIN code" });
       }
       const latitude = Number(body.location?.latitude);
