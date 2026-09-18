@@ -208,7 +208,27 @@ const verifyHandoverCode = async (req, res) => {
       return res.status(401).json({ success: false, message: "Incorrect handover code", attemptsRemaining: OTP_MAX_ATTEMPTS - attempts });
     }
     const newStatus = order.deliveryType === "pickup" ? "picked_up" : "delivered";
-    const updatedOrder = await Order.findOneAndUpdate({ _id: order._id, userId: req.user.userId, status: { $in: ACTIVE_HANDOVER_STATUSES }, "handover.verifiedAt": null }, { $set: { status: newStatus, "handover.verifiedAt": new Date(), "handover.codeHash": null, "handover.expiresAt": null, "handover.attempts": 0 } }, { new: true });
+    const verifiedAt = new Date();
+    const updatedOrder = await Order.findOneAndUpdate(
+      { _id: order._id, userId: req.user.userId, status: { $in: ACTIVE_HANDOVER_STATUSES }, "handover.verifiedAt": null },
+      {
+        $set: {
+          status: newStatus,
+          "handover.verifiedAt": verifiedAt,
+          "handover.codeHash": null,
+          "handover.expiresAt": null,
+          "handover.attempts": 0,
+        },
+        $push: {
+          statusHistory: {
+            status: newStatus,
+            changedAt: verifiedAt,
+            changedBy: req.user.userId,
+          },
+        },
+      },
+      { new: true }
+    );
     if (!updatedOrder) return res.status(409).json({ success: false, message: "Handover was already completed for this order" });
     return res.json({ success: true, message: newStatus === "picked_up" ? "Pickup confirmed. Enjoy your food!" : "Delivery confirmed. Enjoy your food!", order: buildOrderResponse(updatedOrder) });
   } catch (error) {
