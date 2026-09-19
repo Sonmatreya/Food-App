@@ -239,8 +239,7 @@ const updateAdminOrderStatus = async (req, res) => {
     const populated = await Order.findById(order._id)
       .populate("userId", "_id name email phone")
       .lean();
-    // Notify the customer immediately after the status is persisted.
-    // The event is sent only to the authenticated customer room.
+    // Notify the customer and every connected admin after the status is persisted.
     const io = req.app.get("io");
     if (io && populated?.userId?._id) {
       const eventPayload = {
@@ -255,6 +254,9 @@ const updateAdminOrderStatus = async (req, res) => {
           : [],
         updatedAt: populated.updatedAt || null,
       };
+
+      io.to(getUserRoom(populated.userId._id)).emit("order:status-updated", eventPayload);
+      io.to(ADMIN_ROOM).emit("admin:order-updated", eventPayload);
     }
 
     return res.status(200).json({
