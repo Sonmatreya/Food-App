@@ -71,10 +71,12 @@ const AdminOrders = () => {
 
     socket.on("connect", () => {});
     socket.on("admin:order-updated", refreshOrders);
+    socket.on("admin:order-created", refreshOrders);
     socket.connect();
 
     return () => {
       socket.off("admin:order-updated", refreshOrders);
+      socket.off("admin:order-created", refreshOrders);
       socket.disconnect();
     };
   }, [fetchOrders, page, appliedFilters]);
