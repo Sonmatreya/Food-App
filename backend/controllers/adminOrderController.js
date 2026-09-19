@@ -277,7 +277,7 @@ const getAdminDashboardSummary = async (req, res) => {
     const todayStart = new Date(indiaDate + "T00:00:00+05:30");
     const tomorrowStart = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
-    const [totalOrders, totalCustomers, todayRevenue, pendingOrders, recentOrders, statusCounts, weeklySales] = await Promise.all([
+    const [totalOrders, totalCustomers, todayRevenue, pendingOrders, recentOrders, statusCounts, weeklySales, popularItems] = await Promise.all([
       Order.countDocuments({}),
       User.countDocuments({ role: "customer" }),
       Order.aggregate([
@@ -294,13 +294,37 @@ const getAdminDashboardSummary = async (req, res) => {
         { $group: { _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } }, orders: { $sum: 1 }, revenue: { $sum: "$pricing.grandTotal" } } },
         { $sort: { _id: 1 } },
       ]),
+      Order.aggregate([
+        { $match: { status: { $ne: "cancelled" } } },
+        { $unwind: "$items" },
+        { $group: {
+            _id: "$items.foodId",
+            name: { $first: "$items.name" },
+            image: { $first: "$items.image" },
+            quantity: { $sum: "$items.quantity" },
+            revenue: { $sum: { $multiply: ["$items.price", "$items.quantity"] } },
+            orders: { $sum: 1 },
+          } },
+        { $sort: { quantity: -1, revenue: -1 } },
+        { $limit: 5 },
+      ]),
     ]);
 
     return res.status(200).json({
       success: true,
       stats: { totalOrders, customers: totalCustomers, revenueToday: Number(todayRevenue[0]?.total || 0), pendingOrders },
       statusCounts: statusCounts.reduce((acc, item) => { acc[item._id || "unknown"] = item.count; return acc; }, {}),
-      analytics: { weeklySales: weeklySales.map((item) => ({ date: item._id, orders: item.orders, revenue: Number(item.revenue || 0) })) },
+      analytics: {
+        weeklySales: weeklySales.map((item) => ({ date: item._id, orders: item.orders, revenue: Number(item.revenue || 0) })),
+        popularItems: popularItems.map((item) => ({
+          id: item._id,
+          name: item.name || "Food item",
+          image: item.image || "",
+          quantity: Number(item.quantity || 0),
+          orders: Number(item.orders || 0),
+          revenue: Number(item.revenue || 0),
+        })),
+      },
       recentOrders: recentOrders.map(buildAdminOrderResponse),
     });
   } catch (error) {
