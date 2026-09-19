@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
+import { createSocket } from "../config/socket";
 import "../Styles/AdminDashboard.css";
 
 const money = (value) => Number(value || 0).toLocaleString("en-IN", { style: "currency", currency: "INR" });
@@ -13,23 +14,49 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    let active = true;
-    const loadDashboard = async () => {
-      setLoading(true); setError("");
-      try {
-        const response = await fetch(API_URL + "/api/admin/orders/dashboard-summary", { credentials: "include", headers: { Accept: "application/json" } });
-        const data = await response.json().catch(() => null);
-        if (!response.ok) throw new Error(data?.message || "Unable to load dashboard data.");
-        if (active) setSummary(data);
-      } catch (dashboardError) {
-        console.error("Admin dashboard error:", dashboardError);
-        if (active) setError(dashboardError.message || "Unable to load dashboard data.");
-      } finally { if (active) setLoading(false); }
-    };
-    loadDashboard();
-    return () => { active = false; };
+  const loadDashboard = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch(API_URL + "/api/admin/orders/dashboard-summary", {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) throw new Error(data?.message || "Unable to load dashboard data.");
+      setSummary(data);
+    } catch (dashboardError) {
+      console.error("Admin dashboard error:", dashboardError);
+      setError(dashboardError.message || "Unable to load dashboard data.");
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    loadDashboard();
+  }, [loadDashboard]);
+
+  useEffect(() => {
+    const socket = createSocket();
+
+    const refreshDashboard = () => {
+      loadDashboard();
+    };
+
+    socket.on("connect", refreshDashboard);
+    socket.on("order:status-updated", refreshDashboard);
+    socket.on("order:created", refreshDashboard);
+    socket.on("disconnect", () => {});
+    socket.connect();
+
+    return () => {
+      socket.off("connect", refreshDashboard);
+      socket.off("order:status-updated", refreshDashboard);
+      socket.off("order:created", refreshDashboard);
+      socket.disconnect();
+    };
+  }, [loadDashboard]);
 
   const stats = [
     { label: "Total Orders", value: loading ? "…" : summary?.stats?.totalOrders ?? "—", note: "All orders", tone: "red", icon: "▣" },
@@ -42,6 +69,7 @@ const AdminDashboard = () => {
     { title: "Customers", text: "View accounts and complete order history.", path: "/admin/customers", icon: "♙", tone: "green" },
     { title: "Food & Menu", text: "Manage dishes, prices and availability.", path: "/admin/menu", icon: "☷", tone: "gold" },
   ];
+
   return (
     <section className="admin-dashboard-page">
       <div className="admin-dashboard-hero"><div><span className="admin-dashboard-eyebrow">Restaurant operations</span><h2>Good to see you, Admin 👋</h2><p>Here is your Food App workspace. Keep orders moving and your restaurant running smoothly.</p></div><div className="admin-dashboard-hero-mark"><span>FOOD</span><strong>APP</strong><small>MANAGEMENT</small></div></div>
@@ -55,4 +83,5 @@ const AdminDashboard = () => {
     </section>
   );
 };
+
 export default AdminDashboard;
