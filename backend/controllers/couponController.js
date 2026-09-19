@@ -38,8 +38,36 @@ const getCoupons = async (req, res, next) => {
 
 const getAdminCoupons = async (req, res, next) => {
   try {
-    const coupons = await Coupon.find().sort({ createdAt: -1 }).lean();
-    res.json({ success: true, coupons: coupons.map(serialize) });
+    const { search = "", status = "all" } = req.query;
+    const filter = {};
+    const query = String(search).trim();
+
+    if (query) filter.code = { $regex: query, $options: "i" };
+    if (status === "active") filter.active = true;
+    if (status === "inactive") filter.active = false;
+
+    const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
+    if (!hasPagination) {
+      const coupons = await Coupon.find(filter).sort({ createdAt: -1 }).lean();
+      return res.json({ success: true, coupons: coupons.map(serialize) });
+    }
+
+    const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(50, Math.max(1, Number.parseInt(req.query.limit, 10) || 9));
+
+    const [coupons, total, active, inactive] = await Promise.all([
+      Coupon.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
+      Coupon.countDocuments(filter),
+      Coupon.countDocuments({ ...filter, active: true }),
+      Coupon.countDocuments({ ...filter, active: false }),
+    ]);
+
+    return res.json({
+      success: true,
+      coupons: coupons.map(serialize),
+      pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) },
+      summary: { total, active, inactive },
+    });
   } catch (error) {
     next(error);
   }
