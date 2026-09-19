@@ -1,98 +1,198 @@
-/* Shared Admin Panel theme — matches the customer panel palette */
-:root {
-  --admin-red: #e63946;
-  --admin-red-dark: #c92735;
-  --admin-red-soft: #fff1f2;
-  --admin-green: #198754;
-  --admin-green-dark: #146c43;
-  --admin-green-soft: #effaf3;
-  --admin-white: #ffffff;
-  --admin-bg: #f8f8f8;
-  --admin-text: #222222;
-  --admin-muted: #777777;
-  --admin-border: #eeeeee;
+/* Professional Admin UI — shared visual system */
+:root{
+  --admin-red:#e63946;
+  --admin-red-dark:#c92835;
+  --admin-red-soft:#fff1f2;
+  --admin-green:#16865a;
+  --admin-green-dark:#116b48;
+  --admin-green-soft:#ecf8f2;
+  --admin-bg:#f4f6f8;
+  --admin-surface:#fff;
+  --admin-surface-2:#f8fafb;
+  --admin-text:#171b21;
+  --admin-muted:#6f7782;
+  --admin-border:#e4e8ed;
+  --admin-shadow:0 8px 28px rgba(20,28,38,.06);
+  --admin-radius:14px;
 }
 
-.admin-shell { background: var(--admin-bg) !important; color: var(--admin-text) !important; }
-.admin-sidebar { background: var(--admin-red) !important; color: #fff !important; box-shadow: 4px 0 18px rgba(230,57,70,.14); }
-.admin-brand { border-bottom-color: rgba(255,255,255,.22) !important; }
-.admin-brand span { color: rgba(255,255,255,.82) !important; }
-.admin-sidebar-link { color: rgba(255,255,255,.88) !important; }
-.admin-sidebar-link:hover { background: rgba(255,255,255,.13) !important; color:#fff !important; }
-.admin-sidebar-link.active { background:#fff !important; color:var(--admin-red) !important; box-shadow:0 4px 12px rgba(0,0,0,.12); }
-.admin-sidebar-link.active .admin-sidebar-icon { color:var(--admin-red) !important; }
-.admin-back-store, .admin-logout { color:#fff !important; }
-.admin-back-store:hover, .admin-logout:hover { background:rgba(255,255,255,.13) !important; color:#fff !important; }
-.admin-topbar { background:#fff !important; border-bottom:1px solid var(--admin-border) !important; box-shadow:0 2px 12px rgba(0,0,0,.04); }
-.admin-topbar p { color:var(--admin-green) !important; }
-.admin-topbar h1 { color:var(--admin-text) !important; }
-.admin-user-avatar { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; border:1px solid #ccebd7; }
-.admin-content { background:var(--admin-bg); }
+.admin-shell{
+  background:var(--admin-bg)!important;
+  color:var(--admin-text)!important;
+}
+.admin-content{background:transparent!important}
 
-.admin-dashboard-page, .admin-customers-page, .admin-orders-page, .admin-order-details-page, .admin-customer-details-page { color:var(--admin-text) !important; background:transparent !important; }
-.admin-dashboard-eyebrow, .admin-orders-eyebrow, .admin-customer-details-eyebrow { color:var(--admin-green) !important; }
-.admin-dashboard-intro h2, .admin-customers-header h1, .admin-orders-header h1, .admin-order-details-header h1, .admin-customer-details-header h1 { color:var(--admin-text) !important; }
+.admin-sidebar{
+  background:#15181d!important;
+  border-right:1px solid #292e35!important;
+  box-shadow:8px 0 28px rgba(15,18,23,.08)!important;
+}
+.admin-brand-mark{background:var(--admin-red)!important}
+.admin-brand-copy strong span{color:#ff6671!important}
+.admin-nav-section,.admin-nav-label{color:#737b87!important}
+.admin-sidebar-link{color:#aeb5bf!important}
+.admin-sidebar-link:hover{background:#22262c!important;border-color:#303640!important;color:#fff!important}
+.admin-sidebar-link.active{
+  background:rgba(230,57,70,.13)!important;
+  border-color:rgba(230,57,70,.28)!important;
+  color:#fff!important;
+}
+.admin-sidebar-link.active:before{background:var(--admin-red)!important}
+.admin-sidebar-link.active .admin-sidebar-icon{color:#ff6973!important}
+.admin-store-card{background:#1b1f24!important;border-color:#30353d!important}
+.admin-store-status{color:#8fd6af!important}
+.admin-sidebar-footer{border-color:#292e35!important}
+.admin-logout{background:#1b1f24!important;border-color:#30353d!important}
+.admin-logout:hover{background:#301e22!important;color:#ff6973!important}
 
-.admin-dashboard-card, .admin-dashboard-note, .admin-customers-table-wrapper, .admin-order-card, .admin-order-details-card, .admin-customer-details-card, .admin-customer-summary-card, .admin-orders-state, .admin-order-details-state, .admin-customer-details-state { background:#fff !important; border-color:var(--admin-border) !important; box-shadow:0 5px 20px rgba(0,0,0,.05) !important; }
-.admin-dashboard-card { border-top:4px solid var(--admin-red) !important; }
-.admin-dashboard-card-icon { background:var(--admin-red-soft) !important; color:var(--admin-red) !important; }
-.admin-dashboard-card-heading span, .admin-dashboard-badge { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; }
-.admin-dashboard-card button { color:var(--admin-red) !important; }
-.admin-dashboard-note { border-left-color:var(--admin-green) !important; }
-
-.admin-orders-filters input:focus, .admin-orders-filters select:focus, .admin-order-status-card select:focus { border-color:var(--admin-green) !important; box-shadow:0 0 0 3px rgba(25,135,84,.1); }
-.admin-orders-filter-button, .admin-orders-customers-link, .admin-order-details-retry { background:var(--admin-red) !important; color:#fff !important; }
-.admin-orders-filter-button:hover, .admin-orders-customers-link:hover, .admin-order-details-retry:hover { background:var(--admin-red-dark) !important; }
-.admin-orders-reset-button { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; border:1px solid #ccebd7 !important; }
-.admin-orders-reset-button:hover { background:#dff3e6 !important; }
-.admin-order-card { border-left:4px solid var(--admin-red) !important; }
-.admin-order-card-actions button { background:var(--admin-red) !important; color:#fff !important; }
-.admin-order-card-actions button:hover:not(:disabled) { background:var(--admin-red-dark) !important; }
-.admin-order-card-actions select { border-color:#ddd; }
-.admin-orders-pagination button:hover:not(:disabled) { border-color:var(--admin-green) !important; color:var(--admin-green-dark) !important; }
-
-.admin-order-details-back, .admin-customer-details-back { color:var(--admin-muted) !important; }
-.admin-order-details-back:hover, .admin-customer-details-back:hover { color:var(--admin-red) !important; }
-.admin-order-details-card-header, .admin-order-item, .admin-order-pricing .grand, .admin-customer-orders-header, .admin-customer-order-row { border-color:var(--admin-border) !important; }
-.admin-order-details-info-grid>div, .admin-customer-info-item { background:#fafafa !important; }
-.admin-order-payment-badge { background:var(--admin-green-soft) !important; }
-.admin-order-payment-badge strong, .admin-order-handover h2 { color:var(--admin-green) !important; }
-.admin-order-handover { border-color:#ccebd7 !important; background:var(--admin-green-soft) !important; }
-.admin-order-details-status { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
-
-.admin-customer-details-verification.is-verified { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; border:1px solid #ccebd7; }
-.admin-customer-details-verification.is-not-verified { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; border:1px solid #ffd1d5; }
-.admin-customer-avatar { background:var(--admin-red-soft) !important; color:var(--admin-red) !important; }
-.admin-customer-summary-card { border-top:4px solid var(--admin-green) !important; }
-.admin-customer-summary-card strong, .admin-customer-spent { color:var(--admin-green-dark) !important; }
-.admin-customer-order-count { background:var(--admin-green-soft) !important; color:var(--admin-green-dark) !important; }
-.admin-customer-order-status { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
-
-.admin-customers-table-wrapper { border-top:4px solid var(--admin-red) !important; }
-.admin-customers-table th { background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
-.admin-customers-table tbody tr:hover { background:#fff9f9 !important; box-shadow:inset 4px 0 0 var(--admin-green) !important; }
-.admin-customer-number { background:var(--admin-green-soft) !important; border-color:#ccebd7 !important; color:var(--admin-green-dark) !important; }
-.admin-customer-details-button, .admin-customers-retry-button { background:var(--admin-red) !important; color:#fff !important; }
-.admin-customers-load-more-button { background:var(--admin-green) !important; color:#fff !important; }
-.admin-customers-load-more-button:hover:not(:disabled) { background:var(--admin-green-dark) !important; }
-
-.admin-customers-spinner, .admin-orders-spinner, .admin-order-details-spinner, .admin-customer-details-spinner { border-top-color:var(--admin-red) !important; border-right-color:var(--admin-green) !important; }
-.admin-customers-inline-error, .admin-orders-error, .admin-order-details-error { border-left-color:var(--admin-red) !important; background:var(--admin-red-soft) !important; color:var(--admin-red-dark) !important; }
-
-@media (max-width:560px) {
-  .admin-sidebar { background:var(--admin-red) !important; }
-  .admin-sidebar-link.active { background:#fff !important; color:var(--admin-red) !important; }
+.admin-topbar{
+  background:rgba(255,255,255,.96)!important;
+  border-color:var(--admin-border)!important;
+  box-shadow:0 2px 12px rgba(20,28,38,.035)!important;
+}
+.admin-breadcrumb strong{color:var(--admin-text)!important}
+.admin-topbar-store{background:#fff!important;border-color:var(--admin-border)!important}
+.admin-topbar-store:hover{border-color:var(--admin-red)!important;color:var(--admin-red)!important}
+.admin-topbar-avatar,.admin-user-avatar{
+  background:var(--admin-red-soft)!important;
+  color:var(--admin-red-dark)!important;
+  border-color:#ffd4d8!important;
 }
 
-@media (prefers-color-scheme:dark) {
-  .admin-shell { background:#151515 !important; color:#f5f5f5 !important; }
-  .admin-sidebar { background:#b91c2a !important; }
-  .admin-sidebar-link.active { background:#fff !important; color:var(--admin-red-dark) !important; }
-  .admin-topbar { background:#1f1f1f !important; border-color:#333 !important; }
-  .admin-topbar h1, .admin-dashboard-intro h2, .admin-customers-header h1, .admin-orders-header h1, .admin-order-details-header h1, .admin-customer-details-header h1 { color:#fff !important; }
-  .admin-content, .admin-dashboard-page, .admin-customers-page, .admin-orders-page, .admin-order-details-page, .admin-customer-details-page { background:#151515 !important; }
-  .admin-dashboard-card, .admin-dashboard-note, .admin-customers-table-wrapper, .admin-order-card, .admin-order-details-card, .admin-customer-details-card, .admin-customer-summary-card, .admin-orders-state, .admin-order-details-state, .admin-customer-details-state { background:#1f1f1f !important; border-color:#333 !important; }
-  .admin-dashboard-card-heading span, .admin-dashboard-badge, .admin-customer-number, .admin-customer-order-count { background:#123522 !important; color:#8be0aa !important; }
-  .admin-customers-table th { background:#3b1015 !important; color:#ff9aa4 !important; }
-  .admin-orders-filters input, .admin-orders-filters select, .admin-order-status-card select { background:#242424 !important; color:#fff !important; border-color:#444 !important; }
+.admin-dashboard-page,.admin-customers-page,.admin-orders-page,.admin-order-details-page,.admin-customer-details-page{
+  color:var(--admin-text)!important;
+}
+.admin-dashboard-hero{
+  border-color:var(--admin-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-dashboard-eyebrow,.admin-orders-eyebrow,.admin-customer-details-eyebrow{
+  color:var(--admin-red-dark)!important;
+}
+.admin-dashboard-stats{gap:16px}
+.admin-stat-card,.admin-dashboard-card,.admin-dashboard-note,.admin-customers-table-wrapper,.admin-order-card,.admin-order-details-card,.admin-customer-details-card,.admin-customer-summary-card,.admin-orders-state,.admin-order-details-state,.admin-customer-details-state{
+  background:var(--admin-surface)!important;
+  border-color:var(--admin-border)!important;
+  box-shadow:var(--admin-shadow)!important;
+}
+.admin-stat-card,.admin-dashboard-card{border-radius:var(--admin-radius)!important}
+.admin-stat-card:before{background:var(--admin-red)!important}
+.admin-stat-card.green:before{background:var(--admin-green)!important}
+.admin-stat-top b,.admin-dashboard-card-icon{
+  background:var(--admin-red-soft)!important;color:var(--admin-red)!important;
+}
+.green .admin-stat-top b{background:var(--admin-green-soft)!important;color:var(--admin-green)!important}
+.admin-dashboard-card-heading span,.admin-dashboard-badge{
+  background:var(--admin-green-soft)!important;color:var(--admin-green-dark)!important;
+}
+
+.admin-orders-filters,.admin-customers-toolbar,.admin-staff-toolbar{
+  background:var(--admin-surface)!important;
+  border-color:var(--admin-border)!important;
+}
+.admin-orders-filters input,.admin-orders-filters select,.admin-customers-toolbar input,.admin-customers-toolbar select,.admin-staff-toolbar input,.admin-staff-toolbar select,.admin-menu-toolbar input,.admin-menu-toolbar select,.admin-coupon-toolbar input,.admin-coupon-toolbar select{
+  background:#fff!important;border-color:#dfe4e9!important;color:var(--admin-text)!important;
+}
+.admin-orders-filters input:focus,.admin-orders-filters select:focus,.admin-customers-toolbar input:focus,.admin-customers-toolbar select:focus,.admin-staff-toolbar input:focus,.admin-staff-toolbar select:focus{
+  border-color:var(--admin-red)!important;box-shadow:0 0 0 3px rgba(230,57,70,.10)!important;
+}
+.admin-orders-filter-button,.admin-orders-customers-link,.admin-order-details-retry,.admin-customer-details-button,.admin-customers-retry-button,.admin-staff-filter-btn{
+  background:var(--admin-red)!important;color:#fff!important;
+}
+.admin-orders-filter-button:hover,.admin-orders-customers-link:hover,.admin-order-details-retry:hover,.admin-customer-details-button:hover,.admin-customers-retry-button:hover,.admin-staff-filter-btn:hover{
+  background:var(--admin-red-dark)!important;
+}
+.admin-orders-reset-button,.admin-staff-reset-btn{
+  background:#f3f5f7!important;color:#4f5863!important;border:1px solid var(--admin-border)!important;
+}
+.admin-orders-reset-button:hover,.admin-staff-reset-btn:hover{background:#e9edf1!important}
+.admin-order-card{border-left:3px solid var(--admin-red)!important}
+
+.admin-customers-table-wrapper{overflow:hidden;border-radius:var(--admin-radius)!important}
+.admin-customers-table th,.admin-staff-table th{
+  background:#f8fafb!important;color:#555e69!important;border-color:var(--admin-border)!important;
+  font-size:10px!important;letter-spacing:.04em;
+}
+.admin-customers-table tbody tr:hover,.admin-staff-table tbody tr:hover{
+  background:#fff9fa!important;
+  box-shadow:inset 3px 0 0 var(--admin-red)!important;
+}
+.admin-customer-number{background:var(--admin-green-soft)!important;color:var(--admin-green-dark)!important;border-color:#ccebdd!important}
+.admin-customers-load-more-button{background:var(--admin-green)!important}
+.admin-customers-load-more-button:hover{background:var(--admin-green-dark)!important}
+
+.admin-order-details-card-header,.admin-order-item,.admin-order-pricing .grand,.admin-customer-orders-header,.admin-customer-order-row{
+  border-color:var(--admin-border)!important;
+}
+.admin-order-details-info-grid>div,.admin-customer-info-item{
+  background:var(--admin-surface-2)!important;
+}
+.admin-order-payment-badge,.admin-order-handover{
+  background:var(--admin-green-soft)!important;border-color:#ccebdd!important;
+}
+.admin-order-payment-badge strong,.admin-order-handover h2{color:var(--admin-green-dark)!important}
+.admin-order-details-status,.admin-customer-order-status{
+  background:var(--admin-red-soft)!important;color:var(--admin-red-dark)!important;
+}
+.admin-customer-summary-card{border-top:3px solid var(--admin-green)!important}
+.admin-customer-summary-card strong,.admin-customer-spent{color:var(--admin-green-dark)!important}
+.admin-customer-order-count{background:var(--admin-green-soft)!important;color:var(--admin-green-dark)!important}
+
+.admin-staff-summary article,.admin-staff-card{
+  background:var(--admin-surface)!important;border-color:var(--admin-border)!important;box-shadow:var(--admin-shadow)!important;
+}
+.admin-staff-verified.yes{background:var(--admin-green-soft)!important;color:var(--admin-green-dark)!important}
+.admin-staff-verified.no{background:#fff7e6!important;color:#946200!important}
+.admin-staff-pagination,.admin-customers-pagination,.admin-orders-pagination{
+  border-color:var(--admin-border)!important;
+}
+.admin-staff-pagination button,.admin-customers-pagination button,.admin-orders-pagination button{
+  background:#fff!important;border-color:#dfe4e9!important;color:#4f5863!important;
+}
+.admin-staff-pagination button:hover:not(:disabled),.admin-customers-pagination button:hover:not(:disabled),.admin-orders-pagination button:hover:not(:disabled){
+  border-color:var(--admin-red)!important;color:var(--admin-red)!important;
+}
+.admin-customers-spinner,.admin-orders-spinner,.admin-order-details-spinner,.admin-customer-details-spinner{
+  border-top-color:var(--admin-red)!important;border-right-color:var(--admin-green)!important;
+}
+.admin-customers-inline-error,.admin-orders-error,.admin-order-details-error{
+  background:var(--admin-red-soft)!important;color:#a3212d!important;border-left-color:var(--admin-red)!important;
+}
+
+/* Better focus/accessibility */
+.admin-shell button:focus-visible,.admin-shell a:focus-visible,.admin-shell input:focus-visible,.admin-shell select:focus-visible{
+  outline:3px solid rgba(230,57,70,.22);
+  outline-offset:2px;
+}
+
+/* Dark mode */
+@media(prefers-color-scheme:dark){
+  :root{
+    --admin-bg:#0f1216;--admin-surface:#181c21;--admin-surface-2:#20252b;
+    --admin-text:#f2f4f7;--admin-muted:#9aa3ae;--admin-border:#30363e;
+  }
+  .admin-shell,.admin-content{background:var(--admin-bg)!important}
+  .admin-topbar{background:rgba(24,28,33,.96)!important;border-color:var(--admin-border)!important}
+  .admin-breadcrumb strong,.admin-topbar-store{color:#f2f4f7!important}
+  .admin-topbar-store{background:#181c21!important;border-color:#30363e!important}
+  .admin-stat-card,.admin-dashboard-card,.admin-dashboard-note,.admin-customers-table-wrapper,.admin-order-card,.admin-order-details-card,.admin-customer-details-card,.admin-customer-summary-card,.admin-orders-state,.admin-order-details-state,.admin-customer-details-state,.admin-orders-filters,.admin-customers-toolbar,.admin-staff-toolbar,.admin-staff-summary article,.admin-staff-card{
+    background:var(--admin-surface)!important;border-color:var(--admin-border)!important;box-shadow:none!important;
+  }
+  .admin-orders-filters input,.admin-orders-filters select,.admin-customers-toolbar input,.admin-customers-toolbar select,.admin-staff-toolbar input,.admin-staff-toolbar select,.admin-menu-toolbar input,.admin-menu-toolbar select,.admin-coupon-toolbar input,.admin-coupon-toolbar select{
+    background:#20252b!important;border-color:#3a424b!important;color:#f2f4f7!important;
+  }
+  .admin-customers-table th,.admin-staff-table th{background:#20252b!important;color:#b9c1ca!important;border-color:#30363e!important}
+  .admin-customers-table tbody tr:hover,.admin-staff-table tbody tr:hover{background:#211a1d!important}
+  .admin-order-details-info-grid>div,.admin-customer-info-item{background:#20252b!important}
+  .admin-order-details-info-grid strong,.admin-customer-info-item strong{color:#f2f4f7!important}
+  .admin-order-payment-badge,.admin-order-handover{background:#10291d!important;border-color:#24583c!important}
+  .admin-orders-reset-button,.admin-staff-reset-btn,.admin-staff-pagination button,.admin-customers-pagination button,.admin-orders-pagination button{background:#20252b!important;color:#d5d9de!important;border-color:#3a424b!important}
+}
+
+/* Compact screens */
+@media(max-width:700px){
+  .admin-dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:480px){
+  .admin-dashboard-stats{grid-template-columns:1fr!important}
 }
