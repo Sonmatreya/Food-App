@@ -37,8 +37,37 @@ const getFoods = async (req, res, next) => {
 
     if (search && search.trim()) filter.$text = { $search: search.trim() };
 
-    const foods = await Food.find(filter).sort({ isFeatured: -1, createdAt: -1 }).lean();
-    return res.json({ success: true, count: foods.length, foods });
+    const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
+    const categories = (await Food.distinct("category")).filter(Boolean).sort();
+
+    if (!hasPagination) {
+      const foods = await Food.find(filter).sort({ isFeatured: -1, createdAt: -1 }).lean();
+      return res.json({ success: true, count: foods.length, foods, categories });
+    }
+
+    const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
+    const limit = Math.min(50, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
+    const [foods, total] = await Promise.all([
+      Food.find(filter)
+        .sort({ isFeatured: -1, createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      Food.countDocuments(filter),
+    ]);
+
+    return res.json({
+      success: true,
+      count: foods.length,
+      foods,
+      categories,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.max(1, Math.ceil(total / limit)),
+      },
+    });
   } catch (error) {
     return next(error);
   }
