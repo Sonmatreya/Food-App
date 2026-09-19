@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const User = require("../models/User");
-const { getUserRoom } = require("../config/socket");
+const { getUserRoom, ADMIN_ROOM } = require("../config/socket");
 
 const OPERATIONAL_STATUSES = [
   "placed",
@@ -243,7 +243,7 @@ const updateAdminOrderStatus = async (req, res) => {
     // The event is sent only to the authenticated customer room.
     const io = req.app.get("io");
     if (io && populated?.userId?._id) {
-      io.to(getUserRoom(populated.userId._id)).emit("order:status-updated", {
+      const eventPayload = {
         orderId: String(populated._id),
         orderNumber: populated.orderNumber || "",
         status: populated.status || "",
