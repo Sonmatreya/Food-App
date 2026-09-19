@@ -163,8 +163,7 @@ const AdminStaff = () => {
           </table>
           {!filteredUsers.length && <div className="admin-staff-empty"><strong>No matching accounts</strong><p>Try a different search or role filter.</p></div>}
         </div>
-        {pagination.totalPages > 1 && <div className="admin-staff-pagination"><button type="button" onClick={() => { setPage(page - 1); loadStaff(page - 1, search, roleFilter); }} disabled={page <= 1}>Previous</button><span>Page <strong>{page}</strong> of <strong>{pagination.totalPages}</strong></span><button type="button" onClick={() => { setPage(page + 1); loadStaff(page + 1, search, roleFilter); }} disabled={page >= pagination.totalPages}>Next</button></div>
-        </div>
+        {pagination.totalPages > 1 && <div className="admin-staff-pagination"><button type="button" onClick={() => { setPage(page - 1); loadStaff(page - 1, search, roleFilter); }} disabled={page <= 1}>Previous</button><span>Page <strong>{page}</strong> of <strong>{pagination.totalPages}</strong></span><button type="button" onClick={() => { setPage(page + 1); loadStaff(page + 1, search, roleFilter); }} disabled={page >= pagination.totalPages}>Next</button></div>}
       </div>
     </section>
   );
