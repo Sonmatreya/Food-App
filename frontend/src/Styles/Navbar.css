@@ -82,6 +82,27 @@
   white-space: nowrap;
 }
 
+.location-button {
+  appearance: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: transparent;
+}
+
+.location-button:hover strong {
+  color: var(--nav-accent);
+}
+
+.location-button small {
+  display: block;
+  max-width: 180px;
+  margin-top: 3px;
+  color: var(--nav-accent);
+  font-size: 9px;
+  line-height: 1.2;
+}
+
 .navbar-search {
   align-self: center;
   flex: 1 1 360px;
@@ -104,9 +125,27 @@
   box-shadow: 0 0 0 4px rgba(227, 24, 55, 0.08);
 }
 
-.navbar-search > svg {
+.search-submit {
+  width: 28px;
+  height: 28px;
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   color: #898989;
+  cursor: pointer;
+}
+
+.search-submit:hover {
+  background: #eee;
+  color: var(--nav-accent);
+}
+
+.search-submit svg {
   font-size: 20px;
 }
 
@@ -436,6 +475,8 @@
 
   .mobile-delivery-location {
     display: flex;
+    width: 100%;
+    box-sizing: border-box;
     margin-top: 7px;
     padding: 14px;
     border: 1px solid var(--nav-border);
