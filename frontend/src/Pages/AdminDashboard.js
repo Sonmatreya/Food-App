@@ -78,7 +78,7 @@ const AdminDashboard = () => {
       socket.off("admin:order-created", refreshDashboard);
       socket.disconnect();
     };
-  }, [loadDashboard]);
+  }, [loadDashboard, loadFeedback]);
 
   const stats = [
     { label: "Total Orders", value: loading ? "…" : summary?.stats?.totalOrders ?? "—", note: "All orders", tone: "red", icon: "▣" },
@@ -90,6 +90,7 @@ const AdminDashboard = () => {
   const weeklyRevenue = weeklySales.reduce((total, day) => total + Number(day.revenue || 0), 0);
   const weeklyOrders = weeklySales.reduce((total, day) => total + Number(day.orders || 0), 0);
   const maxRevenue = Math.max(...weeklySales.map((day) => Number(day.revenue || 0)), 1);
+  const popularItems = summary?.analytics?.popularItems || [];
   const quickActions = [
     { title: "Manage Orders", text: "Review, confirm and update active orders.", path: "/admin/orders", icon: "▣", tone: "red" },
     { title: "Customers", text: "View accounts and complete order history.", path: "/admin/customers", icon: "♙", tone: "green" },
@@ -107,6 +108,23 @@ const AdminDashboard = () => {
       </div>
 
       <section className="admin-dashboard-panel admin-sales-panel"><div className="admin-panel-heading"><div><span>Performance</span><h3>Sales & revenue</h3></div><div className="admin-sales-summary"><strong>{money(weeklyRevenue)}</strong><small>Last 7 days · {weeklyOrders} orders</small></div></div><div className="admin-sales-chart">{weeklySales.length === 0 ? <div className="admin-sales-empty">No sales data yet</div> : weeklySales.map((day) => { const value=Number(day.revenue||0); const label=new Date(day.date+"T00:00:00+05:30").toLocaleDateString("en-IN",{weekday:"short"}); return <div className="admin-sales-day" key={day.date}><div className="admin-sales-bar-wrap"><span className="admin-sales-value">{money(value)}</span><div className="admin-sales-bar" style={{height: Math.max(8,(value/maxRevenue)*100)+"%"}}></div></div><strong>{label}</strong><small>{day.orders} {day.orders===1?"order":"orders"}</small></div>; })}</div></section>
+      <section className="admin-dashboard-panel admin-popular-panel">
+        <div className="admin-panel-heading">
+          <div><span>Menu performance</span><h3>Popular items</h3></div>
+          <button type="button" className="admin-feedback-view" onClick={() => navigate("/admin/menu")}>View menu →</button>
+        </div>
+        <div className="admin-popular-list">
+          {loading ? <div className="admin-feedback-empty">Loading popular items...</div> : popularItems.length === 0 ? <div className="admin-feedback-empty">No sales data yet.</div> : popularItems.map((item, index) => (
+            <button type="button" className="admin-popular-item" key={String(item.id || item.name)} onClick={() => navigate("/admin/menu")}>
+              <span className="admin-popular-rank">{index + 1}</span>
+              <span className="admin-popular-image">{item.image ? <img src={item.image} alt="" /> : <span>🍽</span>}</span>
+              <span className="admin-popular-copy"><strong>{item.name}</strong><small>{item.quantity} sold · {item.orders} {item.orders === 1 ? "order" : "orders"}</small></span>
+              <span className="admin-popular-revenue">{money(item.revenue)}</span>
+              <span className="admin-popular-arrow">→</span>
+            </button>
+          ))}
+        </div>
+      </section>
       <section className="admin-dashboard-panel admin-feedback-dashboard"><div className="admin-panel-heading"><div><span>Customer voice</span><h3>Recent customer feedback</h3></div><button type="button" className="admin-feedback-view" onClick={() => navigate("/admin/reviews")}>View all →</button></div><div className="admin-feedback-list">{feedbackLoading ? <div className="admin-feedback-empty">Loading feedback...</div> : feedback.length === 0 ? <div className="admin-feedback-empty">No customer reviews yet.</div> : feedback.map((review) => <article className="admin-feedback-item" key={String(review._id)}><div className="admin-feedback-item-top"><span className="admin-feedback-avatar">{(review.customer || "C").trim().charAt(0).toUpperCase()}</span><span className="admin-feedback-customer"><strong>{review.customer || "Customer"}</strong><small>{review.food || "Food item"}</small></span></div><div className="admin-feedback-stars">{[1,2,3,4,5].map((star) => <span key={star} className={star <= Number(review.rating || 0) ? "active" : ""}>★</span>)}</div><p className="admin-feedback-comment">{review.comment || "Customer left a rating without written feedback."}</p></article>)}</div></section>
       <section className="admin-dashboard-panel admin-status-panel"><div className="admin-panel-heading"><div><span>Order pipeline</span><h3>Order status overview</h3></div><button type="button" className="admin-dashboard-refresh" onClick={() => navigate("/admin/orders")}>Manage orders →</button></div><div className="admin-status-grid">{[["placed","Placed","red"],["confirmed","Confirmed","blue"],["preparing","Preparing","gold"],["ready","Ready","green"],["out_for_delivery","Out for delivery","purple"],["delivered","Delivered","dark"],["cancelled","Cancelled","muted"]].map(([key,label,tone]) => <button type="button" className={"admin-status-card " + tone} key={key} onClick={() => navigate("/admin/orders")}><span>{label}</span><strong>{loading ? "…" : summary?.statusCounts?.[key] ?? 0}</strong></button>)}</div></section>
       <section className="admin-dashboard-bottom-banner"><div className="admin-banner-icon">✓</div><div><strong>Admin workspace is separate from the customer store</strong><p>Use this panel for restaurant operations. The public storefront remains available through “Back to Store”.</p></div><button type="button" onClick={() => navigate("/")}>Open Store →</button></section>
