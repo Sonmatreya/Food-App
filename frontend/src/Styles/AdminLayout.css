@@ -7,6 +7,8 @@
 .admin-brand-copy strong span{color:#e63946}
 .admin-brand-copy small{display:block;margin-top:5px;color:#8f959f;font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
 .admin-nav-label{padding:0 12px;margin:4px 0 9px;color:#6f7680;font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
+.admin-nav-section{padding:12px 11px 5px;color:#6f7680;font-size:8px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
+.admin-nav-section:first-child{padding-top:2px}
 .admin-sidebar-nav{display:grid;gap:4px}
 .admin-sidebar-link{position:relative;display:flex;align-items:center;gap:12px;min-height:43px;padding:0 11px;border:1px solid transparent;border-radius:10px;color:#aeb3bc;text-decoration:none;font-size:12px;font-weight:650;transition:background .18s ease,color .18s ease,border-color .18s ease}
 .admin-sidebar-link:hover{background:#22252b;color:#fff;border-color:#2c3037}
@@ -49,7 +51,7 @@
  .admin-sidebar{width:76px;padding:18px 10px}
  .admin-sidebar-brand{padding-left:0;padding-right:0;justify-content:center}
  .admin-brand{justify-content:center}
- .admin-brand-copy,.admin-nav-label,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:none}
+ .admin-brand-copy,.admin-nav-label,.admin-nav-section,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:none}
  .admin-sidebar-link{justify-content:center;padding:0}
  .admin-sidebar-link.active:before{left:-10px}
  .admin-sidebar-footer{justify-content:center}
@@ -63,7 +65,7 @@
  .admin-sidebar.is-open{transform:translateX(0)}
  .admin-sidebar-brand{justify-content:space-between}
  .admin-brand{justify-content:flex-start}
- .admin-brand-copy,.admin-nav-label,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:block}
+ .admin-brand-copy,.admin-nav-label,.admin-nav-section,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:block}
  .admin-sidebar-link{justify-content:flex-start;padding:0 11px}
  .admin-sidebar-link.active:before{left:-14px}
  .admin-sidebar-footer{justify-content:flex-start}
