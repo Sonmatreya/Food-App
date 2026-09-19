@@ -1,9 +1,11 @@
 const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 
+const User = require("../models/User");
 const { jwtSecret, corsOrigins } = require("./env");
 
 const USER_ROOM_PREFIX = "user:";
+const ADMIN_ROOM = "admins";
 
 const parseCookies = (cookieHeader = "") => {
   return cookieHeader.split(";").reduce((cookies, part) => {
@@ -34,9 +36,7 @@ const initializeSocket = (httpServer) => {
     },
   });
 
-  // Socket.IO does not pass Express middleware cookies through req.cookies,
-  // so authenticate the same httpOnly JWT cookie used by the REST API.
-  io.use((socket, next) => {
+  io.use(async (socket, next) => {
     try {
       const cookies = parseCookies(socket.handshake.headers.cookie);
       const token = cookies.token;
@@ -51,7 +51,17 @@ const initializeSocket = (httpServer) => {
         return next(new Error("Invalid authentication token"));
       }
 
-      socket.user = decoded;
+      const user = await User.findById(decoded.userId).select("_id role").lean();
+
+      if (!user) {
+        return next(new Error("User not found"));
+      }
+
+      socket.user = {
+        userId: String(user._id),
+        role: user.role,
+      };
+
       return next();
     } catch {
       return next(new Error("Invalid or expired authentication token"));
@@ -61,10 +71,13 @@ const initializeSocket = (httpServer) => {
   io.on("connection", (socket) => {
     const userId = String(socket.user.userId);
 
-    // Each authenticated customer receives only events for their own orders.
     socket.join(`${USER_ROOM_PREFIX}${userId}`);
 
-    console.log(`Socket connected: user ${userId}`);
+    if (socket.user.role === "admin") {
+      socket.join(ADMIN_ROOM);
+    }
+
+    console.log(`Socket connected: user ${userId}${socket.user.role === "admin" ? " (admin)" : ""}`);
 
     socket.on("disconnect", (reason) => {
       console.log(`Socket disconnected: user ${userId} (${reason})`);
@@ -79,4 +92,5 @@ const getUserRoom = (userId) => `${USER_ROOM_PREFIX}${userId}`;
 module.exports = {
   initializeSocket,
   getUserRoom,
+  ADMIN_ROOM,
 };
