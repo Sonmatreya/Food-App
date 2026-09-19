@@ -277,7 +277,7 @@ const getAdminDashboardSummary = async (req, res) => {
     const todayStart = new Date(indiaDate + "T00:00:00+05:30");
     const tomorrowStart = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
-    const [totalOrders, totalCustomers, todayRevenue, pendingOrders, recentOrders, statusCounts] = await Promise.all([
+    const [totalOrders, totalCustomers, todayRevenue, pendingOrders, recentOrders, statusCounts, weeklySales] = await Promise.all([
       Order.countDocuments({}),
       User.countDocuments({ role: "customer" }),
       Order.aggregate([
@@ -289,12 +289,18 @@ const getAdminDashboardSummary = async (req, res) => {
       Order.aggregate([
         { $group: { _id: "$status", count: { $sum: 1 } } },
       ]),
+      Order.aggregate([
+        { $match: { createdAt: { $gte: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000) }, status: { $ne: "cancelled" } } },
+        { $group: { _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } }, orders: { $sum: 1 }, revenue: { $sum: "$pricing.grandTotal" } } },
+        { $sort: { _id: 1 } },
+      ]),
     ]);
 
     return res.status(200).json({
       success: true,
       stats: { totalOrders, customers: totalCustomers, revenueToday: Number(todayRevenue[0]?.total || 0), pendingOrders },
       statusCounts: statusCounts.reduce((acc, item) => { acc[item._id || "unknown"] = item.count; return acc; }, {}),
+      analytics: { weeklySales: weeklySales.map((item) => ({ date: item._id, orders: item.orders, revenue: Number(item.revenue || 0) })) },
       recentOrders: recentOrders.map(buildAdminOrderResponse),
     });
   } catch (error) {
