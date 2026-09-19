@@ -63,6 +63,7 @@ const AdminCustomerDetails = () => {
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [verificationUpdating, setVerificationUpdating] = useState(false);
 
   const fetchCustomerDetails = useCallback(async () => {
     if (!id) {
@@ -112,6 +113,25 @@ const AdminCustomerDetails = () => {
   useEffect(() => {
     fetchCustomerDetails();
   }, [fetchCustomerDetails]);
+  const handleToggleVerification = async () => {
+    if (!customer || verificationUpdating) return;
+    const nextValue = !Boolean(customer.isVerified);
+    setVerificationUpdating(true);
+    setError("");
+    try {
+      const response = await fetch(API_URL + "/api/admin/customers/" + encodeURIComponent(id) + "/verification", {
+        method: "PATCH", credentials: "include",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ isVerified: nextValue }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) { setError(data?.message || "Unable to update customer verification."); return; }
+      setCustomer((previous) => previous ? { ...previous, isVerified: nextValue } : previous);
+    } catch (verificationError) {
+      console.error("Customer verification update error:", verificationError);
+      setError("Unable to update customer verification. Please try again.");
+    } finally { setVerificationUpdating(false); }
+  };
 
   if (loading) {
     return (
@@ -172,13 +192,14 @@ const AdminCustomerDetails = () => {
           <h1>Customer Details</h1>
           <p>View customer account information and order history.</p>
         </div>
-        <span
-          className={`admin-customer-details-verification ${
-            isVerified ? "is-verified" : "is-not-verified"
-          }`}
+        <button
+          type="button"
+          className={"admin-customer-details-verification admin-customer-details-verification-button " + (isVerified ? "is-verified" : "is-not-verified")}
+          onClick={handleToggleVerification}
+          disabled={verificationUpdating}
         >
-          {isVerified ? "Verified" : "Not Verified"}
-        </span>
+          {verificationUpdating ? "Updating..." : isVerified ? "Verified • Click to Unverify" : "Not Verified • Click to Verify"}
+        </button>
       </header>
 
       <section className="admin-customer-details-card admin-customer-profile-card">
