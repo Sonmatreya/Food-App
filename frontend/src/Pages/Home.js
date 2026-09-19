@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Icons
@@ -14,6 +14,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import BannerImage from "../assets/pizza.jpeg";
 import { MenuList } from "../helpers/MenuList";
 import { useCart } from "../context/CartContext";
+import { API_URL } from "../config/api";
 
 // Styles
 import "../Styles/Home.css";
@@ -33,22 +34,65 @@ function Home() {
 
   const [addedFoodIds, setAddedFoodIds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [availableFoods, setAvailableFoods] = useState([]);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadFoods = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/foods?available=true`, {
+          credentials: "include",
+        });
+        const data = await response.json();
+
+        if (!response.ok || !data.success) return;
+        if (!cancelled) setAvailableFoods(Array.isArray(data.foods) ? data.foods : []);
+      } catch (error) {
+        if (!cancelled) setAvailableFoods([]);
+      }
+    };
+
+    loadFoods();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
 
   /* =======================================================
      2. HOME PAGE DATA
      ======================================================= */
 
-  const popularFoods = MenuList.slice(0, 4);
+  const fallbackFoods = MenuList.filter((food) => food.isAvailable !== false);
+  const popularFoods = (availableFoods.length > 0 ? availableFoods : fallbackFoods).slice(0, 4);
 
-  const categories = [
-    { icon: "🍕", name: "Pizza", count: "12+ dishes" },
-    { icon: "🍔", name: "Burgers", count: "10+ dishes" },
-    { icon: "🍝", name: "Pasta", count: "8+ dishes" },
-    { icon: "🍜", name: "Noodles", count: "6+ dishes" },
-    { icon: "🥗", name: "Healthy", count: "10+ dishes" },
-    { icon: "🥤", name: "Drinks", count: "15+ drinks" },
-  ];
+  const categoryIcons = {
+    pizza: "🍕",
+    burger: "🍔",
+    burgers: "🍔",
+    pasta: "🍝",
+    noodles: "🍜",
+    healthy: "🥗",
+    drinks: "🥤",
+    beverage: "🥤",
+    beverages: "🥤",
+  };
+
+  const categories = useMemo(() => {
+    const source = availableFoods.length > 0 ? availableFoods : fallbackFoods;
+    const counts = source.reduce((result, food) => {
+      const name = food.category?.trim();
+      if (name) result[name] = (result[name] || 0) + 1;
+      return result;
+    }, {});
+
+    return Object.entries(counts).slice(0, 6).map(([name, count]) => ({
+      icon: categoryIcons[name.toLowerCase()] || "🍽️",
+      name,
+      count: `${count} ${count === 1 ? "dish" : "dishes"}`,
+    }));
+  }, [availableFoods]);
 
   const benefits = [
     {
@@ -106,13 +150,11 @@ function Home() {
 
   const handleAddToCart = (food) => {
     addToCart(food, 1);
+    const foodId = food._id || food.id;
 
     setAddedFoodIds((currentIds) => {
-      if (currentIds.includes(food.id)) {
-        return currentIds;
-      }
-
-      return [...currentIds, food.id];
+      if (currentIds.includes(foodId)) return currentIds;
+      return [...currentIds, foodId];
     });
   };
 
@@ -308,13 +350,14 @@ function Home() {
 
         <div className="foodGrid">
           {popularFoods.map((food) => {
-            const isAdded = addedFoodIds.includes(food.id);
+            const foodId = food._id || food.id;
+            const isAdded = addedFoodIds.includes(foodId);
 
             return (
               <article className="foodCard" key={food.id}>
                 {/* Food image */}
                 <Link
-                  to={`/food/${food.id}`}
+                  to={`/food/${foodId}`}
                   className="foodCardImage"
                 >
                   <img src={food.image} alt={food.name} />
@@ -333,7 +376,7 @@ function Home() {
                     <span>Fresh</span>
                   </div>
 
-                  <Link to={`/food/${food.id}`}>
+                  <Link to={`/food/${foodId}`}>
                     <h3>{food.name}</h3>
                   </Link>
 
@@ -341,7 +384,7 @@ function Home() {
 
                   {/* Price and add-to-cart button */}
                   <div className="foodCardBottom">
-                    <strong>${food.price.toFixed(2)}</strong>
+                    <strong>${Number(food.price || 0).toFixed(2)}</strong>
                     <button
                       type="button"
                       className={`addFoodButton ${isAdded ? "added" : ""}`}
