@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { FiBarChart2, FiChevronRight, FiClipboard, FiGrid, FiLogOut, FiMenu, FiPercent, FiShoppingBag, FiUsers, FiX } from "react-icons/fi";
+import { FiBarChart2, FiChevronRight, FiClipboard, FiGrid, FiLogOut, FiMenu, FiMessageSquare, FiPercent, FiShoppingBag, FiUsers, FiX } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import "../Styles/AdminLayout.css";
 import "../Styles/AdminTheme.css";
@@ -11,6 +11,7 @@ const NAV_ITEMS = [
   { to: "/admin/customers", label: "Customers", icon: FiUsers, group: "Operations" },
   { to: "/admin/menu", label: "Food & Menu", icon: FiShoppingBag, group: "Catalogue" },
   { to: "/admin/coupons", label: "Coupons", icon: FiPercent, group: "Catalogue" },
+  { to: "/admin/reviews", label: "Customer Feedback", icon: FiMessageSquare, group: "Operations" },
   { to: "/admin/staff", label: "Staff & Access", icon: FiUsers, group: "Administration" },
 ];
 
@@ -22,6 +23,7 @@ const pageTitle = (pathname) => {
   if (pathname.startsWith("/admin/customers")) return ["Customers", "Customer Directory"];
   if (pathname.startsWith("/admin/menu")) return ["Catalogue", "Food & Menu"];
   if (pathname.startsWith("/admin/coupons")) return ["Marketing", "Coupons & Discounts"];
+  if (pathname.startsWith("/admin/reviews")) return ["Operations", "Customer Feedback"];
   if (pathname.startsWith("/admin/staff")) return ["Administration", "Staff & Access"];
   return ["Administration", "Admin Panel"];
 };
