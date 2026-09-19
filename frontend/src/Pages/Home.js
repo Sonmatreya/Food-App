@@ -66,6 +66,7 @@ function Home() {
 
   const fallbackFoods = MenuList.filter((food) => food.isAvailable !== false);
   const popularFoods = (availableFoods.length > 0 ? availableFoods : fallbackFoods).slice(0, 4);
+  const featuredFood = popularFoods[0] || fallbackFoods[0];
 
   const categoryIcons = {
     pizza: "🍕",
@@ -233,7 +234,10 @@ function Home() {
 
             <div className="heroFoodCard">
               <div className="heroFoodImageWrap">
-                <img src={BannerImage} alt="Featured fresh pizza" />
+                <img
+                  src={featuredFood?.image || BannerImage}
+                  alt={featuredFood?.name || "Featured fresh food"}
+                />
                 <span className="heroFoodBadge">
                   <StarRoundedIcon />
                   Top choice
@@ -243,10 +247,300 @@ function Home() {
               <div className="heroFoodInfo">
                 <div>
                   <span>FEATURED TODAY</span>
-                  <h3>Fresh &amp; Delicious Pizza</h3>
-                  <p>Premium ingredients · Made fresh</p>
+                  <h3>{featuredFood?.name || "Fresh & Delicious Food"}</h3>
+                  <p>{featuredFood?.description || "Fresh ingredients · Made to order"}</p>
                 </div>
-                <strong>$15.99</strong>
+                <strong>{'
+              </div>
+
+              <Link to={featuredFood ? "/food/" + (featuredFood._id || featuredFood.id) : "/menu"} className="heroFoodButton">
+                Explore menu
+                <ArrowForwardIcon />
+              </Link>
+            </div>
+
+            <div className="floatingDeliveryCard">
+              <span className="deliveryCheck">✓</span>
+              <div>
+                <strong>On-time delivery</strong>
+                <small>Your food is on the way</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* ===================================================
+          4.2 QUICK INFORMATION
+          =================================================== */}
+      <section className="quickInfoBar">
+        <div>
+          <LocalShippingOutlinedIcon />
+          <div>
+            <strong>Free delivery</strong>
+            <span>On orders over $40</span>
+          </div>
+        </div>
+
+        <div>
+          <VerifiedOutlinedIcon />
+          <div>
+            <strong>Secure checkout</strong>
+            <span>Safe &amp; protected payment</span>
+          </div>
+        </div>
+
+        <div>
+          <AccessTimeOutlinedIcon />
+          <div>
+            <strong>Open every day</strong>
+            <span>Fresh food when you want it</span>
+          </div>
+        </div>
+      </section>
+
+
+      {/* ===================================================
+          4.3 CATEGORY SECTION
+          =================================================== */}
+      <section className="categorySection">
+        <div className="sectionHeading">
+          <div>
+            <span>EXPLORE MENU</span>
+            <h2>What are you craving?</h2>
+          </div>
+          <Link to="/menu" className="viewAllLink">
+            See full menu
+            <ArrowForwardIcon />
+          </Link>
+        </div>
+
+        <div className="categoryGrid">
+          {categories.map((category) => (
+            <Link
+              to={`/menu?category=${encodeURIComponent(category.name)}`}
+              className="categoryCard"
+              key={category.name}
+            >
+              <div className="categoryIcon">{category.icon}</div>
+              <div className="categoryMeta">
+                <h3>{category.name}</h3>
+                <p>{category.count}</p>
+              </div>
+              <span className="categoryArrow">
+                <ArrowForwardIcon />
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+
+      {/* ===================================================
+          4.4 POPULAR FOOD SECTION
+          =================================================== */}
+      <section className="popularSection">
+        <div className="sectionHeading">
+          <div>
+            <span>POPULAR RIGHT NOW</span>
+            <h2>People are loving these</h2>
+          </div>
+          <Link to="/menu" className="viewAllLink">
+            View all dishes
+            <ArrowForwardIcon />
+          </Link>
+        </div>
+
+        <div className="foodGrid">
+          {popularFoods.map((food) => {
+            const foodId = food._id || food.id;
+            const isAdded = addedFoodIds.includes(foodId);
+
+            return (
+              <article className="foodCard" key={food._id || food.id}>
+                {/* Food image */}
+                <Link
+                  to={`/food/${foodId}`}
+                  className="foodCardImage"
+                >
+                  <img src={food.image} alt={food.name} />
+                  <span className="foodRating">
+                    <StarRoundedIcon />
+                    {food.rating}
+                  </span>
+                </Link>
+
+                {/* Food information */}
+                <div className="foodCardContent">
+                  <div className="foodCardTopline">
+                    <span className="foodCategory">
+                      {food.category}
+                    </span>
+                    <span>Fresh</span>
+                  </div>
+
+                  <Link to={`/food/${foodId}`}>
+                    <h3>{food.name}</h3>
+                  </Link>
+
+                  <p>{food.description}</p>
+
+                  {/* Price and add-to-cart button */}
+                  <div className="foodCardBottom">
+                    <strong>${Number(food.price || 0).toFixed(2)}</strong>
+                    <button
+                      type="button"
+                      className={`addFoodButton ${isAdded ? "added" : ""}`}
+                      onClick={() => handleAddToCart(food)}
+                      aria-label={
+                        isAdded
+                          ? `${food.name} added to cart`
+                          : `Add ${food.name} to cart`
+                      }
+                    >
+                      <AddRoundedIcon />
+                      {isAdded ? "Added" : "Add"}
+                    </button>
+                  </div>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+
+      {/* ===================================================
+          4.5 WHY CHOOSE US
+          =================================================== */}
+      <section className="whySection">
+        <div className="whyContent">
+          <div className="whyText">
+            <span>THE FOOD APP DIFFERENCE</span>
+            <h2>
+              Good food should feel <em>effortless.</em>
+            </h2>
+            <p>
+              Everything is designed around one simple idea: make ordering
+              great food quick, clear and enjoyable from the first tap to
+              the last bite.
+            </p>
+            <Link to="/menu" className="whyButton">
+              Start ordering
+              <ArrowForwardIcon />
+            </Link>
+          </div>
+
+          <div className="benefitGrid">
+            {benefits.map((benefit) => (
+              <div className="benefitCard" key={benefit.title}>
+                <div className="benefitIcon">{benefit.icon}</div>
+                <h3>{benefit.title}</h3>
+                <p>{benefit.text}</p>
+              </div>
+            ))}
+
+            <div className="benefitQuote">
+              <StarRoundedIcon />
+              <strong>Made for people who take food seriously.</strong>
+              <span>— The Food App team</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+      {/* ===================================================
+          4.6 OFFER SECTION
+          =================================================== */}
+      <section className="offerSection">
+        <div className="offerContent">
+          <span>WELCOME TO FOOD APP</span>
+          <h2>
+            Your first order
+            <br />
+            <em>just got better.</em>
+          </h2>
+          <p>
+            Use <strong>WELCOME20</strong> at checkout and get 20% off
+            your first order.
+          </p>
+          <Link to="/menu" className="offerButton">
+            Claim the offer
+            <ArrowForwardIcon />
+          </Link>
+        </div>
+
+        <div className="offerCircle">
+          <span>20</span>
+          <small>% OFF</small>
+          <b>FIRST ORDER</b>
+        </div>
+      </section>
+
+
+      {/* ===================================================
+          4.7 CUSTOMER REVIEWS
+          =================================================== */}
+      <section className="reviewSection">
+        <div className="sectionHeading reviewHeading">
+          <div>
+            <span>REAL PEOPLE · REAL CRAVINGS</span>
+            <h2>Loved after the first bite.</h2>
+          </div>
+        </div>
+
+        <div className="reviewGrid">
+          {reviews.map((review) => (
+            <article className="reviewCard" key={review.name}>
+              <div className="reviewStars">
+                <StarRoundedIcon />
+                <StarRoundedIcon />
+                <StarRoundedIcon />
+                <StarRoundedIcon />
+                <StarRoundedIcon />
+              </div>
+
+              <p>“{review.text}”</p>
+
+              <div className="reviewUser">
+                <div className="reviewAvatar">{review.initial}</div>
+                <div>
+                  <h4>{review.name}</h4>
+                  <span>Verified customer</span>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
+
+      {/* ===================================================
+          4.8 FINAL CALL TO ACTION
+          =================================================== */}
+      <section className="finalCta">
+        <div>
+          <span>WHAT ARE YOU WAITING FOR?</span>
+          <h2>
+            There is always room
+            <br />
+            for something delicious.
+          </h2>
+        </div>
+
+        <Link to="/menu" className="finalCtaButton">
+          Browse the menu
+          <ArrowForwardIcon />
+        </Link>
+      </section>
+    </main>
+  );
+}
+
+export default Home;
+}{Number(featuredFood?.price || 0).toFixed(2)}</strong>
               </div>
 
               <Link to="/menu" className="heroFoodButton">
