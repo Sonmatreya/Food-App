@@ -13,19 +13,44 @@ const buildStaffUser = (user) => ({
 
 const getStaff = async (req, res) => {
   try {
-    const users = await User.find({})
-      .select("_id name email phone role isVerified createdAt")
-      .sort({ role: 1, createdAt: -1 })
-      .lean();
+    const page = Math.max(Number.parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 10, 1), 50);
+    const search = String(req.query.search || "").trim();
+    const role = String(req.query.role || "all").trim().toLowerCase();
+
+    const filter = {};
+    if (role === "admin" || role === "customer") {
+      filter.role = role;
+    }
+
+    if (search) {
+      const safeSearch = search.replace(/[.*+?^$\{\}()|[\]\\]/g, "\\$&");
+      const regex = new RegExp(safeSearch, "i");
+      filter.$or = [{ name: regex }, { email: regex }, { phone: regex }];
+    }
+
+    const [users, total, admins, customers] = await Promise.all([
+      User.find(filter)
+        .select("_id name email phone role isVerified createdAt")
+        .sort({ role: 1, createdAt: -1 })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .lean(),
+      User.countDocuments(filter),
+      User.countDocuments({ ...filter, role: "admin" }),
+      User.countDocuments({ ...filter, role: "customer" }),
+    ]);
 
     return res.status(200).json({
       success: true,
       staff: users.map(buildStaffUser),
-      summary: {
-        total: users.length,
-        admins: users.filter((user) => user.role === "admin").length,
-        customers: users.filter((user) => user.role === "customer").length,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.max(Math.ceil(total / limit), 1),
       },
+      summary: { total, admins, customers },
     });
   } catch (error) {
     console.error("Get staff error:", error.message);
@@ -35,7 +60,6 @@ const getStaff = async (req, res) => {
     });
   }
 };
-
 const promoteToAdmin = async (req, res) => {
   try {
     const { id } = req.params;
