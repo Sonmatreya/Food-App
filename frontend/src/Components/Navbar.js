@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReorderIcon from "@mui/icons-material/Reorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
@@ -15,7 +14,6 @@ function Navbar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -28,7 +26,6 @@ function Navbar() {
 
   const closeMenu = () => setIsOpen(false);
   const handleSearch = (event) => { event.preventDefault(); const query = search.trim(); navigate(query ? `/menu?search=${encodeURIComponent(query)}` : "/menu"); closeMenu(); };
-  const toggleDarkMode = () => { setIsDarkMode((previous) => { const next = !previous; document.body.classList.toggle("light-mode", !next); return next; }); };
   const handleLogout = async () => { closeMenu(); try { await logout(); navigate("/login"); } catch (error) { console.error("Logout error:", error); } };
 
   return (
@@ -46,7 +43,6 @@ function Navbar() {
         <div className="navbar-actions">
           <Link to="/cart" className="nav-icon-button cart-link" aria-label="Shopping cart" onClick={closeMenu}><ShoppingCartIcon /></Link>
           {user ? <button type="button" className="account-button" onClick={() => navigate("/profile")}>{user.profileImage ? <img src={user.profileImage} alt="Profile" className="user-avatar" /> : <span className="user-avatar-placeholder">{user.name ? user.name.charAt(0).toUpperCase() : "U"}</span>}<span>{user.name || "Account"}</span></button> : <button type="button" className="login-btn" onClick={() => navigate("/login")}>Sign In</button>}
-          <button type="button" className="nav-icon-button mode-toggle" onClick={toggleDarkMode} aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}><Brightness4Icon /></button>
         </div>
         <button type="button" className="toggle-button" onClick={() => setIsOpen((previous) => !previous)} aria-label="Open navigation menu" aria-expanded={isOpen}>{isOpen ? <CloseIcon /> : <ReorderIcon />}</button>
       </div>
