@@ -133,4 +133,72 @@ const createReview = async (req, res) => {
   }
 };
 
-module.exports = { getFoodReviews, createReview };
+const getAdminReviews = async (req, res) => {
+  try {
+    const { search = "", rating = "all", page = 1, limit = 9 } = req.query;
+    const currentPage = Math.max(1, Number(page) || 1);
+    const pageSize = Math.min(50, Math.max(1, Number(limit) || 9));
+    const filters = {};
+    if (rating !== "all" && /^[1-5]$/.test(String(rating))) filters.rating = Number(rating);
+
+    const searchText = String(search).trim();
+    const pipeline = [
+      { $match: filters },
+      { $lookup: { from: "users", localField: "userId", foreignField: "_id", as: "user" } },
+      { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+      { $lookup: { from: "foods", localField: "foodId", foreignField: "_id", as: "food" } },
+      { $unwind: { path: "$food", preserveNullAndEmptyArrays: true } },
+      ...(searchText ? [{
+        $match: {
+          $or: [
+            { comment: { $regex: searchText, $options: "i" } },
+            { "user.name": { $regex: searchText, $options: "i" } },
+            { "food.name": { $regex: searchText, $options: "i" } },
+          ],
+        },
+      }] : []),
+      { $sort: { createdAt: -1 } },
+      {
+        $facet: {
+          reviews: [
+            { $skip: (currentPage - 1) * pageSize },
+            { $limit: pageSize },
+            { $project: {
+              _id: 1, rating: 1, comment: 1, createdAt: 1,
+              customer: { $ifNull: ["$user.name", "Customer"] },
+              customerImage: { $ifNull: ["$user.profileImage", ""] },
+              food: { $ifNull: ["$food.name", "Food item"] },
+              foodImage: { $ifNull: ["$food.image", ""] },
+            } },
+          ],
+          count: [{ $count: "total" }],
+          summary: [
+            { $group: { _id: null, total: { $sum: 1 }, average: { $avg: "$rating" }, five: { $sum: { $cond: [{ $eq: ["$rating", 5] }, 1, 0] } }, low: { $sum: { $cond: [{ $lte: ["$rating", 2] }, 1, 0] } } } },
+          ],
+        },
+      },
+    ];
+
+    const [result] = await Review.aggregate(pipeline);
+    const total = result.count?.[0]?.total || 0;
+    const summary = result.summary?.[0] || { total: 0, average: 0, five: 0, low: 0 };
+    const totalPages = Math.max(1, Math.ceil(total / pageSize));
+
+    return res.json({
+      success: true,
+      reviews: result.reviews || [],
+      pagination: { page: currentPage, limit: pageSize, total, totalPages },
+      summary: {
+        total: summary.total || 0,
+        average: Math.round((summary.average || 0) * 10) / 10,
+        five: summary.five || 0,
+        low: summary.low || 0,
+      },
+    });
+  } catch (error) {
+    console.error("Get admin reviews error:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to load customer feedback." });
+  }
+};
+
+module.exports = { getFoodReviews, createReview, getAdminReviews };
