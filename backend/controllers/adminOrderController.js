@@ -254,7 +254,7 @@ const updateAdminOrderStatus = async (req, res) => {
             }))
           : [],
         updatedAt: populated.updatedAt || null,
-      });
+      };
     }
 
     return res.status(200).json({
