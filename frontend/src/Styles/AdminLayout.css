@@ -1,49 +1,47 @@
-.admin-shell{min-height:100vh;display:flex;background:#f5f6f8;color:#171a1f;font-family:inherit}
-.admin-sidebar{width:252px;min-height:100vh;position:sticky;top:0;z-index:30;display:flex;flex-direction:column;box-sizing:border-box;padding:20px 14px 14px;background:#17191d;color:#fff;border-right:1px solid #25282e}
-.admin-sidebar-brand{display:flex;align-items:center;justify-content:space-between;padding:0 6px 24px}
+/* Professional Admin shell and responsive navigation */
+.admin-shell{min-height:100vh;display:flex;background:#f4f6f8;color:#171b21;font-family:inherit}
+.admin-sidebar{width:252px;min-height:100vh;position:sticky;top:0;z-index:30;display:flex;flex-direction:column;box-sizing:border-box;padding:18px 13px 13px;background:#15181d;color:#fff;border-right:1px solid #292e35}
+.admin-sidebar-brand{display:flex;align-items:center;justify-content:space-between;padding:3px 6px 22px}
 .admin-brand{display:flex;align-items:center;gap:11px;width:100%;padding:0;border:0;background:transparent;color:#fff;text-align:left;cursor:pointer}
-.admin-brand-mark{width:39px;height:39px;display:grid;place-items:center;flex:0 0 39px;border-radius:11px;background:#e63946;color:#fff;font-size:20px;box-shadow:0 7px 18px rgba(230,57,70,.24)}
+.admin-brand-mark{width:40px;height:40px;display:grid;place-items:center;flex:0 0 40px;border-radius:12px;background:#e63946;color:#fff;font-size:20px;box-shadow:0 8px 20px rgba(230,57,70,.22)}
 .admin-brand-copy strong{display:block;font-size:18px;line-height:1;font-weight:800;letter-spacing:-.04em}
-.admin-brand-copy strong span{color:#e63946}
-.admin-brand-copy small{display:block;margin-top:5px;color:#8f959f;font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase}
-.admin-nav-label{padding:0 12px;margin:4px 0 9px;color:#6f7680;font-size:9px;font-weight:800;letter-spacing:.13em;text-transform:uppercase}
-.admin-nav-section{padding:12px 11px 5px;color:#6f7680;font-size:8px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
+.admin-brand-copy strong span{color:#ff6671}
+.admin-brand-copy small{display:block;margin-top:5px;color:#8b939e;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.admin-nav-section{padding:14px 11px 6px;color:#737b87;font-size:8px;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
 .admin-nav-section:first-child{padding-top:2px}
 .admin-sidebar-nav{display:grid;gap:4px}
-.admin-sidebar-link{position:relative;display:flex;align-items:center;gap:12px;min-height:43px;padding:0 11px;border:1px solid transparent;border-radius:10px;color:#aeb3bc;text-decoration:none;font-size:12px;font-weight:650;transition:background .18s ease,color .18s ease,border-color .18s ease}
-.admin-sidebar-link:hover{background:#22252b;color:#fff;border-color:#2c3037}
-.admin-sidebar-link.active{background:#2a1b1f;color:#fff;border-color:#4a252b}
-.admin-sidebar-link.active:before{content:"";position:absolute;left:-14px;top:8px;bottom:8px;width:3px;border-radius:0 4px 4px 0;background:#e63946}
+.admin-sidebar-link{position:relative;display:flex;align-items:center;gap:12px;min-height:43px;padding:0 11px;border:1px solid transparent;border-radius:10px;color:#aeb5bf;text-decoration:none;font-size:12px;font-weight:650;transition:.18s ease}
+.admin-sidebar-link:hover{background:#22262c;color:#fff;border-color:#303640}
+.admin-sidebar-link.active{background:rgba(230,57,70,.13);color:#fff;border-color:rgba(230,57,70,.28)}
+.admin-sidebar-link.active:before{content:"";position:absolute;left:-13px;top:8px;bottom:8px;width:3px;border-radius:0 4px 4px 0;background:#e63946}
 .admin-sidebar-icon{width:17px;height:17px;flex:0 0 17px;font-size:16px}
-.admin-sidebar-link.active .admin-sidebar-icon{color:#ff6570}
-.admin-sidebar-chevron{margin-left:auto;color:#555b65;font-size:13px;opacity:0;transition:opacity .18s}
+.admin-sidebar-link.active .admin-sidebar-icon{color:#ff6973}
+.admin-sidebar-chevron{margin-left:auto;color:#555d68;font-size:13px;opacity:0;transition:.18s}
 .admin-sidebar-link:hover .admin-sidebar-chevron,.admin-sidebar-link.active .admin-sidebar-chevron{opacity:1}
-.admin-sidebar-link.active .admin-sidebar-chevron{color:#c65a63}
 .admin-sidebar-spacer{flex:1}
-.admin-sidebar-store{padding:14px 0 12px;border-top:1px solid #292c32;border-bottom:1px solid #292c32}
-.admin-store-card{padding:13px 13px 12px;border:1px solid #2d3138;border-radius:11px;background:#1d2025}
-.admin-store-status{display:flex;align-items:center;gap:7px;color:#8fd3aa;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
+.admin-sidebar-store{padding:14px 0 12px;border-top:1px solid #292e35;border-bottom:1px solid #292e35}
+.admin-store-card{padding:13px;border:1px solid #30353d;border-radius:11px;background:#1b1f24}
+.admin-store-status{display:flex;align-items:center;gap:7px;color:#8fd6af;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.07em}
 .admin-store-status i{width:6px;height:6px;border-radius:50%;background:#35b66d;box-shadow:0 0 0 3px rgba(53,182,109,.1)}
-.admin-store-card strong{display:block;margin:9px 0 9px;font-size:11px;color:#e7e9ec}
-.admin-store-card button{display:flex;align-items:center;gap:4px;border:0;padding:0;background:transparent;color:#ff6872;font:inherit;font-size:10px;font-weight:800;cursor:pointer}
-.admin-store-card button svg{font-size:11px}
+.admin-store-card strong{display:block;margin:9px 0;font-size:11px;color:#e7e9ec}
+.admin-store-card button{display:flex;align-items:center;gap:4px;border:0;padding:0;background:transparent;color:#ff6973;font:inherit;font-size:10px;font-weight:800;cursor:pointer}
 .admin-sidebar-footer{display:flex;align-items:center;gap:8px;padding-top:13px}
 .admin-sidebar-account{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
-.admin-user-avatar{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;border-radius:9px;background:#30252a;color:#ff7b84;border:1px solid #4a3035;font-size:12px;font-weight:800}
+.admin-user-avatar{width:34px;height:34px;display:grid;place-items:center;flex:0 0 34px;border-radius:9px;background:#302126;color:#ff7b84;border:1px solid #4a3035;font-size:12px;font-weight:800}
 .admin-sidebar-account strong,.admin-sidebar-account span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .admin-sidebar-account strong{color:#e9ebee;font-size:10px}
-.admin-sidebar-account span{margin-top:3px;color:#737a85;font-size:9px}
-.admin-logout{width:32px;height:32px;display:grid;place-items:center;border:1px solid #30343b;border-radius:8px;background:#1d2025;color:#8f96a0;cursor:pointer}
-.admin-logout:hover{background:#302024;color:#ff6972;border-color:#542a31}
+.admin-sidebar-account span{margin-top:3px;color:#737b86;font-size:9px}
+.admin-logout{width:32px;height:32px;display:grid;place-items:center;border:1px solid #30353d;border-radius:8px;background:#1b1f24;color:#8f96a0;cursor:pointer}
+.admin-logout:hover{background:#301e22;color:#ff6973;border-color:#542a31}
 .admin-main-area{flex:1;min-width:0}
-.admin-topbar{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 30px;background:#fff;border-bottom:1px solid #e7e9ed;box-sizing:border-box}
-.admin-breadcrumb{display:flex;align-items:center;gap:8px;min-width:0;color:#858b95;font-size:11px}
-.admin-breadcrumb svg{font-size:11px;color:#b0b5bc}
-.admin-breadcrumb strong{color:#24272c;font-size:12px;font-weight:750}
-.admin-topbar-actions{display:flex;align-items:center;gap:11px}
-.admin-topbar-store{padding:8px 12px;border:1px solid #e1e4e8;border-radius:8px;background:#fff;color:#505660;font:inherit;font-size:10px;font-weight:700;cursor:pointer}
+.admin-topbar{height:68px;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 30px;background:#fff;border-bottom:1px solid #e4e8ed;box-sizing:border-box}
+.admin-breadcrumb{display:flex;align-items:center;gap:8px;min-width:0;color:#858d98;font-size:11px}
+.admin-breadcrumb svg{font-size:11px;color:#b2b8c0}
+.admin-breadcrumb strong{color:#171b21;font-size:12px;font-weight:750}
+.admin-topbar-actions{display:flex;align-items:center;gap:10px}
+.admin-topbar-store{padding:8px 12px;border:1px solid #e1e5ea;border-radius:9px;background:#fff;color:#505963;font:inherit;font-size:10px;font-weight:700;cursor:pointer}
 .admin-topbar-store:hover{border-color:#e63946;color:#e63946}
-.admin-topbar-avatar{width:31px;height:31px;display:grid;place-items:center;border-radius:50%;background:#f5e8ea;color:#d32f3b;font-size:11px;font-weight:800}
+.admin-topbar-avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;background:#fff1f2;color:#c92835;font-size:11px;font-weight:800}
 .admin-content{width:min(1500px,100%);margin:0 auto;padding:28px 30px 46px;box-sizing:border-box}
 .admin-content>.admin-customers-page,.admin-content>.admin-orders-page,.admin-content>.admin-order-details-page,.admin-content>.admin-customer-details-page{margin:0;padding:0;max-width:none}
 .admin-mobile-menu,.admin-mobile-close,.admin-mobile-overlay{display:none}
@@ -51,7 +49,7 @@
  .admin-sidebar{width:76px;padding:18px 10px}
  .admin-sidebar-brand{padding-left:0;padding-right:0;justify-content:center}
  .admin-brand{justify-content:center}
- .admin-brand-copy,.admin-nav-label,.admin-nav-section,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:none}
+ .admin-brand-copy,.admin-nav-section,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:none}
  .admin-sidebar-link{justify-content:center;padding:0}
  .admin-sidebar-link.active:before{left:-10px}
  .admin-sidebar-footer{justify-content:center}
@@ -65,23 +63,21 @@
  .admin-sidebar.is-open{transform:translateX(0)}
  .admin-sidebar-brand{justify-content:space-between}
  .admin-brand{justify-content:flex-start}
- .admin-brand-copy,.admin-nav-label,.admin-nav-section,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:block}
+ .admin-brand-copy,.admin-nav-section,.admin-sidebar-link>span,.admin-sidebar-chevron,.admin-store-card,.admin-sidebar-account>div:last-child{display:block}
  .admin-sidebar-link{justify-content:flex-start;padding:0 11px}
  .admin-sidebar-link.active:before{left:-14px}
  .admin-sidebar-footer{justify-content:flex-start}
- .admin-mobile-close{display:grid;place-items:center;width:32px;height:32px;border:1px solid #30343b;border-radius:8px;background:#1d2025;color:#aeb3bc;cursor:pointer}
- .admin-mobile-menu{display:grid;place-items:center;width:34px;height:34px;border:1px solid #e1e4e8;border-radius:8px;background:#fff;color:#4e545d;cursor:pointer}
+ .admin-mobile-close{display:grid;place-items:center;width:32px;height:32px;border:1px solid #30353d;border-radius:8px;background:#1b1f24;color:#aeb5bf;cursor:pointer}
+ .admin-mobile-menu{display:grid;place-items:center;width:34px;height:34px;border:1px solid #e1e5ea;border-radius:9px;background:#fff;color:#4e5660;cursor:pointer}
  .admin-topbar{height:62px;padding:0 14px;gap:10px}
- .admin-breadcrumb span{display:none}
- .admin-breadcrumb svg{display:none}
+ .admin-breadcrumb span,.admin-breadcrumb svg{display:none}
  .admin-breadcrumb strong{font-size:12px}
  .admin-topbar-store{display:none}
  .admin-content{padding:18px 13px 30px}
 }
 @media(prefers-color-scheme:dark){
- .admin-shell{background:#111316;color:#f4f5f7}
- .admin-topbar{background:#191b1f;border-color:#292d34}
- .admin-breadcrumb strong{color:#f2f3f5}
- .admin-topbar-store{background:#1f2227;border-color:#353a42;color:#c1c5cb}
- .admin-topbar-avatar{background:#342126;color:#ff7881}
+ .admin-topbar{background:#181c21;border-color:#30363e}
+ .admin-breadcrumb strong{color:#f2f4f7}
+ .admin-topbar-store{background:#181c21;border-color:#30363e;color:#d4d9df}
+ .admin-topbar-avatar{background:#351e23;color:#ff7b84}
 }
