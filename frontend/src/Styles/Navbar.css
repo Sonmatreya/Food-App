@@ -84,10 +84,35 @@
 
 .location-button {
   appearance: none;
+  -webkit-appearance: none;
+  width: 205px;
+  min-height: 44px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: 0;
   font: inherit;
   text-align: left;
   cursor: pointer;
   background: transparent;
+  box-shadow: none;
+}
+
+.location-button:focus-visible {
+  outline: 2px solid rgba(227, 24, 55, 0.25);
+  outline-offset: 5px;
+  border-radius: 8px;
+}
+
+.location-button > div {
+  min-width: 0;
+}
+
+.location-button strong {
+  display: block;
+  max-width: 165px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .location-button:hover strong {
@@ -96,8 +121,11 @@
 
 .location-button small {
   display: block;
-  max-width: 180px;
+  max-width: 165px;
   margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   color: var(--nav-accent);
   font-size: 9px;
   line-height: 1.2;
@@ -105,8 +133,8 @@
 
 .navbar-search {
   align-self: center;
-  flex: 1 1 360px;
-  max-width: 500px;
+  flex: 1 1 390px;
+  max-width: 560px;
   height: 48px;
   margin-left: auto;
   padding: 0 14px;
@@ -357,7 +385,7 @@
   }
 
   .navbar-search {
-    max-width: 330px;
+    max-width: 360px;
   }
 
   .menu-links {
@@ -371,7 +399,7 @@
 
 @media (max-width: 930px) {
   .navbar-search {
-    max-width: 240px;
+    max-width: 260px;
   }
 
   .menu-links {
