@@ -101,7 +101,9 @@ const AdminCustomerDetails = () => {
       setPagination(data?.pagination || null);
     } catch (fetchError) {
       console.error("Admin customer details error:", fetchError);
-      setError("Unable to connect to the server. Please check your connection and try again.");
+      setError(
+        "Unable to connect to the server. Please check your connection and try again."
+      );
     } finally {
       setLoading(false);
     }
@@ -226,21 +228,46 @@ const AdminCustomerDetails = () => {
           <div className="admin-customer-orders-list">
             {orders.map((order) => {
               const orderId = getOrderId(order);
-              const grandTotal = order?.pricing?.grandTotal ?? order?.grandTotal ?? 0;
+              const grandTotal =
+                order?.pricing?.grandTotal ?? order?.grandTotal ?? 0;
 
               return (
-                <article className="admin-customer-order-row" key={orderId || order.orderNumber}>
-                  <div className="admin-customer-order-main">
+                <button
+                  className="admin-customer-order-row"
+                  key={orderId || order.orderNumber}
+                  type="button"
+                  onClick={() => {
+                    if (orderId) navigate(`/admin/orders/${orderId}`);
+                  }}
+                  disabled={!orderId}
+                  aria-label={`View ${order.orderNumber || "order"} details`}
+                >
+                  <span className="admin-customer-order-main">
                     <strong>{order.orderNumber || "Order"}</strong>
-                    <span>{formatDateTime(order.createdAt || order.orderDate)}</span>
-                  </div>
-                  <div className="admin-customer-order-meta">
-                    <span>{Array.isArray(order.items) ? `${order.items.length} item${order.items.length === 1 ? "" : "s"}` : "Order"}</span>
-                    <span>{order.deliveryType === "pickup" ? "Pickup" : "Delivery"}</span>
-                  </div>
-                  <span className="admin-customer-order-status">{getStatusLabel(order.status)}</span>
-                  <strong className="admin-customer-order-total">{formatCurrency(grandTotal)}</strong>
-                </article>
+                    <span>
+                      {formatDateTime(order.createdAt || order.orderDate)}
+                    </span>
+                  </span>
+
+                  <span className="admin-customer-order-meta">
+                    <span>
+                      {Array.isArray(order.items)
+                        ? `${order.items.length} item${order.items.length === 1 ? "" : "s"}`
+                        : "Order"}
+                    </span>
+                    <span>
+                      {order.deliveryType === "pickup" ? "Pickup" : "Delivery"}
+                    </span>
+                  </span>
+
+                  <span className="admin-customer-order-status">
+                    {getStatusLabel(order.status)}
+                  </span>
+
+                  <strong className="admin-customer-order-total">
+                    {formatCurrency(grandTotal)}
+                  </strong>
+                </button>
               );
             })}
           </div>
