@@ -38,6 +38,7 @@ const AdminOrders = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState(null);
+  const [orderSummary, setOrderSummary] = useState(null);
   const [filters, setFilters] = useState({ search: "", status: "", paymentStatus: "", deliveryType: "" });
   const [appliedFilters, setAppliedFilters] = useState(filters);
   const [page, setPage] = useState(1);
@@ -53,7 +54,7 @@ const AdminOrders = () => {
       const response = await fetch(`${API_URL}/api/admin/orders?${params.toString()}`, { method: "GET", credentials: "include", headers: { Accept: "application/json" } });
       let data = null; try { data = await response.json(); } catch { data = null; }
       if (!response.ok) { setError(response.status === 403 ? "You do not have permission to manage orders." : data?.message || "Unable to load orders."); return; }
-      setOrders(Array.isArray(data?.orders) ? data.orders : []); setPagination(data?.pagination || null); setPage(pageNumber);
+      setOrders(Array.isArray(data?.orders) ? data.orders : []); setPagination(data?.pagination || null); setOrderSummary(data?.summary || null); setPage(pageNumber);
     } catch (fetchError) {
       console.error("Admin orders fetch error:", fetchError);
       setError("Unable to connect to the server. Please check your connection and try again.");
@@ -115,9 +116,9 @@ const AdminOrders = () => {
       </form>
       {error && <div className="admin-orders-error" role="alert">{error}</div>}      {pagination && <section className="admin-order-summary">
         <article><span>Total orders</span><strong>{pagination.total || 0}</strong><small>Matching current filters</small></article>
-        <article><span>Active</span><strong>{pagination.summary?.active ?? "—"}</strong><small>Still in progress</small></article>
-        <article><span>Completed</span><strong>{pagination.summary?.delivered ?? "—"}</strong><small>Delivered / picked up</small></article>
-        <article><span>Revenue</span><strong>{money(pagination.summary?.revenue)}</strong><small>Excluding cancelled</small></article>
+        <article><span>Active</span><strong>{orderSummary?.active ?? "—"}</strong><small>Still in progress</small></article>
+        <article><span>Completed</span><strong>{orderSummary?.delivered ?? "—"}</strong><small>Delivered / picked up</small></article>
+        <article><span>Revenue</span><strong>{money(orderSummary?.revenue)}</strong><small>Excluding cancelled</small></article>
       </section>}
       {loading ? <section className="admin-orders-state"><div className="admin-orders-spinner" /><h2>Loading orders...</h2><p>Please wait while order information is loaded.</p></section> : orders.length === 0 ? <section className="admin-orders-state"><div className="admin-orders-state-icon">📦</div><h2>No orders found</h2><p>Try changing the search or filters.</p></section> : <>
         <section className="admin-orders-list">{orders.map((order) => {
