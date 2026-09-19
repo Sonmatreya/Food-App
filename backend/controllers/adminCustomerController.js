@@ -333,4 +333,5 @@ const getCustomerDetails = async (req, res) => {
 module.exports = {
   getCustomers,
   getCustomerDetails,
+  updateCustomerVerification,
 };
