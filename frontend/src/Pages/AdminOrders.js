@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
+import { createSocket } from "../config/socket";
 import "../Styles/AdminOrders.css";
 
 const PAGE_SIZE = 10;
@@ -60,6 +61,23 @@ const AdminOrders = () => {
   }, []);
 
   useEffect(() => { fetchOrders(1, appliedFilters); }, [fetchOrders, appliedFilters]);
+
+  useEffect(() => {
+    const socket = createSocket();
+
+    const refreshOrders = () => {
+      fetchOrders(page, appliedFilters);
+    };
+
+    socket.on("connect", () => {});
+    socket.on("admin:order-updated", refreshOrders);
+    socket.connect();
+
+    return () => {
+      socket.off("admin:order-updated", refreshOrders);
+      socket.disconnect();
+    };
+  }, [fetchOrders, page, appliedFilters]);
   const handleFilterSubmit = (event) => { event.preventDefault(); setAppliedFilters({ ...filters }); };
   const handleReset = () => { const empty = { search: "", status: "", paymentStatus: "", deliveryType: "" }; setFilters(empty); setAppliedFilters(empty); };
 
