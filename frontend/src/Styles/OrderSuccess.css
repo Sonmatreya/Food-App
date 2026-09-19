@@ -1,115 +1,132 @@
 /* =========================================================
-   ORDER SUCCESS PAGE
+   ORDER SUCCESS — UNIFIED ORDER TRACKING DESIGN
 ========================================================= */
 
 .orderSuccessPage {
   width: 100%;
-  max-width: 1400px;
+  max-width: 1380px;
   min-height: 100vh;
   margin: 0 auto;
-  padding: 40px 6% 80px;
+  padding: 42px 5% 80px;
   box-sizing: border-box;
-  background: #f8f8f8;
+  background: #f7f5f1;
+  color: #242424;
 }
 
-/* =========================================================
-   SUCCESS HERO
-========================================================= */
-
+/* Success hero */
 .successHero {
+  margin-bottom: 28px;
   text-align: center;
-  margin-bottom: 35px;
 }
 
 .successIcon {
-  width: 78px;
-  height: 78px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto 18px;
-  border: 7px solid #eaf7ef;
+  width: 76px;
+  height: 76px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  border: 6px solid #e7f5ec;
   border-radius: 50%;
   background: #198754;
   color: #fff;
-  font-size: 39px;
-  font-weight: 700;
-  box-sizing: border-box;
-  box-shadow: 0 8px 25px rgba(25, 135, 84, 0.16);
+  font-size: 38px;
+  font-weight: 800;
+  box-shadow: 0 9px 28px rgba(25,135,84,.15);
 }
 
 .successHero h1 {
-  margin: 0 0 9px;
-  color: #222;
-  font-size: 36px;
-  font-weight: 750;
-  letter-spacing: -0.5px;
+  margin: 0 0 8px;
+  color: #171717;
+  font-size: clamp(28px, 3vw, 38px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
 .successHero p {
-  margin: 0 0 16px;
+  margin: 0 0 15px;
   color: #777;
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .orderNumber {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 9px 16px;
-  border: 1px solid #e3e3e3;
-  border-radius: 8px;
+  padding: 9px 15px;
+  border: 1px solid #dedbd5;
+  border-radius: 9px;
   background: #fff;
   color: #666;
   font-size: 12px;
 }
 
-.orderNumber strong {
-  color: #222;
-  font-weight: 700;
-}
+.orderNumber strong { color: #222; }
 
-/* =========================================================
-   ORDER STATUS
-========================================================= */
+/* Status */
+.orderStatusCard,
+.orderCancelledBanner {
+  position: relative;
+  margin-bottom: 25px;
+  padding: 58px 22px 20px;
+  overflow-x: auto;
+  border: 1px solid #e5e1db;
+  border-radius: 15px;
+  background: #fff;
+  box-shadow: 0 6px 22px rgba(35,31,28,.045);
+}
 
 .orderStatusCard {
   display: flex;
   align-items: center;
-  width: 100%;
-  margin-bottom: 30px;
-  padding: 20px 24px;
-  box-sizing: border-box;
-  border: 1px solid #e5e5e5;
-  border-radius: 15px;
-  background: #fff;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.035);
+}
+
+.orderLiveStatus {
+  position: absolute;
+  top: 16px;
+  left: 22px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #777;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.orderLiveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #bbb;
+}
+
+.orderLiveDot.connected {
+  background: #198754;
+  box-shadow: 0 0 0 3px rgba(25,135,84,.12);
 }
 
 .statusStep {
   display: flex;
   align-items: center;
   gap: 10px;
-  min-width: 145px;
+  min-width: 160px;
   color: #aaa;
 }
 
 .statusIcon {
   width: 38px;
   height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border: 2px solid #e1e1e1;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 2px solid #dedbd5;
   border-radius: 50%;
-  background: #f5f5f5;
+  background: #f6f4f1;
   color: #aaa;
-  font-size: 16px;
-  box-sizing: border-box;
+  font-size: 15px;
 }
 
-.statusStep div:last-child {
+.statusStep > div:last-child {
   display: flex;
   flex-direction: column;
   gap: 3px;
@@ -118,19 +135,17 @@
 .statusStep strong {
   color: inherit;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .statusStep span {
   color: #aaa;
   font-size: 10px;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .statusStep.completed,
-.statusStep.active {
-  color: #198754;
-}
+.statusStep.active { color: #198754; }
 
 .statusStep.completed .statusIcon,
 .statusStep.active .statusIcon {
@@ -139,112 +154,121 @@
   color: #fff;
 }
 
-.statusStep.active strong {
-  color: #198754;
-}
-
 .statusLine {
+  width: 55px;
   height: 2px;
-  flex: 1;
-  min-width: 25px;
+  flex: 0 0 auto;
   margin: 0 10px;
-  background: #ddd;
+  background: #ddd9d3;
 }
 
-.statusLine.active {
-  background: #198754;
+.statusLine.active { background: #198754; }
+
+.orderCancelledBanner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px;
+  overflow: visible;
+  background: #fff5f6;
+  border-color: #f1c9ce;
+  text-align: center;
 }
 
-/* =========================================================
-   MAIN LAYOUT
-========================================================= */
+.orderCancelledBanner strong { color: #b31226; font-size: 14px; }
+.orderCancelledBanner p {
+  margin: 0;
+  color: #8a4a52;
+  font-size: 12px;
+  line-height: 1.5;
+}
 
+/* Main layout */
 .orderSuccessLayout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-  gap: 28px;
+  grid-template-columns: minmax(0,1fr) 380px;
+  gap: 24px;
   align-items: start;
 }
 
 .orderSuccessMain {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 18px;
 }
 
-/* =========================================================
-   COMMON CARD
-========================================================= */
-
-.successCard {
-  padding: 24px;
-  border: 1px solid #e6e6e6;
-  border-radius: 15px;
+.successCard,
+.successSummary {
   background: #fff;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.035);
+  border: 1px solid #e5e1db;
+  border-radius: 16px;
+  box-shadow: 0 6px 22px rgba(35,31,28,.045);
 }
+
+.successCard { padding: 24px; }
 
 .successCardHeader {
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 18px;
 }
 
-.successCardHeader h2 {
+.successCardHeader h2,
+.successSummaryHeader h2 {
   margin: 0;
-  color: #222;
+  color: #1d1d1d;
   font-size: 20px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .successCardHeader p {
   margin: 6px 0 0;
   color: #777;
-  font-size: 13px;
+  font-size: 12px;
 }
 
-/* =========================================================
-   ORDER ITEMS
-========================================================= */
-
+/* Items */
 .successOrderItems {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 13px;
 }
 
 .successOrderItem {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #eee;
+  gap: 13px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid #eeeae4;
 }
 
 .successOrderItem:last-child {
   padding-bottom: 0;
-  border-bottom: none;
+  border-bottom: 0;
 }
 
 .successItemImage {
   width: 62px;
   height: 62px;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background-position: center;
-  background-size: cover;
-  background-repeat: no-repeat;
+  flex: 0 0 auto;
+  border-radius: 11px;
+  background: #f1efeb center/cover no-repeat;
 }
 
 .successItemInfo {
-  flex: 1;
   min-width: 0;
+  flex: 1;
 }
 
 .successItemInfo h3 {
-  margin: 0 0 5px;
+  margin: 0 0 4px;
   overflow: hidden;
   color: #222;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -266,631 +290,73 @@
   white-space: nowrap;
 }
 
-/* =========================================================
-   DELIVERY ADDRESS
-========================================================= */
-
-.successAddress {
+/* Delivery / pickup */
+.successAddress,
+.pickupSuccess,
+.paymentSuccessInfo {
   display: flex;
-  gap: 14px;
-  padding: 17px;
-  border: 1px solid #ededed;
-  border-radius: 11px;
-  background: #fafafa;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 16px;
+  border: 1px solid #eeeae4;
+  border-radius: 12px;
+  background: #faf9f7;
 }
 
-.successAddressIcon {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+.successAddressIcon,
+.pickupSuccessIcon,
+.paymentSuccessIcon {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
   border-radius: 10px;
-  background: #fff0f1;
-  font-size: 22px;
+  background: #fff0f2;
+  font-size: 21px;
 }
 
-.successAddress h3 {
-  margin: 0 0 7px;
-  color: #222;
-  font-size: 15px;
-}
-
-.successAddress p {
-  margin: 4px 0;
-  color: #555;
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.successLocationText {
-  margin-top: 9px !important;
-  color: #333 !important;
-  font-weight: 600;
-}
-
-/* =========================================================
-   PICKUP
-========================================================= */
-
-.pickupSuccess {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 17px;
-  border: 1px solid #ededed;
-  border-radius: 11px;
-  background: #fafafa;
-}
-
-.pickupSuccessIcon {
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: #fff0f1;
-  font-size: 24px;
-}
-
-.pickupSuccess h3 {
+.successAddress h3,
+.pickupSuccess h3,
+.paymentSuccessInfo h3 {
   margin: 0 0 5px;
   color: #222;
-  font-size: 15px;
+  font-size: 14px;
+  font-weight: 800;
 }
 
-.pickupSuccess p {
-  margin: 0;
+.successAddress p,
+.pickupSuccess p,
+.paymentSuccessInfo p {
+  margin: 4px 0;
   color: #666;
   font-size: 12px;
   line-height: 1.5;
 }
 
-/* =========================================================
-   PAYMENT INFORMATION
-========================================================= */
+.successLocationText {
+  margin-top: 8px !important;
+  color: #333 !important;
+  font-weight: 700;
+}
 
 .paymentSuccessInfo {
-  display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 16px;
-  border: 1px solid #ededed;
-  border-radius: 11px;
-  background: #fafafa;
 }
 
-.paymentSuccessIcon {
-  width: 42px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: #f1f1f1;
-  font-size: 21px;
-}
-
-.paymentSuccessInfo div:nth-child(2) {
-  flex: 1;
+.paymentSuccessInfo > div:nth-child(2) {
   min-width: 0;
-}
-
-.paymentSuccessInfo h3 {
-  margin: 0 0 4px;
-  color: #222;
-  font-size: 14px;
-}
-
-.paymentSuccessInfo p {
-  margin: 0;
-  color: #777;
-  font-size: 11px;
-  line-height: 1.5;
+  flex: 1;
 }
 
 .paymentSuccessInfo > strong {
   color: #333;
-  font-size: 14px;
+  font-size: 13px;
   white-space: nowrap;
 }
 
-/* =========================================================
-   ORDER SUMMARY
-========================================================= */
-
-.successSummary {
-  position: sticky;
-  top: 25px;
-  padding: 23px;
-  border: 1px solid #e5e5e5;
-  border-radius: 15px;
-  background: #fff;
-  box-shadow: 0 5px 22px rgba(0, 0, 0, 0.05);
-}
-
-.successSummaryHeader {
-  margin-bottom: 20px;
-}
-
-.successSummaryHeader h2 {
-  margin: 0;
-  color: #222;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-.successSummaryRow {
-  display: flex;
-  justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 12px;
-  font-size: 13px;
-}
-
-.successSummaryRow span {
-  color: #777;
-}
-
-.successSummaryRow strong {
-  color: #333;
-  text-align: right;
-  font-weight: 600;
-}
-
-.successSummaryDivider {
-  height: 1px;
-  margin: 18px 0;
-  background: #e6e6e6;
-}
-
-.successTotal {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-}
-
-.successTotal span {
-  color: #222;
-  font-size: 16px;
-  font-weight: 700;
-}
-
-.successTotal strong {
-  color: #e63946;
-  font-size: 24px;
-  font-weight: 750;
-}
-
-/* =========================================================
-   ESTIMATED TIME
-========================================================= */
-
-.estimatedTime {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 20px 0;
-  padding: 13px;
-  border: 1px solid #dcefe3;
-  border-radius: 10px;
-  background: #f6fbf8;
-}
-
-.estimatedTime > span {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  border-radius: 9px;
-  background: #e4f5ea;
-  font-size: 19px;
-}
-
-.estimatedTime strong {
-  display: block;
-  margin-bottom: 3px;
-  color: #247a43;
-  font-size: 12px;
-}
-
-.estimatedTime p {
-  margin: 0;
-  color: #6c806f;
-  font-size: 11px;
-  line-height: 1.4;
-}
-
-/* =========================================================
-   BUTTONS
-========================================================= */
-
-.successPrimaryButton,
-.successSecondaryButton {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 9px;
-  box-sizing: border-box;
-  border-radius: 9px;
-  text-decoration: none;
-  font-size: 13px;
-  font-weight: 700;
-  transition: all 0.2s ease;
-}
-
-.successPrimaryButton {
-  min-height: 46px;
-  padding: 12px 15px;
-  border: none;
-  background: #e63946;
-  color: #fff;
-}
-
-.successPrimaryButton:hover {
-  background: #d52f3d;
-  transform: translateY(-1px);
-  box-shadow: 0 7px 18px rgba(230, 57, 70, 0.18);
-}
-
-.successSecondaryButton {
-  min-height: 44px;
-  margin-top: 9px;
-  padding: 11px 15px;
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #333;
-}
-
-.successSecondaryButton:hover {
-  border-color: #e63946;
-  background: #fffafa;
-  color: #e63946;
-}
-
-/* =========================================================
-   THANK YOU
-========================================================= */
-
-.successThankYou {
-  margin-top: 45px;
-  text-align: center;
-}
-
-.successThankYou > div {
-  margin-bottom: 9px;
-  font-size: 36px;
-}
-
-.successThankYou h2 {
-  margin: 0 0 7px;
-  color: #222;
-  font-size: 22px;
-}
-
-.successThankYou p {
-  margin: 0;
-  color: #777;
-  font-size: 13px;
-}
-
-/* =========================================================
-   EMPTY STATE
-========================================================= */
-
-.orderSuccessEmpty {
-  min-height: 60vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-  text-align: center;
-}
-
-.orderSuccessEmptyIcon {
-  margin-bottom: 15px;
-  font-size: 58px;
-}
-
-.orderSuccessEmpty h1 {
-  margin: 0 0 10px;
-  color: #222;
-  font-size: 28px;
-}
-
-.orderSuccessEmpty p {
-  max-width: 500px;
-  margin: 0 0 25px;
-  color: #777;
-  line-height: 1.6;
-}
-
-.goToMenuButton {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 9px;
-  background: #e63946;
-  color: #fff;
-  font-weight: 650;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.goToMenuButton:hover {
-  background: #d52f3d;
-  transform: translateY(-1px);
-}
-
-/* =========================================================
-   TABLET
-========================================================= */
-
-@media (max-width: 1050px) {
-  .orderSuccessLayout {
-    grid-template-columns: 1fr;
-  }
-
-  .successSummary {
-    position: static;
-  }
-}
-
-/* =========================================================
-   SMALL TABLET
-========================================================= */
-
-@media (max-width: 900px) {
-  .orderStatusCard {
-    overflow-x: auto;
-    justify-content: flex-start;
-  }
-
-  .statusStep {
-    min-width: 145px;
-  }
-
-  .statusLine {
-    flex: 0 0 35px;
-  }
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media (max-width: 600px) {
-  .orderSuccessPage {
-    padding: 30px 14px 55px;
-  }
-
-  .successHero {
-    margin-bottom: 28px;
-  }
-
-  .successIcon {
-    width: 66px;
-    height: 66px;
-    border-width: 5px;
-    font-size: 32px;
-  }
-
-  .successHero h1 {
-    font-size: 27px;
-  }
-
-  .successHero p {
-    font-size: 13px;
-    line-height: 1.5;
-  }
-
-  .orderNumber {
-    font-size: 11px;
-  }
-
-  .orderStatusCard {
-    padding: 58px 15px 15px;
-    margin-bottom: 22px;
-    border-radius: 12px;
-  }
-
-  .statusStep {
-    min-width: 120px;
-  }
-
-  .statusIcon {
-    width: 32px;
-    height: 32px;
-    font-size: 13px;
-  }
-
-  .statusStep strong {
-    font-size: 11px;
-  }
-
-  .statusStep span {
-    display: none;
-  }
-
-  .statusLine {
-    flex-basis: 25px;
-    margin: 0 6px;
-  }
-
-  .successCard,
-  .successSummary {
-    padding: 17px;
-    border-radius: 12px;
-  }
-
-  .successCardHeader h2,
-  .successSummaryHeader h2 {
-    font-size: 18px;
-  }
-
-  .successOrderItem {
-    align-items: flex-start;
-  }
-
-  .successItemImage {
-    width: 55px;
-    height: 55px;
-  }
-
-  .successItemInfo h3 {
-    font-size: 13px;
-  }
-
-  .successOrderItem > strong {
-    font-size: 12px;
-  }
-
-  .successAddress,
-  .pickupSuccess,
-  .paymentSuccessInfo {
-    padding: 14px;
-  }
-
-  .paymentSuccessInfo {
-    align-items: flex-start;
-  }
-
-  .paymentSuccessInfo > strong {
-    font-size: 13px;
-  }
-
-  .successTotal strong {
-    font-size: 22px;
-  }
-
-  .successThankYou {
-    margin-top: 35px;
-  }
-
-  .successThankYou h2 {
-    font-size: 20px;
-  }
-}
-
-/* =========================================================
-   VERY SMALL MOBILE
-========================================================= */
-
-@media (max-width: 380px) {
-  .orderSuccessPage {
-    padding-left: 10px;
-    padding-right: 10px;
-  }
-
-  .successOrderItem {
-    gap: 9px;
-  }
-
-  .successItemImage {
-    width: 50px;
-    height: 50px;
-  }
-
-  .successOrderItem > strong {
-    font-size: 11px;
-  }
-
-  .successTotal span {
-    font-size: 14px;
-  }
-
-  .successTotal strong {
-    font-size: 20px;
-  }
-}
-
-/* =========================================================
-   PHASE 2D - NEUTRAL HERO (order details mode)
-========================================================= */
-
-.successHero.neutral .successIcon {
-  border-color: #eef1f5;
-
-  background: #f5f6f8;
-
-  color: #555555;
-
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-}
-
-/* =========================================================
-   PHASE 2D - CANCELLED BANNER
-========================================================= */
-
-.orderCancelledBanner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 6px;
-
-  margin-bottom: 30px;
-  padding: 20px 24px;
-
-  border: 1px solid #f5c6cb;
-  border-radius: 15px;
-
-  background: #fdf0f1;
-
-  text-align: center;
-
-  box-sizing: border-box;
-}
-
-.orderCancelledBanner strong {
-  color: #b31226;
-
-  font-size: 15px;
-  font-weight: 750;
-}
-
-.orderCancelledBanner p {
-  margin: 0;
-
-  color: #8a4a52;
-
-  font-size: 12px;
-  line-height: 1.5;
-}
-
-@media (max-width: 600px) {
-  .orderCancelledBanner {
-    margin-bottom: 22px;
-
-    padding: 15px;
-
-    border-radius: 12px;
-  }
-
-  .orderCancelledBanner strong {
-    font-size: 13px;
-  }
-
-  .orderCancelledBanner p {
-    font-size: 11px;
-  }
-}
-
-/* =========================================================
-   HANDOVER CODE
-========================================================= */
-
-.handoverCard {
-  border-color: #dfe9f6;
-}
+/* Handover */
+.handoverCard { border-color: #dfe9f6; }
 
 .handoverCodeBox {
   padding: 18px;
@@ -904,10 +370,10 @@
   display: block;
   margin-bottom: 7px;
   color: #667085;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: .5px;
 }
 
 .handoverCodeBox strong {
@@ -920,84 +386,66 @@
 .handoverCodeBox p {
   margin: 9px 0 0;
   color: #667085;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.5;
+}
+
+.handoverGenerateButton,
+.handoverVerifyRow button {
+  border: 0;
+  border-radius: 9px;
+  background: #e31837;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
 }
 
 .handoverGenerateButton {
   width: 100%;
   min-height: 45px;
   padding: 11px 15px;
-  border: none;
-  border-radius: 9px;
-  background: #e63946;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
 }
 
-.handoverGenerateButton:disabled {
-  opacity: 0.65;
+.handoverGenerateButton:disabled,
+.handoverVerifyRow button:disabled {
+  opacity: .6;
   cursor: not-allowed;
 }
 
-.handoverVerifyBox {
-  margin-top: 14px;
-}
-
+.handoverVerifyBox { margin-top: 14px; }
 .handoverVerifyBox label {
   display: block;
   margin-bottom: 7px;
   color: #333;
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 11px;
+  font-weight: 700;
 }
 
-.handoverVerifyRow {
-  display: flex;
-  gap: 9px;
-}
-
+.handoverVerifyRow { display: flex; gap: 9px; }
 .handoverVerifyRow input {
-  flex: 1;
   min-width: 0;
-  box-sizing: border-box;
+  flex: 1;
   padding: 11px 12px;
-  border: 1px solid #d8d8d8;
-  border-radius: 8px;
+  border: 1px solid #d8d5cf;
+  border-radius: 9px;
   outline: none;
-  font-size: 15px;
+  font-size: 14px;
   letter-spacing: 3px;
 }
 
 .handoverVerifyRow input:focus {
-  border-color: #e63946;
+  border-color: #e31837;
+  box-shadow: 0 0 0 3px rgba(227,24,55,.08);
 }
 
-.handoverVerifyRow button {
-  flex-shrink: 0;
-  padding: 11px 14px;
-  border: none;
-  border-radius: 8px;
-  background: #198754;
-  color: #fff;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.handoverVerifyRow button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
+.handoverVerifyRow button { padding: 11px 14px; background: #198754; }
 
 .handoverSuccessMessage,
 .handoverErrorMessage {
-  margin-top: 12px;
+  margin-top: 11px;
   padding: 10px 12px;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.45;
 }
 
@@ -1013,51 +461,271 @@
   color: #b31226;
 }
 
+/* Summary */
+.successSummary {
+  position: sticky;
+  top: 22px;
+  padding: 22px;
+}
+
+.successSummaryHeader { margin-bottom: 18px; }
+
+.successSummaryRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 11px;
+  font-size: 12px;
+}
+
+.successSummaryRow span { color: #777; }
+.successSummaryRow strong { color: #333; text-align: right; }
+
+.successSummaryDivider {
+  height: 1px;
+  margin: 17px 0;
+  background: #e9e5df;
+}
+
+.successTotal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.successTotal span {
+  color: #222;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.successTotal strong {
+  color: #e31837;
+  font-size: 23px;
+  font-weight: 850;
+}
+
+.estimatedTime {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 18px 0;
+  padding: 12px;
+  border: 1px solid #dcefe3;
+  border-radius: 10px;
+  background: #f6fbf8;
+}
+
+.estimatedTime > span {
+  width: 35px;
+  height: 35px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  background: #e4f5ea;
+}
+
+.estimatedTime strong {
+  display: block;
+  margin-bottom: 2px;
+  color: #247a43;
+  font-size: 11px;
+}
+
+.estimatedTime p {
+  margin: 0;
+  color: #6c806f;
+  font-size: 10px;
+}
+
+/* Buttons */
+.successPrimaryButton,
+.successSecondaryButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 800;
+  transition: .2s ease;
+}
+
+.successPrimaryButton {
+  min-height: 47px;
+  padding: 12px 15px;
+  background: #e31837;
+  color: #fff;
+}
+
+.successPrimaryButton:hover {
+  background: #c91530;
+  transform: translateY(-1px);
+  box-shadow: 0 7px 18px rgba(227,24,55,.18);
+}
+
+.successSecondaryButton {
+  min-height: 44px;
+  margin-top: 9px;
+  padding: 11px 15px;
+  border: 1px solid #dedbd5;
+  background: #fff;
+  color: #333;
+}
+
+.successSecondaryButton:hover {
+  border-color: #e31837;
+  color: #e31837;
+  background: #fffafa;
+}
+
+/* Thank you */
+.successThankYou {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.successThankYou > div { margin-bottom: 8px; font-size: 34px; }
+
+.successThankYou h2 {
+  margin: 0 0 6px;
+  color: #222;
+  font-size: 21px;
+}
+
+.successThankYou p {
+  margin: 0;
+  color: #777;
+  font-size: 12px;
+}
+
+/* Empty */
+.orderSuccessEmpty {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.orderSuccessEmptyIcon { margin-bottom: 14px; font-size: 55px; }
+
+.orderSuccessEmpty h1 {
+  margin: 0 0 9px;
+  color: #222;
+  font-size: 28px;
+}
+
+.orderSuccessEmpty p {
+  max-width: 500px;
+  margin: 0 0 23px;
+  color: #777;
+  line-height: 1.6;
+}
+
+.goToMenuButton {
+  padding: 12px 24px;
+  border: 0;
+  border-radius: 10px;
+  background: #e31837;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* Existing neutral/cancelled states */
+.successHero.neutral .successIcon {
+  border-color: #eef1f5;
+  background: #f5f6f8;
+  color: #555;
+  box-shadow: 0 8px 25px rgba(0,0,0,.06);
+}
+
+/* Responsive */
+@media (max-width: 1050px) {
+  .orderSuccessLayout { grid-template-columns: 1fr; }
+  .successSummary { position: static; }
+}
+
+@media (max-width: 900px) {
+  .orderStatusCard { justify-content: flex-start; }
+  .statusStep { min-width: 145px; }
+  .statusLine { width: 35px; }
+}
+
 @media (max-width: 600px) {
+  .orderSuccessPage { padding: 30px 14px 55px; }
+
+  .successIcon {
+    width: 66px;
+    height: 66px;
+    font-size: 32px;
+  }
+
+  .successHero h1 { font-size: 27px; }
+
+  .orderStatusCard {
+    padding: 57px 14px 14px;
+    border-radius: 12px;
+  }
+
+  .orderLiveStatus { left: 15px; }
+
+  .statusStep { min-width: 118px; }
+  .statusIcon { width: 32px; height: 32px; font-size: 13px; }
+  .statusStep strong { font-size: 11px; }
+  .statusStep span { display: none; }
+  .statusLine { width: 24px; margin: 0 6px; }
+
+  .successCard,
+  .successSummary {
+    padding: 17px;
+    border-radius: 13px;
+  }
+
+  .successCardHeader h2,
+  .successSummaryHeader h2 { font-size: 18px; }
+
+  .successItemImage {
+    width: 55px;
+    height: 55px;
+  }
+
+  .successOrderItem { align-items: flex-start; }
+
+  .successAddress,
+  .pickupSuccess,
+  .paymentSuccessInfo { padding: 14px; }
+
+  .successTotal strong { font-size: 21px; }
+
   .handoverCodeBox strong {
     font-size: 28px;
     letter-spacing: 6px;
   }
 
-  .handoverVerifyRow {
-    flex-direction: column;
+  .handoverVerifyRow { flex-direction: column; }
+  .handoverVerifyRow button { width: 100%; }
+}
+
+@media (max-width: 380px) {
+  .orderSuccessPage {
+    padding-left: 10px;
+    padding-right: 10px;
   }
 
-  .handoverVerifyRow button {
-    width: 100%;
+  .successOrderItem { gap: 9px; }
+
+  .successItemImage {
+    width: 50px;
+    height: 50px;
   }
-}
 
-/* =========================================================
-   LIVE ORDER UPDATES
-========================================================= */
-
-.orderStatusCard {
-  position: relative;
-  padding-top: 58px;
-}
-
-.orderLiveStatus {
-  position: absolute;
-  top: 16px;
-  left: 24px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: #777;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.orderLiveDot {
-  width: 8px;
-  height: 8px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: #bbb;
-}
-
-.orderLiveDot.connected {
-  background: #198754;
-  box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.12);
+  .successTotal strong { font-size: 20px; }
 }
