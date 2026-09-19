@@ -61,7 +61,7 @@ const getCustomers = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const [users, totalCustomers] = await Promise.all([
+    const [users, totalCustomers, verificationStats, spendingStats] = await Promise.all([
       User.find(filter)
         .select("_id name email phone isVerified createdAt")
         .sort({ createdAt: -1 })
@@ -70,6 +70,23 @@ const getCustomers = async (req, res) => {
         .lean(),
 
       User.countDocuments(filter),
+
+      User.aggregate([
+        { $match: filter },
+        { $group: {
+            _id: null,
+            verified: { $sum: { $cond: ["$isVerified", 1, 0] } },
+            unverified: { $sum: { $cond: ["$isVerified", 0, 1] } },
+          } },
+      ]),
+
+      User.aggregate([
+        { $match: filter },
+        { $lookup: { from: "orders", localField: "_id", foreignField: "userId", as: "orders" } },
+        { $unwind: { path: "$orders", preserveNullAndEmptyArrays: false } },
+        { $match: { "orders.status": { $ne: "cancelled" } } },
+        { $group: { _id: null, totalSpent: { $sum: "$orders.pricing.grandTotal" } } },
+      ]),
     ]);
 
     const userIds = users.map((user) => user._id);
@@ -134,6 +151,12 @@ const getCustomers = async (req, res) => {
         total: totalCustomers,
         totalPages: Math.ceil(totalCustomers / limit),
         hasMore: page * limit < totalCustomers,
+      },
+      summary: {
+        total: totalCustomers,
+        verified: Number(verificationStats[0]?.verified || 0),
+        unverified: Number(verificationStats[0]?.unverified || 0),
+        totalSpent: Number(spendingStats[0]?.totalSpent || 0),
       },
     });
   } catch (error) {
