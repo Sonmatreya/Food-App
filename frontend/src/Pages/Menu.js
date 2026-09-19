@@ -1,15 +1,24 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import MenuItem from "../Components/MenuItem";
 import { API_URL } from "../config/api";
 import "../Styles/Menu.css";
 
 function Menu() {
   const [foods, setFoods] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(() => searchParams.get("search") || "");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("default");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const search = searchParams.get("search") || "";
+    const category = searchParams.get("category") || "All";
+    setSearchTerm(search);
+    setSelectedCategory(category);
+  }, [searchParams]);
 
   useEffect(() => {
     let cancelled = false;
