@@ -183,7 +183,7 @@ const AdminCustomers = () => {
         <article><span>Verified</span><strong>{summary.verified || 0}</strong><small>Verified accounts</small></article>
         <article><span>Not Verified</span><strong>{summary.unverified || 0}</strong><small>Accounts awaiting verification</small></article>
         <article><span>Customer Revenue</span><strong>{formatCurrency(summary.totalSpent)}</strong><small>Excluding cancelled orders</small></article>
-      </section>
+      </section>}
 
       <form className="admin-customers-toolbar" onSubmit={handleSearch}>
         <div className="admin-customers-search">
