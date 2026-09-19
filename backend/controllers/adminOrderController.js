@@ -148,15 +148,33 @@ const getAdminOrders = async (req, res) => {
 
     const skip = (page - 1) * limit;
 
-    const [orders, total] = await Promise.all([
+    const [orders, total, summaryAgg] = await Promise.all([
       Order.find(filter).populate("userId", "_id name email phone").sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
       Order.countDocuments(filter),
+      Order.aggregate([
+        { $match: filter },
+        { $group: {
+            _id: null,
+            total: { $sum: 1 },
+            active: { $sum: { $cond: [{ $in: ["$status", ["placed", "confirmed", "preparing", "ready", "out_for_delivery"]] }, 1, 0] } },
+            delivered: { $sum: { $cond: [{ $in: ["$status", ["delivered", "picked_up"]] }, 1, 0] } },
+            cancelled: { $sum: { $cond: [{ $eq: ["$status", "cancelled"] }, 1, 0] } },
+            revenue: { $sum: { $cond: [{ $ne: ["$status", "cancelled"] }, "$pricing.grandTotal", 0] } },
+          } },
+      ]),
     ]);
 
     return res.status(200).json({
       success: true,
       orders: orders.map(buildAdminOrderResponse),
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) || 1, hasMore: page * limit < total },
+      summary: {
+        total: Number(summaryAgg[0]?.total || 0),
+        active: Number(summaryAgg[0]?.active || 0),
+        delivered: Number(summaryAgg[0]?.delivered || 0),
+        cancelled: Number(summaryAgg[0]?.cancelled || 0),
+        revenue: Number(summaryAgg[0]?.revenue || 0),
+      },
     });
   } catch (error) {
     console.error("Get admin orders error:", error.message);
