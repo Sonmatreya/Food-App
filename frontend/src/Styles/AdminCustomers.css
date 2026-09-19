@@ -578,3 +578,7 @@
   .admin-customers-spinner { border-color: #4b2a2f; border-top-color: #f8717b; border-right-color: #4ade80; }
   .admin-customers-pagination button { border-color: #3a3f48; }
 }
+
+/* Final admin visual polish */
+.admin-customers-page{max-width:none;padding:0 0 32px}.admin-customers-header{border-bottom:0;padding-bottom:0;margin-bottom:17px}.admin-customers-header h1{font-size:30px}.admin-customers-toolbar{padding:12px;border:1px solid #e4e8ed;border-radius:14px;background:#fff;box-shadow:0 6px 20px rgba(20,28,38,.045)}.admin-customers-table-wrapper{border-top:0;border-radius:14px;box-shadow:0 8px 28px rgba(20,28,38,.06)}.admin-customers-table th{background:#f7f9fb;color:#59636e}.admin-customers-table th,.admin-customers-table td{padding:14px 15px}.admin-customers-pagination{padding-top:16px}
+@media(max-width:600px){.admin-customers-header h1{font-size:25px}.admin-customers-toolbar{padding:10px}}
