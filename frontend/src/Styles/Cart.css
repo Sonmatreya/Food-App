@@ -1,137 +1,111 @@
 /* =========================================
-   CART PAGE
+   CART PAGE — UNIFIED FOOD APP DESIGN
 ========================================= */
 
 .cartPage {
   min-height: 100vh;
-  padding: 40px 6%;
-  background: #f8f8f8;
+  padding: 42px 20px 70px;
+  background: var(--color-cream, #f7f5f1);
 }
 
-
-/* =========================================
-   PAGE HEADER
-========================================= */
+.cartPageHeader,
+.cartLayout {
+  width: min(1280px, 100%);
+  margin-left: auto;
+  margin-right: auto;
+}
 
 .cartPageHeader {
-  max-width: 1400px;
-  margin: 0 auto 30px;
-
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-
-  gap: 20px;
+  gap: 24px;
+  margin-bottom: 28px;
 }
 
 .cartPageHeader h1 {
   margin: 0 0 6px;
-
-  color: #222;
-
-  font-size: 36px;
-  font-weight: 700;
-  line-height: 1.2;
+  color: var(--color-text, #1f2933);
+  font-size: clamp(30px, 4vw, 42px);
+  font-weight: 800;
+  letter-spacing: -0.8px;
 }
 
 .cartPageHeader p {
   margin: 0;
-
-  color: #777;
-
-  font-size: 15px;
-  line-height: 1.5;
+  color: var(--color-muted, #6b7280);
+  font-size: 14px;
 }
 
 .cartPageHeader a {
-  color: #e63946;
-
-  font-size: 14px;
-  font-weight: 600;
-
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--color-text, #1f2933);
+  font-size: 13px;
+  font-weight: 700;
   text-decoration: none;
-
-  transition: color 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .cartPageHeader a:hover {
-  color: #c92735;
+  border-color: var(--color-brand, #e31837);
+  color: var(--color-brand, #e31837);
 }
 
-
-/* =========================================
-   MAIN LAYOUT
-========================================= */
-
+/* Layout */
 .cartLayout {
-  max-width: 1400px;
-  margin: 0 auto;
-
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 380px;
-
-  gap: 28px;
-
+  grid-template-columns: minmax(0, 1fr) 370px;
+  gap: 24px;
   align-items: start;
 }
 
 .cartMain {
   display: flex;
   flex-direction: column;
-
-  gap: 22px;
+  gap: 18px;
 }
 
-
-/* =========================================
-   COMMON CARD
-========================================= */
+.cartCard,
+.cartSummary {
+  background: #fff;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(31, 41, 51, 0.05);
+}
 
 .cartCard {
   padding: 24px;
-
-  background: #ffffff;
-
-  border: 1px solid #eeeeee;
-  border-radius: 16px;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
 
 .cartCardHeader {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 15px;
-
-  padding-bottom: 18px;
-  margin-bottom: 4px;
-
-  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #eee;
 }
 
-.cartCardHeader h2 {
+.cartCardHeader h2,
+.summaryHeader h2 {
   margin: 0;
-
-  color: #222;
-
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.3;
+  color: var(--color-text, #1f2933);
+  font-size: 19px;
+  font-weight: 800;
 }
 
 .cartCardHeader span {
-  color: #777;
-
-  font-size: 14px;
+  color: var(--color-muted, #6b7280);
+  font-size: 13px;
 }
 
-
-/* =========================================
-   CART ITEMS
-========================================= */
-
+/* Items */
 .cartItems {
   display: flex;
   flex-direction: column;
@@ -139,50 +113,23 @@
 
 .cartItem {
   display: grid;
-  grid-template-columns: 110px minmax(0, 1fr) auto;
-
-  gap: 20px;
-
-  align-items: start;
-
+  grid-template-columns: 112px minmax(0, 1fr) auto;
+  gap: 18px;
   padding: 22px 0;
-
-  border-bottom: 1px solid #eeeeee;
-}
-
-.cartItem:first-child {
-  padding-top: 18px;
+  border-bottom: 1px solid #eee;
 }
 
 .cartItem:last-child {
   padding-bottom: 4px;
-
-  border-bottom: none;
+  border-bottom: 0;
 }
-
-
-/* =========================================
-   FOOD IMAGE
-========================================= */
 
 .cartItemImage {
-  width: 110px;
-  height: 100px;
-
-  border-radius: 12px;
-
-  background-color: #eeeeee;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-
-  flex-shrink: 0;
+  width: 112px;
+  height: 105px;
+  border-radius: 14px;
+  background: #eee center / cover no-repeat;
 }
-
-
-/* =========================================
-   FOOD DETAILS
-========================================= */
 
 .cartItemDetails {
   min-width: 0;
@@ -190,435 +137,268 @@
 
 .cartItemCategory {
   display: inline-block;
-
   margin-bottom: 5px;
-
-  color: #e63946;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  letter-spacing: 0.5px;
+  color: var(--color-brand, #e31837);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.7px;
   text-transform: uppercase;
 }
 
 .cartItemDetails h3 {
-  margin: 0 0 6px;
-
+  margin: 0 0 5px;
   overflow: hidden;
-
-  color: #222;
-
+  color: var(--color-text, #1f2933);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.3;
-
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .cartItemUnitPrice {
   margin: 0;
-
-  color: #777;
-
-  font-size: 14px;
-  line-height: 1.5;
+  color: var(--color-muted, #6b7280);
+  font-size: 13px;
 }
 
-
-/* =========================================
-   COOKING REQUEST
-========================================= */
-
 .cartCookingRequest {
-  margin: 10px 0 14px;
-  padding: 10px 12px;
-
+  margin: 10px 0 13px;
+  padding: 9px 12px;
   background: #fafafa;
-
-  border-left: 3px solid #e63946;
+  border-left: 3px solid var(--color-brand, #e31837);
   border-radius: 8px;
 }
 
 .cartCookingRequest span {
   display: block;
-
   margin-bottom: 3px;
-
   color: #777;
-
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .cartCookingRequest p {
   margin: 0;
-
   overflow-wrap: anywhere;
-
   color: #444;
-
   font-size: 12px;
   line-height: 1.5;
 }
 
-
-/* =========================================
-   ITEM BOTTOM
-========================================= */
-
 .cartItemBottom {
   display: flex;
   align-items: center;
-
-  gap: 20px;
-
+  gap: 16px;
   margin-top: 14px;
 }
-
-
-/* =========================================
-   QUANTITY
-========================================= */
 
 .cartQuantity {
   display: flex;
   align-items: center;
-
-  width: fit-content;
-
   overflow: hidden;
-
-  border: 1px solid #dddddd;
-  border-radius: 8px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  background: #fff;
 }
 
 .cartQuantity button {
   width: 34px;
   height: 32px;
-
   padding: 0;
-
-  border: none;
-
-  background: #ffffff;
-
+  border: 0;
+  background: #fff;
   color: #333;
-
-  font-size: 20px;
-  line-height: 1;
-
+  font-size: 19px;
   cursor: pointer;
-
-  transition: background 0.2s ease;
 }
 
 .cartQuantity button:hover {
-  background: #f2f2f2;
-}
-
-.cartQuantity button:active {
-  background: #eaeaea;
+  background: #f5f5f5;
 }
 
 .cartQuantity span {
-  min-width: 36px;
-
+  min-width: 34px;
   color: #222;
-
-  font-size: 14px;
-  font-weight: 600;
-
+  font-size: 13px;
+  font-weight: 800;
   text-align: center;
 }
 
-
-/* =========================================
-   REMOVE BUTTON
-========================================= */
-
 .removeButton {
   padding: 4px 0;
-
-  border: none;
-
+  border: 0;
   background: transparent;
-
-  color: #e63946;
-
-  font-size: 13px;
-  font-weight: 600;
-
+  color: #777;
+  font-size: 12px;
+  font-weight: 700;
   cursor: pointer;
-
-  transition: color 0.2s ease;
 }
 
 .removeButton:hover {
-  color: #b91c2a;
-
-  text-decoration: underline;
+  color: var(--color-brand, #e31837);
 }
 
-
-/* =========================================
-   ITEM TOTAL
-========================================= */
-
 .cartItemTotal {
-  align-self: start;
-
-  padding-top: 8px;
-
-  color: #222;
-
-  font-size: 18px;
-  font-weight: 700;
-
+  padding-top: 5px;
+  color: var(--color-text, #1f2933);
+  font-size: 17px;
+  font-weight: 800;
   white-space: nowrap;
 }
 
-
-/* =========================================
-   DELIVERY OPTIONS
-========================================= */
-
+/* Delivery */
 .deliveryOptions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-
-  gap: 14px;
-
+  gap: 12px;
   margin-top: 18px;
 }
 
 .deliveryOption {
   width: 100%;
-
   display: flex;
   align-items: center;
-
-  gap: 13px;
-
-  padding: 16px;
-
-  border: 2px solid #eeeeee;
-  border-radius: 12px;
-
-  background: #ffffff;
-
-  color: inherit;
-
+  gap: 12px;
+  padding: 15px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 13px;
+  background: #fff;
   text-align: left;
-
   cursor: pointer;
-
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease,
-    transform 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .deliveryOption:hover {
-  border-color: #e63946;
-}
-
-.deliveryOption:active {
-  transform: scale(0.99);
+  border-color: var(--color-brand, #e31837);
 }
 
 .deliveryOption.active {
-  border-color: #e63946;
-
-  background: #fff5f5;
+  border-color: var(--color-brand, #e31837);
+  background: #fff7f8;
 }
 
 .deliveryIcon {
-  width: 42px;
-  height: 42px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-
-  border-radius: 50%;
-
+  border-radius: 11px;
   background: #f5f5f5;
-
-  font-size: 21px;
+  font-size: 20px;
 }
 
 .deliveryOption.active .deliveryIcon {
-  background: #ffffff;
+  background: #fff;
 }
 
 .deliveryOption > span:nth-child(2) {
   min-width: 0;
-
   display: flex;
-  flex-direction: column;
-
   flex: 1;
-
-  gap: 4px;
+  flex-direction: column;
+  gap: 3px;
 }
 
 .deliveryOption strong {
   color: #222;
-
-  font-size: 15px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .deliveryOption small {
   color: #777;
-
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 11px;
 }
 
 .deliveryCheck {
-  width: 22px;
-  height: 22px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
+  width: 21px;
+  height: 21px;
+  display: grid;
+  place-items: center;
   flex-shrink: 0;
-
-  border: 1px solid #cccccc;
+  border: 1px solid #ccc;
   border-radius: 50%;
-
-  color: #ffffff;
-
-  font-size: 12px;
-  font-weight: 700;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
 }
 
 .deliveryOption.active .deliveryCheck {
-  border-color: #e63946;
-
-  background: #e63946;
+  border-color: var(--color-brand, #e31837);
+  background: var(--color-brand, #e31837);
 }
-
-
-/* =========================================
-   PICKUP INFORMATION
-========================================= */
 
 .addressNote {
-  margin-top: 18px;
-  padding: 16px;
-
-  border: 1px solid #f5dfaa;
+  margin-top: 17px;
+  padding: 14px;
+  border: 1px solid #f1dfb0;
   border-radius: 10px;
-
-  background: #fff8e8;
-
+  background: #fff9ea;
   color: #725b20;
-
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 13px;
 }
 
-
-/* =========================================
-   COUPONS
-========================================= */
-
+/* Coupons */
 .couponBox {
-  margin-top: 18px;
+  margin-top: 17px;
 }
 
 .couponInput {
   display: flex;
   align-items: center;
-
   overflow: hidden;
-
-  border: 1px solid #dddddd;
-  border-radius: 10px;
-
-  background: #ffffff;
-
-  transition: border-color 0.2s ease;
+  border: 1px solid #ddd;
+  border-radius: 11px;
+  background: #fff;
 }
 
 .couponInput:focus-within {
-  border-color: #e63946;
+  border-color: var(--color-brand, #e31837);
 }
 
 .couponInput > span {
   padding-left: 14px;
-
-  font-size: 17px;
+  font-size: 16px;
 }
 
 .couponInput input {
   min-width: 0;
-
   flex: 1;
-
-  padding: 13px 12px;
-
-  border: none;
-  outline: none;
-
+  padding: 13px 11px;
+  border: 0;
+  outline: 0;
   background: transparent;
-
   color: #222;
-
-  font-family: inherit;
-  font-size: 14px;
-}
-
-.couponInput input::placeholder {
-  color: #999;
+  font: inherit;
+  font-size: 13px;
 }
 
 .couponInput button {
-  height: 100%;
-
-  padding: 13px 20px;
-
-  border: none;
-
+  padding: 12px 19px;
+  border: 0;
   background: #222;
-
-  color: #ffffff;
-
-  font-size: 13px;
-  font-weight: 600;
-
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
   cursor: pointer;
-
-  transition: background 0.2s ease;
 }
 
 .couponInput button:hover:not(:disabled) {
-  background: #e63946;
+  background: var(--color-brand, #e31837);
 }
 
 .couponInput button:disabled {
-  opacity: 0.5;
-
+  opacity: .5;
   cursor: not-allowed;
 }
 
-
-/* =========================================
-   COUPON MESSAGE
-========================================= */
-
 .couponMessage {
-  margin: 10px 0 0;
-
-  font-size: 13px;
-  line-height: 1.5;
+  margin: 9px 0 0;
+  font-size: 12px;
 }
 
 .couponMessage.success {
@@ -626,217 +406,131 @@
 }
 
 .couponMessage.error {
-  color: #e63946;
+  color: var(--color-brand, #e31837);
 }
-
-
-/* =========================================
-   AVAILABLE COUPONS
-========================================= */
 
 .availableCoupons {
   display: flex;
   flex-direction: column;
-
-  gap: 8px;
-
-  margin-top: 20px;
+  gap: 7px;
+  margin-top: 18px;
 }
 
 .availableCoupons > p {
   margin: 0 0 2px;
-
   color: #555;
-
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .availableCoupons > button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
   gap: 15px;
-
-  padding: 11px 13px;
-
-  border: 1px dashed #dddddd;
-  border-radius: 8px;
-
+  padding: 10px 12px;
+  border: 1px dashed #ddd;
+  border-radius: 9px;
   background: #fafafa;
-
   text-align: left;
-
   cursor: pointer;
-
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease;
 }
 
 .availableCoupons > button:hover {
-  border-color: #e63946;
-
+  border-color: var(--color-brand, #e31837);
   background: #fff8f8;
 }
 
 .availableCoupons > button strong {
-  flex-shrink: 0;
-
-  color: #e63946;
-
-  font-size: 13px;
+  color: var(--color-brand, #e31837);
+  font-size: 12px;
 }
 
 .availableCoupons > button span {
   color: #777;
-
-  font-size: 12px;
-
+  font-size: 11px;
   text-align: right;
 }
-
-
-/* =========================================
-   APPLIED COUPON
-========================================= */
 
 .appliedCoupon {
   display: flex;
   align-items: center;
-
-  gap: 12px;
-
-  margin-top: 15px;
-  padding: 13px;
-
+  gap: 11px;
+  margin-top: 14px;
+  padding: 12px;
   border: 1px solid #ccebd7;
   border-radius: 10px;
-
   background: #f0fff5;
 }
 
 .couponAppliedIcon {
-  width: 28px;
-  height: 28px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  flex-shrink: 0;
-
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
   border-radius: 50%;
-
   background: #198754;
-
-  color: #ffffff;
-
-  font-size: 13px;
-  font-weight: 700;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
 }
 
 .appliedCoupon > div {
   min-width: 0;
-
   flex: 1;
 }
 
 .appliedCoupon strong {
   color: #198754;
-
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .appliedCoupon p {
   margin: 2px 0 0;
-
   color: #777;
-
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .appliedCoupon button {
-  padding: 3px 0;
-
-  border: none;
-
+  border: 0;
   background: transparent;
-
-  color: #e63946;
-
-  font-size: 12px;
-  font-weight: 600;
-
+  color: var(--color-brand, #e31837);
+  font-size: 11px;
+  font-weight: 800;
   cursor: pointer;
 }
 
-
-/* =========================================
-   CART SUMMARY
-========================================= */
-
+/* Summary */
 .cartSummary {
   position: sticky;
-  top: 90px;
-
+  top: 94px;
   padding: 24px;
-
-  background: #ffffff;
-
-  border: 1px solid #eeeeee;
-  border-radius: 16px;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
 }
 
 .summaryHeader {
-  padding-bottom: 18px;
-
-  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 17px;
+  border-bottom: 1px solid #eee;
 }
-
-.summaryHeader h2 {
-  margin: 0;
-
-  color: #222;
-
-  font-size: 21px;
-  font-weight: 700;
-}
-
-
-/* =========================================
-   SUMMARY ROWS
-========================================= */
 
 .summaryRows {
   display: flex;
   flex-direction: column;
-
-  gap: 15px;
-
-  padding: 20px 0;
+  gap: 14px;
+  padding: 19px 0;
 }
 
 .summaryRow {
   display: flex;
   align-items: center;
   justify-content: space-between;
-
-  gap: 20px;
-
+  gap: 15px;
   color: #666;
-
-  font-size: 14px;
-  line-height: 1.4;
+  font-size: 13px;
 }
 
 .summaryRow strong {
   color: #222;
-
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .discountRow span,
@@ -844,256 +538,141 @@
   color: #198754;
 }
 
-
-/* =========================================
-   FREE DELIVERY
-========================================= */
-
 .freeDeliveryMessage {
-  margin: 0 0 16px;
-  padding: 11px;
-
+  margin: 0 0 15px;
+  padding: 10px;
   border-radius: 8px;
-
   background: #f0fff5;
-
   color: #198754;
-
-  font-size: 13px;
-
+  font-size: 12px;
   text-align: center;
 }
-
-
-/* =========================================
-   DIVIDER
-========================================= */
 
 .summaryDivider {
   height: 1px;
-
-  margin: 5px 0 18px;
-
-  background: #eeeeee;
+  margin: 5px 0 17px;
+  background: #eee;
 }
-
-
-/* =========================================
-   GRAND TOTAL
-========================================= */
 
 .grandTotal {
   color: #222;
-
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 800;
 }
 
 .grandTotal strong {
-  color: #e63946;
-
+  color: var(--color-brand, #e31837);
   font-size: 22px;
-  font-weight: 700;
 }
 
-
-/* =========================================
-   SAVINGS
-========================================= */
-
 .totalSavings {
-  margin: 10px 0 0;
-
+  margin: 9px 0 0;
   color: #198754;
-
-  font-size: 13px;
-
+  font-size: 12px;
   text-align: right;
 }
 
-
-/* =========================================
-   CHECKOUT BUTTON
-========================================= */
-
 .checkoutButton {
   width: 100%;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
-  gap: 12px;
-
-  margin-top: 22px;
-  padding: 15px 18px;
-
-  border: none;
-  border-radius: 10px;
-
-  background: #e63946;
-
-  color: #ffffff;
-
-  font-family: inherit;
-  font-size: 15px;
-  font-weight: 700;
-
+  gap: 10px;
+  margin-top: 21px;
+  padding: 14px 17px;
+  border: 0;
+  border-radius: 11px;
+  background: var(--color-brand, #e31837);
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
   cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .checkoutButton:hover {
-  background: #c92735;
-
-  box-shadow: 0 6px 16px rgba(230, 57, 70, 0.18);
-
+  background: var(--color-brand-dark, #c91530);
   transform: translateY(-1px);
-}
-
-.checkoutButton:active {
-  transform: translateY(0);
+  box-shadow: 0 7px 18px rgba(227, 24, 55, .18);
 }
 
 .checkoutButton span {
-  font-size: 18px;
+  font-size: 17px;
 }
 
-
-/* =========================================
-   SECURE CHECKOUT
-========================================= */
-
 .secureCheckout {
-  margin: 13px 0 0;
-
+  margin: 12px 0 0;
   color: #888;
-
-  font-size: 12px;
-
+  font-size: 11px;
   text-align: center;
 }
 
-
-/* =========================================
-   EMPTY CART
-========================================= */
-
+/* Empty */
 .emptyCart {
-  min-height: 70vh;
-
+  min-height: 72vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   padding: 60px 20px;
-
-  background: #f8f8f8;
-
+  background: var(--color-cream, #f7f5f1);
   text-align: center;
 }
 
 .emptyCartIcon {
-  width: 90px;
-  height: 90px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-bottom: 20px;
-
+  width: 88px;
+  height: 88px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 18px;
+  border: 1px solid #eee;
   border-radius: 50%;
-
-  background: #ffffff;
-
-  font-size: 40px;
-
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+  background: #fff;
+  font-size: 38px;
+  box-shadow: 0 10px 28px rgba(31, 41, 51, .06);
 }
 
 .emptyCart h1 {
-  margin: 0 0 10px;
-
-  color: #222;
-
+  margin: 0 0 9px;
+  color: var(--color-text, #1f2933);
   font-size: 30px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .emptyCart p {
-  margin: 0 0 25px;
-
+  margin: 0 0 23px;
   color: #777;
-
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
 }
 
 .continueShopping {
   padding: 13px 24px;
-
-  border: none;
-  border-radius: 8px;
-
-  background: #e63946;
-
-  color: #ffffff;
-
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 600;
-
+  border: 0;
+  border-radius: 10px;
+  background: var(--color-brand, #e31837);
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
   cursor: pointer;
-
-  transition:
-    background 0.2s ease,
-    transform 0.2s ease;
 }
 
 .continueShopping:hover {
-  background: #c92735;
-
-  transform: translateY(-1px);
+  background: var(--color-brand-dark, #c91530);
 }
 
-
-/* =========================================
-   RESPONSIVE - 1100px
-========================================= */
-
-@media (max-width: 1100px) {
-
-  .cartPage {
-    padding: 35px 4%;
-  }
-
+/* Responsive */
+@media (max-width: 1000px) {
   .cartLayout {
-    grid-template-columns: minmax(0, 1fr) 340px;
+    grid-template-columns: minmax(0, 1fr) 330px;
   }
-
-  .cartItem {
-    grid-template-columns: 95px minmax(0, 1fr) auto;
-  }
-
-  .cartItemImage {
-    width: 95px;
-    height: 90px;
-  }
-
 }
-
-
-/* =========================================
-   RESPONSIVE - 850px
-========================================= */
 
 @media (max-width: 850px) {
+  .cartPage {
+    padding-top: 30px;
+  }
 
   .cartLayout {
     grid-template-columns: 1fr;
@@ -1102,60 +681,42 @@
   .cartSummary {
     position: static;
   }
-
-  .deliveryOptions {
-    grid-template-columns: 1fr 1fr;
-  }
-
 }
 
-
-/* =========================================
-   RESPONSIVE - 650px
-========================================= */
-
 @media (max-width: 650px) {
-
   .cartPage {
-    padding: 25px 15px;
+    padding: 24px 14px 50px;
   }
 
   .cartPageHeader {
     align-items: flex-start;
     flex-direction: column;
-
-    margin-bottom: 22px;
+    margin-bottom: 21px;
   }
 
-  .cartPageHeader h1 {
-    font-size: 30px;
+  .cartPageHeader a {
+    min-height: 38px;
   }
 
-  .cartCard {
+  .cartCard,
+  .cartSummary {
     padding: 18px;
+    border-radius: 15px;
   }
 
   .cartItem {
-    grid-template-columns: 80px minmax(0, 1fr);
-
-    gap: 14px;
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 13px;
   }
 
   .cartItemImage {
-    width: 80px;
-    height: 80px;
+    width: 78px;
+    height: 78px;
   }
 
   .cartItemTotal {
     grid-column: 2;
-
-    justify-self: start;
-
     padding-top: 0;
-  }
-
-  .cartCookingRequest {
-    margin-top: 9px;
   }
 
   .deliveryOptions {
@@ -1165,48 +726,32 @@
   .availableCoupons > button {
     align-items: flex-start;
     flex-direction: column;
-
-    gap: 5px;
+    gap: 4px;
   }
 
   .availableCoupons > button span {
     text-align: left;
   }
-
 }
 
-
-/* =========================================
-   RESPONSIVE - 450px
-========================================= */
-
 @media (max-width: 450px) {
-
   .cartPage {
-    padding: 20px 12px;
+    padding: 20px 11px 40px;
   }
 
-  .cartPageHeader h1 {
-    font-size: 27px;
-  }
-
-  .cartCard {
+  .cartCard,
+  .cartSummary {
     padding: 15px;
   }
 
-  .cartCardHeader h2 {
-    font-size: 18px;
-  }
-
   .cartItem {
-    grid-template-columns: 70px minmax(0, 1fr);
-
-    gap: 12px;
+    grid-template-columns: 68px minmax(0, 1fr);
+    gap: 11px;
   }
 
   .cartItemImage {
-    width: 70px;
-    height: 70px;
+    width: 68px;
+    height: 68px;
   }
 
   .cartItemDetails h3 {
@@ -1214,41 +759,24 @@
   }
 
   .cartItemBottom {
-    gap: 12px;
-
     flex-wrap: wrap;
+    gap: 11px;
   }
 
   .cartItemTotal {
-    font-size: 16px;
-  }
-
-  .cartCookingRequest {
-    padding: 8px 10px;
-  }
-
-  .cartCookingRequest span {
-    font-size: 10px;
-  }
-
-  .cartCookingRequest p {
-    font-size: 11px;
+    font-size: 15px;
   }
 
   .couponInput input {
-    width: 100px;
+    width: 90px;
   }
 
   .couponInput button {
-    padding: 12px 14px;
-  }
-
-  .cartSummary {
-    padding: 18px;
+    padding-left: 14px;
+    padding-right: 14px;
   }
 
   .grandTotal strong {
     font-size: 20px;
   }
-
 }
