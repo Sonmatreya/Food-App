@@ -29,7 +29,7 @@ const getStaff = async (req, res) => {
       filter.$or = [{ name: regex }, { email: regex }, { phone: regex }];
     }
 
-    const [users, total, admins, customers] = await Promise.all([
+    const [users, total, admins, customers, verified] = await Promise.all([
       User.find(filter)
         .select("_id name email phone role isVerified createdAt")
         .sort({ role: 1, createdAt: -1 })
@@ -39,6 +39,7 @@ const getStaff = async (req, res) => {
       User.countDocuments(filter),
       User.countDocuments({ ...filter, role: "admin" }),
       User.countDocuments({ ...filter, role: "customer" }),
+      User.countDocuments({ ...filter, isVerified: true }),
     ]);
 
     return res.status(200).json({
@@ -50,7 +51,7 @@ const getStaff = async (req, res) => {
         total,
         totalPages: Math.max(Math.ceil(total / limit), 1),
       },
-      summary: { total, admins, customers },
+      summary: { total, admins, customers, verified, unverified: Math.max(total - verified, 0) },
     });
   } catch (error) {
     console.error("Get staff error:", error.message);
