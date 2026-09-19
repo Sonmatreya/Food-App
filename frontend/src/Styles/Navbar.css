@@ -27,6 +27,8 @@
 .navbar-inner {
   width: min(1380px, calc(100% - 48px));
   min-height: 82px;
+  padding: 0 2px;
+  box-sizing: border-box;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -41,7 +43,7 @@
 
 .App-logo {
   width: auto;
-  height: 58px;
+  height: 54px;
   display: block;
   object-fit: contain;
 }
@@ -81,6 +83,7 @@
 }
 
 .navbar-search {
+  align-self: center;
   flex: 1 1 360px;
   max-width: 500px;
   height: 48px;
@@ -304,27 +307,6 @@
   display: none;
 }
 
-body:not(.light-mode) .navbar {
-  --nav-text: #f7f7f7;
-  --nav-muted: #bcbcbc;
-  --nav-border: rgba(255, 255, 255, 0.16);
-  --nav-surface: #e31837;
-  background: #e31837;
-}
-
-body:not(.light-mode) .navbar-search,
-body:not(.light-mode) .navbar-search:focus-within,
-body:not(.light-mode) .nav-icon-button,
-body:not(.light-mode) .account-button,
-body:not(.light-mode) .toggle-button {
-  background: #e31837;
-  color: #fff;
-}
-
-body:not(.light-mode) .navbar-search:focus-within {
-  border-color: rgba(255, 255, 255, 0.4);
-}
-
 @media (max-width: 1180px) {
   .navbar-inner {
     width: calc(100% - 32px);
@@ -370,7 +352,7 @@ body:not(.light-mode) .navbar-search:focus-within {
   }
 
   .App-logo {
-    height: 50px;
+    height: 48px;
   }
 
   .navbar-search {
@@ -497,22 +479,6 @@ body:not(.light-mode) .navbar-search:focus-within {
     text-align: center;
   }
 
-  body:not(.light-mode) .menu-links {
-    background: rgba(28, 28, 28, 0.98);
-  }
-
-  body:not(.light-mode) .menu-links > a {
-    color: #ddd;
-  }
-
-  body:not(.light-mode) .menu-links > a:hover {
-    background: #343434;
-    color: #fff;
-  }
-
-  body:not(.light-mode) .mobile-account-actions button:last-child {
-    background: #303030;
-  }
 }
 
 @media (max-width: 520px) {
@@ -521,7 +487,7 @@ body:not(.light-mode) .navbar-search:focus-within {
   }
 
   .App-logo {
-    height: 47px;
+    height: 45px;
   }
 
   .navbar-actions {
