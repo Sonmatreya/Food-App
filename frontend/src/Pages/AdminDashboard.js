@@ -13,6 +13,26 @@ const AdminDashboard = () => {
   const [summary, setSummary] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [feedback, setFeedback] = useState([]);
+  const [feedbackLoading, setFeedbackLoading] = useState(true);
+
+  const loadFeedback = useCallback(async () => {
+    setFeedbackLoading(true);
+    try {
+      const response = await fetch(API_URL + "/api/reviews/admin?page=1&limit=3", {
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok || !data?.success) throw new Error(data?.message || "Unable to load feedback.");
+      setFeedback(Array.isArray(data.reviews) ? data.reviews.slice(0, 3) : []);
+    } catch (feedbackError) {
+      console.error("Admin feedback error:", feedbackError);
+      setFeedback([]);
+    } finally {
+      setFeedbackLoading(false);
+    }
+  }, []);
 
   const loadDashboard = useCallback(async () => {
     setLoading(true);
@@ -35,13 +55,15 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     loadDashboard();
-  }, [loadDashboard]);
+    loadFeedback();
+  }, [loadDashboard, loadFeedback]);
 
   useEffect(() => {
     const socket = createSocket();
 
     const refreshDashboard = () => {
       loadDashboard();
+      loadFeedback();
     };
 
     socket.on("connect", refreshDashboard);
@@ -85,7 +107,7 @@ const AdminDashboard = () => {
       </div>
 
       <section className="admin-dashboard-panel admin-sales-panel"><div className="admin-panel-heading"><div><span>Performance</span><h3>Sales & revenue</h3></div><div className="admin-sales-summary"><strong>{money(weeklyRevenue)}</strong><small>Last 7 days · {weeklyOrders} orders</small></div></div><div className="admin-sales-chart">{weeklySales.length === 0 ? <div className="admin-sales-empty">No sales data yet</div> : weeklySales.map((day) => { const value=Number(day.revenue||0); const label=new Date(day.date+"T00:00:00+05:30").toLocaleDateString("en-IN",{weekday:"short"}); return <div className="admin-sales-day" key={day.date}><div className="admin-sales-bar-wrap"><span className="admin-sales-value">{money(value)}</span><div className="admin-sales-bar" style={{height: Math.max(8,(value/maxRevenue)*100)+"%"}}></div></div><strong>{label}</strong><small>{day.orders} {day.orders===1?"order":"orders"}</small></div>; })}</div></section>
-      <section className="admin-dashboard-panel admin-feedback-dashboard"><div className="admin-panel-heading"><div><span>Customer voice</span><h3>Recent customer feedback</h3></div><button type="button" className="admin-feedback-view" onClick={() => navigate("/admin/reviews")}>View all →</button></div><div className="admin-feedback-list"><div className="admin-feedback-empty">Open Customer Feedback to view the latest reviews.</div></div></section>
+      <section className="admin-dashboard-panel admin-feedback-dashboard"><div className="admin-panel-heading"><div><span>Customer voice</span><h3>Recent customer feedback</h3></div><button type="button" className="admin-feedback-view" onClick={() => navigate("/admin/reviews")}>View all →</button></div><div className="admin-feedback-list">{feedbackLoading ? <div className="admin-feedback-empty">Loading feedback...</div> : feedback.length === 0 ? <div className="admin-feedback-empty">No customer reviews yet.</div> : feedback.map((review) => <article className="admin-feedback-item" key={String(review._id)}><div className="admin-feedback-item-top"><span className="admin-feedback-avatar">{(review.customer || "C").trim().charAt(0).toUpperCase()}</span><span className="admin-feedback-customer"><strong>{review.customer || "Customer"}</strong><small>{review.food || "Food item"}</small></span></div><div className="admin-feedback-stars">{[1,2,3,4,5].map((star) => <span key={star} className={star <= Number(review.rating || 0) ? "active" : ""}>★</span>)}</div><p className="admin-feedback-comment">{review.comment || "Customer left a rating without written feedback."}</p></article>)}</div></section>
       <section className="admin-dashboard-panel admin-status-panel"><div className="admin-panel-heading"><div><span>Order pipeline</span><h3>Order status overview</h3></div><button type="button" className="admin-dashboard-refresh" onClick={() => navigate("/admin/orders")}>Manage orders →</button></div><div className="admin-status-grid">{[["placed","Placed","red"],["confirmed","Confirmed","blue"],["preparing","Preparing","gold"],["ready","Ready","green"],["out_for_delivery","Out for delivery","purple"],["delivered","Delivered","dark"],["cancelled","Cancelled","muted"]].map(([key,label,tone]) => <button type="button" className={"admin-status-card " + tone} key={key} onClick={() => navigate("/admin/orders")}><span>{label}</span><strong>{loading ? "…" : summary?.statusCounts?.[key] ?? 0}</strong></button>)}</div></section>
       <section className="admin-dashboard-bottom-banner"><div className="admin-banner-icon">✓</div><div><strong>Admin workspace is separate from the customer store</strong><p>Use this panel for restaurant operations. The public storefront remains available through “Back to Store”.</p></div><button type="button" onClick={() => navigate("/")}>Open Store →</button></section>
     </section>
