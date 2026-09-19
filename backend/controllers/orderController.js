@@ -180,7 +180,20 @@ const createOrder = async (req, res) => {
         throw error;
       }
     }
-    return res.status(201).json({ success: true, message: "Order placed successfully", order: buildOrderResponse(order) });
+    const orderResponse = buildOrderResponse(order);
+    const eventPayload = {
+      orderId: String(order._id),
+      orderNumber: order.orderNumber,
+      status: order.status,
+      statusHistory: orderResponse.statusHistory,
+      updatedAt: order.updatedAt,
+    };
+    const io = req.app.get("io");
+    if (io) {
+      io.to("admins").emit("admin:order-created", eventPayload);
+      io.to("admins").emit("order:created", eventPayload);
+    }
+    return res.status(201).json({ success: true, message: "Order placed successfully", order: orderResponse });
   } catch (error) {
     console.error("Create order error:", error.message);
     return res.status(error.statusCode || 500).json({ success: false, message: error.statusCode ? error.message : "Unable to place order" });
@@ -300,7 +313,20 @@ const verifyHandoverCode = async (req, res) => {
       { new: true }
     );
     if (!updatedOrder) return res.status(409).json({ success: false, message: "Handover was already completed for this order" });
-    return res.json({ success: true, message: newStatus === "picked_up" ? "Pickup confirmed. Enjoy your food!" : "Delivery confirmed. Enjoy your food!", order: buildOrderResponse(updatedOrder) });
+    const updatedResponse = buildOrderResponse(updatedOrder);
+    const eventPayload = {
+      orderId: String(updatedOrder._id),
+      orderNumber: updatedOrder.orderNumber,
+      status: updatedOrder.status,
+      statusHistory: updatedResponse.statusHistory,
+      updatedAt: updatedOrder.updatedAt,
+    };
+    const io = req.app.get("io");
+    if (io) {
+      io.to(`user:${String(updatedOrder.userId)}`).emit("order:status-updated", eventPayload);
+      io.to("admins").emit("admin:order-updated", eventPayload);
+    }
+    return res.json({ success: true, message: newStatus === "picked_up" ? "Pickup confirmed. Enjoy your food!" : "Delivery confirmed. Enjoy your food!", order: updatedResponse });
   } catch (error) {
     console.error("Verify handover code error:", error.message);
     return res.status(500).json({ success: false, message: "Unable to verify handover code" });
