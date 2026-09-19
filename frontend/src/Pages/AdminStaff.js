@@ -20,17 +20,22 @@ const AdminStaff = () => {
   const [users, setUsers] = useState([]);
   const [summary, setSummary] = useState({ total: 0, admins: 0, customers: 0 });
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
   const [roleFilter, setRoleFilter] = useState("All");
   const [loading, setLoading] = useState(true);
   const [workingId, setWorkingId] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const loadStaff = async () => {
+  const loadStaff = async (targetPage = page, activeSearch = search, activeRole = roleFilter) => {
     setLoading(true);
     setError("");
     try {
-      const response = await fetch(`${API_URL}/api/admin/staff`, {
+      const params = new URLSearchParams({ page: String(targetPage), limit: "10" });
+      if (activeSearch) params.set("search", activeSearch);
+      if (activeRole !== "All") params.set("role", activeRole.toLowerCase());
+      const response = await fetch(`${API_URL}/api/admin/staff?${params.toString()}`, {
         credentials: "include",
         headers: { Accept: "application/json" },
       });
@@ -40,6 +45,7 @@ const AdminStaff = () => {
       }
       setUsers(Array.isArray(data.staff) ? data.staff : []);
       setSummary(data.summary || { total: 0, admins: 0, customers: 0 });
+      setPagination(data.pagination || { page: targetPage, total: 0, totalPages: 1 });
     } catch (loadError) {
       setError(loadError.message || "Unable to load staff accounts");
     } finally {
@@ -48,7 +54,7 @@ const AdminStaff = () => {
   };
 
   useEffect(() => {
-    loadStaff();
+    loadStaff(1, "", "All");
   }, []);
 
   const filteredUsers = useMemo(() => {
@@ -84,7 +90,7 @@ const AdminStaff = () => {
         throw new Error(data.message || "Unable to change user role");
       }
       setSuccess(data.message || "User role updated successfully");
-      await loadStaff();
+      await loadStaff(page, search, roleFilter);
     } catch (roleError) {
       setError(roleError.message || "Unable to change user role");
     } finally {
@@ -127,10 +133,10 @@ const AdminStaff = () => {
       </div>
 
       <div className="admin-staff-card">
-        <div className="admin-staff-card-head"><div><span>Account directory</span><h3>{filteredUsers.length} account{filteredUsers.length !== 1 ? "s" : ""}</h3></div><small>Manage trusted account access.</small></div>
+        <div className="admin-staff-card-head"><div><span>Account directory</span><h3>{pagination.total} account{pagination.total !== 1 ? "s" : ""}</h3></div><small>Page {pagination.page} of {pagination.totalPages}</small></div>
         <div className="admin-staff-table-wrap">
           <table className="admin-staff-table">
-            <thead><tr><th>Account</th><th>Contact</th><th>Role</th><th>Registered</th><th>Action</th></tr></thead>
+            <thead><tr><th>Account</th><th>Contact</th><th>Role</th><th>Verified</th><th>Registered</th><th>Action</th></tr></thead>
             <tbody>
               {filteredUsers.map((account) => {
                 const isCurrentUser = account.id === currentUser?.id;
@@ -140,7 +146,7 @@ const AdminStaff = () => {
                     <td><div className="admin-staff-user"><div className="admin-staff-avatar">{(account.name || account.email || "U").charAt(0).toUpperCase()}</div><div><strong>{account.name || "Unnamed User"}</strong><small>{account.email || "No email"}</small></div></div></td>
                     <td>{account.phone || "—"}</td>
                     <td><span className={`admin-staff-role ${isAdmin ? "admin" : "customer"}`}>{isAdmin ? "Admin" : "Customer"}</span></td>
-                    <td>{formatDate(account.createdAt)}</td>
+                    <td><span className={`admin-staff-verified ${account.isVerified ? "yes" : "no"}`}>{account.isVerified ? "Verified" : "Not verified"}</span></td><td>{formatDate(account.createdAt)}</td>
                     <td>
                       {isCurrentUser ? (
                         <span className="admin-staff-current">Your Account</span>
@@ -156,6 +162,8 @@ const AdminStaff = () => {
             </tbody>
           </table>
           {!filteredUsers.length && <div className="admin-staff-empty"><strong>No matching accounts</strong><p>Try a different search or role filter.</p></div>}
+        </div>
+        {pagination.totalPages > 1 && <div className="admin-staff-pagination"><button type="button" onClick={() => { setPage(page - 1); loadStaff(page - 1, search, roleFilter); }} disabled={page <= 1}>Previous</button><span>Page <strong>{page}</strong> of <strong>{pagination.totalPages}</strong></span><button type="button" onClick={() => { setPage(page + 1); loadStaff(page + 1, search, roleFilter); }} disabled={page >= pagination.totalPages}>Next</button></div>
         </div>
       </div>
     </section>
