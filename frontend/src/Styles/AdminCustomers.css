@@ -1,5 +1,5 @@
 /* =========================================
-   ADMIN CUSTOMERS — RED / WHITE / GREEN
+   ADMIN CUSTOMERS
 ========================================= */
 
 :root {
@@ -29,7 +29,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 24px;
-  margin-bottom: 24px;
+  margin-bottom: 18px;
   padding-bottom: 18px;
   border-bottom: 3px solid var(--admin-red);
 }
@@ -67,6 +67,85 @@
   color: var(--admin-green-dark);
   font-size: 13px;
   font-weight: 800;
+}
+
+.admin-customers-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.admin-customers-search {
+  display: flex;
+  min-width: 280px;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.admin-customers-search span {
+  color: #888888;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.admin-customers-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.admin-customers-toolbar select {
+  min-width: 145px;
+  padding: 11px 12px;
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  background: #ffffff;
+  color: var(--admin-text);
+  font: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.admin-customers-search-button,
+.admin-customers-reset-button {
+  padding: 11px 15px;
+  border: 0;
+  border-radius: 9px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.admin-customers-search-button {
+  background: var(--admin-red);
+  color: #ffffff;
+}
+
+.admin-customers-search-button:hover {
+  background: var(--admin-red-dark);
+}
+
+.admin-customers-reset-button {
+  background: #f3f4f6;
+  color: #555555;
+}
+
+.admin-customers-reset-button:hover {
+  background: #e5e7eb;
 }
 
 .admin-customers-table-wrapper {
@@ -203,19 +282,13 @@
   white-space: nowrap;
 }
 
-.admin-customer-details-button,
-.admin-customers-load-more-button,
-.admin-customers-retry-button {
+.admin-customer-details-button {
   border: 0;
   border-radius: 9px;
   cursor: pointer;
   font-family: inherit;
   font-size: 12px;
   font-weight: 800;
-  transition: background-color 0.16s ease, transform 0.16s ease, box-shadow 0.16s ease;
-}
-
-.admin-customer-details-button {
   padding: 9px 14px;
   background: var(--admin-red);
   color: var(--admin-white);
@@ -234,28 +307,40 @@
   opacity: 0.45;
 }
 
-.admin-customers-load-more {
+.admin-customers-pagination {
   display: flex;
+  align-items: center;
   justify-content: center;
-  padding-top: 22px;
+  gap: 16px;
+  padding-top: 20px;
 }
 
-.admin-customers-load-more-button {
-  min-width: 140px;
-  padding: 10px 18px;
-  background: var(--admin-green);
-  color: var(--admin-white);
-  box-shadow: 0 4px 10px rgba(25, 135, 84, 0.16);
+.admin-customers-pagination button {
+  min-width: 105px;
+  padding: 9px 13px;
+  border: 1px solid #dddddd;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #444444;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
 }
 
-.admin-customers-load-more-button:hover:not(:disabled) {
-  background: var(--admin-green-dark);
-  transform: translateY(-1px);
+.admin-customers-pagination button:hover:not(:disabled) {
+  border-color: var(--admin-red);
+  color: var(--admin-red-dark);
 }
 
-.admin-customers-load-more-button:disabled {
+.admin-customers-pagination button:disabled {
   cursor: not-allowed;
-  opacity: 0.6;
+  opacity: 0.45;
+}
+
+.admin-customers-pagination span {
+  color: #777777;
+  font-size: 12px;
 }
 
 .admin-customers-inline-error {
@@ -341,23 +426,6 @@
   to { transform: rotate(360deg); }
 }
 
-.admin-customers-retry-button {
-  margin-top: 18px;
-  padding: 9px 17px;
-  background: var(--admin-red);
-  color: var(--admin-white);
-}
-
-.admin-customers-retry-button:hover {
-  background: var(--admin-red-dark);
-  transform: translateY(-1px);
-}
-
-.admin-customers-error .admin-customers-state-icon {
-  background: var(--admin-red-soft);
-  color: var(--admin-red);
-}
-
 @media (max-width: 1050px) {
   .admin-customers-header h1 { font-size: 28px; }
   .admin-customers-table { min-width: 980px; }
@@ -371,13 +439,36 @@
   }
 
   .admin-customers-count { align-self: flex-start; }
+
+  .admin-customers-toolbar {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .admin-customers-search {
+    min-width: 220px;
+    flex-basis: 100%;
+  }
 }
 
 @media (max-width: 600px) {
   .admin-customers-page { padding-bottom: 24px; }
-  .admin-customers-header { margin-bottom: 18px; }
+  .admin-customers-header { margin-bottom: 16px; }
   .admin-customers-header h1 { font-size: 24px; }
   .admin-customers-header p { font-size: 13px; }
+
+  .admin-customers-toolbar {
+    flex-direction: column;
+  }
+
+  .admin-customers-search,
+  .admin-customers-toolbar select,
+  .admin-customers-search-button,
+  .admin-customers-reset-button {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   .admin-customers-table-wrapper { border-radius: 11px; }
 
   .admin-customers-table th,
@@ -395,6 +486,14 @@
     min-height: 250px;
     padding: 28px 17px;
   }
+
+  .admin-customers-pagination {
+    gap: 8px;
+  }
+
+  .admin-customers-pagination button {
+    min-width: 92px;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -406,7 +505,8 @@
 
   .admin-customers-header p,
   .admin-customer-primary span,
-  .admin-customers-state p { color: #9ca1aa; }
+  .admin-customers-state p,
+  .admin-customers-pagination span { color: #9ca1aa; }
 
   .admin-customers-count,
   .admin-customers-table-wrapper,
@@ -419,6 +519,18 @@
     background: #07351c;
     border-color: #14532d;
     color: #86efac;
+  }
+
+  .admin-customers-search,
+  .admin-customers-toolbar select,
+  .admin-customers-pagination button {
+    border-color: #3a3f48;
+    background: #191b20;
+    color: #f2f3f5;
+  }
+
+  .admin-customers-search input {
+    color: #f2f3f5;
   }
 
   .admin-customers-table th {
@@ -463,6 +575,6 @@
 
   .admin-customers-inline-error button { color: #fecaca; }
   .admin-customers-state-icon { background: #07351c; color: #86efac; }
-  .admin-customers-error .admin-customers-state-icon { background: #3b0d10; color: #fda4af; }
   .admin-customers-spinner { border-color: #4b2a2f; border-top-color: #f8717b; border-right-color: #4ade80; }
+  .admin-customers-pagination button { border-color: #3a3f48; }
 }
