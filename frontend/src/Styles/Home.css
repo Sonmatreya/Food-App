@@ -1107,67 +1107,6 @@
 }
 
 /* =========================================================
-   DARK MODE
-   ========================================================= */
-body:not(.light-mode) .homePage {
-  background: #101010;
-  color: #f4f4f4;
-  --home-soft: #222;
-  --home-card: #1a1a1a;
-  --home-border: #303030;
-  --home-muted: #aaa;
-}
-
-body:not(.light-mode) .quickInfoBar,
-body:not(.light-mode) .categoryCard,
-body:not(.light-mode) .foodCard,
-body:not(.light-mode) .benefitCard,
-body:not(.light-mode) .reviewCard {
-  background: var(--home-card);
-  color: #f4f4f4;
-}
-
-body:not(.light-mode) .quickInfoBar {
-  box-shadow: none;
-}
-
-body:not(.light-mode) .popularSection {
-  background: #171717;
-}
-
-body:not(.light-mode) .whySection {
-  background: #101010;
-}
-
-body:not(.light-mode) .sectionHeading h2,
-body:not(.light-mode) .foodCardContent h3,
-body:not(.light-mode) .finalCta h2 {
-  color: #f4f4f4;
-}
-
-body:not(.light-mode) .foodCardContent > p,
-body:not(.light-mode) .reviewCard > p {
-  color: #aaa;
-}
-
-body:not(.light-mode) .finalCta {
-  background: #202020;
-}
-
-body:not(.light-mode) .categoryArrow {
-  background: #2b2b2b;
-  color: #fff;
-}
-
-body:not(.light-mode) .benefitIcon {
-  background: #292929;
-}
-
-body:not(.light-mode) .categoryCard:hover {
-  border-color: rgba(227, 24, 55, 0.45);
-}
-
-/* =========================================================
    TABLET
    ========================================================= */
 @media (max-width: 1050px) {
