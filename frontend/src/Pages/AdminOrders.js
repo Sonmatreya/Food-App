@@ -113,7 +113,12 @@ const AdminOrders = () => {
         <select value={filters.deliveryType} onChange={(e) => setFilters((current) => ({ ...current, deliveryType: e.target.value }))} aria-label="Filter by fulfillment type"><option value="">Delivery & Pickup</option><option value="delivery">Delivery</option><option value="pickup">Pickup</option></select>
         <button type="submit" className="admin-orders-filter-button">Filter</button><button type="button" className="admin-orders-reset-button" onClick={handleReset}>Reset</button>
       </form>
-      {error && <div className="admin-orders-error" role="alert">{error}</div>}
+      {error && <div className="admin-orders-error" role="alert">{error}</div>}      {pagination && <section className="admin-order-summary">
+        <article><span>Total orders</span><strong>{pagination.total || 0}</strong><small>Matching current filters</small></article>
+        <article><span>Active</span><strong>{pagination.summary?.active ?? "—"}</strong><small>Still in progress</small></article>
+        <article><span>Completed</span><strong>{pagination.summary?.delivered ?? "—"}</strong><small>Delivered / picked up</small></article>
+        <article><span>Revenue</span><strong>{money(pagination.summary?.revenue)}</strong><small>Excluding cancelled</small></article>
+      </section>}
       {loading ? <section className="admin-orders-state"><div className="admin-orders-spinner" /><h2>Loading orders...</h2><p>Please wait while order information is loaded.</p></section> : orders.length === 0 ? <section className="admin-orders-state"><div className="admin-orders-state-icon">📦</div><h2>No orders found</h2><p>Try changing the search or filters.</p></section> : <>
         <section className="admin-orders-list">{orders.map((order) => {
           const orderId = order.id || order._id; const customer = order.customer || {}; const total = order?.pricing?.grandTotal || 0;
@@ -122,7 +127,7 @@ const AdminOrders = () => {
           return <article className="admin-order-card" key={orderId || order.orderNumber}>
             <div className="admin-order-card-top"><div><span className="admin-order-number">{order.orderNumber || "Order"}</span><p>{formatDate(order.createdAt)}</p></div><span className={`admin-order-status status-${order.status}`}>{statusLabel(order.status)}</span></div>
             <div className="admin-order-card-body">
-              <div><span>Customer</span><strong>{customer.name || "Unknown customer"}</strong><small>{customer.email || customer.phone || "—"}</small></div>
+              <div><span>Customer</span><strong>{customer.name || "Unknown customer"}</strong><small>{customer.email || customer.phone || "—"}</small>{customer.id && <button type="button" className="admin-order-customer-link" onClick={() => navigate(`/admin/customers/${customer.id}`)}>View customer</button>}</div>
               <div><span>Fulfillment</span><strong>{order.deliveryType === "pickup" ? "Pickup" : "Delivery"}</strong><small>{itemsCount} item{itemsCount === 1 ? "" : "s"}</small></div>
               <div><span>Payment</span><strong>{String(order.paymentMethod || "—").toUpperCase()}</strong><small>{statusLabel(order.paymentStatus)}</small></div>
               <div><span>Total</span><strong>{money(total)}</strong><small>{order.pricing?.couponCode ? `Coupon: ${order.pricing.couponCode}` : "No coupon"}</small></div>
