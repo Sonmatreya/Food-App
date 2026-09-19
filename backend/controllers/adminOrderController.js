@@ -277,7 +277,7 @@ const getAdminDashboardSummary = async (req, res) => {
     const todayStart = new Date(indiaDate + "T00:00:00+05:30");
     const tomorrowStart = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
-    const [totalOrders, totalCustomers, todayRevenue, pendingOrders, recentOrders] = await Promise.all([
+    const [totalOrders, totalCustomers, todayRevenue, pendingOrders, recentOrders, statusCounts] = await Promise.all([
       Order.countDocuments({}),
       User.countDocuments({ role: "customer" }),
       Order.aggregate([
@@ -286,11 +286,15 @@ const getAdminDashboardSummary = async (req, res) => {
       ]),
       Order.countDocuments({ status: { $in: ["placed", "confirmed", "preparing", "ready", "out_for_delivery"] } }),
       Order.find({}).populate("userId", "_id name email phone").sort({ createdAt: -1 }).limit(5).lean(),
+      Order.aggregate([
+        { $group: { _id: "$status", count: { $sum: 1 } } },
+      ]),
     ]);
 
     return res.status(200).json({
       success: true,
       stats: { totalOrders, customers: totalCustomers, revenueToday: Number(todayRevenue[0]?.total || 0), pendingOrders },
+      statusCounts: statusCounts.reduce((acc, item) => { acc[item._id || "unknown"] = item.count; return acc; }, {}),
       recentOrders: recentOrders.map(buildAdminOrderResponse),
     });
   } catch (error) {
