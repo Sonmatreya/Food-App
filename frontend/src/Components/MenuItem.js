@@ -1,36 +1,63 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FaArrowRight, FaPlus } from "react-icons/fa";
 import "../Styles/Menu.css";
 
 function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
   const numericPrice = Number(price);
+  const numericRating = Number(rating || 0);
 
   return (
-    <Link
-      to={`/food/${id}`}
-      className="menuCard"
-      aria-label={`View details for ${name}`}
-    >
-      <div
-        className="menuImage"
-        style={{ backgroundImage: `url(${image})` }}
-        role="img"
-        aria-label={name}
-      ></div>
+    <article className="menuCard">
+      <Link
+        to={`/food/${id}`}
+        className="menuCardLink"
+        aria-label={`View details for ${name}`}
+      >
+        <div
+          className="menuImage"
+          style={{ backgroundImage: `url(${image})` }}
+          role="img"
+          aria-label={name}
+        >
+          {!isAvailable && (
+            <span className="menuAvailability">Currently Unavailable</span>
+          )}
+        </div>
 
-      <div className="menuContent">
-        <span className="menuCategory">{category}</span>
-        <h2>{name}</h2>
-        <p className="menuRating">⭐ {Number(rating || 0).toFixed(1)}</p>
-        <p className="menuPrice">
-          {Number.isFinite(numericPrice) ? `$${numericPrice.toFixed(2)}` : "Price unavailable"}
-        </p>
+        <div className="menuContent">
+          <div className="menuMeta">
+            <span className="menuCategory">{category}</span>
+            <span className="menuRating">★ {numericRating.toFixed(1)}</span>
+          </div>
 
-        {!isAvailable && (
-          <p className="outOfStock">Currently Unavailable</p>
-        )}
-      </div>
-    </Link>
+          <h2>{name}</h2>
+
+          <div className="menuCardFooter">
+            <p className="menuPrice">
+              {Number.isFinite(numericPrice)
+                ? `$${numericPrice.toFixed(2)}`
+                : "Price unavailable"}
+            </p>
+
+            <span className="menuViewDetails">
+              View details <FaArrowRight aria-hidden="true" />
+            </span>
+          </div>
+        </div>
+      </Link>
+
+      {isAvailable && (
+        <Link
+          to={`/food/${id}`}
+          className="menuAddButton"
+          aria-label={`View ${name} and add it to cart`}
+        >
+          <FaPlus aria-hidden="true" />
+          <span>Add to cart</span>
+        </Link>
+      )}
+    </article>
   );
 }
 
