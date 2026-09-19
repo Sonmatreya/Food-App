@@ -6,6 +6,7 @@ const requireAdmin = require("../middleware/adminMiddleware");
 const {
   getCustomers,
   getCustomerDetails,
+  updateCustomerVerification,
 } = require("../controllers/adminCustomerController");
 
 const router = express.Router();
@@ -27,6 +28,10 @@ router.use(requireAdmin);
 // Customer list
 // GET /api/admin/customers
 router.get("/", getCustomers);
+
+// Customer details
+// GET /api/admin/customers/:id
+router.patch("/:id/verification", updateCustomerVerification);
 
 // Customer details
 // GET /api/admin/customers/:id
