@@ -48,6 +48,7 @@ const AdminCustomers = () => {
   const [verification, setVerification] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [verificationUpdating, setVerificationUpdating] = useState("");
 
   const fetchCustomers = useCallback(
     async (pageNumber, activeSearch = search, activeVerification = verification) => {
@@ -135,6 +136,27 @@ const AdminCustomers = () => {
       ? pagination.hasMore
       : totalPages > 0 && page < totalPages;
 
+  const handleToggleVerification = async (customer) => {
+    const customerId = getCustomerKey(customer);
+    if (!customerId || verificationUpdating) return;
+    const nextValue = !Boolean(customer?.isVerified);
+    setVerificationUpdating(customerId);
+    setError("");
+    try {
+      const verificationUrl = API_URL + "/api/admin/customers/" + encodeURIComponent(customerId) + "/verification";
+      const response = await fetch(verificationUrl, {
+        method: "PATCH", credentials: "include",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({ isVerified: nextValue }),
+      });
+      const data = await response.json().catch(() => null);
+      if (!response.ok) { setError(data?.message || "Unable to update customer verification."); return; }
+      await fetchCustomers(page, search, verification);
+    } catch (verificationError) {
+      console.error("Customer verification update error:", verificationError);
+      setError("Unable to update customer verification. Please try again.");
+    } finally { setVerificationUpdating(""); }
+  };
   const handleViewDetails = (customerId) => {
     if (customerId) navigate(`/admin/customers/${customerId}`);
   };
@@ -262,13 +284,15 @@ const AdminCustomers = () => {
                           </span>
                         </td>
                         <td>
-                          <span
-                            className={`admin-customer-verification ${
-                              isVerified ? "is-verified" : "is-not-verified"
-                            }`}
+                          <button
+                            type="button"
+                            className={"admin-customer-verification admin-customer-verification-button " + (isVerified ? "is-verified" : "is-not-verified")}
+                            onClick={() => handleToggleVerification(customer)}
+                            disabled={verificationUpdating === customerId}
+                            title={isVerified ? "Mark customer as not verified" : "Verify this customer"}
                           >
-                            {isVerified ? "Verified" : "Not Verified"}
-                          </span>
+                            {verificationUpdating === customerId ? "Updating..." : isVerified ? "Verified" : "Not Verified"}
+                          </button>
                         </td>
                         <td>{formatDate(customer?.createdAt)}</td>
                         <td>
