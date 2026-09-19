@@ -283,7 +283,7 @@ const AdminMenu = () => {
                   <tr key={food._id}>
                     <td><div className="admin-menu-food"><div className="admin-menu-thumb">{food.image ? <img src={food.image} alt="" /> : <span>🍽️</span>}</div><div><strong>{food.name}</strong><small>{food.description || "No description"}</small></div></div></td>
                     <td><span className="admin-menu-category">{food.category}</span></td>
-                    <td><strong className="admin-menu-price">$${Number(food.price || 0).toFixed(2)}</strong></td>
+                    <td><strong className="admin-menu-price">{"$"}{Number(food.price || 0).toFixed(2)}</strong></td>
                     <td><span className="admin-menu-rating">★ {Number(food.rating || 0).toFixed(1)}</span></td>
                     <td><button type="button" className={`admin-menu-availability ${food.isAvailable ? "available" : "unavailable"}`} onClick={() => toggleAvailability(food)}>{food.isAvailable ? "Available" : "Unavailable"}</button></td>
                     <td><div className="admin-menu-actions"><button type="button" onClick={() => openEdit(food)}>Edit</button><button type="button" className="danger" onClick={() => deleteFood(food)}>Delete</button></div></td>
