@@ -1,7 +1,9 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
 import "../Styles/AdminMenu.css";
+
+const PAGE_SIZE = 10;
 
 const emptyForm = {
   name: "",
@@ -18,9 +20,14 @@ const emptyForm = {
 const AdminMenu = () => {
   const navigate = useNavigate();
   const [foods, setFoods] = useState([]);
+  const [categories, setCategories] = useState(["All"]);
   const [search, setSearch] = useState("");
+  const [appliedSearch, setAppliedSearch] = useState("");
   const [category, setCategory] = useState("All");
   const [availability, setAvailability] = useState("All");
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState({ page: 1, limit: PAGE_SIZE, total: 0, totalPages: 1 });
+  const [summary, setSummary] = useState({ total: 0, available: 0, unavailable: 0, categories: 0 });
   const [editingFood, setEditingFood] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [modalOpen, setModalOpen] = useState(false);
@@ -41,12 +48,25 @@ const AdminMenu = () => {
     return data;
   };
 
-  const loadFoods = async () => {
+  const loadFoods = async (requestedPage = page) => {
     try {
       setLoading(true);
       setError("");
-      const data = await request("/api/foods");
+      const params = new URLSearchParams({
+        page: String(requestedPage),
+        limit: String(PAGE_SIZE),
+      });
+      if (appliedSearch.trim()) params.set("search", appliedSearch.trim());
+      if (category !== "All") params.set("category", category);
+      if (availability === "Available") params.set("available", "true");
+      if (availability === "Unavailable") params.set("available", "false");
+
+      const data = await request(`/api/foods?${params.toString()}`);
       setFoods(Array.isArray(data.foods) ? data.foods : []);
+      setCategories(["All", ...(Array.isArray(data.categories) ? data.categories : [])]);
+      setPagination(data.pagination || { page: requestedPage, limit: PAGE_SIZE, total: 0, totalPages: 1 });
+      setSummary(data.summary || { total: 0, available: 0, unavailable: 0, categories: 0 });
+      if (requestedPage !== page) setPage(requestedPage);
     } catch (requestError) {
       setError(requestError.message || "Unable to load food catalogue.");
     } finally {
@@ -55,23 +75,24 @@ const AdminMenu = () => {
   };
 
   useEffect(() => {
-    loadFoods();
-  }, []);
+    loadFoods(page);
+    // Filters are intentionally read from the current state when page changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, appliedSearch, category, availability]);
 
-  const categories = useMemo(
-    () => ["All", ...new Set(foods.map((food) => food.category).filter(Boolean))],
-    [foods]
-  );
+  const applySearch = (event) => {
+    event?.preventDefault();
+    setPage(1);
+    setAppliedSearch(search.trim());
+  };
 
-  const filteredFoods = useMemo(() => {
-    const query = search.trim().toLowerCase();
-    return foods.filter((food) => {
-      const matchesSearch = !query || `${food.name || ""} ${food.description || ""} ${food.category || ""}`.toLowerCase().includes(query);
-      const matchesCategory = category === "All" || food.category === category;
-      const matchesAvailability = availability === "All" || (availability === "Available" ? food.isAvailable : !food.isAvailable);
-      return matchesSearch && matchesCategory && matchesAvailability;
-    });
-  }, [foods, search, category, availability]);
+  const resetFilters = () => {
+    setSearch("");
+    setAppliedSearch("");
+    setCategory("All");
+    setAvailability("All");
+    setPage(1);
+  };
 
   const openCreate = () => {
     setEditingFood(null);
@@ -141,18 +162,16 @@ const AdminMenu = () => {
     try {
       setSaving(true);
       setError("");
-      const data = editingFood
-        ? await request(`/api/foods/${editingFood._id}`, { method: "PUT", body: JSON.stringify(payload) })
-        : await request("/api/foods", { method: "POST", body: JSON.stringify(payload) });
-
       if (editingFood) {
-        setFoods((current) => current.map((food) => (food._id === editingFood._id ? data.food : food)));
+        await request(`/api/foods/${editingFood._id}`, { method: "PUT", body: JSON.stringify(payload) });
         setNotice("Food item updated successfully.");
       } else {
-        setFoods((current) => [data.food, ...current]);
+        await request("/api/foods", { method: "POST", body: JSON.stringify(payload) });
         setNotice("Food item added successfully.");
       }
       closeModal();
+      await loadFoods(editingFood ? page : 1);
+      if (!editingFood && page !== 1) setPage(1);
     } catch (requestError) {
       setError(requestError.message || "Unable to save food item.");
     } finally {
@@ -163,7 +182,7 @@ const AdminMenu = () => {
   const toggleAvailability = async (food) => {
     try {
       setError("");
-      const data = await request(`/api/foods/${food._id}`, {
+      await request(`/api/foods/${food._id}`, {
         method: "PUT",
         body: JSON.stringify({
           name: food.name,
@@ -178,7 +197,8 @@ const AdminMenu = () => {
           isFeatured: food.isFeatured === true,
         }),
       });
-      setFoods((current) => current.map((item) => (item._id === food._id ? data.food : item)));
+      setNotice(`${food.name} is now ${food.isAvailable ? "unavailable" : "available"}.`);
+      await loadFoods(page);
     } catch (requestError) {
       setError(requestError.message || "Unable to update availability.");
     }
@@ -189,8 +209,10 @@ const AdminMenu = () => {
     try {
       setError("");
       await request(`/api/foods/${food._id}`, { method: "DELETE" });
-      setFoods((current) => current.filter((item) => item._id !== food._id));
       setNotice(`${food.name} was removed.`);
+      const nextPage = foods.length === 1 && page > 1 ? page - 1 : page;
+      if (nextPage !== page) setPage(nextPage);
+      else await loadFoods(page);
     } catch (requestError) {
       setError(requestError.message || "Unable to delete food item.");
     }
@@ -202,8 +224,9 @@ const AdminMenu = () => {
       setSeeding(true);
       setError("");
       const data = await request("/api/foods/seed", { method: "POST", body: JSON.stringify({}) });
-      await loadFoods();
       setNotice(`${data.insertedCount || 0} starter food items added. ${data.skippedCount || 0} existing items skipped.`);
+      await loadFoods(1);
+      setPage(1);
     } catch (requestError) {
       setError(requestError.message || "Unable to load starter catalogue.");
     } finally {
@@ -220,9 +243,8 @@ const AdminMenu = () => {
           <p>Manage dishes, pricing, availability and featured items from MongoDB.</p>
         </div>
         <div className="admin-menu-header-actions">
-          <button type="button" className="admin-menu-seed" onClick={loadStarterCatalogue} disabled={seeding}>
-            {seeding ? "Loading..." : "Load Starter Menu"}
-          </button>
+          <button type="button" className="admin-menu-refresh" onClick={() => loadFoods(page)} disabled={loading}>↻ Refresh</button>
+          <button type="button" className="admin-menu-seed" onClick={loadStarterCatalogue} disabled={seeding}>{seeding ? "Loading..." : "Load Starter Menu"}</button>
           <button type="button" className="admin-menu-add" onClick={openCreate}>+ Add Food</button>
         </div>
       </div>
@@ -231,23 +253,25 @@ const AdminMenu = () => {
       {error && <div className="admin-menu-error" role="alert">{error}</div>}
 
       <div className="admin-menu-summary">
-        <div><strong>{foods.length}</strong><span>Total dishes</span></div>
-        <div className="green"><strong>{foods.filter((food) => food.isAvailable).length}</strong><span>Available</span></div>
-        <div className="red"><strong>{foods.filter((food) => !food.isAvailable).length}</strong><span>Unavailable</span></div>
-        <div><strong>{categories.length - 1}</strong><span>Categories</span></div>
+        <div><strong>{summary.total}</strong><span>Total dishes</span></div>
+        <div className="green"><strong>{summary.available}</strong><span>Available</span></div>
+        <div className="red"><strong>{summary.unavailable}</strong><span>Unavailable</span></div>
+        <div><strong>{summary.categories}</strong><span>Categories</span></div>
       </div>
 
-      <div className="admin-menu-toolbar">
-        <div className="admin-menu-search"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search food..." /></div>
+      <form className="admin-menu-toolbar" onSubmit={applySearch}>
+        <div className="admin-menu-search"><span>⌕</span><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search food, description or category..." /></div>
         <div className="admin-menu-filters">
-          <select value={category} onChange={(event) => setCategory(event.target.value)}>{categories.map((item) => <option key={item}>{item}</option>)}</select>
-          <select value={availability} onChange={(event) => setAvailability(event.target.value)}><option>All</option><option>Available</option><option>Unavailable</option></select>
+          <select value={category} onChange={(event) => { setCategory(event.target.value); setPage(1); }}>{categories.map((item) => <option key={item}>{item}</option>)}</select>
+          <select value={availability} onChange={(event) => { setAvailability(event.target.value); setPage(1); }}><option>All</option><option>Available</option><option>Unavailable</option></select>
+          <button type="submit" className="admin-menu-filter-button">Search</button>
+          <button type="button" className="admin-menu-reset-button" onClick={resetFilters}>Reset</button>
         </div>
-      </div>
+      </form>
 
       <div className="admin-menu-table-card">
         <div className="admin-menu-table-heading">
-          <div><span>Menu inventory</span><h3>{filteredFoods.length} item{filteredFoods.length !== 1 ? "s" : ""}</h3></div>
+          <div><span>Menu inventory</span><h3>{pagination.total} item{pagination.total !== 1 ? "s" : ""}</h3></div>
           <button type="button" onClick={() => navigate("/menu")}>View Customer Menu →</button>
         </div>
         <div className="admin-menu-table-wrap">
@@ -255,11 +279,11 @@ const AdminMenu = () => {
             <table className="admin-menu-table">
               <thead><tr><th>Food</th><th>Category</th><th>Price</th><th>Rating</th><th>Availability</th><th>Actions</th></tr></thead>
               <tbody>
-                {filteredFoods.map((food) => (
+                {foods.map((food) => (
                   <tr key={food._id}>
                     <td><div className="admin-menu-food"><div className="admin-menu-thumb">{food.image ? <img src={food.image} alt="" /> : <span>🍽️</span>}</div><div><strong>{food.name}</strong><small>{food.description || "No description"}</small></div></div></td>
                     <td><span className="admin-menu-category">{food.category}</span></td>
-                    <td><strong className="admin-menu-price">${Number(food.price || 0).toFixed(2)}</strong></td>
+                    <td><strong className="admin-menu-price">$${Number(food.price || 0).toFixed(2)}</strong></td>
                     <td><span className="admin-menu-rating">★ {Number(food.rating || 0).toFixed(1)}</span></td>
                     <td><button type="button" className={`admin-menu-availability ${food.isAvailable ? "available" : "unavailable"}`} onClick={() => toggleAvailability(food)}>{food.isAvailable ? "Available" : "Unavailable"}</button></td>
                     <td><div className="admin-menu-actions"><button type="button" onClick={() => openEdit(food)}>Edit</button><button type="button" className="danger" onClick={() => deleteFood(food)}>Delete</button></div></td>
@@ -268,8 +292,17 @@ const AdminMenu = () => {
               </tbody>
             </table>
           )}
-          {!loading && !filteredFoods.length && <div className="admin-menu-empty"><span>🍽️</span><strong>No food found</strong><p>Add a food item or load the starter catalogue.</p></div>}
+          {!loading && !foods.length && <div className="admin-menu-empty"><span>🍽️</span><strong>No food found</strong><p>Try changing the filters or add a new food item.</p></div>}
         </div>
+        {!loading && pagination.totalPages > 1 && (
+          <div className="admin-menu-pagination">
+            <span>Page {pagination.page} of {pagination.totalPages}</span>
+            <div>
+              <button type="button" onClick={() => setPage((current) => Math.max(1, current - 1))} disabled={page <= 1}>← Previous</button>
+              <button type="button" onClick={() => setPage((current) => Math.min(pagination.totalPages, current + 1))} disabled={page >= pagination.totalPages}>Next →</button>
+            </div>
+          </div>
+        )}
       </div>
 
       {modalOpen && (
