@@ -170,6 +170,47 @@ const getCustomers = async (req, res) => {
 };
 
 // =========================================================
+// UPDATE CUSTOMER VERIFICATION
+// PATCH /api/admin/customers/:id/verification
+// =========================================================
+
+const updateCustomerVerification = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { isVerified } = req.body || {};
+
+    if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) {
+      return res.status(400).json({ success: false, message: "Invalid customer ID" });
+    }
+
+    if (typeof isVerified !== "boolean") {
+      return res.status(400).json({ success: false, message: "isVerified must be true or false" });
+    }
+
+    const user = await User.findOneAndUpdate(
+      { _id: id, role: "customer" },
+      { $set: { isVerified } },
+      { new: true, runValidators: true }
+    )
+      .select("_id name email phone isVerified createdAt")
+      .lean();
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Customer not found" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: isVerified ? "Customer verified successfully" : "Customer verification removed",
+      customer: buildCustomerResponse(user),
+    });
+  } catch (error) {
+    console.error("Update customer verification error:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to update customer verification" });
+  }
+};
+
+// =========================================================
 // GET CUSTOMER DETAILS
 // GET /api/admin/customers/:id
 // =========================================================
