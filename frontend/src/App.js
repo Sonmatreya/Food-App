@@ -28,6 +28,7 @@ import AdminOrderDetails from "./Pages/AdminOrderDetails";
 import AdminMenu from "./Pages/AdminMenu";
 import AdminCoupons from "./Pages/AdminCoupons";
 import AdminStaff from "./Pages/AdminStaff";
+import AdminReviews from "./Pages/AdminReviews";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
@@ -59,6 +60,7 @@ function AppRoutes() {
           <Route path="menu" element={<AdminMenu />} />
           <Route path="coupons" element={<AdminCoupons />} />
           <Route path="staff" element={<AdminStaff />} />
+          <Route path="reviews" element={<AdminReviews />} />
         </Route>
 
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
