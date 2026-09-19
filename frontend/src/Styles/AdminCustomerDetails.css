@@ -867,3 +867,6 @@
 
 }
 
+
+
+.admin-customer-details-verification-button{border:0;cursor:pointer;font:inherit}.admin-customer-details-verification-button:disabled{opacity:.6;cursor:wait}.admin-customer-details-verification-button:hover:not(:disabled){filter:brightness(.97);transform:translateY(-1px)}
