@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { FaArrowRight, FaPlus } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import "../Styles/Menu.css";
 
 function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
@@ -46,17 +46,6 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
           </div>
         </div>
       </Link>
-
-      {isAvailable && (
-        <Link
-          to={`/food/${id}`}
-          className="menuAddButton"
-          aria-label={`View ${name} and add it to cart`}
-        >
-          <FaPlus aria-hidden="true" />
-          <span>Add to cart</span>
-        </Link>
-      )}
     </article>
   );
 }
