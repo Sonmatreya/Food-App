@@ -13,3 +13,19 @@
 
 /* Recent customer feedback dashboard widget */
 .admin-feedback-dashboard{margin-top:18px}.admin-feedback-dashboard .admin-panel-heading{margin-bottom:12px}.admin-feedback-view{border:1px solid #dfe3e7;border-radius:8px;background:#fff;padding:7px 10px;color:#59616a;font:inherit;font-size:9px;font-weight:800;cursor:pointer}.admin-feedback-view:hover{border-color:#e63946;color:#e63946}.admin-feedback-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.admin-feedback-item{min-width:0;padding:13px;border:1px solid #eceef0;border-radius:10px;background:#fcfcfd}.admin-feedback-item-top{display:flex;align-items:center;gap:8px}.admin-feedback-avatar{display:grid;place-items:center;width:30px;height:30px;flex:0 0 30px;border-radius:8px;background:#fbe7e9;color:#d62f3d;font-size:11px;font-weight:900}.admin-feedback-customer{min-width:0;display:flex;flex-direction:column;gap:2px}.admin-feedback-customer strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px}.admin-feedback-customer small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#8a9198;font-size:8px}.admin-feedback-stars{margin-top:9px;display:flex;gap:1px}.admin-feedback-stars span{color:#d8dce0;font-size:11px}.admin-feedback-stars span.active{color:#efa91f}.admin-feedback-comment{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:7px 0 0;color:#5d666f;font-size:10px;line-height:1.5}.admin-feedback-empty{padding:25px;text-align:center;color:#858d95;font-size:10px;grid-column:1/-1}@media(max-width:900px){.admin-feedback-list{grid-template-columns:1fr 1fr}}@media(max-width:600px){.admin-feedback-list{grid-template-columns:1fr}.admin-feedback-dashboard .admin-panel-heading{align-items:center}}@media(prefers-color-scheme:dark){.admin-feedback-view{background:#22252a;border-color:#383c43;color:#ddd}.admin-feedback-item{background:#1d2025;border-color:#30343a}.admin-feedback-customer small,.admin-feedback-comment{color:#a4abb2}.admin-feedback-avatar{background:#3a2024;color:#f07b84}}
+
+/* Popular items dashboard widget */
+.admin-popular-panel{margin-top:18px}
+.admin-popular-list{display:grid;gap:8px}
+.admin-popular-item{display:flex;align-items:center;gap:11px;width:100%;padding:10px 11px;border:1px solid #eceef0;border-radius:11px;background:#fcfcfd;text-align:left;cursor:pointer;font:inherit;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.admin-popular-item:hover{transform:translateY(-1px);border-color:#e63946;box-shadow:0 7px 18px rgba(20,28,38,.06)}
+.admin-popular-rank{display:grid;place-items:center;width:24px;height:24px;flex:0 0 24px;border-radius:7px;background:#f3f4f5;color:#737980;font-size:9px;font-weight:900}
+.admin-popular-image{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;overflow:hidden;border-radius:9px;background:#f7e7e8;color:#d93643;font-size:17px}
+.admin-popular-image img{width:100%;height:100%;object-fit:cover}
+.admin-popular-copy{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.admin-popular-copy strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#25272b;font-size:11px}
+.admin-popular-copy small{color:#858b92;font-size:8px}
+.admin-popular-revenue{white-space:nowrap;color:#198754;font-size:10px;font-weight:900}
+.admin-popular-arrow{color:#e63946;font-size:14px;font-weight:900}
+@media(max-width:600px){.admin-popular-item{padding:9px}.admin-popular-revenue{font-size:9px}.admin-popular-copy strong{font-size:10px}}
+@media(prefers-color-scheme:dark){.admin-popular-item{background:#1d2025;border-color:#30343a}.admin-popular-copy strong{color:#f3f4f5}.admin-popular-copy small{color:#a4abb2}.admin-popular-rank{background:#292c31;color:#c4c8cd}.admin-popular-image{background:#3a2024}}
