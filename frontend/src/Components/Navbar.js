@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import ReorderIcon from "@mui/icons-material/Reorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import SearchIcon from "@mui/icons-material/Search";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import CloseIcon from "@mui/icons-material/Close";
@@ -15,7 +14,6 @@ function Navbar() {
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [search, setSearch] = useState("");
   const [locationText, setLocationText] = useState(() => localStorage.getItem("foodAppLocation") || "Choose your location");
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
@@ -28,7 +26,6 @@ function Navbar() {
   }, []);
 
   const closeMenu = () => setIsOpen(false);
-  const handleSearch = (event) => { event.preventDefault(); const query = search.trim(); navigate(query ? `/menu?search=${encodeURIComponent(query)}` : "/menu"); closeMenu(); };
   const handleLocation = () => {
     if (!navigator.geolocation) {
       setLocationError("Location is not supported by this browser.");
@@ -96,7 +93,7 @@ function Navbar() {
             {locationError && <small>{locationError}</small>}
           </div>
         </button>
-        <form className="navbar-search" onSubmit={handleSearch}><button type="submit" className="search-submit" aria-label="Search"><SearchIcon /></button><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search dishes, meals or food..." aria-label="Search food" />{search && <button type="button" className="clear-search" onClick={() => setSearch("")} aria-label="Clear search"><CloseIcon /></button>}</form>
+        
         <nav className={`menu-links ${isOpen ? "active" : ""}`}>
           <div className="mobile-menu-head"><span>Food App</span><button type="button" onClick={closeMenu} aria-label="Close menu"><CloseIcon /></button></div>
           <Link to="/" onClick={closeMenu}>Home</Link><Link to="/menu" onClick={closeMenu}>Menu</Link><Link to="/about" onClick={closeMenu}>About</Link><Link to="/services" onClick={closeMenu}>Services</Link><Link to="/contact" onClick={closeMenu}>Contact</Link>
