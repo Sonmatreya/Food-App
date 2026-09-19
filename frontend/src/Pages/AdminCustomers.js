@@ -6,16 +6,9 @@ import "../Styles/AdminCustomers.css";
 const PAGE_SIZE = 10;
 
 const formatDate = (value) => {
-  if (!value) {
-    return "—";
-  }
-
+  if (!value) return "—";
   const date = new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "—";
-  }
-
+  if (Number.isNaN(date.getTime())) return "—";
   return date.toLocaleDateString("en-IN", {
     day: "2-digit",
     month: "short",
@@ -25,11 +18,7 @@ const formatDate = (value) => {
 
 const formatCurrency = (value) => {
   const amount = Number(value);
-
-  if (!Number.isFinite(amount)) {
-    return "₹0.00";
-  }
-
+  if (!Number.isFinite(amount)) return "₹0.00";
   return amount.toLocaleString("en-IN", {
     style: "currency",
     currency: "INR",
@@ -38,28 +27,14 @@ const formatCurrency = (value) => {
 };
 
 const getErrorMessage = (response, status) => {
-  if (status === 401) {
-    return "You are not authenticated. Please log in again.";
-  }
-
-  if (status === 403) {
-    return "You do not have permission to access customer management.";
-  }
-
-  if (status === 404) {
-    return "Customer management service was not found.";
-  }
-
-  if (status >= 500) {
-    return "The server is currently unavailable. Please try again later.";
-  }
-
+  if (status === 401) return "You are not authenticated. Please log in again.";
+  if (status === 403) return "You do not have permission to access customer management.";
+  if (status === 404) return "Customer management service was not found.";
+  if (status >= 500) return "The server is currently unavailable. Please try again later.";
   return response?.message || "Unable to load customers. Please try again.";
 };
 
-const getCustomerKey = (customer) => {
-  return customer?.id || customer?._id || "";
-};
+const getCustomerKey = (customer) => customer?.id || customer?._id || "";
 
 const AdminCustomers = () => {
   const navigate = useNavigate();
@@ -67,194 +42,100 @@ const AdminCustomers = () => {
   const [customers, setCustomers] = useState([]);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [verification, setVerification] = useState("");
   const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchCustomers = useCallback(async (pageNumber, append = false) => {
-    if (append) {
-      setLoadingMore(true);
-    } else {
+  const fetchCustomers = useCallback(
+    async (pageNumber, activeSearch = search, activeVerification = verification) => {
       setLoading(true);
-    }
-
-    setError("");
-
-    try {
-      const response = await fetch(
-        `${API_URL}/api/admin/customers?page=${pageNumber}&limit=${PAGE_SIZE}`,
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            Accept: "application/json",
-          },
-        }
-      );
-
-      let data = null;
+      setError("");
 
       try {
-        data = await response.json();
-      } catch (jsonError) {
-        data = null;
-      }
-
-      if (!response.ok) {
-        const message = getErrorMessage(data, response.status);
-
-        if (response.status === 401) {
-          setError(message);
-        } else if (response.status === 403) {
-          setError(message);
-        } else {
-          setError(message);
-        }
-
-        return;
-      }
-
-      const incomingCustomers = Array.isArray(data?.customers)
-        ? data.customers
-        : [];
-
-      const incomingPagination = data?.pagination || null;
-
-      setCustomers((previousCustomers) => {
-        if (!append) {
-          return incomingCustomers;
-        }
-
-        const existingKeys = new Set(
-          previousCustomers.map(getCustomerKey).filter(Boolean)
-        );
-
-        const uniqueCustomers = incomingCustomers.filter((customer) => {
-          const key = getCustomerKey(customer);
-
-          if (!key || existingKeys.has(key)) {
-            return false;
-          }
-
-          existingKeys.add(key);
-          return true;
+        const params = new URLSearchParams({
+          page: String(pageNumber),
+          limit: String(PAGE_SIZE),
         });
 
-        return [...previousCustomers, ...uniqueCustomers];
-      });
+        if (activeSearch.trim()) params.set("search", activeSearch.trim());
+        if (activeVerification) params.set("verification", activeVerification);
 
-      setPagination(incomingPagination);
-      setPage(pageNumber);
-    } catch (fetchError) {
-      console.error("Admin customers fetch error:", fetchError);
-      setError(
-        "Unable to connect to the server. Please check your connection and try again."
-      );
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  }, []);
+        const response = await fetch(
+          `${API_URL}/api/admin/customers?${params.toString()}`,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: { Accept: "application/json" },
+          }
+        );
+
+        let data = null;
+        try {
+          data = await response.json();
+        } catch {
+          data = null;
+        }
+
+        if (!response.ok) {
+          setError(getErrorMessage(data, response.status));
+          return;
+        }
+
+        setCustomers(Array.isArray(data?.customers) ? data.customers : []);
+        setPagination(data?.pagination || null);
+        setPage(pageNumber);
+      } catch (fetchError) {
+        console.error("Admin customers fetch error:", fetchError);
+        setError(
+          "Unable to connect to the server. Please check your connection and try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [search, verification]
+  );
 
   useEffect(() => {
-    fetchCustomers(1, false);
-  }, [fetchCustomers]);
+    fetchCustomers(1, "", "");
+  }, []);
 
-  const handleLoadMore = () => {
-    if (loadingMore || !pagination) {
-      return;
-    }
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const nextSearch = searchInput.trim();
+    setSearch(nextSearch);
+    fetchCustomers(1, nextSearch, verification);
+  };
 
-    const currentPage = Number(pagination.page || page);
-    const totalPages = Number(pagination.totalPages || 0);
+  const handleVerificationChange = (event) => {
+    const nextVerification = event.target.value;
+    setVerification(nextVerification);
+    fetchCustomers(1, search, nextVerification);
+  };
 
-    if (totalPages > 0 && currentPage >= totalPages) {
-      return;
-    }
-
-    fetchCustomers(currentPage + 1, true);
+  const handleReset = () => {
+    setSearchInput("");
+    setSearch("");
+    setVerification("");
+    fetchCustomers(1, "", "");
   };
 
   const handleRetry = () => {
-    setCustomers([]);
-    setPagination(null);
-    setPage(1);
-    fetchCustomers(1, false);
+    fetchCustomers(page, search, verification);
   };
+
+  const totalPages = Number(pagination?.totalPages || 0);
+  const hasPrevious = page > 1;
+  const hasNext =
+    typeof pagination?.hasMore === "boolean"
+      ? pagination.hasMore
+      : totalPages > 0 && page < totalPages;
 
   const handleViewDetails = (customerId) => {
-    if (!customerId) {
-      return;
-    }
-
-    navigate(`/admin/customers/${customerId}`);
+    if (customerId) navigate(`/admin/customers/${customerId}`);
   };
-
-  const hasMorePages = (() => {
-    if (!pagination) {
-      return false;
-    }
-
-    if (typeof pagination.hasNextPage === "boolean") {
-      return pagination.hasNextPage;
-    }
-
-    if (pagination.hasMore !== undefined) {
-      return Boolean(pagination.hasMore);
-    }
-
-    const currentPage = Number(pagination.page || page);
-    const totalPages = Number(pagination.totalPages || 0);
-
-    return totalPages > 0 && currentPage < totalPages;
-  })();
-
-  if (loading) {
-    return (
-      <main className="admin-customers-page">
-        <div className="admin-customers-header">
-          <div>
-            <p className="admin-customers-eyebrow">Administration</p>
-            <h1>Customers</h1>
-            <p>Manage registered customer accounts and activity.</p>
-          </div>
-        </div>
-
-        <section className="admin-customers-state admin-customers-loading">
-          <div className="admin-customers-spinner" />
-          <h2>Loading customers...</h2>
-          <p>Please wait while customer information is loaded.</p>
-        </section>
-      </main>
-    );
-  }
-
-  if (error && customers.length === 0) {
-    return (
-      <main className="admin-customers-page">
-        <div className="admin-customers-header">
-          <div>
-            <p className="admin-customers-eyebrow">Administration</p>
-            <h1>Customers</h1>
-            <p>Manage registered customer accounts and activity.</p>
-          </div>
-        </div>
-
-        <section className="admin-customers-state admin-customers-error">
-          <div className="admin-customers-state-icon">!</div>
-          <h2>Unable to load customers</h2>
-          <p>{error}</p>
-          <button
-            type="button"
-            className="admin-customers-retry-button"
-            onClick={handleRetry}
-          >
-            Try Again
-          </button>
-        </section>
-      </main>
-    );
-  }
 
   return (
     <main className="admin-customers-page">
@@ -267,18 +148,50 @@ const AdminCustomers = () => {
 
         {pagination && (
           <div className="admin-customers-count">
-            {pagination.totalItems !== undefined
-              ? `${pagination.totalItems} customer${
-                  Number(pagination.totalItems) === 1 ? "" : "s"
-                }`
-              : `${customers.length} customer${
-                  customers.length === 1 ? "" : "s"
-                }`}
+            {pagination.total ?? customers.length} customer
+            {Number(pagination.total) === 1 ? "" : "s"}
           </div>
         )}
       </div>
 
-      {error && customers.length > 0 && (
+      <form className="admin-customers-toolbar" onSubmit={handleSearch}>
+        <div className="admin-customers-search">
+          <span aria-hidden="true">⌕</span>
+          <input
+            type="search"
+            value={searchInput}
+            onChange={(event) => setSearchInput(event.target.value)}
+            placeholder="Search name, email or phone..."
+            aria-label="Search customers"
+          />
+        </div>
+
+        <select
+          value={verification}
+          onChange={handleVerificationChange}
+          aria-label="Filter customers by verification"
+        >
+          <option value="">All customers</option>
+          <option value="verified">Verified</option>
+          <option value="unverified">Not Verified</option>
+        </select>
+
+        <button type="submit" className="admin-customers-search-button">
+          Search
+        </button>
+
+        {(search || verification) && (
+          <button
+            type="button"
+            className="admin-customers-reset-button"
+            onClick={handleReset}
+          >
+            Reset
+          </button>
+        )}
+      </form>
+
+      {error && (
         <div className="admin-customers-inline-error" role="alert">
           <span>{error}</span>
           <button type="button" onClick={handleRetry}>
@@ -287,12 +200,20 @@ const AdminCustomers = () => {
         </div>
       )}
 
-      {customers.length === 0 ? (
+      {loading ? (
+        <section className="admin-customers-state admin-customers-loading">
+          <div className="admin-customers-spinner" />
+          <h2>Loading customers...</h2>
+          <p>Please wait while customer information is loaded.</p>
+        </section>
+      ) : customers.length === 0 ? (
         <section className="admin-customers-state admin-customers-empty">
           <div className="admin-customers-state-icon">👥</div>
           <h2>No customers found</h2>
           <p>
-            There are currently no registered customer accounts to display.
+            {search || verification
+              ? "No customers match the current search or filter."
+              : "There are currently no registered customer accounts to display."}
           </p>
         </section>
       ) : (
@@ -326,27 +247,21 @@ const AdminCustomers = () => {
                             <span>{customer?.email || "No email available"}</span>
                           </div>
                         </td>
-
                         <td>
                           <span className="admin-customer-phone">
                             {customer?.phone || "—"}
                           </span>
                         </td>
-
                         <td>
                           <span
                             className={`admin-customer-verification ${
-                              isVerified
-                                ? "is-verified"
-                                : "is-not-verified"
+                              isVerified ? "is-verified" : "is-not-verified"
                             }`}
                           >
                             {isVerified ? "Verified" : "Not Verified"}
                           </span>
                         </td>
-
                         <td>{formatDate(customer?.createdAt)}</td>
-
                         <td>
                           <span className="admin-customer-number">
                             {Number.isFinite(Number(customer?.totalOrders))
@@ -354,15 +269,12 @@ const AdminCustomers = () => {
                               : 0}
                           </span>
                         </td>
-
                         <td>
                           <strong className="admin-customer-spent">
                             {formatCurrency(customer?.totalSpent)}
                           </strong>
                         </td>
-
                         <td>{formatDate(customer?.lastOrderDate)}</td>
-
                         <td>
                           <button
                             type="button"
@@ -381,15 +293,24 @@ const AdminCustomers = () => {
             </div>
           </section>
 
-          {hasMorePages && (
-            <div className="admin-customers-load-more">
+          {totalPages > 1 && (
+            <div className="admin-customers-pagination">
               <button
                 type="button"
-                className="admin-customers-load-more-button"
-                onClick={handleLoadMore}
-                disabled={loadingMore}
+                onClick={() => fetchCustomers(page - 1)}
+                disabled={!hasPrevious || loading}
               >
-                {loadingMore ? "Loading..." : "Load More"}
+                ← Previous
+              </button>
+              <span>
+                Page <strong>{page}</strong> of <strong>{totalPages}</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => fetchCustomers(page + 1)}
+                disabled={!hasNext || loading}
+              >
+                Next →
               </button>
             </div>
           )}
