@@ -20,7 +20,7 @@ const DEFAULT_PAGINATION = { page: 1, total: 0, totalPages: 1 };
 const AdminStaff = () => {
   const { user: currentUser } = useAuth();
   const [users, setUsers] = useState([]);
-  const [summary, setSummary] = useState({ total: 0, admins: 0, customers: 0 });
+  const [summary, setSummary] = useState({ total: 0, admins: 0, customers: 0, verified: 0, unverified: 0 });
   const [search, setSearch] = useState("");
   const [appliedSearch, setAppliedSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -62,7 +62,7 @@ const AdminStaff = () => {
       };
 
       setUsers(Array.isArray(data.staff) ? data.staff : []);
-      setSummary(data.summary || { total: 0, admins: 0, customers: 0 });
+      setSummary(data.summary || { total: 0, admins: 0, customers: 0, verified: 0, unverified: 0 });
       setPagination(nextPagination);
       setPage(nextPagination.page || targetPage);
     } catch (loadError) {
@@ -200,6 +200,10 @@ const AdminStaff = () => {
           <strong>{summary.customers}</strong>
           <span>Customers</span>
         </article>
+        <article className="blue">
+          <strong>{summary.verified}</strong>
+          <span>Verified accounts</span>
+        </article>
       </div>
 
       <div className="admin-staff-security-note">
@@ -261,7 +265,7 @@ const AdminStaff = () => {
             </h3>
           </div>
           <small>
-            Page {pagination.page} of {pagination.totalPages}
+            {summary.unverified} not verified · Page {pagination.page} of {pagination.totalPages}
           </small>
         </div>
 
