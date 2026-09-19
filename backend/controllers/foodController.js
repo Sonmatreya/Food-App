@@ -143,9 +143,16 @@ const seedStarterFoods = async (req, res, next) => {
       ? await Food.insertMany(foodsToInsert, { ordered: false })
       : [];
 
+    // Only replace legacy LoremFlickr images. This preserves any
+    // custom image URLs already configured by the restaurant/admin.
     const imageUpdates = starterFoods.filter((food) => {
       const existing = existingByName.get(food.name.toLowerCase());
-      return existing && food.image && existing.image !== food.image;
+      return (
+        existing &&
+        food.image &&
+        typeof existing.image === "string" &&
+        existing.image.includes("loremflickr.com")
+      );
     });
 
     if (imageUpdates.length) {
