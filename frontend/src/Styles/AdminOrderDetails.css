@@ -7,3 +7,18 @@
 .admin-order-history-content span{color:#777;font-size:11px}
 .admin-order-history-line{position:absolute;left:8px;top:17px;bottom:0;width:2px;background:#e5e7eb}
 @media(prefers-color-scheme:dark){.admin-order-history-line{background:#374151}.admin-order-history-dot{background:#1f2937}.admin-order-history-content span{color:#9ca3af}}
+
+
+/* Final order details polish */
+.admin-order-details-page{max-width:none;padding:0 0 36px;background:transparent}
+.admin-order-details-header{margin-bottom:18px}
+.admin-order-details-header h1{font-size:30px;letter-spacing:-.03em}
+.admin-order-details-header-actions{display:flex;align-items:center;gap:10px}
+.admin-order-details-customer{padding:9px 13px;border:1px solid #e0e3e7;border-radius:9px;background:#fff;color:#333;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.admin-order-details-customer:hover{border-color:#e63946;color:#e63946}
+.admin-order-details-card{border-radius:14px;box-shadow:0 5px 18px rgba(20,28,38,.04)}
+.admin-order-status-card{border-left:3px solid #e63946}
+.admin-order-details-info-grid>div{border:1px solid #edf0f3;background:#fbfcfd}
+.admin-order-item-image{border:1px solid #edf0f3}
+@media(max-width:600px){.admin-order-details-header-actions{width:100%;align-items:flex-start;flex-direction:column}.admin-order-details-customer,.admin-order-details-status{width:100%;text-align:center;box-sizing:border-box}}
+@media(prefers-color-scheme:dark){.admin-order-details-customer{background:#111827;border-color:#374151;color:#f3f4f6}.admin-order-details-info-grid>div,.admin-order-item-image{border-color:#374151;background:#111827}}
