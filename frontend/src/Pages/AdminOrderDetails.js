@@ -231,9 +231,20 @@ const AdminOrderDetails = () => {
           <h1>{order.orderNumber || "Order Details"}</h1>
           <span>Placed {dateTime(order.createdAt)}</span>
         </div>
-        <span className={`admin-order-details-status status-${order.status}`}>
-          {label(order.status)}
-        </span>
+        <div className="admin-order-details-header-actions">
+          {customer.id && (
+            <button
+              className="admin-order-details-customer"
+              type="button"
+              onClick={() => navigate(`/admin/customers/${customer.id}`)}
+            >
+              View Customer
+            </button>
+          )}
+          <span className={`admin-order-details-status status-${order.status}`}>
+            {label(order.status)}
+          </span>
+        </div>
       </header>
 
       {error && (
