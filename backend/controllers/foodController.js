@@ -47,13 +47,15 @@ const getFoods = async (req, res, next) => {
 
     const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
     const limit = Math.min(50, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
-    const [foods, total] = await Promise.all([
+    const [foods, total, availableCount, unavailableCount] = await Promise.all([
       Food.find(filter)
         .sort({ isFeatured: -1, createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
         .lean(),
       Food.countDocuments(filter),
+      Food.countDocuments({ ...filter, isAvailable: true }),
+      Food.countDocuments({ ...filter, isAvailable: false }),
     ]);
 
     return res.json({
@@ -66,6 +68,12 @@ const getFoods = async (req, res, next) => {
         limit,
         total,
         totalPages: Math.max(1, Math.ceil(total / limit)),
+      },
+      summary: {
+        total,
+        available: availableCount,
+        unavailable: unavailableCount,
+        categories: categories.length,
       },
     });
   } catch (error) {
