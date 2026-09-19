@@ -33,11 +33,33 @@ const getCustomers = async (req, res) => {
       50
     );
 
-    const skip = (page - 1) * limit;
+    const search = String(req.query.search || "").trim();
+    const verification = String(req.query.verification || "").trim();
+
+    if (verification && !["verified", "unverified"].includes(verification)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid verification filter",
+      });
+    }
 
     const filter = {
       role: "customer",
     };
+
+    if (verification) {
+      filter.isVerified = verification === "verified";
+    }
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const skip = (page - 1) * limit;
 
     const [users, totalCustomers] = await Promise.all([
       User.find(filter)
@@ -133,20 +155,12 @@ const getCustomerDetails = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // -----------------------------------------------------
-    // Validate MongoDB ObjectId
-    // -----------------------------------------------------
-
     if (!id || !/^[a-fA-F0-9]{24}$/.test(id)) {
       return res.status(400).json({
         success: false,
         message: "Invalid customer ID",
       });
     }
-
-    // -----------------------------------------------------
-    // Find customer
-    // -----------------------------------------------------
 
     const user = await User.findOne({
       _id: id,
@@ -161,10 +175,6 @@ const getCustomerDetails = async (req, res) => {
         message: "Customer not found",
       });
     }
-
-    // -----------------------------------------------------
-    // Get customer's orders
-    // -----------------------------------------------------
 
     const orders = await Order.find({
       userId: user._id,
@@ -186,10 +196,6 @@ const getCustomerDetails = async (req, res) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    // -----------------------------------------------------
-    // Calculate customer statistics
-    // -----------------------------------------------------
-
     const totalOrders = orders.length;
 
     const totalSpent = orders.reduce((total, order) => {
@@ -202,10 +208,6 @@ const getCustomerDetails = async (req, res) => {
 
     const lastOrderDate =
       orders.length > 0 ? orders[0].createdAt : null;
-
-    // -----------------------------------------------------
-    // Sanitize order response
-    // -----------------------------------------------------
 
     const safeOrders = orders.map((order) => ({
       id: order._id,
@@ -240,10 +242,6 @@ const getCustomerDetails = async (req, res) => {
       updatedAt: order.updatedAt || null,
     }));
 
-    // -----------------------------------------------------
-    // Customer response
-    // -----------------------------------------------------
-
     const customer = buildCustomerResponse(user, {
       totalOrders,
       totalSpent,
@@ -267,10 +265,6 @@ const getCustomerDetails = async (req, res) => {
     });
   }
 };
-
-// =========================================================
-// EXPORTS
-// =========================================================
 
 module.exports = {
   getCustomers,
