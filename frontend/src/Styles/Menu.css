@@ -4,24 +4,23 @@
 
 .menuPage {
   min-height: 100vh;
-  background: #fafafa;
-  color: #222;
+  background: #f8f7f4;
+  color: #1d1d1d;
 }
 
 .menuHero {
-  min-height: 330px;
+  min-height: 360px;
   display: flex;
   align-items: center;
   background:
-    linear-gradient(90deg, rgba(20, 20, 20, 0.95), rgba(20, 20, 20, 0.65), rgba(20, 20, 20, 0.3)),
+    linear-gradient(90deg, rgba(18, 18, 18, 0.92), rgba(18, 18, 18, 0.58), rgba(18, 18, 18, 0.22)),
     url("../assets/pizza.jpeg");
   background-size: cover;
   background-position: center;
 }
 
 .menuHeroContent {
-  width: 84%;
-  max-width: 1250px;
+  width: min(1240px, calc(100% - 48px));
   margin: auto;
 }
 
@@ -35,7 +34,7 @@
 .menuHeroContent h1 {
   margin: 12px 0;
   color: white;
-  font-size: 52px;
+  font-size: clamp(42px, 5vw, 60px);
   line-height: 1.1;
   font-weight: 800;
 }
@@ -49,31 +48,33 @@
 }
 
 .menuSection {
-  width: 84%;
-  max-width: 1250px;
+  width: min(1240px, calc(100% - 48px));
+  max-width: 1240px;
   margin: auto;
-  padding: 55px 0 90px;
+  padding: 48px 0 90px;
 }
 
 .menuSearchBox {
   width: 100%;
-  max-width: 700px;
-  height: 58px;
-  margin: 0 auto 35px;
+  max-width: 760px;
+  height: 62px;
+  margin: -79px auto 42px;
+  position: relative;
+  z-index: 2;
   padding: 0 8px 0 18px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
   background: white;
-  border: 1px solid #e5e5e5;
-  border-radius: 12px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e7e3dd;
+  border-radius: 16px;
+  box-shadow: 0 18px 45px rgba(30, 30, 30, 0.12);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .menuSearchBox:focus-within {
-  border-color: rgba(230, 57, 70, 0.45);
-  box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.08), 0 8px 25px rgba(0, 0, 0, 0.05);
+  border-color: rgba(227, 24, 55, 0.35);
+  box-shadow: 0 0 0 4px rgba(227, 24, 55, 0.07), 0 18px 45px rgba(30, 30, 30, 0.12);
 }
 
 .menuSearchBox > span { font-size: 19px; }
@@ -106,10 +107,12 @@
 
 .menuToolbar {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 25px;
-  margin-bottom: 40px;
+  gap: 28px;
+  margin-bottom: 34px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e9e5df;
 }
 
 .categoryFilters {
@@ -120,9 +123,9 @@
 }
 
 .categoryFilter {
-  padding: 9px 17px;
-  border: 1px solid #dddddd;
-  border-radius: 25px;
+  padding: 10px 17px;
+  border: 1px solid #e2ded8;
+  border-radius: 999px;
   background: white;
   color: #555;
   font-size: 13px;
@@ -133,12 +136,12 @@
 
 .categoryFilter:hover {
   border-color: #e63946;
-  color: #e63946;
+  color: #e31837;
 }
 
 .categoryFilter.active {
-  border-color: #e63946;
-  background: #e63946;
+  border-color: #e31837;
+  background: #e31837;
   color: white;
   box-shadow: 0 5px 14px rgba(230, 57, 70, 0.2);
 }
@@ -153,10 +156,10 @@
 .sortBox label { color: #777; font-size: 13px; }
 
 .sortBox select {
-  height: 38px;
+  height: 42px;
   padding: 0 12px;
-  border: 1px solid #dddddd;
-  border-radius: 9px;
+  border: 1px solid #e2ded8;
+  border-radius: 10px;
   background: white;
   color: #444;
   outline: none;
@@ -165,22 +168,22 @@
 
 .sortBox select:focus { border-color: #e63946; }
 
-.menuResultHeader { margin-bottom: 25px; }
-.menuResultHeader h2 { margin: 0 0 5px; color: #222; font-size: 28px; }
+.menuResultHeader { margin-bottom: 22px; }
+.menuResultHeader h2 { margin: 0 0 5px; color: #1d1d1d; font-size: 30px; letter-spacing: -0.5px; }
 .menuResultHeader p { margin: 0; color: #888; font-size: 13px; }
 
 .menuGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 25px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
 }
 
 .menuCard {
   overflow: hidden;
-  border: 1px solid #eeeeee;
-  border-radius: 18px;
+  border: 1px solid #e9e5df;
+  border-radius: 20px;
   background: white;
-  box-shadow: 0 7px 22px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 26px rgba(30, 30, 30, 0.055);
   transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
@@ -192,7 +195,7 @@
 
 .menuImage {
   width: 100%;
-  height: 230px;
+  height: 240px;
   background-size: cover;
   background-position: center;
   transition: transform 0.4s ease;
@@ -200,10 +203,14 @@
 
 .menuCard:hover .menuImage { transform: scale(1.04); }
 
-.menuContent { padding: 20px; text-align: left; }
+.menuContent { padding: 20px 20px 22px; text-align: left; }
 
 .menuCategory {
   display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   margin-bottom: 8px;
   color: #e63946;
   font-size: 10px;
@@ -214,7 +221,7 @@
 
 .menuContent h2 { margin: 0 0 8px; color: #222; font-size: 19px; line-height: 1.3; }
 .menuRating { margin: 0 0 8px; color: #555 !important; font-size: 13px !important; font-weight: 600 !important; }
-.menuPrice { margin: 0 0 16px; color: #e63946 !important; font-size: 20px !important; font-weight: 800 !important; }
+.menuPrice { margin: 0 0 16px; color: #e31837 !important; font-size: 20px !important; font-weight: 800 !important; }
 
 .menuCardActions {
   display: grid;
@@ -316,7 +323,7 @@
 .noFoodFound button:hover { background: #c92535; }
 
 @media only screen and (max-width: 1000px) {
-  .menuSection { width: 90%; }
+  .menuSection { width: calc(100% - 32px); }
   .menuGrid { grid-template-columns: repeat(2, 1fr); }
   .menuToolbar { align-items: flex-start; flex-direction: column; }
   .sortBox { align-self: flex-end; }
@@ -324,11 +331,11 @@
 
 @media only screen and (max-width: 650px) {
   .menuHero { min-height: 300px; }
-  .menuHeroContent { width: 90%; }
+  .menuHeroContent { width: calc(100% - 32px); }
   .menuHeroContent h1 { font-size: 40px; }
   .menuHeroContent p { font-size: 14px; }
-  .menuSection { width: 90%; padding: 40px 0 60px; }
-  .menuSearchBox { height: 54px; }
+  .menuSection { width: calc(100% - 28px); padding: 34px 0 60px; }
+  .menuSearchBox { height: 56px; margin-top: -64px; }
   .menuToolbar { gap: 20px; }
   .categoryFilters { width: 100%; }
   .categoryFilter { padding: 8px 13px; font-size: 12px; }
