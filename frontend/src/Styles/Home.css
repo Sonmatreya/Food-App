@@ -134,11 +134,13 @@
 /* HOME HERO SEARCH */
 .heroSearch {
   width: min(650px, 100%);
+  min-width: 0;
   height: 68px;
   padding: 7px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 18px;
@@ -147,17 +149,18 @@
 }
 
 .searchIcon {
-  flex: 0 0 auto;
-  margin-left: 14px;
+  display: block;
+  margin-left: 8px;
   color: #777;
   font-size: 23px !important;
 }
 
 .heroSearch input {
-  flex: 1 1 auto;
+  width: 100%;
   min-width: 0;
-  height: 100%;
-  padding: 0 8px;
+  height: 54px;
+  padding: 0 4px;
+  box-sizing: border-box;
   border: 0;
   outline: 0;
   background: transparent;
@@ -171,16 +174,19 @@
 }
 
 .heroSearch button {
-  flex: 0 0 auto;
-  height: 54px;
+  width: 118px;
   min-width: 118px;
-  padding: 0 22px;
+  height: 54px;
+  margin: 0;
+  padding: 0 16px;
+  box-sizing: border-box;
   border: 0;
   border-radius: 13px;
   background: var(--home-accent);
   color: #fff;
   font-size: 13px;
   font-weight: 800;
+  line-height: 1;
   cursor: pointer;
   box-shadow: 0 8px 20px rgba(227, 24, 55, 0.22);
   transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
@@ -196,25 +202,28 @@
   .heroSearch {
     width: 100%;
     height: 62px;
+    grid-template-columns: 27px minmax(0, 1fr) auto;
     padding: 6px;
-    gap: 6px;
+    gap: 5px;
     border-radius: 16px;
   }
 
   .searchIcon {
-    margin-left: 10px;
+    margin-left: 5px;
     font-size: 21px !important;
   }
 
   .heroSearch input {
-    padding: 0 4px;
+    height: 50px;
+    padding: 0 3px;
     font-size: 12px;
   }
 
   .heroSearch button {
-    height: 50px;
+    width: 92px;
     min-width: 92px;
-    padding: 0 14px;
+    height: 50px;
+    padding: 0 10px;
     border-radius: 11px;
     font-size: 11px;
   }
@@ -226,8 +235,9 @@
   }
 
   .heroSearch button {
+    width: 84px;
     min-width: 84px;
-    padding: 0 10px;
+    padding: 0 8px;
   }
 }
 
