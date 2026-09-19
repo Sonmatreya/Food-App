@@ -6,12 +6,12 @@ import "../Styles/AdminLayout.css";
 import "../Styles/AdminTheme.css";
 
 const NAV_ITEMS = [
-  { to: "/admin", label: "Dashboard", icon: FiGrid, end: true },
-  { to: "/admin/orders", label: "Orders", icon: FiClipboard },
-  { to: "/admin/customers", label: "Customers", icon: FiUsers },
-  { to: "/admin/menu", label: "Food & Menu", icon: FiShoppingBag },
-  { to: "/admin/coupons", label: "Coupons", icon: FiPercent },
-  { to: "/admin/staff", label: "Staff & Access", icon: FiUsers },
+  { to: "/admin", label: "Dashboard", icon: FiGrid, end: true, group: "Overview" },
+  { to: "/admin/orders", label: "Orders", icon: FiClipboard, group: "Operations" },
+  { to: "/admin/customers", label: "Customers", icon: FiUsers, group: "Operations" },
+  { to: "/admin/menu", label: "Food & Menu", icon: FiShoppingBag, group: "Catalogue" },
+  { to: "/admin/coupons", label: "Coupons", icon: FiPercent, group: "Catalogue" },
+  { to: "/admin/staff", label: "Staff & Access", icon: FiUsers, group: "Administration" },
 ];
 
 const pageTitle = (pathname) => {
@@ -33,6 +33,20 @@ const AdminLayout = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [section, title] = pageTitle(location.pathname);
 
+  React.useEffect(() => {
+    if (!mobileOpen) return undefined;
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [mobileOpen]);
+
   const handleLogout = async () => {
     try { await logout(); } finally { navigate("/login", { replace: true }); }
   };
@@ -51,12 +65,15 @@ const AdminLayout = () => {
 
         <div className="admin-nav-label">Workspace</div>
         <nav className="admin-sidebar-nav" aria-label="Admin navigation">
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
-            <NavLink key={to} to={to} end={end} className={({ isActive }) => `admin-sidebar-link${isActive ? " active" : ""}`} onClick={() => setMobileOpen(false)}>
-              <Icon className="admin-sidebar-icon" />
-              <span>{label}</span>
-              <FiChevronRight className="admin-sidebar-chevron" />
-            </NavLink>
+          {NAV_ITEMS.map(({ to, label, icon: Icon, end, group }, index) => (
+            <React.Fragment key={to}>
+              {(index === 0 || NAV_ITEMS[index - 1].group !== group) && <div className="admin-nav-section">{group}</div>}
+              <NavLink to={to} end={end} className={({ isActive }) => `admin-sidebar-link${isActive ? " active" : ""}`} onClick={() => setMobileOpen(false)}>
+                <Icon className="admin-sidebar-icon" />
+                <span>{label}</span>
+                <FiChevronRight className="admin-sidebar-chevron" />
+              </NavLink>
+            </React.Fragment>
           ))}
         </nav>
 
