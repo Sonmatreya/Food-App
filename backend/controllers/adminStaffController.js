@@ -132,6 +132,14 @@ const demoteToCustomer = async (req, res) => {
       });
     }
 
+    const adminCount = await User.countDocuments({ role: "admin" });
+    if (adminCount <= 1) {
+      return res.status(409).json({
+        success: false,
+        message: "The last admin account cannot be changed to a customer.",
+      });
+    }
+
     user.role = "customer";
     await user.save();
 
