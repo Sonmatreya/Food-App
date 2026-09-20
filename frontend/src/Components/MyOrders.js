@@ -36,6 +36,11 @@ function MyOrders() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [reorderState, setReorderState] = useState({
+    loading: false,
+    message: "",
+    type: "",
+  });
 
   // Fetch one page of orders. Appends when loading more,
   // replaces when refreshing / retrying.
@@ -124,31 +129,116 @@ function MyOrders() {
     );
   };
 
-  const handleReorder = (order) => {
-    let addedCount = 0;
+  const handleReorder = async (order) => {
+    if (reorderState.loading) {
+      return;
+    }
 
-    (order.items || []).forEach((item) => {
-      const foodId = item.foodId || item._id || item.id;
+    const orderItems = Array.isArray(order.items) ? order.items : [];
 
-      if (/^[a-f\\d]{24}$/i.test(String(foodId || ""))) {
+    if (!orderItems.length) {
+      setReorderState({
+        loading: false,
+        message: "This order has no items available to reorder.",
+        type: "warning",
+      });
+      return;
+    }
+
+    setReorderState({
+      loading: true,
+      message: "Checking item availability...",
+      type: "loading",
+    });
+
+    try {
+      const results = await Promise.all(
+        orderItems.map(async (item) => {
+          const foodId = item.foodId || item._id || item.id;
+
+          if (!/^[a-f\\d]{24}$/i.test(String(foodId || ""))) {
+            return { available: false, reason: "invalid" };
+          }
+
+          try {
+            const response = await fetch(
+              API_URL + "/api/foods/" + foodId,
+              { method: "GET" }
+            );
+
+            if (!response.ok) {
+              return { available: false, reason: "deleted" };
+            }
+
+            const data = await response.json();
+
+            if (!data.success || !data.food || data.food.isAvailable === false) {
+              return { available: false, reason: "unavailable" };
+            }
+
+            return {
+              available: true,
+              food: data.food,
+              item,
+            };
+          } catch (error) {
+            console.error("Reorder availability check error:", error);
+            return { available: false, reason: "error" };
+          }
+        })
+      );
+
+      const availableItems = results.filter((result) => result.available);
+      const skippedCount = results.length - availableItems.length;
+
+      availableItems.forEach(({ food, item }) => {
         addToCart(
           {
-            _id: foodId,
-            id: foodId,
-            name: item.name,
-            price: Number(item.price || 0),
-            image: item.image || "",
-            category: item.category || "",
+            _id: food._id,
+            id: food._id,
+            name: food.name,
+            price: Number(food.price || 0),
+            image: food.image || "",
+            category: food.category || "",
           },
           Number(item.quantity || 1),
           item.cookingRequest || ""
         );
-        addedCount += 1;
-      }
-    });
+      });
 
-    if (addedCount > 0) {
-      navigate("/cart");
+      if (availableItems.length > 0) {
+        setReorderState({
+          loading: false,
+          message:
+            skippedCount > 0
+              ? availableItems.length + " " +
+                (availableItems.length === 1 ? "item" : "items") +
+                " added to cart. " +
+                skippedCount + " unavailable " +
+                (skippedCount === 1 ? "item was" : "items were") +
+                " skipped."
+              : availableItems.length + " " +
+                (availableItems.length === 1 ? "item" : "items") +
+                " added to cart.",
+          type: skippedCount > 0 ? "warning" : "success",
+        });
+      } else {
+        setReorderState({
+          loading: false,
+          message:
+            skippedCount > 0
+              ? "None of the items in this order are currently available."
+              : "No items could be added to cart.",
+          type: "warning",
+        });
+      }
+    } catch (error) {
+      console.error("Reorder error:", error);
+      setReorderState({
+        loading: false,
+        message: "Unable to check item availability. Nothing was added to cart.",
+        type: "error",
+      });
     }
   };
 
@@ -170,6 +260,22 @@ function MyOrders() {
   const hasMore =
     pagination &&
     pagination.page < pagination.totalPages;
+
+  useEffect(() => {
+    if (!reorderState.message || reorderState.loading) {
+      return undefined;
+    }
+
+    const timer = window.setTimeout(() => {
+      setReorderState({
+        loading: false,
+        message: "",
+        type: "",
+      });
+    }, 5000);
+
+    return () => window.clearTimeout(timer);
+  }, [reorderState.message, reorderState.loading]);
 
   return (
     <section className="my-orders-section">
@@ -473,7 +579,7 @@ function MyOrders() {
                               className="my-orders-reorder"
                               onClick={() => handleReorder(order)}
                             >
-                              Reorder
+                              {reorderState.loading ? "Checking..." : "Reorder"}
                             </button>
                           </div>
                         </div>
@@ -503,6 +609,40 @@ function MyOrders() {
           </>
         )}
       </div>
+
+      {reorderState.message && (
+        <div className={"my-orders-reorder-toast my-orders-reorder-toast-" + reorderState.type} role="status">
+          <span className="my-orders-reorder-toast-icon">
+            {reorderState.type === "success" ? "✓" : reorderState.type === "loading" ? "…" : "!"}
+          </span>
+          <span className="my-orders-reorder-toast-message">
+            {reorderState.message}
+          </span>
+          {reorderState.type !== "loading" && (
+            <button
+              type="button"
+              className="my-orders-reorder-toast-action"
+              onClick={() => navigate("/cart")}
+            >
+              View Cart
+            </button>
+          )}
+          <button
+            type="button"
+            className="my-orders-reorder-toast-close"
+            aria-label="Close"
+            onClick={() =>
+              setReorderState({
+                loading: false,
+                message: "",
+                type: "",
+              })
+            }
+          >
+            ×
+          </button>
+        </div>
+      )}
     </section>
   );
 }
