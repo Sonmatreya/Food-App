@@ -143,7 +143,7 @@ function Profile() {
             <button
               type="button"
               className="profile-list-item"
-              onClick={() => navigate("/delivery-address")}
+              onClick={() => navigate("/saved-addresses")}
             >
               <span className="list-icon">📍</span>
               <span className="list-content">
