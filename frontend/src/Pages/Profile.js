@@ -70,6 +70,25 @@ function Profile() {
         </div>
       </section>
 
+      <section className="profile-summary-grid">
+        <div className="profile-reward-card">
+          <div className="summary-icon">⭐</div>
+          <div className="summary-content">
+            <h3>Foodie Rewards</h3>
+            <p>Earn points when you order your favorite food.</p>
+          </div>
+          <div className="summary-value"><strong>0</strong><span>Points</span></div>
+        </div>
+        <div className="profile-quick-card">
+          <button type="button" onClick={() => navigate("/menu")}>
+            <span>🏷️</span><strong>Coupons</strong><small>View available offers</small>
+          </button>
+          <button type="button" onClick={() => navigate("/menu")}>
+            <span>❤️</span><strong>Wishlist</strong><small>Browse favorite food</small>
+          </button>
+        </div>
+      </section>
+
       <section className="profile-overview-grid">
         <div className="profile-overview-card">
           <span className="overview-icon">✉️</span>
@@ -148,6 +167,26 @@ function Profile() {
         <section className="profile-card">
           <div className="profile-card-heading">
             <div>
+              <h2>Food Options</h2>
+              <p>Explore and manage your food choices</p>
+            </div>
+          </div>
+          <div className="profile-list">
+            <button type="button" className="profile-list-item" onClick={() => navigate("/menu")}>
+              <span className="list-icon">❤️</span><span className="list-content"><strong>Favorite Food</strong><small>Your favorite dishes</small></span><span className="list-arrow">›</span>
+            </button>
+            <button type="button" className="profile-list-item" onClick={() => navigate("/menu")}>
+              <span className="list-icon">🍽️</span><span className="list-content"><strong>Menu</strong><small>Explore available food</small></span><span className="list-arrow">›</span>
+            </button>
+            <button type="button" className="profile-list-item" onClick={() => navigate("/menu")}>
+              <span className="list-icon">🔥</span><span className="list-content"><strong>Today's Offers</strong><small>Discover special deals</small></span><span className="list-arrow">›</span>
+            </button>
+          </div>
+        </section>
+
+        <section className="profile-card">
+          <div className="profile-card-heading">
+            <div>
               <h2>Orders & Payments</h2>
               <p>Quick access to your shopping activity</p>
             </div>
@@ -198,6 +237,23 @@ function Profile() {
         <section className="profile-card">
           <div className="profile-card-heading">
             <div>
+              <h2>Payments & Wallet</h2>
+              <p>Manage your payment preferences</p>
+            </div>
+          </div>
+          <div className="profile-list">
+            <button type="button" className="profile-list-item" onClick={() => navigate("/payment")}>
+              <span className="list-icon">💳</span><span className="list-content"><strong>Payment Methods</strong><small>Choose your payment option</small></span><span className="list-arrow">›</span>
+            </button>
+            <button type="button" className="profile-list-item" onClick={() => navigate("/payment")}>
+              <span className="list-icon">💰</span><span className="list-content"><strong>Payment History</strong><small>View your payment activity through orders</small></span><span className="list-arrow">›</span>
+            </button>
+          </div>
+        </section>
+
+        <section className="profile-card">
+          <div className="profile-card-heading">
+            <div>
               <h2>Ratings & Reviews</h2>
               <p>Share feedback after your completed orders</p>
             </div>
@@ -212,6 +268,26 @@ function Profile() {
                 Completed and picked-up orders can be reviewed from the
                 order experience when review support is available.
               </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="profile-card">
+          <div className="profile-card-heading">
+            <div>
+              <h2>Privacy & Security</h2>
+              <p>Keep your account safe</p>
+            </div>
+          </div>
+          <div className="profile-list">
+            <div className="profile-list-item profile-list-item-static">
+              <span className="list-icon">🛡️</span><span className="list-content"><strong>Privacy Center</strong><small>Your account details are private</small></span><span className="list-status">Protected</span>
+            </div>
+            <div className="profile-list-item profile-list-item-static">
+              <span className="list-icon">🔐</span><span className="list-content"><strong>Account Security</strong><small>Authentication is handled securely</small></span><span className="list-status">Protected</span>
+            </div>
+            <div className="profile-list-item profile-list-item-static">
+              <span className="list-icon">🔔</span><span className="list-content"><strong>Notifications</strong><small>Order updates appear in your order tracking</small></span><span className="list-status">Active</span>
             </div>
           </div>
         </section>
