@@ -460,6 +460,12 @@ function OrderSuccess() {
                       Quantity: {item.quantity}
                     </span>
 
+                    {item.cookingRequest && (
+                      <small className="successCookingRequest">
+                        Cooking request: {item.cookingRequest}
+                      </small>
+                    )}
+
                   </div>
 
                   <strong>
@@ -614,6 +620,36 @@ function OrderSuccess() {
               {handoverError && <div className="handoverErrorMessage" role="alert">{handoverError}</div>}
             </div>
           )}
+
+          {/* ORDER INFORMATION */}
+
+          <div className="successCard">
+            <div className="successCardHeader">
+              <div>
+                <h2>Order Information</h2>
+                <p>Quick reference for this order</p>
+              </div>
+            </div>
+
+            <div className="successOrderMetaGrid">
+              <div>
+                <span>Order Number</span>
+                <strong>{orderNumber}</strong>
+              </div>
+              <div>
+                <span>Order Status</span>
+                <strong>{order.status === "cancelled" ? "Cancelled" : (order.status || "Placed").replaceAll("_", " ")}</strong>
+              </div>
+              <div>
+                <span>Order Type</span>
+                <strong>{isPickup ? "Restaurant Pickup" : "Home Delivery"}</strong>
+              </div>
+              <div>
+                <span>Placed On</span>
+                <strong>{formattedDate}</strong>
+              </div>
+            </div>
+          </div>
 
           {/* PAYMENT INFORMATION */}
 
@@ -785,6 +821,13 @@ function OrderSuccess() {
           >
             Print / Save Invoice
           </button>
+
+          <Link
+            to="/contact"
+            className="successSecondaryButton"
+          >
+            Need Help with This Order?
+          </Link>
 
           <Link
             to={justPlaced ? "/" : "/profile"}
