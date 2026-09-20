@@ -89,7 +89,7 @@ const AdminLayout = () => {
         </div>
         <div className="admin-sidebar-footer">
           <div className="admin-sidebar-account">
-            <div className="admin-user-avatar">{(user?.name || "A").trim().charAt(0).toUpperCase()}</div>
+            <div className="admin-user-avatar">{user?.profileImage ? <img src={user.profileImage} alt="" /> : (user?.name || "A").trim().charAt(0).toUpperCase()}</div>
             <div><strong>{user?.name || "Administrator"}</strong><span>Administrator</span></div>
           </div>
           <button type="button" className="admin-logout" onClick={handleLogout} aria-label="Sign out"><FiLogOut /></button>
@@ -102,7 +102,7 @@ const AdminLayout = () => {
           <div className="admin-breadcrumb"><span>{section}</span><FiChevronRight /><strong>{title}</strong></div>
           <div className="admin-topbar-actions">
             <button type="button" className="admin-topbar-store" onClick={() => navigate("/")}>View Store</button>
-            <div className="admin-topbar-avatar">{(user?.name || "A").trim().charAt(0).toUpperCase()}</div>
+            <div className="admin-topbar-avatar">{user?.profileImage ? <img src={user.profileImage} alt="" /> : (user?.name || "A").trim().charAt(0).toUpperCase()}</div>
           </div>
         </header>
         <main className="admin-content"><Outlet /></main>
