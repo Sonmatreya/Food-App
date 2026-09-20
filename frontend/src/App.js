@@ -24,6 +24,7 @@ import Coupons from "./Pages/Coupons";
 import Wishlist from "./Pages/Wishlist";
 import Notifications from "./Pages/Notifications";
 import Security from "./Pages/Security";
+import AddressBook from "./Pages/AddressBook";
 import AdminDashboard from "./Pages/AdminDashboard";
 import AdminCustomers from "./Pages/AdminCustomers";
 import AdminCustomerDetails from "./Pages/AdminCustomerDetails";
@@ -58,6 +59,7 @@ function AppRoutes() {
         <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>} />
+        <Route path="/saved-addresses" element={<ProtectedRoute><AddressBook /></ProtectedRoute>} />
 
         <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
           <Route index element={<AdminDashboard />} />
