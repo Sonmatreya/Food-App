@@ -404,3 +404,32 @@
   .menuImage { height: 220px; }
   .menuAddButton { width: calc(100% - 34px); margin: 0 17px 17px; }
 }
+
+.menuCardVisual { position: relative; }
+
+.menuWishlistButton {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 50%;
+  background: rgba(255,255,255,0.94);
+  color: #777;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  backdrop-filter: blur(8px);
+  transition: transform 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+.menuWishlistButton:hover { transform: scale(1.06); color: #e31837; }
+.menuWishlistButton.active { background: #fff0f3; color: #e31837; }
+
+@media only screen and (max-width: 650px) {
+  .menuWishlistButton { top: 12px; right: 12px; }
+}
