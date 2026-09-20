@@ -637,7 +637,11 @@ function MyOrders() {
                               className="my-orders-reorder"
                               onClick={() => handleReorder(order)}
                             >
-                              {reorderState.loading && reorderState.orderId === order.id ? "Checking..." : "Reorder"}
+                              {reorderState.loading && reorderState.orderId === order.id
+                                ? "Checking..."
+                                : reorderState.type === "success" && reorderState.orderId === order.id
+                                  ? "Added to Cart ✓"
+                                  : "Reorder"}
                             </button>
                           </div>
                         </div>
