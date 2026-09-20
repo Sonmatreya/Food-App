@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { FaCheck, FaHeart, FaTimes } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "../Styles/WishlistToast.css";
@@ -15,7 +16,7 @@ function WishlistToast({ visible, action, foodName, onClose }) {
     navigate("/wishlist");
   };
 
-  return (
+  return createPortal(
     <div className={added ? "wishlistToast added" : "wishlistToast removed"} role="status" aria-live="polite">
       <div className="wishlistToastIcon">
         {added ? <FaCheck aria-hidden="true" /> : <FaHeart aria-hidden="true" />}
@@ -30,7 +31,8 @@ function WishlistToast({ visible, action, foodName, onClose }) {
       <button type="button" className="wishlistToastClose" onClick={onClose} aria-label="Close notification">
         <FaTimes aria-hidden="true" />
       </button>
-    </div>
+    </div>,
+    document.body
   );
 }
 
