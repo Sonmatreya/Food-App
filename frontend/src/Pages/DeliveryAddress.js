@@ -142,7 +142,7 @@ function DeliveryAddress() {
     };
 
     loadSavedAddresses();
-  }, [API_URL]);
+  }, [API_URL, checkoutData?.address?.name]);
 
   // -----------------------------------------
   // If user directly opens /delivery-address
