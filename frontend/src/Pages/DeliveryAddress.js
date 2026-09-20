@@ -99,6 +99,11 @@ function DeliveryAddress() {
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [savedAddressesLoading, setSavedAddressesLoading] = useState(true);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState("");
+  const [showSaveAddress, setShowSaveAddress] = useState(false);
+  const [saveAddressLabel, setSaveAddressLabel] = useState("Home");
+  const [saveAddressDefault, setSaveAddressDefault] = useState(false);
+  const [savingAddress, setSavingAddress] = useState(false);
+  const [saveAddressMessage, setSaveAddressMessage] = useState("");
 
   useEffect(() => {
     const loadSavedAddresses = async () => {
@@ -367,6 +372,69 @@ function DeliveryAddress() {
       ...currentAddress,
       [name]: value,
     }));
+  };
+
+  const saveCurrentAddress = async () => {
+    if (!address.name.trim()) {
+      setSaveAddressMessage("Please enter your full name first.");
+      return;
+    }
+
+    const phoneDigits = address.phone.replace(/\D/g, "");
+    if (!/^\d{10}$/.test(phoneDigits)) {
+      setSaveAddressMessage("Please enter a valid 10-digit phone number first.");
+      return;
+    }
+
+    if (!address.addressLine.trim() || !address.city.trim() || !/^\d{6}$/.test(address.pincode.trim())) {
+      setSaveAddressMessage("Please complete the address, city and 6-digit PIN first.");
+      return;
+    }
+
+    setSavingAddress(true);
+    setSaveAddressMessage("");
+
+    try {
+      const response = await fetch(API_URL + "/api/addresses", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          label: saveAddressLabel,
+          name: address.name.trim(),
+          phone: phoneDigits,
+          addressLine: address.addressLine.trim(),
+          city: address.city.trim(),
+          pincode: address.pincode.trim(),
+          landmark: address.landmark?.trim() || "",
+          latitude: position.lat,
+          longitude: position.lng,
+          locationText,
+          isDefault: saveAddressDefault,
+        }),
+      });
+
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Unable to save address.");
+      }
+
+      const newAddress = data.address;
+      setSavedAddresses((current) => {
+        const next = saveAddressDefault
+          ? current.map((item) => ({ ...item, isDefault: false }))
+          : [...current];
+        return [...next, newAddress];
+      });
+      setSelectedSavedAddressId(newAddress?._id || "");
+      setShowSaveAddress(false);
+      setSaveAddressMessage("");
+      setSaveAddressDefault(false);
+    } catch (error) {
+      setSaveAddressMessage(error.message);
+    } finally {
+      setSavingAddress(false);
+    }
   };
 
   // -----------------------------------------
@@ -739,6 +807,22 @@ function DeliveryAddress() {
 
               </div>
 
+              <div className="formGroup">
+
+                <label>
+                  Landmark <span className="formOptional">(optional)</span>
+                </label>
+
+                <input
+                  type="text"
+                  name="landmark"
+                  value={address.landmark || ""}
+                  onChange={handleAddressChange}
+                  placeholder="Nearby landmark"
+                />
+
+              </div>
+
               <div className="formRow">
 
                 <div className="formGroup">
@@ -774,6 +858,64 @@ function DeliveryAddress() {
 
                 </div>
 
+              </div>
+
+              <div className="checkoutSaveAddress">
+                <div className="checkoutSaveAddressHeader">
+                  <div>
+                    <strong>Save this address</strong>
+                    <span>Use it faster on your next order.</span>
+                  </div>
+                  <button
+                    type="button"
+                    className="saveAddressToggle"
+                    onClick={() => {
+                      setShowSaveAddress((current) => !current);
+                      setSaveAddressMessage("");
+                    }}
+                  >
+                    {showSaveAddress ? "Cancel" : "＋ Save Address"}
+                  </button>
+                </div>
+
+                {showSaveAddress && (
+                  <div className="saveAddressPanel">
+                    <div className="saveAddressLabelRow">
+                      {["Home", "Work", "Other"].map((label) => (
+                        <button
+                          type="button"
+                          key={label}
+                          className={saveAddressLabel === label ? "active" : ""}
+                          onClick={() => setSaveAddressLabel(label)}
+                        >
+                          {label === "Home" ? "🏠" : label === "Work" ? "💼" : "📍"} {label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <label className="saveAddressDefaultOption">
+                      <input
+                        type="checkbox"
+                        checked={saveAddressDefault}
+                        onChange={(event) => setSaveAddressDefault(event.target.checked)}
+                      />
+                      Make this my default delivery address
+                    </label>
+
+                    {saveAddressMessage && (
+                      <div className="saveAddressMessage">⚠️ {saveAddressMessage}</div>
+                    )}
+
+                    <button
+                      type="button"
+                      className="saveAddressConfirm"
+                      onClick={saveCurrentAddress}
+                      disabled={savingAddress}
+                    >
+                      {savingAddress ? "Saving Address..." : "Save Address"}
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="addressInfo">
