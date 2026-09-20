@@ -604,3 +604,151 @@
     font-size: 20px;
   }
 }
+
+
+/* SAVED ADDRESSES IN CHECKOUT */
+.savedAddressCheckoutCard {
+  padding-bottom: 20px;
+}
+
+.manageSavedAddresses {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  border: 1px solid #f2c8ce;
+  border-radius: 9px;
+  background: #fff7f8;
+  color: var(--color-brand, #e31837);
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.manageSavedAddresses:hover {
+  background: #ffecef;
+}
+
+.savedAddressCheckoutList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.savedAddressCheckoutItem {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 11px;
+  padding: 13px;
+  border: 1px solid #e3e5e8;
+  border-radius: 12px;
+  background: #fff;
+  color: #333;
+  text-align: left;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.savedAddressCheckoutItem:hover {
+  border-color: #f0aeb8;
+  background: #fffafb;
+}
+
+.savedAddressCheckoutItem.selected {
+  border-color: var(--color-brand, #e31837);
+  background: #fff7f8;
+  box-shadow: 0 0 0 2px rgba(227, 24, 55, .07);
+}
+
+.savedAddressCheckoutIcon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: #f7f7f7;
+  font-size: 18px;
+}
+
+.savedAddressCheckoutContent {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.savedAddressCheckoutContent > span:not(.savedAddressCheckoutTitle) {
+  overflow: hidden;
+  color: #777;
+  font-size: 11px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.savedAddressCheckoutTitle {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #222;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.savedAddressCheckoutTitle small {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #eaf8ef;
+  color: #198754;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.savedAddressCheckoutCheck {
+  color: #aaa;
+  font-size: 19px;
+  font-weight: 800;
+}
+
+.savedAddressCheckoutItem.selected .savedAddressCheckoutCheck {
+  color: var(--color-brand, #e31837);
+}
+
+.savedAddressEmptyCheckout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.savedAddressEmptyCheckout h2 {
+  margin: 0 0 5px;
+  color: #222;
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.savedAddressEmptyCheckout p {
+  margin: 0;
+  color: #777;
+  font-size: 12px;
+}
+
+@media (max-width: 700px) {
+  .savedAddressCheckoutList {
+    grid-template-columns: 1fr;
+  }
+
+  .savedAddressEmptyCheckout {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .manageSavedAddresses {
+    width: 100%;
+  }
+}
