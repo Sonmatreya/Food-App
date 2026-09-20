@@ -119,10 +119,10 @@ export default function AdminReviews() {
         {loading ? <div className="admin-reviews-empty">Loading customer feedback...</div> :
           reviews.length ? <div className="admin-reviews-list">{reviews.map((review) => (
             <article className="admin-review-card" key={String(review._id)}>
-              <div className="admin-review-avatar">{(review.customer || "C").trim().charAt(0).toUpperCase()}</div>
+              <div className="admin-review-avatar">{review.customerImage ? <img src={review.customerImage} alt="" /> : (review.customer || "C").trim().charAt(0).toUpperCase()}</div>
               <div className="admin-review-main">
                 <div className="admin-review-top">
-                  <div><strong>{review.customer}</strong><span>{review.food}</span></div>
+                  <div><strong>{review.customer}</strong><span className="admin-review-food"><i>{review.foodImage ? <img src={review.foodImage} alt="" /> : "🍽️"}</i>{review.food}</span></div>
                   <time>{new Date(review.createdAt).toLocaleDateString()}</time><button className="admin-review-remove" type="button" onClick={() => removeReview(review._id)} disabled={removingId === String(review._id)}>{removingId === String(review._id) ? "Removing..." : "Remove"}</button>
                 </div>
                 <div className="admin-review-rating"><Stars value={review.rating} /><b>{review.rating}.0</b></div>
