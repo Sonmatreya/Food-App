@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   TileLayer,
+  LayersControl,
   Marker,
   Popup,
   useMap,
   useMapEvents,
 } from "react-leaflet";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import "../Styles/DeliveryAddress.css";
@@ -66,6 +68,7 @@ function MapClickHandler({ onLocationSelect }) {
 function DeliveryAddress() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { API_URL } = useAuth();
 
   const checkoutData = location.state;
 
@@ -86,11 +89,43 @@ function DeliveryAddress() {
       addressLine: "",
       city: "",
       pincode: "",
+      landmark: "",
     }
   );
 
   const [locationText, setLocationText] =
     useState("Select your delivery location");
+
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [savedAddressesLoading, setSavedAddressesLoading] = useState(true);
+  const [selectedSavedAddressId, setSelectedSavedAddressId] = useState("");
+
+  useEffect(() => {
+    const loadSavedAddresses = async () => {
+      setSavedAddressesLoading(true);
+      try {
+        const response = await fetch(
+          API_URL + "/api/addresses",
+          { credentials: "include" }
+        );
+        if (!response.ok) throw new Error("Unable to load saved addresses.");
+        const data = await response.json();
+        const list = data.addresses || [];
+        setSavedAddresses(list);
+
+        const defaultAddress = list.find((item) => item.isDefault) || list[0];
+        if (defaultAddress && !checkoutData?.address?.name) {
+          setSelectedSavedAddressId(defaultAddress._id);
+        }
+      } catch (error) {
+        console.error("Saved addresses error:", error);
+      } finally {
+        setSavedAddressesLoading(false);
+      }
+    };
+
+    loadSavedAddresses();
+  }, [API_URL]);
 
   // -----------------------------------------
   // If user directly opens /delivery-address
@@ -132,6 +167,24 @@ function DeliveryAddress() {
     deliveryType,
     coupon,
   } = checkoutData;
+
+  const applySavedAddress = (savedAddress) => {
+    setSelectedSavedAddressId(savedAddress._id);
+    setAddress({
+      name: savedAddress.name || "",
+      phone: savedAddress.phone || "",
+      addressLine: savedAddress.addressLine || "",
+      city: savedAddress.city || "",
+      pincode: savedAddress.pincode || "",
+      landmark: savedAddress.landmark || "",
+    });
+
+    if (savedAddress.latitude !== null && savedAddress.latitude !== undefined && savedAddress.longitude !== null && savedAddress.longitude !== undefined) {
+      setPosition({ lat: Number(savedAddress.latitude), lng: Number(savedAddress.longitude) });
+    }
+
+    setLocationText(savedAddress.locationText || "Saved delivery location");
+  };
 
   // -----------------------------------------
   // Get current location
@@ -408,6 +461,63 @@ function DeliveryAddress() {
 
         <main className="deliveryMain">
 
+          {/* SAVED ADDRESSES */}
+
+          {savedAddressesLoading ? (
+            <section className="deliveryCard savedAddressCheckoutCard">
+              <div className="deliveryCardHeader">
+                <div>
+                  <h2>Saved Addresses</h2>
+                  <p>Loading your saved delivery addresses...</p>
+                </div>
+              </div>
+            </section>
+          ) : savedAddresses.length > 0 ? (
+            <section className="deliveryCard savedAddressCheckoutCard">
+              <div className="deliveryCardHeader">
+                <div>
+                  <h2>Saved Addresses</h2>
+                  <p>Select a saved address to fill the delivery details automatically.</p>
+                </div>
+                <Link to="/saved-addresses" className="manageSavedAddresses">Manage</Link>
+              </div>
+
+              <div className="savedAddressCheckoutList">
+                {savedAddresses.map((savedAddress) => (
+                  <button
+                    type="button"
+                    key={savedAddress._id}
+                    className={selectedSavedAddressId === savedAddress._id ? "savedAddressCheckoutItem selected" : "savedAddressCheckoutItem"}
+                    onClick={() => applySavedAddress(savedAddress)}
+                  >
+                    <span className="savedAddressCheckoutIcon">
+                      {savedAddress.label === "Home" ? "🏠" : savedAddress.label === "Work" ? "💼" : "📍"}
+                    </span>
+                    <span className="savedAddressCheckoutContent">
+                      <span className="savedAddressCheckoutTitle">
+                        {savedAddress.label}
+                        {savedAddress.isDefault && <small>Default</small>}
+                      </span>
+                      <span>{savedAddress.addressLine}, {savedAddress.city} — {savedAddress.pincode}</span>
+                      <span>{savedAddress.phone}</span>
+                    </span>
+                    <span className="savedAddressCheckoutCheck">
+                      {selectedSavedAddressId === savedAddress._id ? "✓" : "○"}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ) : (
+            <section className="deliveryCard savedAddressCheckoutCard savedAddressEmptyCheckout">
+              <div>
+                <h2>No Saved Address</h2>
+                <p>Save your Home, Work or Other address for faster checkout next time.</p>
+              </div>
+              <Link to="/saved-addresses" className="manageSavedAddresses">+ Add Address</Link>
+            </section>
+          )}
+
           {/* MAP CARD */}
 
           <section className="deliveryCard">
@@ -452,10 +562,20 @@ function DeliveryAddress() {
                 className="deliveryMap"
               >
 
-                <TileLayer
-                  attribution='&copy; OpenStreetMap contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
+                <LayersControl position="topright">
+                  <LayersControl.BaseLayer checked name="Default Map">
+                    <TileLayer
+                      attribution='&copy; OpenStreetMap contributors'
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    />
+                  </LayersControl.BaseLayer>
+                  <LayersControl.BaseLayer name="Satellite">
+                    <TileLayer
+                      attribution='Tiles &copy; Esri'
+                      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                    />
+                  </LayersControl.BaseLayer>
+                </LayersControl>
 
                 <Marker
                   position={[
