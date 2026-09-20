@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, LayersControl, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -61,7 +61,7 @@ function AddressBook() {
   const [isGettingLocation, setIsGettingLocation] = useState(false);
   const [mapLocationText, setMapLocationText] = useState("Select your delivery location on the map.");
 
-  const loadAddresses = async () => {
+  const loadAddresses = useCallback(async () => {
     setLoading(true);
     try {
       const response = await fetch(API_URL + "/api/addresses", { credentials: "include" });
@@ -74,11 +74,11 @@ function AddressBook() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [API_URL]);
 
   useEffect(() => {
     loadAddresses();
-  }, [API_URL]);
+  }, [loadAddresses]);
 
   const openAdd = () => {
     setEditingId(null);
