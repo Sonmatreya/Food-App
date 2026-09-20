@@ -28,9 +28,15 @@ function Cart() {
   const subtotal = getCartTotal();
   const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
   const discount = appliedCoupon && subtotal >= Number(appliedCoupon.minimum)
-    ? appliedCoupon.type === "percentage"
-      ? (subtotal * Number(appliedCoupon.value)) / 100
-      : Math.min(Number(appliedCoupon.value), subtotal)
+    ? Math.min(
+        appliedCoupon.type === "percentage"
+          ? (subtotal * Number(appliedCoupon.value)) / 100
+          : Math.min(Number(appliedCoupon.value), subtotal),
+        appliedCoupon.maxDiscount !== null && appliedCoupon.maxDiscount !== undefined && Number.isFinite(Number(appliedCoupon.maxDiscount))
+          ? Number(appliedCoupon.maxDiscount)
+          : Infinity,
+        subtotal
+      )
     : 0;
   const discountedSubtotal = Math.max(subtotal - discount, 0);
   const deliveryFee = deliveryType === "pickup" ? 0 : discountedSubtotal >= 40 ? 0 : 2.99;
