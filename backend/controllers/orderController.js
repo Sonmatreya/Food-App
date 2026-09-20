@@ -108,7 +108,10 @@ const computePricing = (items, deliveryType, coupon) => {
   let discount = 0;
   if (coupon && subtotal >= coupon.minimum) {
     discount = coupon.type === "percentage" ? (subtotal * coupon.value) / 100 : Math.min(coupon.value, subtotal);
-    discount = round2(discount);
+    if (coupon.maxDiscount !== null && coupon.maxDiscount !== undefined && Number.isFinite(Number(coupon.maxDiscount))) {
+      discount = Math.min(discount, Number(coupon.maxDiscount));
+    }
+    discount = round2(Math.min(discount, subtotal));
   }
   const discountedSubtotal = round2(Math.max(subtotal - discount, 0));
   const deliveryFee = deliveryType === "pickup" ? 0 : discountedSubtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
@@ -166,6 +169,31 @@ const createOrder = async (req, res) => {
     if (couponCode) {
       coupon = await Coupon.findOne({ code: couponCode, active: true }).lean();
       if (!coupon) return res.status(400).json({ success: false, message: "Invalid or inactive coupon code" });
+
+      const now = new Date();
+      if (coupon.expiresAt && new Date(coupon.expiresAt) <= now) {
+        return res.status(400).json({ success: false, message: `Coupon ${coupon.code} has expired` });
+      }
+
+      const usageCount = await Order.countDocuments({
+        "pricing.couponCode": coupon.code,
+        status: { $ne: "cancelled" },
+      });
+      if (coupon.maxUses > 0 && usageCount >= coupon.maxUses) {
+        return res.status(400).json({ success: false, message: `Coupon ${coupon.code} has reached its usage limit` });
+      }
+
+      if (coupon.perCustomerLimit > 0) {
+        const customerUsageCount = await Order.countDocuments({
+          userId,
+          "pricing.couponCode": coupon.code,
+          status: { $ne: "cancelled" },
+        });
+        if (customerUsageCount >= coupon.perCustomerLimit) {
+          return res.status(400).json({ success: false, message: `You have already used coupon ${coupon.code} the maximum number of times` });
+        }
+      }
+
       const subtotal = round2(items.reduce((sum, item) => sum + item.price * item.quantity, 0));
       if (subtotal < coupon.minimum) return res.status(400).json({ success: false, message: `Minimum order value for coupon ${coupon.code} is ₹${coupon.minimum.toFixed(2)}` });
     }
