@@ -133,6 +133,28 @@ const createReview = async (req, res) => {
   }
 };
 
+const deleteAdminReview = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ success: false, message: "Invalid review." });
+    }
+
+    const review = await Review.findById(id).select("foodId").lean();
+    if (!review) {
+      return res.status(404).json({ success: false, message: "Review not found." });
+    }
+
+    await Review.findByIdAndDelete(id);
+    await refreshFoodRating(review.foodId);
+
+    return res.json({ success: true, message: "Review removed successfully." });
+  } catch (error) {
+    console.error("Delete admin review error:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to remove review." });
+  }
+};
+
 const getAdminReviews = async (req, res) => {
   try {
     const { search = "", rating = "all", page = 1, limit = 9 } = req.query;
@@ -201,4 +223,4 @@ const getAdminReviews = async (req, res) => {
   }
 };
 
-module.exports = { getFoodReviews, createReview, getAdminReviews };
+module.exports = { getFoodReviews, createReview, getAdminReviews, deleteAdminReview };
