@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { API_URL } from "../config/api";
+import WishlistToast from "../Components/WishlistToast";
 import "../Styles/FoodDetails.css";
 
 const FALLBACK_IMAGE = "https://loremflickr.com/800/600/food?lock=999";
@@ -18,6 +19,7 @@ function FoodDetails() {
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
   const [wishlisted, setWishlisted] = useState(false);
+  const [wishlistToast, setWishlistToast] = useState({ visible: false, action: "", foodName: "" });
   const [cookingRequest, setCookingRequest] = useState("");
 
   const [reviews, setReviews] = useState([]);
@@ -37,6 +39,12 @@ function FoodDetails() {
       setWishlisted(false);
     }
   }, [id]);
+
+  useEffect(() => {
+    if (!wishlistToast.visible) return undefined;
+    const timer = setTimeout(() => setWishlistToast({ visible: false, action: "", foodName: "" }), 3000);
+    return () => clearTimeout(timer);
+  }, [wishlistToast.visible]);
 
   useEffect(() => {
     let cancelled = false;
@@ -171,8 +179,14 @@ function FoodDetails() {
       const next = saved.includes(String(id))
         ? saved.filter((itemId) => itemId !== String(id))
         : [...saved, String(id)];
+      const isNowWishlisted = next.includes(String(id));
       localStorage.setItem("foodWishlist", JSON.stringify(next));
-      setWishlisted(next.includes(String(id)));
+      setWishlisted(isNowWishlisted);
+      setWishlistToast({
+        visible: true,
+        action: isNowWishlisted ? "added" : "removed",
+        foodName: food?.name || "This food",
+      });
     } catch {}
   };
 
@@ -289,6 +303,13 @@ function FoodDetails() {
           <Link to="/menu" className="backToMenu">← Back to Menu</Link>
         </div>
       </section>
+
+      <WishlistToast
+        visible={wishlistToast.visible}
+        action={wishlistToast.action}
+        foodName={wishlistToast.foodName}
+        onClose={() => setWishlistToast({ visible: false, action: "", foodName: "" })}
+      />
 
       <section className="foodReviewsSection">
         <div className="foodReviewsHeader">
