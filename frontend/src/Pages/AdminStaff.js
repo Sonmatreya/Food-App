@@ -213,7 +213,7 @@ const AdminStaff = () => {
           <p>
             New registrations remain customers. Admins can promote trusted accounts
             or return another admin account to customer access. You cannot change
-            your own role.
+            your own role, and the last remaining admin account is protected.
           </p>
         </div>
       </div>
