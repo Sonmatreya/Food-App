@@ -18,6 +18,7 @@ const couponRoutes = require("./routes/couponRoutes");
 const adminCustomerRoutes = require("./routes/adminCustomerRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const adminStaffRoutes = require("./routes/adminStaffRoutes");
+const addressRoutes = require("./routes/addressRoutes");
 const passport = require("./config/googleAuth");
 const { initializeSocket } = require("./config/socket");
 
@@ -50,6 +51,7 @@ app.use("/api/coupons", couponRoutes);
 app.use("/api/admin/customers", adminCustomerRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/staff", adminStaffRoutes);
+app.use("/api/addresses", addressRoutes);
 
 app.get("/api/health", (req, res) => res.json({ success: true, message: "Food App API is running" }));
 app.use((req, res) => res.status(404).json({ success: false, message: "API route not found" }));
