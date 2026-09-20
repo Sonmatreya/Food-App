@@ -6,6 +6,7 @@ const buildStaffUser = (user) => ({
   name: user.name || "",
   email: user.email || "",
   phone: user.phone || "",
+  profileImage: user.profileImage || "",
   role: user.role,
   isVerified: Boolean(user.isVerified),
   createdAt: user.createdAt || null,
@@ -31,7 +32,7 @@ const getStaff = async (req, res) => {
 
     const [users, total, admins, customers, verified] = await Promise.all([
       User.find(filter)
-        .select("_id name email phone role isVerified createdAt")
+        .select("_id name email phone profileImage role isVerified createdAt")
         .sort({ role: 1, createdAt: -1 })
         .skip((page - 1) * limit)
         .limit(limit)
