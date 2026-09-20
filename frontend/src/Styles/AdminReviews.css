@@ -304,17 +304,23 @@
 
 .admin-review-avatar{
   display:flex;
-  flex:0 0 34px;
-  width:34px;
-  height:34px;
+  flex:0 0 38px;
+  width:38px;
+  height:38px;
   align-items:center;
   justify-content:center;
   border-radius:50%;
-  background:#fff1f2;
+  overflow:hidden;
+  border:1px solid #e5e8eb;
+  background:#f4f6f8;
   color:#e63946;
   font-size:13px;
   font-weight:800;
 }
+.admin-review-avatar img{width:100%;height:100%;display:block;object-fit:cover}
+.admin-review-food{display:flex;align-items:center;gap:5px}
+.admin-review-food i{display:inline-flex;width:18px;height:18px;overflow:hidden;align-items:center;justify-content:center;border-radius:5px;background:#f4f6f8;font-style:normal;font-size:9px;flex:0 0 18px}
+.admin-review-food i img{width:100%;height:100%;object-fit:cover;display:block}
 
 .admin-review-main{
   min-width:0;
@@ -558,3 +564,7 @@
   .admin-reviews-empty{color:#9ca3af}
   .admin-reviews-error{background:#3b0d10;border-color:#7f1d1d;color:#fecaca}
 }
+
+/* Feedback card polish */
+.admin-review-card{transition:background .15s ease,box-shadow .15s ease}.admin-review-card:hover{background:#fcfdfd;box-shadow:inset 3px 0 #e63946}.admin-review-remove{border-radius:6px;padding:4px 6px}.admin-review-rating{margin-top:8px}.admin-review-main p{margin-top:8px}
+@media(prefers-color-scheme:dark){.admin-review-card:hover{background:#20252a}.admin-review-avatar{background:#252a2f;border-color:#3a4049}.admin-review-food i{background:#252a2f}}
