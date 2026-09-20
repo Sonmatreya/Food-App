@@ -40,6 +40,7 @@ function MyOrders() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [reorderState, setReorderState] = useState({
     loading: false,
+    orderId: null,
     message: "",
     type: "",
   });
@@ -141,6 +142,7 @@ function MyOrders() {
     if (!orderItems.length) {
       setReorderState({
         loading: false,
+        orderId: null,
         message: "This order has no items available to reorder.",
         type: "warning",
       });
@@ -149,6 +151,7 @@ function MyOrders() {
 
     setReorderState({
       loading: true,
+      orderId: order.id,
       message: "Checking item availability...",
       type: "loading",
     });
@@ -286,6 +289,7 @@ function MyOrders() {
     const timer = window.setTimeout(() => {
       setReorderState({
         loading: false,
+        orderId: null,
         message: "",
         type: "",
       });
@@ -633,7 +637,7 @@ function MyOrders() {
                               className="my-orders-reorder"
                               onClick={() => handleReorder(order)}
                             >
-                              {reorderState.loading ? "Checking..." : "Reorder"}
+                              {reorderState.loading && reorderState.orderId === order.id ? "Checking..." : "Reorder"}
                             </button>
                           </div>
                         </div>
@@ -699,6 +703,7 @@ function MyOrders() {
             onClick={() =>
               setReorderState({
                 loading: false,
+                orderId: null,
                 message: "",
                 type: "",
               })
