@@ -585,6 +585,64 @@
   background: #fffafa;
 }
 
+.successInvoiceButton {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 9px;
+  padding: 10px 15px;
+  border: 1px solid #dedbd5;
+  border-radius: 10px;
+  background: #faf9f7;
+  color: #555;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.successInvoiceButton:hover {
+  border-color: #aaa39a;
+  background: #f4f1ec;
+  color: #222;
+}
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  .orderSuccessPage {
+    max-width: none;
+    padding: 20px;
+    background: #fff;
+  }
+
+  .successPrimaryButton,
+  .successSecondaryButton,
+  .successInvoiceButton,
+  .orderLiveStatus,
+  .successThankYou {
+    display: none !important;
+  }
+
+  .orderSuccessLayout {
+    display: block;
+  }
+
+  .successSummary {
+    position: static;
+    margin-top: 18px;
+    box-shadow: none;
+  }
+
+  .successCard,
+  .successSummary,
+  .orderStatusCard {
+    break-inside: avoid;
+    box-shadow: none;
+  }
+}
+
 /* Thank you */
 .successThankYou {
   margin-top: 40px;
