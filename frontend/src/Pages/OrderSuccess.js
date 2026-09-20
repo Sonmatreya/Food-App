@@ -778,6 +778,14 @@ function OrderSuccess() {
             <span>→</span>
           </Link>
 
+          <button
+            type="button"
+            className="successInvoiceButton"
+            onClick={() => window.print()}
+          >
+            Print / Save Invoice
+          </button>
+
           <Link
             to={justPlaced ? "/" : "/profile"}
             className="successSecondaryButton"
