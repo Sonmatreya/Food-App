@@ -17,6 +17,7 @@ function FoodDetails() {
   const [error, setError] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [wishlisted, setWishlisted] = useState(false);
   const [cookingRequest, setCookingRequest] = useState("");
 
   const [reviews, setReviews] = useState([]);
@@ -27,6 +28,15 @@ function FoodDetails() {
   const [eligibleOrders, setEligibleOrders] = useState([]);
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewMessage, setReviewMessage] = useState("");
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("foodWishlist") || "[]");
+      setWishlisted(saved.map(String).includes(String(id)));
+    } catch {
+      setWishlisted(false);
+    }
+  }, [id]);
 
   useEffect(() => {
     let cancelled = false;
@@ -155,6 +165,17 @@ function FoodDetails() {
     }
   };
 
+  const toggleWishlist = () => {
+    try {
+      const saved = JSON.parse(localStorage.getItem("foodWishlist") || "[]").map(String);
+      const next = saved.includes(String(id))
+        ? saved.filter((itemId) => itemId !== String(id))
+        : [...saved, String(id)];
+      localStorage.setItem("foodWishlist", JSON.stringify(next));
+      setWishlisted(next.includes(String(id)));
+    } catch {}
+  };
+
   const handleAddToCart = () => {
     addToCart(food, quantity, cookingRequest.trim());
     setAdded(true);
@@ -251,6 +272,15 @@ function FoodDetails() {
           </div>
 
           <div className="orderSummary"><div><span>Price</span><strong>${price.toFixed(2)}</strong></div><div><span>Quantity</span><strong>× {quantity}</strong></div><div className="summaryTotal"><span>Total</span><strong>${totalPrice.toFixed(2)}</strong></div></div>
+
+          <button
+            type="button"
+            className={wishlisted ? "wishlistDetailButton active" : "wishlistDetailButton"}
+            onClick={toggleWishlist}
+            aria-pressed={wishlisted}
+          >
+            {wishlisted ? "♥ Saved to Wishlist" : "♡ Add to Wishlist"}
+          </button>
 
           <button type="button" className={added ? "addToCartButton added" : "addToCartButton"} onClick={handleAddToCart} disabled={!food.isAvailable} aria-live="polite">
             {!food.isAvailable ? "Currently Unavailable" : added ? "✓ Added to Cart" : "Add to Cart"}
