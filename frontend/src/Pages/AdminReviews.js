@@ -22,6 +22,7 @@ export default function AdminReviews() {
   const [summary, setSummary] = useState({ total: 0, average: 0, five: 0, low: 0 });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [removingId, setRemovingId] = useState("");
 
   const loadReviews = useCallback(async (requestedPage = page) => {
     setLoading(true);
@@ -49,6 +50,26 @@ export default function AdminReviews() {
     e.preventDefault();
     setPage(1);
     setAppliedSearch(search.trim());
+  };
+
+  const removeReview = async (reviewId) => {
+    if (!window.confirm("Remove this customer review? This will also recalculate the food rating.")) return;
+    setRemovingId(String(reviewId));
+    setError("");
+    try {
+      const response = await fetch(API_URL + "/api/reviews/admin/" + encodeURIComponent(reviewId), {
+        method: "DELETE",
+        credentials: "include",
+        headers: { Accept: "application/json" },
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.success) throw new Error(data.message || "Unable to remove review.");
+      await loadReviews(page);
+    } catch (err) {
+      setError(err.message || "Unable to remove review.");
+    } finally {
+      setRemovingId("");
+    }
   };
 
   const reset = () => {
@@ -102,7 +123,7 @@ export default function AdminReviews() {
               <div className="admin-review-main">
                 <div className="admin-review-top">
                   <div><strong>{review.customer}</strong><span>{review.food}</span></div>
-                  <time>{new Date(review.createdAt).toLocaleDateString()}</time>
+                  <time>{new Date(review.createdAt).toLocaleDateString()}</time><button className="admin-review-remove" type="button" onClick={() => removeReview(review._id)} disabled={removingId === String(review._id)}>{removingId === String(review._id) ? "Removing..." : "Remove"}</button>
                 </div>
                 <div className="admin-review-rating"><Stars value={review.rating} /><b>{review.rating}.0</b></div>
                 <p>{review.comment || "Customer left a rating without written feedback."}</p>
