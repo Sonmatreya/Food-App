@@ -80,10 +80,10 @@ function Profile() {
           <div className="summary-value"><strong>0</strong><span>Points</span></div>
         </div>
         <div className="profile-quick-card">
-          <button type="button" onClick={() => navigate("/menu")}>
+          <button type="button" onClick={() => navigate("/coupons")}>
             <span>🏷️</span><strong>Coupons</strong><small>View available offers</small>
           </button>
-          <button type="button" onClick={() => navigate("/menu")}>
+          <button type="button" onClick={() => navigate("/wishlist")}>
             <span>❤️</span><strong>Wishlist</strong><small>Browse favorite food</small>
           </button>
         </div>
@@ -153,14 +153,14 @@ function Profile() {
               <span className="list-arrow">›</span>
             </button>
 
-            <div className="profile-list-item profile-list-item-static">
+            <button type="button" className="profile-list-item" onClick={() => navigate("/security")}>
               <span className="list-icon">🔐</span>
               <span className="list-content">
                 <strong>Login & Security</strong>
                 <small>Your password and login are protected</small>
               </span>
-              <span className="list-status">Protected</span>
-            </div>
+              <span className="list-arrow">›</span>
+            </button>
           </div>
         </section>
 
@@ -172,7 +172,7 @@ function Profile() {
             </div>
           </div>
           <div className="profile-list">
-            <button type="button" className="profile-list-item" onClick={() => navigate("/menu")}>
+            <button type="button" className="profile-list-item" onClick={() => navigate("/wishlist")}>
               <span className="list-icon">❤️</span><span className="list-content"><strong>Favorite Food</strong><small>Your favorite dishes</small></span><span className="list-arrow">›</span>
             </button>
             <button type="button" className="profile-list-item" onClick={() => navigate("/menu")}>
@@ -286,9 +286,9 @@ function Profile() {
             <div className="profile-list-item profile-list-item-static">
               <span className="list-icon">🔐</span><span className="list-content"><strong>Account Security</strong><small>Authentication is handled securely</small></span><span className="list-status">Protected</span>
             </div>
-            <div className="profile-list-item profile-list-item-static">
-              <span className="list-icon">🔔</span><span className="list-content"><strong>Notifications</strong><small>Order updates appear in your order tracking</small></span><span className="list-status">Active</span>
-            </div>
+            <button type="button" className="profile-list-item" onClick={() => navigate("/notifications")}>
+              <span className="list-icon">🔔</span><span className="list-content"><strong>Notifications</strong><small>Order updates appear in your order tracking</small></span><span className="list-arrow">›</span>
+            </button>
           </div>
         </section>
 
