@@ -893,3 +893,29 @@
 
   .reviewItem { padding: 16px; }
 }
+
+.wishlistDetailButton {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 10px;
+  border: 1px solid #e2d8da;
+  border-radius: 12px;
+  background: #fff;
+  color: #555;
+  font-size: 13px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.wishlistDetailButton:hover {
+  border-color: #e31837;
+  color: #e31837;
+  transform: translateY(-1px);
+}
+
+.wishlistDetailButton.active {
+  border-color: #f0cbd1;
+  background: #fff0f3;
+  color: #e31837;
+}
