@@ -308,7 +308,7 @@ function MyOrders() {
                       </span>
 
                       <span className="my-orders-row-total">
-                        $
+                        ₹
                         {(
                           order.pricing?.grandTotal ?? 0
                         ).toFixed(2)}
@@ -353,7 +353,7 @@ function MyOrders() {
                                 </span>
 
                                 <strong className="item-line-total">
-                                  $
+                                  ₹
                                   {(
                                     item.price *
                                     item.quantity
@@ -370,7 +370,7 @@ function MyOrders() {
                           <div>
                             <span>Subtotal</span>
                             <strong>
-                              $
+                              ₹
                               {(
                                 order.pricing?.subtotal ??
                                 0
@@ -413,7 +413,7 @@ function MyOrders() {
                           <div>
                             <span>Service Fee</span>
                             <strong>
-                              $
+                              ₹
                               {(
                                 order.pricing
                                   ?.serviceFee ?? 0
@@ -424,7 +424,7 @@ function MyOrders() {
                           <div>
                             <span>Tax</span>
                             <strong>
-                              $
+                              ₹
                               {(
                                 order.pricing?.tax ?? 0
                               ).toFixed(2)}
@@ -434,7 +434,7 @@ function MyOrders() {
                           <div className="grand">
                             <span>Total</span>
                             <strong>
-                              $
+                              ₹
                               {(
                                 order.pricing
                                   ?.grandTotal ?? 0
