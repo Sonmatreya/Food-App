@@ -702,3 +702,72 @@
   .admin-coupon-form label{color:#aab3bb}
   .admin-coupon-check{background:#252b30;border-color:#394149}
 }
+
+
+/* Coupon lifecycle / usage details */
+.admin-coupons-summary{
+  grid-template-columns:repeat(5,minmax(0,1fr));
+}
+.admin-coupons-summary .orange strong{color:#c26b16}
+.admin-coupons-summary .purple strong{color:#6f42c1}
+
+.admin-coupon-status.expired{
+  border-color:#f2d2a8;
+  background:#fff7e9;
+  color:#a45b0b;
+}
+.admin-coupon-status.exhausted{
+  border-color:#ddd0ef;
+  background:#f7f2fc;
+  color:#6f42c1;
+}
+
+.admin-coupon-meta{
+  display:grid;
+  gap:5px;
+  margin-top:12px;
+  padding-top:11px;
+  border-top:1px solid #edf0f2;
+}
+.admin-coupon-meta span{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:#8a949d;
+  font-size:9px;
+}
+.admin-coupon-meta strong{
+  color:#4a555f;
+  font-weight:800;
+  text-align:right;
+}
+.admin-coupon-cap{
+  display:block;
+  margin-top:8px;
+  color:#7a4aa8;
+  font-size:9px;
+  font-weight:750;
+}
+.admin-coupon-field-note{
+  margin-left:4px;
+  color:#9aa3ab;
+  font-size:8px;
+  font-weight:600;
+}
+
+@media(max-width:1200px){
+  .admin-coupons-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  .admin-coupons-summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .admin-coupons-summary>div:last-child{grid-column:auto}
+}
+@media(prefers-color-scheme:dark){
+  .admin-coupon-meta{border-color:#343b42}
+  .admin-coupon-meta span{color:#9aa4ad}
+  .admin-coupon-meta strong{color:#dbe0e4}
+  .admin-coupon-cap{color:#c8a9df}
+  .admin-coupon-status.expired{background:#3a2c1b;border-color:#6b5128;color:#f0b45c}
+  .admin-coupon-status.exhausted{background:#30273a;border-color:#54436a;color:#cbb5e5}
+  .admin-coupon-field-note{color:#7f8992}
+}
