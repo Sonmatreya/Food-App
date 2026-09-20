@@ -237,6 +237,25 @@ const getMe = async (req, res) => {
   }
 };
 
+// Change password for the authenticated user
+const changePassword = async (req, res) => {
+  try {
+    const { currentPassword, newPassword } = req.body || {};
+    if (!currentPassword || !newPassword) return res.status(400).json({ success:false, message:"Current and new password are required" });
+    if (newPassword.length < 6) return res.status(400).json({ success:false, message:"New password must be at least 6 characters" });
+    const user = await User.findById(req.user.userId).select("+password");
+    if (!user || !user.password) return res.status(400).json({ success:false, message:"Password change is not available for this account" });
+    const matched = await bcrypt.compare(currentPassword, user.password);
+    if (!matched) return res.status(401).json({ success:false, message:"Current password is incorrect" });
+    user.password = await bcrypt.hash(newPassword, 12);
+    await user.save();
+    res.json({ success:true, message:"Password changed successfully" });
+  } catch (error) {
+    console.error("Change password error:", error.message);
+    res.status(500).json({ success:false, message:"Password change failed" });
+  }
+};
+
 // Update own profile (Phase 1: name and phone ONLY)
 const updateProfile = async (req, res) => {
   try {
@@ -387,5 +406,6 @@ module.exports = {
   logout,
   getMe,
   updateProfile,
+  changePassword,
   generateToken,
 };
