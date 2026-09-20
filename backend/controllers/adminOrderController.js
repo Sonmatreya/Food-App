@@ -16,7 +16,7 @@ const STATUS_TRANSITIONS = {
   placed: ["confirmed", "cancelled"],
   confirmed: ["preparing", "cancelled"],
   preparing: ["ready", "cancelled"],
-  ready: ["cancelled"],
+  ready: ["cancelled", "picked_up"],
   out_for_delivery: [],
   cancelled: [],
 };
