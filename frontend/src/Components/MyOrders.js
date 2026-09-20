@@ -36,6 +36,8 @@ function MyOrders() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const [orderSearch, setOrderSearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
   const [reorderState, setReorderState] = useState({
     loading: false,
     message: "",
@@ -261,6 +263,21 @@ function MyOrders() {
     pagination &&
     pagination.page < pagination.totalPages;
 
+  const normalizedSearch = orderSearch.trim().toLowerCase();
+
+  const filteredOrders = orders.filter((order) => {
+    if (statusFilter !== "all" && order.status !== statusFilter) return false;
+    if (!normalizedSearch) return true;
+
+    const searchableText = [
+      order.orderNumber,
+      order.status,
+      ...(Array.isArray(order.items) ? order.items.map((item) => item.name) : []),
+    ].filter(Boolean).join(" ").toLowerCase();
+
+    return searchableText.includes(normalizedSearch);
+  });
+
   useEffect(() => {
     if (!reorderState.message || reorderState.loading) {
       return undefined;
@@ -305,6 +322,38 @@ function MyOrders() {
             Order Food
           </Link>
         </div>
+
+
+        {/* SEARCH & FILTER */}
+        {!loading && !error && orders.length > 0 && (
+          <div className="my-orders-toolbar">
+            <div className="my-orders-search-wrap">
+              <span className="my-orders-search-icon">⌕</span>
+              <input
+                type="search"
+                value={orderSearch}
+                onChange={(event) => setOrderSearch(event.target.value)}
+                placeholder="Search order number or food..."
+                aria-label="Search orders"
+              />
+              {orderSearch && (
+                <button type="button" className="my-orders-search-clear" onClick={() => setOrderSearch("")} aria-label="Clear order search">×</button>
+              )}
+            </div>
+
+            <select
+              className="my-orders-status-filter"
+              value={statusFilter}
+              onChange={(event) => setStatusFilter(event.target.value)}
+              aria-label="Filter orders by status"
+            >
+              <option value="all">All Status</option>
+              {Object.entries(STATUS_LABELS).map(([value, label]) => (
+                <option key={value} value={value}>{label}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* LOADING */}
 
@@ -362,7 +411,7 @@ function MyOrders() {
         {!loading && !error && orders.length > 0 && (
           <>
             <div className="my-orders-list">
-              {orders.map((order) => {
+              {filteredOrders.map((order) => {
                 const isExpanded =
                   expandedOrderId === order.id;
 
@@ -444,6 +493,11 @@ function MyOrders() {
                                   item.foodId || index
                                 }`}
                               >
+                                {item.image ? (
+                                  <img className="my-orders-item-image" src={item.image} alt="" loading="lazy" />
+                                ) : (
+                                  <div className="my-orders-item-image my-orders-item-image-placeholder">🍽️</div>
+                                )}
                                 <span className="item-line-name">
                                   <strong>
                                     {item.quantity} ×{" "}
@@ -495,7 +549,7 @@ function MyOrders() {
                                   : ""}
                               </span>
                               <strong>
-                                -$
+                                -₹
                                 {order.pricing.discount.toFixed(
                                   2
                                 )}
@@ -509,7 +563,7 @@ function MyOrders() {
                               {order.pricing
                                 ?.deliveryFee === 0
                                 ? "FREE"
-                                : `$${(
+                                 : `₹${(
                                     order.pricing
                                       ?.deliveryFee ?? 0
                                   ).toFixed(2)}`}
@@ -589,6 +643,17 @@ function MyOrders() {
                 );
               })}
             </div>
+
+            {filteredOrders.length === 0 && (
+              <div className="my-orders-filter-empty">
+                <div>🔎</div>
+                <strong>No matching orders</strong>
+                <p>Try another order number, food name, or status.</p>
+                <button type="button" onClick={() => { setOrderSearch(""); setStatusFilter("all"); }}>
+                  Clear Filters
+                </button>
+              </div>
+            )}
 
             {/* LOAD MORE */}
 
