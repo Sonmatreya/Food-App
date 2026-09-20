@@ -630,3 +630,130 @@
     padding: 12px;
   }
 }
+
+/* REORDER TOAST */
+
+.my-orders-reorder-toast {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 10000;
+
+  max-width: min(420px, calc(100vw - 32px));
+  min-height: 52px;
+  padding: 10px 12px;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14);
+
+  animation: my-orders-toast-in 0.22s ease-out;
+}
+
+@keyframes my-orders-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.my-orders-reorder-toast-icon {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #e8f6ee;
+  color: #198754;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.my-orders-reorder-toast-warning .my-orders-reorder-toast-icon,
+.my-orders-reorder-toast-error .my-orders-reorder-toast-icon {
+  background: #fff4df;
+  color: #a06a00;
+}
+
+.my-orders-reorder-toast-loading .my-orders-reorder-toast-icon {
+  background: #eef4ff;
+  color: #2874f0;
+}
+
+.my-orders-reorder-toast-message {
+  flex: 1;
+  color: #333333;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.my-orders-reorder-toast-action {
+  min-height: 30px;
+  padding: 5px 10px;
+
+  border: 1px solid #e31837;
+  border-radius: 7px;
+
+  background: #ffffff;
+  color: #e31837;
+
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.my-orders-reorder-toast-action:hover {
+  background: #e31837;
+  color: #ffffff;
+}
+
+.my-orders-reorder-toast-close {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  color: #888888;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.my-orders-reorder-toast-close:hover {
+  color: #222222;
+}
+
+@media (max-width: 600px) {
+  .my-orders-reorder-toast {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+
+    max-width: none;
+  }
+
+  .my-orders-reorder-toast-action {
+    padding: 5px 8px;
+  }
+}
