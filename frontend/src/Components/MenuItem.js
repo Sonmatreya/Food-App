@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import WishlistToast from "./WishlistToast";
 import { FaArrowRight, FaHeart } from "react-icons/fa";
 import "../Styles/Menu.css";
 
@@ -7,6 +8,7 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
   const numericPrice = Number(price);
   const numericRating = Number(rating || 0);
   const [wishlisted, setWishlisted] = useState(false);
+  const [wishlistToast, setWishlistToast] = useState({ visible: false, action: "", foodName: "" });
 
   useEffect(() => {
     try {
@@ -17,6 +19,12 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
     }
   }, [id]);
 
+  useEffect(() => {
+    if (!wishlistToast.visible) return undefined;
+    const timer = setTimeout(() => setWishlistToast({ visible: false, action: "", foodName: "" }), 3000);
+    return () => clearTimeout(timer);
+  }, [wishlistToast.visible]);
+
   const toggleWishlist = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -25,8 +33,14 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
       const next = saved.includes(String(id))
         ? saved.filter((itemId) => itemId !== String(id))
         : [...saved, String(id)];
+      const isNowWishlisted = next.includes(String(id));
       localStorage.setItem("foodWishlist", JSON.stringify(next));
-      setWishlisted(next.includes(String(id)));
+      setWishlisted(isNowWishlisted);
+      setWishlistToast({
+        visible: true,
+        action: isNowWishlisted ? "added" : "removed",
+        foodName: name,
+      });
     } catch {}
   };
 
@@ -64,6 +78,12 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
           </div>
         </div>
       </Link>
+      <WishlistToast
+        visible={wishlistToast.visible}
+        action={wishlistToast.action}
+        foodName={wishlistToast.foodName}
+        onClose={() => setWishlistToast({ visible: false, action: "", foodName: "" })}
+      />
     </article>
   );
 }
