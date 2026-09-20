@@ -124,7 +124,7 @@ export default function AdminCoupons() {
         method: editing ? "PUT" : "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code, type: form.type, value: Number(value.toFixed(2)), minimum: Number(minimum.toFixed(2)), maxDiscount: maxDiscount === null ? null : Number(maxDiscount.toFixed(2)), expiresAt: form.expiresAt || null, maxUses, perCustomerLimit, active: form.active }),
+        body: JSON.stringify({ code, type: form.type, value: Number(value.toFixed(2)), minimum: Number(minimum.toFixed(2)), maxDiscount: maxDiscount === null ? null : Number(maxDiscount.toFixed(2)), expiresAt: form.expiresAt ? new Date(form.expiresAt).toISOString() : null, maxUses, perCustomerLimit, active: form.active }),
       });
       const data = await response.json().catch(() => ({}));
       if (!response.ok || !data.success) throw new Error(data.message || "Unable to save coupon.");
