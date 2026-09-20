@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 import "../Styles/MyOrders.css";
 
 const ORDERS_PER_PAGE = 5;
@@ -25,6 +27,8 @@ const PAYMENT_METHOD_LABELS = {
 
 function MyOrders() {
   const { API_URL } = useAuth();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
   const [pagination, setPagination] = useState(null);
@@ -118,6 +122,34 @@ function MyOrders() {
     setExpandedOrderId((current) =>
       current === id ? null : id
     );
+  };
+
+  const handleReorder = (order) => {
+    let addedCount = 0;
+
+    (order.items || []).forEach((item) => {
+      const foodId = item.foodId || item._id || item.id;
+
+      if (/^[a-f\\d]{24}$/i.test(String(foodId || ""))) {
+        addToCart(
+          {
+            _id: foodId,
+            id: foodId,
+            name: item.name,
+            price: Number(item.price || 0),
+            image: item.image || "",
+            category: item.category || "",
+          },
+          Number(item.quantity || 1),
+          item.cookingRequest || ""
+        );
+        addedCount += 1;
+      }
+    });
+
+    if (addedCount > 0) {
+      navigate("/cart");
+    }
   };
 
   const formatDate = (isoDate) => {
@@ -428,17 +460,22 @@ function MyOrders() {
                               : "🛵 Delivery order"}
                           </span>
 
-                          <Link
-                            to={`/order-success/${order.id}`}
-                            style={{
-                              color: "#2874f0",
-                              fontSize: "11px",
-                              fontWeight: "650",
-                              textDecoration: "none",
-                            }}
-                          >
-                            View Details →
-                          </Link>
+                          <div className="my-orders-actions">
+                            <Link
+                              to={`/order-success/${order.id}`}
+                              className="my-orders-view-link"
+                            >
+                              View Details →
+                            </Link>
+
+                            <button
+                              type="button"
+                              className="my-orders-reorder"
+                              onClick={() => handleReorder(order)}
+                            >
+                              Reorder
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}
