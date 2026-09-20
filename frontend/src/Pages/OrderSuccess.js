@@ -701,6 +701,41 @@ function OrderSuccess() {
 
           <div className="successSummaryDivider"></div>
 
+          <div className="successSummaryRow">
+            <span>Subtotal</span>
+            <strong>₹{Number(pricing.subtotal || 0).toFixed(2)}</strong>
+          </div>
+
+          {Number(pricing.discount || 0) > 0 && (
+            <div className="successSummaryRow successDiscountRow">
+              <span>
+                Discount{pricing.couponCode ? ` (${pricing.couponCode})` : ""}
+              </span>
+              <strong>-₹{Number(pricing.discount).toFixed(2)}</strong>
+            </div>
+          )}
+
+          <div className="successSummaryRow">
+            <span>Delivery Fee</span>
+            <strong>
+              {Number(pricing.deliveryFee || 0) === 0
+                ? "FREE"
+                : `₹${Number(pricing.deliveryFee).toFixed(2)}`}
+            </strong>
+          </div>
+
+          <div className="successSummaryRow">
+            <span>Service Fee</span>
+            <strong>₹{Number(pricing.serviceFee || 0).toFixed(2)}</strong>
+          </div>
+
+          <div className="successSummaryRow">
+            <span>Tax</span>
+            <strong>₹{Number(pricing.tax || 0).toFixed(2)}</strong>
+          </div>
+
+          <div className="successSummaryDivider"></div>
+
           <div className="successTotal">
 
             <span>
