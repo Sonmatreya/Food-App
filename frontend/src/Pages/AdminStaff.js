@@ -292,9 +292,11 @@ const AdminStaff = () => {
                     <td>
                       <div className="admin-staff-user">
                         <div className="admin-staff-avatar">
-                          {(account.name || account.email || "U")
-                            .charAt(0)
-                            .toUpperCase()}
+                          {account.profileImage ? (
+                            <img src={account.profileImage} alt="" />
+                          ) : (
+                            (account.name || account.email || "U").charAt(0).toUpperCase()
+                          )}
                         </div>
                         <div>
                           <strong>{account.name || "Unnamed User"}</strong>
