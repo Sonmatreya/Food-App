@@ -43,8 +43,11 @@ const getNextStatuses = (order) => {
 
   const next = [...(NEXT_STATUSES[order.status] || [])];
 
-  if (order.status === "ready" && order.deliveryType === "delivery") {
-    next.unshift("out_for_delivery");
+  if (order.status === "ready") {
+    if (order.deliveryType === "delivery") {
+      return ["out_for_delivery", "cancelled"];
+    }
+    return ["picked_up", "cancelled"];
   }
 
   return next;
