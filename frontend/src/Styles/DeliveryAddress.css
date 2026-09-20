@@ -752,3 +752,145 @@
     width: 100%;
   }
 }
+
+
+/* SAVE ADDRESS DURING CHECKOUT */
+.checkoutSaveAddress {
+  padding: 14px;
+  border: 1px solid #e7e7e7;
+  border-radius: 11px;
+  background: #fafafa;
+}
+
+.checkoutSaveAddressHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.checkoutSaveAddressHeader > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.checkoutSaveAddressHeader strong {
+  color: #333;
+  font-size: 13px;
+}
+
+.checkoutSaveAddressHeader span {
+  color: #888;
+  font-size: 11px;
+}
+
+.saveAddressToggle,
+.saveAddressConfirm {
+  border-radius: 9px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.saveAddressToggle {
+  min-height: 36px;
+  padding: 0 13px;
+  border: 1px solid #f2c8ce;
+  background: #fff7f8;
+  color: var(--color-brand, #e31837);
+}
+
+.saveAddressToggle:hover {
+  background: #ffecef;
+}
+
+.saveAddressPanel {
+  margin-top: 13px;
+  padding-top: 13px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.saveAddressLabelRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.saveAddressLabelRow button {
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #555;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.saveAddressLabelRow button.active {
+  border-color: var(--color-brand, #e31837);
+  background: #fff0f2;
+  color: var(--color-brand, #e31837);
+}
+
+.saveAddressDefaultOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  color: #555;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.saveAddressDefaultOption input {
+  accent-color: var(--color-brand, #e31837);
+}
+
+.saveAddressMessage {
+  margin-bottom: 10px;
+  padding: 9px 11px;
+  border-radius: 8px;
+  background: #fff5f5;
+  color: #c62828;
+  font-size: 11px;
+}
+
+.saveAddressConfirm {
+  min-height: 38px;
+  padding: 0 15px;
+  border: 0;
+  background: var(--color-brand, #e31837);
+  color: #fff;
+}
+
+.saveAddressConfirm:hover {
+  background: var(--color-brand-dark, #c91530);
+}
+
+.saveAddressConfirm:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+.formOptional {
+  color: #999;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+@media (max-width: 500px) {
+  .checkoutSaveAddressHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .saveAddressToggle,
+  .saveAddressConfirm {
+    width: 100%;
+  }
+}
