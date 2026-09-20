@@ -116,6 +116,18 @@ function DeliveryAddress() {
         const defaultAddress = list.find((item) => item.isDefault) || list[0];
         if (defaultAddress && !checkoutData?.address?.name) {
           setSelectedSavedAddressId(defaultAddress._id);
+          setAddress({
+            name: defaultAddress.name || "",
+            phone: defaultAddress.phone || "",
+            addressLine: defaultAddress.addressLine || "",
+            city: defaultAddress.city || "",
+            pincode: defaultAddress.pincode || "",
+            landmark: defaultAddress.landmark || "",
+          });
+          if (defaultAddress.latitude !== null && defaultAddress.latitude !== undefined && defaultAddress.longitude !== null && defaultAddress.longitude !== undefined) {
+            setPosition({ lat: Number(defaultAddress.latitude), lng: Number(defaultAddress.longitude) });
+          }
+          setLocationText(defaultAddress.locationText || "Saved delivery location");
         }
       } catch (error) {
         console.error("Saved addresses error:", error);
