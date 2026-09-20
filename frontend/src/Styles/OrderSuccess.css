@@ -480,6 +480,8 @@
 
 .successSummaryRow span { color: #777; }
 .successSummaryRow strong { color: #333; text-align: right; }
+.successDiscountRow span,
+.successDiscountRow strong { color: #198754; }
 
 .successSummaryDivider {
   height: 1px;
