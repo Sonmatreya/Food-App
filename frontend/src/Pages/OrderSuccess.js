@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { API_URL } from "../config/api";
 import { createSocket } from "../config/socket";
@@ -88,7 +88,7 @@ function OrderSuccess() {
     }
   }, [orderId]);
 
-  const refreshOrder = async () => {
+  const refreshOrder = useCallback(async () => {
     const response = await fetch(
       API_URL + "/api/orders/" + orderId,
       { method: "GET", credentials: "include" }
@@ -98,7 +98,7 @@ function OrderSuccess() {
       throw new Error(data.message || "Unable to refresh order.");
     }
     setOrder(data.order);
-  };
+  }, [API_URL, orderId]);
 
   // Keep this order page synchronized with admin status changes in real time.
   // The REST refresh on connect also reconciles status changes missed while offline.
@@ -149,7 +149,7 @@ function OrderSuccess() {
       socket.disconnect();
       setSocketConnected(false);
     };
-  }, [orderId]);
+  }, [orderId, refreshOrder]);
 
   const handleGenerateHandoverCode = async () => {
     if (handoverLoading) return;
