@@ -538,6 +538,12 @@ function OrderSuccess() {
                     </p>
                   )}
 
+                  {address.landmark && (
+                    <p>
+                      🏷️ Landmark: {address.landmark}
+                    </p>
+                  )}
+
                   {locationText && (
                     <p className="successLocationText">
                       📍 {locationText}
