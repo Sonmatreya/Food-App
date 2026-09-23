@@ -31,12 +31,24 @@ const getNextStatuses = (order) => {
   if (!order || ["delivered", "picked_up", "cancelled"].includes(order.status)) return [];
   const next = [...(NEXT_STATUSES[order.status] || [])];
   if (order.status === "ready") {
-    if (order.deliveryType === "delivery") {
-      return ["out_for_delivery", "cancelled"];
-    }
+    if (order.deliveryType === "delivery") return ["out_for_delivery", "cancelled"];
     return ["picked_up", "cancelled"];
   }
   return next;
+};
+
+const getAddressText = (order) => {
+  if (order?.deliveryType !== "delivery" || !order?.address) return "Customer pickup";
+  const address = order.address;
+  const parts = [address.addressLine, address.city, address.pincode].filter(Boolean);
+  return parts.join(", ") || "Address not provided";
+};
+
+const getMapUrl = (order) => {
+  const latitude = Number(order?.location?.latitude);
+  const longitude = Number(order?.location?.longitude);
+  if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) return "";
+  return `https://www.google.com/maps?q=${latitude},${longitude}`;
 };
 
 const AdminOrders = () => {
@@ -70,22 +82,18 @@ const AdminOrders = () => {
 
   useEffect(() => {
     const socket = createSocket();
-
-    const refreshOrders = () => {
-      fetchOrders(page, appliedFilters);
-    };
-
+    const refreshOrders = () => { fetchOrders(page, appliedFilters); };
     socket.on("connect", () => {});
     socket.on("admin:order-updated", refreshOrders);
     socket.on("admin:order-created", refreshOrders);
     socket.connect();
-
     return () => {
       socket.off("admin:order-updated", refreshOrders);
       socket.off("admin:order-created", refreshOrders);
       socket.disconnect();
     };
   }, [fetchOrders, page, appliedFilters]);
+
   const handleFilterSubmit = (event) => { event.preventDefault(); setAppliedFilters({ ...filters }); };
   const handleReset = () => { const empty = { search: "", status: "", paymentStatus: "", deliveryType: "" }; setFilters(empty); setAppliedFilters(empty); };
 
@@ -108,7 +116,11 @@ const AdminOrders = () => {
 
   return (
     <main className="admin-orders-page">
-      <header className="admin-orders-header"><div><p className="admin-orders-eyebrow">Administration</p><h1>Orders</h1><p>Monitor customer orders and update their operational status.</p></div><button type="button" className="admin-orders-customers-link" onClick={() => navigate("/admin/customers")}>Customers</button></header>
+      <header className="admin-orders-header">
+        <div><p className="admin-orders-eyebrow">Administration</p><h1>Orders</h1><p>Monitor customer orders, delivery information and operational status.</p></div>
+        <button type="button" className="admin-orders-customers-link" onClick={() => navigate("/admin/customers")}>Customers</button>
+      </header>
+
       <form className="admin-orders-filters" onSubmit={handleFilterSubmit}>
         <input value={filters.search} onChange={(e) => setFilters((current) => ({ ...current, search: e.target.value }))} placeholder="Search order, name, email or phone" aria-label="Search orders" />
         <select value={filters.status} onChange={(e) => setFilters((current) => ({ ...current, status: e.target.value }))} aria-label="Filter by order status">
@@ -119,25 +131,39 @@ const AdminOrders = () => {
         <select value={filters.deliveryType} onChange={(e) => setFilters((current) => ({ ...current, deliveryType: e.target.value }))} aria-label="Filter by fulfillment type"><option value="">Delivery & Pickup</option><option value="delivery">Delivery</option><option value="pickup">Pickup</option></select>
         <button type="submit" className="admin-orders-filter-button">Filter</button><button type="button" className="admin-orders-reset-button" onClick={handleReset}>Reset</button>
       </form>
-      {error && <div className="admin-orders-error" role="alert">{error}</div>}      {pagination && <section className="admin-order-summary">
+
+      {error && <div className="admin-orders-error" role="alert">{error}</div>}
+
+      {pagination && <section className="admin-order-summary">
         <article><span>Total orders</span><strong>{pagination.total || 0}</strong><small>Matching current filters</small></article>
         <article><span>Active</span><strong>{orderSummary?.active ?? "—"}</strong><small>Still in progress</small></article>
         <article><span>Completed</span><strong>{orderSummary?.delivered ?? "—"}</strong><small>Delivered / picked up</small></article>
         <article><span>Revenue</span><strong>{money(orderSummary?.revenue)}</strong><small>Excluding cancelled</small></article>
       </section>}
+
       {loading ? <section className="admin-orders-state"><div className="admin-orders-spinner" /><h2>Loading orders...</h2><p>Please wait while order information is loaded.</p></section> : orders.length === 0 ? <section className="admin-orders-state"><div className="admin-orders-state-icon">📦</div><h2>No orders found</h2><p>Try changing the search or filters.</p></section> : <>
         <section className="admin-orders-list">{orders.map((order) => {
-          const orderId = order.id || order._id; const customer = order.customer || {}; const total = order?.pricing?.grandTotal || 0;
+          const orderId = order.id || order._id;
+          const customer = order.customer || {};
+          const total = order?.pricing?.grandTotal || 0;
           const itemsCount = Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + Number(item.quantity || 0), 0) : 0;
-          const completed = ["delivered", "picked_up"].includes(order.status); const nextStatuses = getNextStatuses(order);
+          const completed = ["delivered", "picked_up"].includes(order.status);
+          const nextStatuses = getNextStatuses(order);
+          const mapUrl = getMapUrl(order);
+          const landmark = order?.address?.landmark || "";
           return <article className="admin-order-card" key={orderId || order.orderNumber}>
-            <div className="admin-order-card-top"><div><span className="admin-order-number">{order.orderNumber || "Order"}</span><p>{formatDate(order.createdAt)}</p></div><span className={`admin-order-status status-${order.status}`}>{statusLabel(order.status)}</span></div>
+            <div className="admin-order-card-top">
+              <div><span className="admin-order-number">{order.orderNumber || "Order"}</span><p>{formatDate(order.createdAt)}</p></div>
+              <span className={`admin-order-status status-${order.status}`}>{statusLabel(order.status)}</span>
+            </div>
+
             <div className="admin-order-card-body">
               <div><span>Customer</span><strong>{customer.name || "Unknown customer"}</strong><small>{customer.email || customer.phone || "—"}</small>{customer.id && <button type="button" className="admin-order-customer-link" onClick={() => navigate(`/admin/customers/${customer.id}`)}>View customer</button>}</div>
-              <div><span>Fulfillment</span><strong>{order.deliveryType === "pickup" ? "Pickup" : "Delivery"}</strong><small>{itemsCount} item{itemsCount === 1 ? "" : "s"}</small></div>
+              <div><span>Delivery</span><strong>{order.deliveryType === "pickup" ? "Pickup" : "Delivery"}</strong><small className="admin-order-address">{getAddressText(order)}</small>{landmark && <small className="admin-order-landmark">🏷️ {landmark}</small>}{mapUrl && <a className="admin-order-map-link" href={mapUrl} target="_blank" rel="noreferrer">📍 Open map</a>}{order?.location?.locationText && <small className="admin-order-location-text">{order.location.locationText}</small>}</div>
               <div><span>Payment</span><strong>{String(order.paymentMethod || "—").toUpperCase()}</strong><small>{statusLabel(order.paymentStatus)}</small></div>
-              <div><span>Total</span><strong>{money(total)}</strong><small>{order.pricing?.couponCode ? `Coupon: ${order.pricing.couponCode}` : "No coupon"}</small></div>
+              <div><span>Order</span><strong>{itemsCount} item{itemsCount === 1 ? "" : "s"}</strong><small>{order.pricing?.couponCode ? `Coupon: ${order.pricing.couponCode}` : "No coupon"} · {money(total)}</small></div>
             </div>
+
             <div className="admin-order-card-actions">
               <select value={order.status || ""} disabled={completed || updatingId === orderId || nextStatuses.length === 0} onChange={(e) => updateStatus(orderId, e.target.value)} aria-label={`Update ${order.orderNumber || "order"} status`}>
                 {completed ? <option value={order.status}>{statusLabel(order.status)}</option> : <><option value={order.status}>{statusLabel(order.status)} (current)</option>{nextStatuses.map((status) => <option key={status} value={status}>{statusLabel(status)}</option>)}</>}
@@ -146,6 +172,7 @@ const AdminOrders = () => {
             </div>
           </article>;
         })}</section>
+
         <div className="admin-orders-pagination"><button type="button" disabled={page <= 1 || loading} onClick={() => fetchOrders(page - 1, appliedFilters)}>← Previous</button><span>Page {page}{pagination?.totalPages ? ` of ${pagination.totalPages}` : ""}</span><button type="button" disabled={!hasMore || loading} onClick={() => fetchOrders(page + 1, appliedFilters)}>Next →</button></div>
       </>}
     </main>
