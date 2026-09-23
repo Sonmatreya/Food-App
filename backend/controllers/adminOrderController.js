@@ -61,6 +61,7 @@ const buildAdminOrderResponse = (order) => ({
           addressLine: order.address?.addressLine || "",
           city: order.address?.city || "",
           pincode: order.address?.pincode || "",
+          landmark: order.address?.landmark || "",
         }
       : null,
   location:
