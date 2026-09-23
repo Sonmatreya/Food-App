@@ -118,6 +118,7 @@ const orderSchema = new mongoose.Schema(
       },
       city: { type: String, trim: true, maxlength: 100, default: "" },
       pincode: { type: String, trim: true, maxlength: 10, default: "" },
+      landmark: { type: String, trim: true, maxlength: 120, default: "" },
     },
 
     // Map location snapshot
