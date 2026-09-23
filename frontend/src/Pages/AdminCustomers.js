@@ -51,7 +51,7 @@ const AdminCustomers = () => {
   const [verificationUpdating, setVerificationUpdating] = useState("");
 
   const fetchCustomers = useCallback(
-    async (pageNumber, activeSearch = search, activeVerification = verification) => {
+    async (pageNumber, activeSearch = "", activeVerification = "") => {
       setLoading(true);
       setError("");
 
@@ -98,12 +98,12 @@ const AdminCustomers = () => {
         setLoading(false);
       }
     },
-    [search, verification]
+    []
   );
 
   useEffect(() => {
     fetchCustomers(1, "", "");
-  }, []);
+  }, [fetchCustomers]);
 
   const handleSearch = (event) => {
     event.preventDefault();
@@ -330,7 +330,7 @@ const AdminCustomers = () => {
             <div className="admin-customers-pagination">
               <button
                 type="button"
-                onClick={() => fetchCustomers(page - 1)}
+                onClick={() => fetchCustomers(page - 1, search, verification)}
                 disabled={!hasPrevious || loading}
               >
                 ← Previous
@@ -340,7 +340,7 @@ const AdminCustomers = () => {
               </span>
               <button
                 type="button"
-                onClick={() => fetchCustomers(page + 1)}
+                onClick={() => fetchCustomers(page + 1, search, verification)}
                 disabled={!hasNext || loading}
               >
                 Next →
