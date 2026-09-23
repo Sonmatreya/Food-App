@@ -115,6 +115,7 @@ function Payment() {
                     addressLine: address.addressLine,
                     city: address.city,
                     pincode: address.pincode,
+                    landmark: address.landmark || "",
                   }
                 : undefined,
             location:
