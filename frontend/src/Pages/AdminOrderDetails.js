@@ -373,9 +373,22 @@ const AdminOrderDetails = () => {
               <span>
                 {order.address.city || ""} {order.address.pincode || ""}
               </span>
-              {order.location?.locationText && (
-                <span>{order.location.locationText}</span>
+              {order.address.landmark && (
+                <span>🏷️ Landmark: {order.address.landmark}</span>
               )}
+              {order.location?.locationText && (
+                <span>📍 {order.location.locationText}</span>
+              )}
+              {Number.isFinite(Number(order.location?.latitude)) &&
+                Number.isFinite(Number(order.location?.longitude)) && (
+                  <a
+                    href={`https://www.google.com/maps?q=${order.location.latitude},${order.location.longitude}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    🗺️ Open delivery location in Maps
+                  </a>
+                )}
             </div>
           ) : (
             <div className="admin-order-pickup">
