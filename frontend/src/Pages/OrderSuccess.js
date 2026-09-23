@@ -98,7 +98,7 @@ function OrderSuccess() {
       throw new Error(data.message || "Unable to refresh order.");
     }
     setOrder(data.order);
-  }, [API_URL, orderId]);
+  }, [orderId]);
 
   // Keep this order page synchronized with admin status changes in real time.
   // The REST refresh on connect also reconciles status changes missed while offline.
