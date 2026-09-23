@@ -113,24 +113,45 @@ const AdminCustomerDetails = () => {
   useEffect(() => {
     fetchCustomerDetails();
   }, [fetchCustomerDetails]);
+
   const handleToggleVerification = async () => {
     if (!customer || verificationUpdating) return;
     const nextValue = !Boolean(customer.isVerified);
     setVerificationUpdating(true);
     setError("");
+
     try {
-      const response = await fetch(API_URL + "/api/admin/customers/" + encodeURIComponent(id) + "/verification", {
-        method: "PATCH", credentials: "include",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({ isVerified: nextValue }),
-      });
+      const response = await fetch(
+        API_URL + "/api/admin/customers/" + encodeURIComponent(id) + "/verification",
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ isVerified: nextValue }),
+        }
+      );
+
       const data = await response.json().catch(() => null);
-      if (!response.ok) { setError(data?.message || "Unable to update customer verification."); return; }
-      setCustomer((previous) => previous ? { ...previous, isVerified: nextValue } : previous);
+
+      if (!response.ok) {
+        setError(
+          data?.message || "Unable to update customer verification."
+        );
+        return;
+      }
+
+      setCustomer((previous) =>
+        previous ? { ...previous, isVerified: nextValue } : previous
+      );
     } catch (verificationError) {
       console.error("Customer verification update error:", verificationError);
       setError("Unable to update customer verification. Please try again.");
-    } finally { setVerificationUpdating(false); }
+    } finally {
+      setVerificationUpdating(false);
+    }
   };
 
   if (loading) {
@@ -192,14 +213,42 @@ const AdminCustomerDetails = () => {
           <h1>Customer Details</h1>
           <p>View customer account information and order history.</p>
         </div>
-        <button
-          type="button"
-          className={"admin-customer-details-verification admin-customer-details-verification-button " + (isVerified ? "is-verified" : "is-not-verified")}
-          onClick={handleToggleVerification}
-          disabled={verificationUpdating}
-        >
-          {verificationUpdating ? "Updating..." : isVerified ? "Verified • Click to Unverify" : "Not Verified • Click to Verify"}
-        </button>
+
+        <div className="admin-customer-details-header-actions">
+          {customer.email ? (
+            <a
+              className="admin-customer-contact-button"
+              href={"mailto:" + customer.email}
+            >
+              ✉ Email
+            </a>
+          ) : null}
+
+          {customer.phone ? (
+            <a
+              className="admin-customer-contact-button"
+              href={"tel:" + customer.phone}
+            >
+              ☎ Call
+            </a>
+          ) : null}
+
+          <button
+            type="button"
+            className={
+              "admin-customer-details-verification admin-customer-details-verification-button " +
+              (isVerified ? "is-verified" : "is-not-verified")
+            }
+            onClick={handleToggleVerification}
+            disabled={verificationUpdating}
+          >
+            {verificationUpdating
+              ? "Updating..."
+              : isVerified
+                ? "Verified • Click to Unverify"
+                : "Not Verified • Click to Verify"}
+          </button>
+        </div>
       </header>
 
       <section className="admin-customer-details-card admin-customer-profile-card">
@@ -283,6 +332,11 @@ const AdminCustomerDetails = () => {
 
                   <span className="admin-customer-order-status">
                     {getStatusLabel(order.status)}
+                  </span>
+
+                  <span className="admin-customer-order-payment">
+                    {order.paymentMethod || "Payment"} ·{" "}
+                    {getStatusLabel(order.paymentStatus || "pending")}
                   </span>
 
                   <strong className="admin-customer-order-total">
