@@ -140,6 +140,7 @@ const createOrder = async (req, res) => {
         addressLine: String(raw.addressLine ?? "").trim().slice(0, 300),
         city: String(raw.city ?? "").trim().slice(0, 100),
         pincode: String(raw.pincode ?? "").trim().slice(0, 10),
+        landmark: String(raw.landmark ?? "").trim().slice(0, 120),
       };
       if (!address.name || !address.phone || !address.addressLine || !address.city || !address.pincode) {
         return res.status(400).json({ success: false, message: "Complete delivery address (name, phone, address, city, pincode) is required" });
