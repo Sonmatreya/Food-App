@@ -4,7 +4,7 @@ const fallbackReply = (message, foods) => {
   const text = String(message || "").toLowerCase();
   const available = foods.filter((food) => food.isAvailable !== false);
   if (!available.length) return "I could not find any available dishes right now. Please check the menu again shortly.";
-  const budgetMatch = text.match(/(?:under|below|less than|within)\\s*(?:₹|rs\\.?|inr)?\\s*(\\d+(?:\\.\\d+)?)/i);
+  const budgetMatch = text.match(/(?:under|below|less than|within)\\s*(?:$|rs\\.?|inr)?\\s*(\\d+(?:\\.\\d+)?)/i);
   const budget = budgetMatch ? Number(budgetMatch[1]) : null;
   let matches = available;
   if (budget !== null && Number.isFinite(budget)) matches = matches.filter((food) => Number(food.price) <= budget);
@@ -13,7 +13,7 @@ const fallbackReply = (message, foods) => {
   if (category) matches = matches.filter((food) => (String(food.name) + " " + String(food.category) + " " + String(food.description)).toLowerCase().includes(category));
   matches = [...matches].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0)).slice(0, 3);
   if (!matches.length) return "I could not find a matching dish in the current catalogue. Try another category or a higher budget.";
-  const recommendations = matches.map((food) => food.name + " — ₹" + Number(food.price).toFixed(2) + " (" + Number(food.rating || 0).toFixed(1) + "★)").join("\\n");
+  const recommendations = matches.map((food) => food.name + " — $" + Number(food.price).toFixed(2) + " (" + Number(food.rating || 0).toFixed(1) + "★)").join("\\n");
   return "Here are a few options from our current menu:\\n\\n" + recommendations + "\\n\\nOpen the Menu to explore them and choose what you like.";
 };
 
@@ -31,7 +31,7 @@ const chatWithAssistant = async (req, res) => {
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
         input: [
-          { role: "system", content: [{ type: "input_text", text: "You are FoodAI, the helpful food-ordering assistant for this restaurant app. Recommend only dishes present in the supplied catalogue. Never invent prices, availability, ingredients, coupons, delivery times, order statuses, or restaurant policies. If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. Keep answers concise, friendly, and useful. Use Indian rupee (₹) for catalogue prices. Catalogue:\\n" + JSON.stringify(catalogue) }] },
+          { role: "system", content: [{ type: "input_text", text: "You are FoodAI, the helpful food-ordering assistant for this restaurant app. Recommend only dishes present in the supplied catalogue. Never invent prices, availability, ingredients, coupons, delivery times, order statuses, or restaurant policies. If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. Keep answers concise, friendly, and useful. Use Indian rupee ($) for catalogue prices. Catalogue:\\n" + JSON.stringify(catalogue) }] },
           { role: "user", content: [{ type: "input_text", text: message }] },
         ],
         max_output_tokens: 500,
