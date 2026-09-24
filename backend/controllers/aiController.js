@@ -4,7 +4,7 @@ const fallbackReply = (message, foods) => {
   const text = String(message || "").toLowerCase();
   const available = foods.filter((food) => food.isAvailable !== false);
   if (!available.length) return "I could not find any available dishes right now. Please check the menu again shortly.";
-  const budgetMatch = text.match(/(?:under|below|less than|within)\\s*(?:$|rs\\.?|inr)?\\s*(\\d+(?:\\.\\d+)?)/i);
+  const budgetMatch = text.match(/(?:under|below|less than|within)\s*(?:$|rs\.?|inr)?\s*(\\d+(?:\\.\\d+)?)/i);
   const budget = budgetMatch ? Number(budgetMatch[1]) : null;
   let matches = available;
   if (budget !== null && Number.isFinite(budget)) matches = matches.filter((food) => Number(food.price) <= budget);
@@ -31,7 +31,7 @@ const chatWithAssistant = async (req, res) => {
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
         input: [
-          { role: "system", content: [{ type: "input_text", text: "You are FoodAI, the helpful food-ordering assistant for this restaurant app. Recommend only dishes present in the supplied catalogue. Never invent prices, availability, ingredients, coupons, delivery times, order statuses, or restaurant policies. If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. Keep answers concise, friendly, and useful. Use Indian rupee ($) for catalogue prices. Catalogue:\\n" + JSON.stringify(catalogue) }] },
+          { role: "system", content: [{ type: "input_text", text: "You are FoodAI, the helpful food-ordering assistant for this restaurant app. Recommend only dishes present in the supplied catalogue. Never invent prices, availability, ingredients, coupons, delivery times, order statuses, or restaurant policies. If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. Keep answers concise, friendly, and useful. Use the same currency shown by the catalogue for prices. Catalogue:\\n" + JSON.stringify(catalogue) }] },
           { role: "user", content: [{ type: "input_text", text: message }] },
         ],
         max_output_tokens: 500,
