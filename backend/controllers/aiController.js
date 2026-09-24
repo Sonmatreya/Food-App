@@ -22,24 +22,24 @@ const chatWithAssistant = async (req, res) => {
     const message = String(req.body?.message || "").trim();
     if (!message || message.length > 500) return res.status(400).json({ success: false, message: "Please enter a message between 1 and 500 characters." });
     const foods = await Food.find({ isAvailable: true }).select("name description category price rating ingredients isFeatured isAvailable").sort({ rating: -1 }).limit(60).lean();
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) return res.json({ success: true, reply: fallbackReply(message, foods), mode: "catalogue-fallback" });
     const catalogue = foods.map((food) => ({ name: food.name, category: food.category, price: food.price, rating: food.rating, ingredients: food.ingredients, description: food.description, featured: food.isFeatured }));
-    const response = await fetch("https://api.openai.com/v1/responses", {
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: "Bearer " + apiKey },
+      headers: {\n        "Content-Type": "application/json",\n        Authorization: "Bearer " + apiKey,\n        "HTTP-Referer": process.env.OPENROUTER_SITE_URL || "http://localhost:3000",\n        "X-Title": process.env.OPENROUTER_APP_NAME || "Food App",\n      },
       body: JSON.stringify({
         model: process.env.OPENAI_MODEL || "gpt-5.6-luna",
         input: [
           { role: "system", content: [{ type: "input_text", text: "You are FoodAI, the helpful food-ordering assistant for this restaurant app. Recommend only dishes present in the supplied catalogue. Never invent prices, availability, ingredients, coupons, delivery times, order statuses, or restaurant policies. If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. Keep answers concise, friendly, and useful. Use the same currency shown by the catalogue for prices. Catalogue:\\n" + JSON.stringify(catalogue) }] },
           { role: "user", content: [{ type: "input_text", text: message }] },
         ],
-        max_output_tokens: 500,
+        max_tokens: 500,
       }),
     });
     const data = await response.json();
-    if (!response.ok) { console.error("OpenAI assistant error:", data); return res.json({ success: true, reply: fallbackReply(message, foods), mode: "catalogue-fallback" }); }
-    const reply = data.output_text || data.output?.flatMap((item) => item.content || []).map((item) => item.text || "").join("\\n").trim();
+    if (!response.ok) { console.error("OpenRouter assistant error:", data); return res.json({ success: true, reply: fallbackReply(message, foods), mode: "catalogue-fallback" }); }
+    const reply = data.choices?.[0]?.message?.content?.trim();
     return res.json({ success: true, reply: reply || fallbackReply(message, foods), mode: "ai" });
   } catch (error) {
     console.error("AI assistant error:", error);
