@@ -34,6 +34,7 @@ import AdminMenu from "./Pages/AdminMenu";
 import AdminCoupons from "./Pages/AdminCoupons";
 import AdminStaff from "./Pages/AdminStaff";
 import AdminReviews from "./Pages/AdminReviews";
+import AIAssistant from "./Components/AIAssistant";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
 
@@ -81,6 +82,7 @@ function AppRoutes() {
       </Routes>
 
       {!isAdminRoute && <Footer />}
+      {!isAdminRoute && <AIAssistant />}
     </div>
   );
 }
