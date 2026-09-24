@@ -281,7 +281,7 @@ const AdminMenu = () => {
               <tbody>
                 {foods.map((food) => (
                   <tr key={food._id}>
-                    <td><div className="admin-menu-food"><div className="admin-menu-thumb">{food.image ? <img src={food.image} alt="" /> : <span>🍽️</span>}</div><div><strong>{food.name}</strong><small>{food.description || "No description"}</small></div></div></td>
+                    <td><div className="admin-menu-food"><div className="admin-menu-thumb">{food.image ? <img src={food.image} alt="" /> : <span>🍽️</span>}</div><div><strong>{food.name}</strong><div className="admin-menu-food-meta">{food.isFeatured && <span className="admin-menu-featured">★ Featured</span>}<small>{food.description || "No description"}</small></div></div></div></td>
                     <td><span className="admin-menu-category">{food.category}</span></td>
                     <td><strong className="admin-menu-price">{"$"}{Number(food.price || 0).toFixed(2)}</strong></td>
                     <td><span className="admin-menu-rating">★ {Number(food.rating || 0).toFixed(1)}</span></td>
@@ -315,6 +315,12 @@ const AdminMenu = () => {
               <label>Price<input required type="number" min="0" step="0.01" value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} /></label>
               <label>Rating<input type="number" min="0" max="5" step="0.1" value={form.rating} onChange={(event) => setForm({ ...form, rating: event.target.value })} /></label>
               <label className="wide">Image URL<input value={form.image} onChange={(event) => setForm({ ...form, image: event.target.value })} placeholder="https://..." /></label>
+              {form.image.trim() && (
+                <div className="admin-menu-image-preview wide">
+                  <span>Image preview</span>
+                  <img src={form.image.trim()} alt="Food preview" onError={(event) => { event.currentTarget.style.display = "none"; }} />
+                </div>
+              )}
               <label className="wide">Description<textarea rows="3" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} placeholder="Describe the dish for customers" /></label>
               <label className="wide">Ingredients<input value={form.ingredients} onChange={(event) => setForm({ ...form, ingredients: event.target.value })} placeholder="Tomato sauce, mozzarella, basil" /></label>
               <label className="admin-menu-check"><input type="checkbox" checked={form.isAvailable} onChange={(event) => setForm({ ...form, isAvailable: event.target.checked })} /> Available for customers</label>
