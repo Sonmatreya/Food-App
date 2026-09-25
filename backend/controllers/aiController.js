@@ -67,8 +67,6 @@ const chatWithAssistant = async (req, res) => {
           { role: "user", content: message },
         ],
         max_tokens: 500,
-        temperature: 0.2,
-        response_format: { type: "json_object" },
       }),
     });
 
@@ -146,6 +144,8 @@ const generateFood = async (req, res) => {
           { role: "user", content: prompt },
         ],
         max_tokens: 500,
+        temperature: 0.2,
+        response_format: { type: "json_object" },
       }),
     });
 
