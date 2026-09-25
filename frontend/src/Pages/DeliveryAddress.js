@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  LayersControl,
-  Marker,
-  Popup,
-  useMap,
-  useMapEvents,
-} from "react-leaflet";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import GoogleMapPicker from "../Components/GoogleMapPicker";
 import "../Styles/DeliveryAddress.css";
 
 // Fix Leaflet marker icons in React
@@ -31,39 +21,6 @@ const DEFAULT_LOCATION = {
   lat: 22.5726,
   lng: 88.3639,
 };
-
-// Move map when location changes
-function MapController({ position }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (position) {
-      map.flyTo(
-        [position.lat, position.lng],
-        16,
-        {
-          duration: 1.2,
-        }
-      );
-    }
-  }, [position, map]);
-
-  return null;
-}
-
-// Allow user to click anywhere on the map
-function MapClickHandler({ onLocationSelect }) {
-  useMapEvents({
-    click(event) {
-      onLocationSelect({
-        lat: event.latlng.lat,
-        lng: event.latlng.lng,
-      });
-    },
-  });
-
-  return null;
-}
 
 function DeliveryAddress() {
   const navigate = useNavigate();
@@ -631,79 +588,11 @@ function DeliveryAddress() {
             {/* MAP */}
 
             <div className="mapWrapper">
-
-              <MapContainer
-                center={[
-                  position.lat,
-                  position.lng,
-                ]}
-                zoom={13}
-                scrollWheelZoom={true}
-                className="deliveryMap"
-              >
-
-                <LayersControl position="topright">
-                  <LayersControl.BaseLayer checked name="Default Map">
-                    <TileLayer
-                      attribution='&copy; OpenStreetMap contributors'
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                  </LayersControl.BaseLayer>
-                  <LayersControl.BaseLayer name="Satellite">
-                    <TileLayer
-                      attribution='Tiles &copy; Esri'
-                      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                    />
-                  </LayersControl.BaseLayer>
-                </LayersControl>
-
-                <Marker
-                  position={[
-                    position.lat,
-                    position.lng,
-                  ]}
-                  draggable={true}
-                  eventHandlers={{
-                    dragend: (event) => {
-                      const marker =
-                        event.target;
-
-                      const newPosition =
-                        marker.getLatLng();
-
-                      handleLocationSelect({
-                        lat:
-                          newPosition.lat,
-                        lng:
-                          newPosition.lng,
-                      });
-                    },
-                  }}
-                >
-
-                  <Popup>
-                    <strong>
-                      Delivery Location
-                    </strong>
-                    <br />
-                    Your food will be delivered
-                    here.
-                  </Popup>
-
-                </Marker>
-
-                <MapController
-                  position={position}
-                />
-
-                <MapClickHandler
-                  onLocationSelect={
-                    handleLocationSelect
-                  }
-                />
-
-              </MapContainer>
-
+              <GoogleMapPicker
+                position={position}
+                onLocationSelect={handleLocationSelect}
+                className="deliveryGoogleMap"
+              />
             </div>
 
             {locationError && (
