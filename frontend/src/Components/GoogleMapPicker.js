@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import "../Styles/GoogleMapPicker.css";
 
 const DEFAULT_LOCATION = { lat: 22.5726, lng: 88.3639 };
 
