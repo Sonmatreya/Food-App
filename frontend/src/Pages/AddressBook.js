@@ -1,36 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, LayersControl, useMap, useMapEvents } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { useCallback, useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import GoogleMapPicker from "../Components/GoogleMapPicker";
 import "../Styles/AddressBook.css";
-
-delete L.Icon.Default.prototype._getIconUrl;
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png",
-  iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon.png",
-  shadowUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png",
-});
-
-const DEFAULT_LOCATION = { lat: 22.5726, lng: 88.3639 };
-
-function AddressMapController({ position }) {
-  const map = useMap();
-  useEffect(() => {
-    if (position) map.flyTo([position.lat, position.lng], 16, { duration: 0.8 });
-  }, [position, map]);
-  return null;
-}
-
-function AddressMapClickHandler({ onSelect }) {
-  useMapEvents({
-    click(event) {
-      onSelect({ lat: event.latlng.lat, lng: event.latlng.lng });
-    },
-  });
-  return null;
-}
 
 const EMPTY_FORM = {
   label: "Home",
@@ -282,30 +255,11 @@ function AddressBook() {
                 </button>
               </div>
               <div className="address-book-map-wrapper">
-                <MapContainer center={[mapPosition.lat, mapPosition.lng]} zoom={13} scrollWheelZoom className="address-book-map">
-                  <LayersControl position="topright">
-                    <LayersControl.BaseLayer checked name="Default Map">
-                      <TileLayer attribution='&copy; OpenStreetMap contributors' url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                    </LayersControl.BaseLayer>
-                    <LayersControl.BaseLayer name="Satellite">
-                      <TileLayer attribution='Tiles &copy; Esri' url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
-                    </LayersControl.BaseLayer>
-                  </LayersControl>
-                  <Marker
-                    position={[mapPosition.lat, mapPosition.lng]}
-                    draggable
-                    eventHandlers={{
-                      dragend: (event) => {
-                        const point = event.target.getLatLng();
-                        selectMapLocation({ lat: point.lat, lng: point.lng });
-                      },
-                    }}
-                  >
-                    <Popup><strong>Delivery Location</strong><br />This location will be saved with your address.</Popup>
-                  </Marker>
-                  <AddressMapController position={mapPosition} />
-                  <AddressMapClickHandler onSelect={selectMapLocation} />
-                </MapContainer>
+                <GoogleMapPicker
+                  position={mapPosition}
+                  onLocationSelect={selectMapLocation}
+                  className="addressBookGoogleMap"
+                />
               </div>
               <div className="address-book-map-location">
                 <span>📍</span>
