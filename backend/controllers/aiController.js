@@ -67,6 +67,8 @@ const chatWithAssistant = async (req, res) => {
           { role: "user", content: message },
         ],
         max_tokens: 500,
+        temperature: 0.2,
+        response_format: { type: "json_object" },
       }),
     });
 
@@ -151,9 +153,13 @@ const generateFood = async (req, res) => {
 
     if (!response.ok) {
       console.error("OpenRouter food generator error:", data);
+      const providerMessage =
+        data?.error?.message ||
+        data?.error?.metadata?.raw ||
+        "AI provider rejected the request.";
       return res.status(502).json({
         success: false,
-        message: "AI food generation failed. Please try again.",
+        message: providerMessage,
       });
     }
 
