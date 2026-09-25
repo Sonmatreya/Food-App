@@ -36,6 +36,8 @@ const AdminMenu = () => {
   const [seeding, setSeeding] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [aiPrompt, setAiPrompt] = useState("");
+  const [aiGenerating, setAiGenerating] = useState(false);
 
   const request = async (path, options = {}) => {
     const response = await fetch(`${API_URL}${path}`, {
@@ -125,6 +127,48 @@ const AdminMenu = () => {
     setModalOpen(false);
     setEditingFood(null);
     setForm({ ...emptyForm });
+  };
+
+  const generateFoodWithAI = async () => {
+    const prompt = aiPrompt.trim();
+
+    if (!prompt) {
+      setError("Describe the food you want AI to create.");
+      return;
+    }
+
+    try {
+      setAiGenerating(true);
+      setError("");
+      setNotice("");
+
+      const data = await request("/api/ai/generate-food", {
+        method: "POST",
+        body: JSON.stringify({ prompt }),
+      });
+
+      const generated = data.food || {};
+
+      setForm((current) => ({
+        ...current,
+        name: generated.name || current.name,
+        category: generated.category || current.category,
+        price: generated.suggestedPrice ?? current.price,
+        rating: 0,
+        description: generated.description || current.description,
+        ingredients: Array.isArray(generated.ingredients)
+          ? generated.ingredients.join(", ")
+          : current.ingredients,
+        isFeatured: generated.isFeatured === true,
+      }));
+
+      setNotice("AI draft generated. Review the details before adding it to MongoDB.");
+      setAiPrompt("");
+    } catch (requestError) {
+      setError(requestError.message || "Unable to generate food with AI.");
+    } finally {
+      setAiGenerating(false);
+    }
   };
 
   const handleSubmit = async (event) => {
@@ -309,6 +353,33 @@ const AdminMenu = () => {
         <div className="admin-menu-modal-backdrop" role="presentation" onMouseDown={(event) => event.target === event.currentTarget && closeModal()}>
           <form className="admin-menu-modal" onSubmit={handleSubmit}>
             <div className="admin-menu-modal-header"><div><span>{editingFood ? "Update dish" : "New dish"}</span><h3>{editingFood ? "Edit Food" : "Add Food"}</h3></div><button type="button" onClick={closeModal}>×</button></div>
+            {!editingFood && (
+              <div className="admin-menu-ai-generator wide">
+                <div>
+                  <span className="admin-menu-ai-badge">✨ Food AI</span>
+                  <strong>Create a food draft with AI</strong>
+                  <p>Describe the dish. AI fills the name, category, description, ingredients and suggested INR price. You review it before saving.</p>
+                </div>
+                <div className="admin-menu-ai-controls">
+                  <input
+                    value={aiPrompt}
+                    onChange={(event) => setAiPrompt(event.target.value)}
+                    placeholder="e.g. Create a spicy chicken cheese burger"
+                    maxLength={300}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        event.preventDefault();
+                        generateFoodWithAI();
+                      }
+                    }}
+                  />
+                  <button type="button" onClick={generateFoodWithAI} disabled={aiGenerating}>
+                    {aiGenerating ? "Generating..." : "Generate"}
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="admin-menu-form-grid">
               <label>Food name<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label>
               <label>Category<input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} /></label>
