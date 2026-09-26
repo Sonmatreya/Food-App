@@ -29,6 +29,13 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
     const handleQuickAdd = (event) => {\n    event.preventDefault();\n    event.stopPropagation();\n    addToCart({ _id: id, image, name, price: numericPrice, category, rating, isAvailable }, 1);\n    showToast(`${name} added to cart`);\n  };\n\n  return () => clearTimeout(timer);
   }, [wishlistToast.visible]);
 
+  const handleQuickAdd = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    addToCart({ _id: id, image, name, price: numericPrice, category, rating, isAvailable }, 1);
+    showToast(`${name} added to cart`);
+  };
+
   const toggleWishlist = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -82,7 +89,8 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
           </div>
         </div>
       </Link>
-      <button type="button" className="menuQuickAdd" onClick={handleQuickAdd} disabled={!isAvailable}><FaShoppingBag /> {isAvailable ? "Add to Cart" : "Unavailable"}</button>\n      <WishlistToast
+      <button type="button" className="menuQuickAdd" onClick={handleQuickAdd} disabled={!isAvailable}><FaShoppingBag /> {isAvailable ? "Add to Cart" : "Unavailable"}</button>
+      <WishlistToast
         visible={wishlistToast.visible}
         action={wishlistToast.action}
         foodName={wishlistToast.foodName}
