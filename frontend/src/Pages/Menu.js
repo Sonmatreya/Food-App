@@ -12,6 +12,7 @@ function Menu() {
   const [sortOption, setSortOption] = useState("default");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   useEffect(() => {
     const search = searchParams.get("search") || "";
@@ -53,6 +54,15 @@ function Menu() {
       cancelled = true;
     };
   }, []);
+
+
+  const searchSuggestions = useMemo(() => {
+    const query = searchTerm.trim().toLowerCase();
+    if (!query) return [];
+    return foods
+      .filter((food) => `${food.name || ""} ${food.category || ""}`.toLowerCase().includes(query))
+      .slice(0, 6);
+  }, [foods, searchTerm]);
 
   const categories = useMemo(
     () => ["All", ...new Set(foods.map((item) => item.category).filter(Boolean))],
@@ -102,11 +112,23 @@ function Menu() {
           <span>🔍</span>
           <input
             type="text"
-            placeholder="Search for food..."
+            placeholder="Search pizza, burgers, pasta..."
             value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
+            onFocus={() => setShowSuggestions(true)}
+            onChange={(event) => { setSearchTerm(event.target.value); setShowSuggestions(true); }}
+            onKeyDown={(event) => { if (event.key === "Escape") setShowSuggestions(false); }}
             aria-label="Search food"
+            autoComplete="off"
           />
+          {showSuggestions && searchSuggestions.length > 0 && (
+            <div className="menuSearchSuggestions">
+              {searchSuggestions.map((food) => (
+                <button type="button" key={food._id} onMouseDown={(event) => event.preventDefault()} onClick={() => { setSearchTerm(food.name); setShowSuggestions(false); }}>
+                  <span>🍽️</span><div><strong>{food.name}</strong><small>{food.category} · ₹{Number(food.price || 0).toFixed(2)}</small></div>
+                </button>
+              ))}
+            </div>
+          )}
           {searchTerm && (
             <button
               type="button"
@@ -154,10 +176,8 @@ function Menu() {
         </div>
 
         {loading ? (
-          <div className="noFoodFound">
-            <div className="noFoodIcon">🍽️</div>
-            <h2>Loading menu...</h2>
-            <p>Fetching the latest food catalogue.</p>
+          <div className="menuSkeletonGrid">
+            {Array.from({ length: 6 }).map((_, index) => <div className="menuSkeletonCard" key={index}><div className="skeletonImage" /><div className="skeletonLine wide" /><div className="skeletonLine" /><div className="skeletonLine short" /></div>)}
           </div>
         ) : error ? (
           <div className="noFoodFound">
