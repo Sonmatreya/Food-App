@@ -9,13 +9,16 @@ const fallbackReply = (message, foods) => {
   const budgetMatch = text.match(/(?:under|below|less than|within)\s*(?:$|rs\.?|inr)?\s*(\d+(?:\.\d+)?)/i);
   const budget = budgetMatch ? Number(budgetMatch[1]) : null;
   let matches = available;
+  if (/don't eat onions|do not eat onions|no onions|without onions|avoid onions/i.test(text)) {
+    matches = matches.filter((food) => !(food.ingredients || []).some((ingredient) => /onion/i.test(String(ingredient))));
+  }
   if (budget !== null && Number.isFinite(budget)) matches = matches.filter((food) => Number(food.price) <= budget);
   const categoryWords = ["pizza", "burger", "pasta", "noodle", "drink", "beverage", "healthy"];
   const category = categoryWords.find((word) => text.includes(word));
   if (category) matches = matches.filter((food) => (String(food.name) + " " + String(food.category) + " " + String(food.description)).toLowerCase().includes(category));
   matches = [...matches].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0)).slice(0, 3);
   if (!matches.length) return "I could not find a matching dish in the current catalogue. Try another category or a higher budget.";
-  const recommendations = matches.map((food) => food.name + " — $" + Number(food.price).toFixed(2) + " (" + Number(food.rating || 0).toFixed(1) + "★)").join("\n");
+  const recommendations = matches.map((food) => food.name + " — ₹" + Number(food.price).toFixed(2) + " (" + Number(food.rating || 0).toFixed(1) + "★)").join("\n");
   return "Here are a few options from our current menu:\n\n" + recommendations + "\n\nOpen the Menu to explore them and choose what you like.";
 };
 
