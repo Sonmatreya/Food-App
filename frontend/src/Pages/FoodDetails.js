@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import { API_URL } from "../config/api";
 import WishlistToast from "../Components/WishlistToast";
+import FoodRecommendations from "../Components/FoodRecommendations";
+import { useToast } from "../context/ToastContext";
 import "../Styles/FoodDetails.css";
 
 const FALLBACK_IMAGE = "https://loremflickr.com/800/600/food?lock=999";
 
 function FoodDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { addToCart } = useCart();
   const { user } = useAuth();
+  const { showToast } = useToast();
 
   const [food, setFood] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -57,6 +61,10 @@ function FoodDetails() {
         const data = await response.json();
         if (!response.ok || !data.success) throw new Error(data.message || "Unable to load food details.");
         if (!cancelled) setFood(data.food);
+        if (!cancelled && data.food) {
+          const viewed = JSON.parse(localStorage.getItem("foodRecentlyViewed") || "[]").filter((item) => String(item) !== String(id));
+          localStorage.setItem("foodRecentlyViewed", JSON.stringify([id, ...viewed].slice(0, 8)));
+        }
       } catch (requestError) {
         if (!cancelled) {
           setFood(null);
@@ -296,7 +304,7 @@ function FoodDetails() {
             {wishlisted ? "♥ Saved to Wishlist" : "♡ Add to Wishlist"}
           </button>
 
-          <button type="button" className={added ? "addToCartButton added" : "addToCartButton"} onClick={handleAddToCart} disabled={!food.isAvailable} aria-live="polite">
+          <button type="button" className="buyNowButton" onClick={handleBuyNow} disabled={!food.isAvailable}>Buy Now →</button>\n          <button type="button" className={added ? "addToCartButton added" : "addToCartButton"} onClick={handleAddToCart} disabled={!food.isAvailable} aria-live="polite">
             {!food.isAvailable ? "Currently Unavailable" : added ? "✓ Added to Cart" : "Add to Cart"}
           </button>
           {added && <Link to="/cart" className="viewCartButton">View Cart →</Link>}
