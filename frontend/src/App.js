@@ -37,6 +37,8 @@ import AdminReviews from "./Pages/AdminReviews";
 import AIAssistant from "./Components/AIAssistant";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import { ToastProvider } from "./context/ToastContext";
 
 function AppRoutes() {
   const location = useLocation();
@@ -99,13 +101,17 @@ function App() {
   return (
     <>
       {showLoader && <AppLoader />}
-      <AuthProvider>
-        <CartProvider>
-          <BrowserRouter>
-            <AppRoutes />
-          </BrowserRouter>
-        </CartProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <ToastProvider>
+          <AuthProvider>
+            <CartProvider>
+              <BrowserRouter>
+                <AppRoutes />
+              </BrowserRouter>
+            </CartProvider>
+          </AuthProvider>
+        </ToastProvider>
+      </ThemeProvider>
     </>
   );
 }
