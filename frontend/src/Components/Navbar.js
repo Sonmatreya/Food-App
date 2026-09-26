@@ -7,11 +7,13 @@ import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import CloseIcon from "@mui/icons-material/Close";
 import Logo from "../assets/pizza-logo-png.png";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 import "../Styles/Navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [locationText, setLocationText] = useState(() => localStorage.getItem("foodAppLocation") || "Choose your location");
@@ -19,7 +21,7 @@ function Navbar() {
   const [locationError, setLocationError] = useState("");
 
   useEffect(() => {
-    document.body.classList.add("light-mode");
+
     const handleScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -107,6 +109,7 @@ function Navbar() {
           </button>
           {user ? <div className="mobile-account-actions"><button type="button" onClick={() => { closeMenu(); navigate("/profile"); }}><PersonOutlineIcon /> My Account</button><button type="button" onClick={handleLogout}>Sign Out</button></div> : <button type="button" className="mobile-login" onClick={() => { closeMenu(); navigate("/login"); }}>Sign In</button>}
         </nav>
+        <button type="button" className="theme-toggle-button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"}>{isDark ? "☀️" : "🌙"}</button>
         <div className="navbar-actions">
           <Link to="/cart" className="nav-icon-button cart-link" aria-label="Shopping cart" onClick={closeMenu}><ShoppingCartIcon /></Link>
           {user ? <button type="button" className="account-button" onClick={() => navigate("/profile")}>{user.profileImage ? <img src={user.profileImage} alt="Profile" className="user-avatar" /> : <span className="user-avatar-placeholder">{user.name ? user.name.charAt(0).toUpperCase() : "U"}</span>}<span>{user.name || "Account"}</span></button> : <button type="button" className="login-btn" onClick={() => navigate("/login")}>Sign In</button>}
