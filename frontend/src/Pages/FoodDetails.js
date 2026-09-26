@@ -57,7 +57,7 @@ function FoodDetails() {
       try {
         setLoading(true);
         setError("");
-        const response = await fetch(`${API_URL}/api/foods/${id}`, { credentials: "include" });
+        const response = await fetch(`₹{API_URL}/api/foods/₹{id}`, { credentials: "include" });
         const data = await response.json();
         if (!response.ok || !data.success) throw new Error(data.message || "Unable to load food details.");
         if (!cancelled) setFood(data.food);
@@ -85,7 +85,7 @@ function FoodDetails() {
     const loadReviews = async () => {
       setReviewsLoading(true);
       try {
-        const response = await fetch(`${API_URL}/api/reviews/food/${id}`);
+        const response = await fetch(`₹{API_URL}/api/reviews/food/₹{id}`);
         const data = await response.json();
         if (!response.ok || !data.success) throw new Error(data.message || "Unable to load reviews.");
         if (!cancelled) setReviews(data.reviews || []);
@@ -111,7 +111,7 @@ function FoodDetails() {
       }
 
       try {
-        const response = await fetch(`${API_URL}/api/orders?limit=50`, {
+        const response = await fetch(`₹{API_URL}/api/orders?limit=50`, {
           credentials: "include",
         });
         const data = await response.json();
@@ -221,7 +221,7 @@ function FoodDetails() {
 
     setReviewSubmitting(true);
     try {
-      const response = await fetch(`${API_URL}/api/reviews`, {
+      const response = await fetch(`₹{API_URL}/api/reviews`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -241,7 +241,7 @@ function FoodDetails() {
       setEligibleOrders((current) => current.filter((order) => order.id !== reviewOrderId));
       setReviewOrderId("");
 
-      const refreshResponse = await fetch(`${API_URL}/api/reviews/food/${id}`);
+      const refreshResponse = await fetch(`₹{API_URL}/api/reviews/food/₹{id}`);
       const refreshData = await refreshResponse.json();
       if (refreshResponse.ok && refreshData.success) setReviews(refreshData.reviews || []);
     } catch (requestError) {
@@ -259,7 +259,7 @@ function FoodDetails() {
 
       <section className="foodDetails">
         <div className="foodDetailsImageWrapper">
-          <div className="foodDetailsImage" style={{ backgroundImage: `url("${imageUrl}")` }} role="img" aria-label={food.name}>
+          <div className="foodDetailsImage" style={{ backgroundImage: `url("₹{imageUrl}")` }} role="img" aria-label={food.name}>
             <div className="foodImageBadge">⭐ {rating.toFixed(1)}</div>
             {!food.isAvailable && <div className="unavailableBadge">Currently Unavailable</div>}
           </div>
@@ -269,7 +269,7 @@ function FoodDetails() {
           <span className="foodCategory">{food.category}</span>
           <h1>{food.name}</h1>
           <div className="foodRatingRow"><span className="ratingStars">★★★★★</span><strong>{rating.toFixed(1)}</strong><span className="ratingText">{Number(food.ratingCount || 0)} customer ratings</span></div>
-          <div className="foodPrice">${price.toFixed(2)}</div>
+          <div className="foodPrice">₹{price.toFixed(2)}</div>
           <p className="foodDescription">{food.description}</p>
 
           <div className="foodInfoGrid">
@@ -279,7 +279,7 @@ function FoodDetails() {
 
           <div className="ingredients">
             <h3>Ingredients</h3>
-            <div className="ingredientList">{ingredients.map((ingredient, index) => <span className="ingredientTag" key={`${ingredient}-${index}`}>✓ {ingredient}</span>)}</div>
+            <div className="ingredientList">{ingredients.map((ingredient, index) => <span className="ingredientTag" key={`₹{ingredient}-₹{index}`}>✓ {ingredient}</span>)}</div>
           </div>
 
           <div className="cookingRequest">
@@ -293,7 +293,7 @@ function FoodDetails() {
             <div className="quantityControls"><button type="button" onClick={decreaseQuantity} disabled={!food.isAvailable || quantity === 1}>−</button><span>{quantity}</span><button type="button" onClick={increaseQuantity} disabled={!food.isAvailable}>+</button></div>
           </div>
 
-          <div className="orderSummary"><div><span>Price</span><strong>${price.toFixed(2)}</strong></div><div><span>Quantity</span><strong>× {quantity}</strong></div><div className="summaryTotal"><span>Total</span><strong>${totalPrice.toFixed(2)}</strong></div></div>
+          <div className="orderSummary"><div><span>Price</span><strong>₹{price.toFixed(2)}</strong></div><div><span>Quantity</span><strong>× {quantity}</strong></div><div className="summaryTotal"><span>Total</span><strong>₹{totalPrice.toFixed(2)}</strong></div></div>
 
           <button
             type="button"
@@ -333,7 +333,7 @@ function FoodDetails() {
               {eligibleOrders.map((order) => <option value={order.id} key={order.id}>{order.orderNumber} — {new Date(order.createdAt).toLocaleDateString()}</option>)}
             </select>
             <label>Rating</label>
-            <div className="reviewRatingButtons">{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} className={value <= reviewRating ? "selected" : ""} onClick={() => setReviewRating(value)} aria-label={`${value} star rating`}>★</button>)}</div>
+            <div className="reviewRatingButtons">{[1, 2, 3, 4, 5].map((value) => <button type="button" key={value} className={value <= reviewRating ? "selected" : ""} onClick={() => setReviewRating(value)} aria-label={`₹{value} star rating`}>★</button>)}</div>
             <label htmlFor="reviewComment">Comment <span>(optional)</span></label>
             <textarea id="reviewComment" value={reviewComment} onChange={(event) => setReviewComment(event.target.value.slice(0, 500))} placeholder="Tell us about the taste, quality and portion..." maxLength={500} />
             <div className="reviewFormFooter"><small>{reviewComment.length}/500</small><button type="submit" disabled={reviewSubmitting}>{reviewSubmitting ? "Submitting..." : "Submit Review"}</button></div>
