@@ -7,7 +7,8 @@ import "../Styles/Cart.css";
 import FoodRecommendations from "../Components/FoodRecommendations";
 
 function Cart() {
-  const navigate = useNavigate();\n  const location = useLocation();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { cartItems, increaseQuantity, decreaseQuantity, removeFromCart, getCartTotal } = useCart();
   const { showToast } = useToast();
   const [deliveryType, setDeliveryType] = useState("delivery");
@@ -86,7 +87,28 @@ function Cart() {
       state: checkoutState,
     });
   };
-  useEffect(() => {\n    if (!location.state?.autoCheckout || !cartItems.length) return;\n\n    // Buy Now adds the selected item to the cart and immediately\n    // continues through the normal checkout flow.\n    navigate("/delivery-address", {\n      state: {\n        cartItems,\n        subtotal,\n        discount,\n        deliveryFee,\n        serviceFee,\n        tax,\n        grandTotal,\n        deliveryType,\n        coupon: appliedCoupon,\n      },\n      replace: true,\n    });\n  }, [location.state?.autoCheckout]);\n\n  const getCartItemKey = (item) => item.cartItemId || item._id || item.id;
+  useEffect(() => {
+    if (!location.state?.autoCheckout || !cartItems.length) return;
+
+    // Buy Now adds the selected item to the cart and immediately
+    // continues through the normal checkout flow.
+    navigate("/delivery-address", {
+      state: {
+        cartItems,
+        subtotal,
+        discount,
+        deliveryFee,
+        serviceFee,
+        tax,
+        grandTotal,
+        deliveryType,
+        coupon: appliedCoupon,
+      },
+      replace: true,
+    });
+  }, [location.state?.autoCheckout]);
+
+  const getCartItemKey = (item) => item.cartItemId || item._id || item.id;
 
   if (!cartItems.length) return <div className="emptyCart"><div className="emptyCartIcon">🛒</div><h1>Your Cart is Empty</h1><p>Looks like you haven't added anything to your cart yet.</p><Link to="/menu"><button className="continueShopping">Browse Menu</button></Link></div>;
 
