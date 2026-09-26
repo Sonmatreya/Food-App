@@ -26,7 +26,10 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
   useEffect(() => {
     if (!wishlistToast.visible) return undefined;
     const timer = setTimeout(() => setWishlistToast({ visible: false, action: "", foodName: "" }), 3000);
-    const handleQuickAdd = (event) => {\n    event.preventDefault();\n    event.stopPropagation();\n    addToCart({ _id: id, image, name, price: numericPrice, category, rating, isAvailable }, 1);\n    showToast(`${name} added to cart`);\n  };\n\n  return () => clearTimeout(timer);
+    return () => clearTimeout(timer);
+  }, [wishlistToast.visible]);
+
+  const handleQuickAdd = (event) => {\n    event.preventDefault();\n    event.stopPropagation();\n    addToCart({ _id: id, image, name, price: numericPrice, category, rating, isAvailable }, 1);\n    showToast(`${name} added to cart`);\n  };\n\n  return () => clearTimeout(timer);
   }, [wishlistToast.visible]);
 
   const handleQuickAdd = (event) => {
