@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import { API_URL } from "../config/api";
 import "../Styles/Cart.css";
+import FoodRecommendations from "../Components/FoodRecommendations";
 
 function Cart() {
   const navigate = useNavigate();
   const { cartItems, increaseQuantity, decreaseQuantity, removeFromCart, getCartTotal } = useCart();
+  const { showToast } = useToast();
   const [deliveryType, setDeliveryType] = useState("delivery");
   const [availableCoupons, setAvailableCoupons] = useState([]);
   const [couponCode, setCouponCode] = useState("");
@@ -63,7 +66,7 @@ function Cart() {
     setCouponMessage(`Coupon ${coupon.code} applied successfully!`);
   };
 
-  const handleRemoveCoupon = () => { setAppliedCoupon(null); setCouponCode(""); setCouponMessage(""); };
+  const handleRemoveCoupon = () => { setAppliedCoupon(null); setCouponCode(""); setCouponMessage(""); showToast("Coupon removed", "info"); };
   const handleSelectCoupon = (coupon) => { setCouponCode(coupon.code); setCouponMessage(""); };
   const handleProceedToCheckout = () => {
     const checkoutState = {
@@ -117,7 +120,8 @@ function Cart() {
           </div></div>
         </div>
 
-        <aside className="cartSummary"><div className="summaryHeader"><h2>Order Summary</h2></div><div className="summaryRows">
+        <aside className="cartSummary">
+          {deliveryType === "delivery" && deliveryFee > 0 && <div className="deliveryProgress"><div><strong>₹{Math.max(40 - discountedSubtotal, 0).toFixed(2)}</strong> away from FREE delivery</div><div className="deliveryProgressBar"><span style={{ width: `${Math.min((discountedSubtotal / 40) * 100, 100)}%` }} /></div></div><div className="summaryHeader"><h2>Order Summary</h2></div><div className="summaryRows">
           <div className="summaryRow"><span>Subtotal</span><strong>₹{subtotal.toFixed(2)}</strong></div>
           {discount > 0 && <div className="summaryRow discountRow"><span>Discount</span><strong>-₹{discount.toFixed(2)}</strong></div>}
           <div className="summaryRow"><span>Delivery Fee</span><strong>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee.toFixed(2)}`}</strong></div>
