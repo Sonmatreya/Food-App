@@ -20,6 +20,7 @@ import { API_URL } from "../config/api";
 import "../Styles/Home.css";
 import RecentlyViewed from "../Components/RecentlyViewed";
 import FoodRecommendations from "../Components/FoodRecommendations";
+import PromoBanners from "../Components/PromoBanners";
 
 
 /* =========================================================
@@ -537,6 +538,7 @@ function Home() {
           <ArrowForwardIcon />
         </Link>
       </section>
+      <PromoBanners />
     </main>
   );
 }
