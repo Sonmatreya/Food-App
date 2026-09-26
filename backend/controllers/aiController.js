@@ -24,11 +24,20 @@ const chatWithAssistant = async (req, res) => {
     const message = String(req.body?.message || "").trim();
     if (!message || message.length > 500) return res.status(400).json({ success: false, message: "Please enter a message between 1 and 500 characters." });
 
-    const [foods, coupons] = await Promise.all([\n      Food.find({ isAvailable: true })
-      .select("name description category price rating ingredients isFeatured isAvailable")
-      .sort({ rating: -1 })
-      .limit(60)
-      .lean();
+    const [foods, coupons] = await Promise.all([
+      Food.find({ isAvailable: true })
+        .select("name description category price rating ingredients isFeatured isAvailable")
+        .sort({ rating: -1 })
+        .limit(60)
+        .lean(),
+      Coupon.find({
+        active: true,
+        $or: [{ expiresAt: null }, { expiresAt: { $gt: new Date() } }],
+      })
+        .select("code type value minimum maxDiscount")
+        .limit(30)
+        .lean(),
+    ]);
 
     let latestOrder = null;
     if (req.user?.id) {
