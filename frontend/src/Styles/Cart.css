@@ -780,3 +780,5 @@
     font-size: 20px;
   }
 }
+
+.deliveryProgress{padding:13px 14px;margin-bottom:16px;border:1px solid #eee1d8;border-radius:13px;background:#fff8f3;color:#555;font-size:11px}.deliveryProgress strong{color:#e31837}.deliveryProgressBar{height:6px;margin-top:9px;border-radius:99px;background:#eee;overflow:hidden}.deliveryProgressBar span{display:block;height:100%;border-radius:inherit;background:#e31837;transition:width .3s ease}body.dark-mode .deliveryProgress{background:#241b17;border-color:#46352e;color:#bbb}.body.dark-mode .deliveryProgressBar{background:#333}
