@@ -33,7 +33,16 @@ function AIAssistant() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({\n          message: text,\n          cartItems: cartItems.map((item) => ({ name: item.name, category: item.category, price: item.price, quantity: item.quantity, cookingRequest: item.cookingRequest || "" })),\n        }),
+        body: JSON.stringify({
+          message: text,
+          cartItems: cartItems.map((item) => ({
+            name: item.name,
+            category: item.category,
+            price: item.price,
+            quantity: item.quantity,
+            cookingRequest: item.cookingRequest || "",
+          })),
+        }),
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Assistant unavailable.");
