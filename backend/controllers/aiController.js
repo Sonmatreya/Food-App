@@ -1,5 +1,6 @@
 const Food = require("../models/Food");
 const Order = require("../models/Order");
+const Coupon = require("../models/Coupon");
 
 const fallbackReply = (message, foods) => {
   const text = String(message || "").toLowerCase();
@@ -23,7 +24,7 @@ const chatWithAssistant = async (req, res) => {
     const message = String(req.body?.message || "").trim();
     if (!message || message.length > 500) return res.status(400).json({ success: false, message: "Please enter a message between 1 and 500 characters." });
 
-    const foods = await Food.find({ isAvailable: true })
+    const [foods, coupons] = await Promise.all([\n      Food.find({ isAvailable: true })
       .select("name description category price rating ingredients isFeatured isAvailable")
       .sort({ rating: -1 })
       .limit(60)
@@ -66,7 +67,7 @@ const chatWithAssistant = async (req, res) => {
               "You are FoodAI, the helpful food-ordering assistant for this restaurant app. " +
               "Recommend only dishes present in the supplied catalogue. Never invent prices, availability, " +
               "ingredients, coupons, delivery times, order statuses, or restaurant policies. " +
-              "If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. " +
+              "Use the supplied cart to suggest additions or complete-meal ideas. Use the supplied latest order to answer order-status questions when available. " +\n              "Use the supplied active coupons to identify applicable offers, but do not claim a coupon was applied unless the customer uses the checkout controls. " +\n              "If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. " +
               "Keep answers concise, friendly, and useful. Use the same currency shown by the catalogue for prices. " +
               "Catalogue:\n" + JSON.stringify(catalogue) + "\nCustomer cart:\n" + JSON.stringify(req.body?.cartItems || []) + "\nLatest customer order (if logged in):\n" + JSON.stringify(latestOrder || null),
           },
