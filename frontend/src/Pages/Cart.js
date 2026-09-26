@@ -121,7 +121,14 @@ function Cart() {
         </div>
 
         <aside className="cartSummary">
-          {deliveryType === "delivery" && deliveryFee > 0 && <div className="deliveryProgress"><div><strong>₹{Math.max(40 - discountedSubtotal, 0).toFixed(2)}</strong> away from FREE delivery</div><div className="deliveryProgressBar"><span style={{ width: `${Math.min((discountedSubtotal / 40) * 100, 100)}%` }} /></div></div><div className="summaryHeader"><h2>Order Summary</h2></div><div className="summaryRows">
+          {deliveryType === "delivery" && deliveryFee > 0 && (
+            <div className="deliveryProgress">
+              <div><strong>₹{Math.max(40 - discountedSubtotal, 0).toFixed(2)}</strong> away from FREE delivery</div>
+              <div className="deliveryProgressBar"><span style={{ width: `${Math.min((discountedSubtotal / 40) * 100, 100)}%` }} /></div>
+            </div>
+          )}
+          <div className="summaryHeader"><h2>Order Summary</h2></div>
+          <div className="summaryRows">
           <div className="summaryRow"><span>Subtotal</span><strong>₹{subtotal.toFixed(2)}</strong></div>
           {discount > 0 && <div className="summaryRow discountRow"><span>Discount</span><strong>-₹{discount.toFixed(2)}</strong></div>}
           <div className="summaryRow"><span>Delivery Fee</span><strong>{deliveryFee === 0 ? "FREE" : `₹${deliveryFee.toFixed(2)}`}</strong></div>
