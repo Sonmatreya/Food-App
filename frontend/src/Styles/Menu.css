@@ -433,3 +433,29 @@
 @media only screen and (max-width: 650px) {
   .menuWishlistButton { top: 12px; right: 12px; }
 }
+
+.menuSearchBox { position:relative; }
+.menuSearchSuggestions { position:absolute; top:calc(100% + 8px); left:0; right:0; padding:8px; background:#fff; border:1px solid #e8e3dc; border-radius:14px; box-shadow:0 18px 40px rgba(0,0,0,.14); z-index:20; }
+.menuSearchSuggestions button { width:100%; display:flex; align-items:center; gap:11px; padding:10px; border:0; border-radius:10px; background:transparent; text-align:left; cursor:pointer; }
+.menuSearchSuggestions button:hover { background:#f8f5f2; }
+.menuSearchSuggestions button > span { font-size:20px; }
+.menuSearchSuggestions div { display:flex; flex-direction:column; gap:2px; }
+.menuSearchSuggestions small { color:#888; font-size:10px; }
+.menuQuickAdd { width:calc(100% - 40px); min-height:42px; margin:0 20px 20px; display:flex; align-items:center; justify-content:center; gap:8px; border:0; border-radius:11px; background:#181818; color:#fff; font-size:12px; font-weight:800; cursor:pointer; transition:.2s ease; }
+.menuQuickAdd:hover:not(:disabled) { background:#e31837; transform:translateY(-1px); }
+.menuQuickAdd:disabled { opacity:.5; cursor:not-allowed; }
+.menuSkeletonGrid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:24px; }
+.menuSkeletonCard { padding-bottom:20px; border:1px solid #eee; border-radius:20px; background:#fff; overflow:hidden; }
+.skeletonImage,.skeletonLine { background:linear-gradient(90deg,#eee 25%,#f7f7f7 37%,#eee 63%); background-size:400% 100%; animation:skeletonShimmer 1.3s ease infinite; }
+.skeletonImage { height:240px; }
+.skeletonLine { height:14px; width:70%; margin:20px 20px 0; border-radius:8px; }
+.skeletonLine.wide { width:82%; height:20px; margin-top:18px; }
+.skeletonLine.short { width:38%; }
+@keyframes skeletonShimmer { 0%{background-position:100% 0}100%{background-position:-100% 0} }
+body.dark-mode .menuSearchSuggestions { background:#1b1b1b; border-color:#333; }
+body.dark-mode .menuSearchSuggestions button:hover { background:#252525; }
+body.dark-mode .menuQuickAdd { background:#f0f0f0; color:#111; }
+body.dark-mode .menuSkeletonCard { background:#1b1b1b; border-color:#333; }
+body.dark-mode .skeletonImage,body.dark-mode .skeletonLine { background:linear-gradient(90deg,#242424 25%,#303030 37%,#242424 63%); background-size:400% 100%; }
+@media(max-width:1000px){.menuSkeletonGrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.menuSkeletonGrid{grid-template-columns:1fr}.skeletonImage{height:250px}.menuQuickAdd{width:calc(100% - 36px);margin:0 18px 18px}}
