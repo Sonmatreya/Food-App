@@ -83,7 +83,7 @@ const chatWithAssistant = async (req, res) => {
               "Use the supplied active coupons to identify applicable offers, but do not claim a coupon was applied unless the customer uses the checkout controls. " +
               "If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. " +
               "Keep answers concise, friendly, and useful. Use the same currency shown by the catalogue for prices. " +
-              "Catalogue:\n" + JSON.stringify(catalogue) + "\nCustomer cart:\n" + JSON.stringify(req.body?.cartItems || []) + "\nLatest customer order (if logged in):\n" + JSON.stringify(latestOrder || null),
+              "Catalogue:\n" + JSON.stringify(catalogue) + "\nCustomer cart:\n" + JSON.stringify(req.body?.cartItems || []) + "\nLatest customer order (if logged in):\n" + JSON.stringify(latestOrder || null) + "\nActive coupons:\n" + JSON.stringify(coupons || []),
           },
           { role: "user", content: message },
         ],
