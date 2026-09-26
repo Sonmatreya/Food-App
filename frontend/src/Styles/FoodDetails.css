@@ -919,3 +919,5 @@
   background: #fff0f3;
   color: #e31837;
 }
+
+.buyNowButton{width:100%;min-height:48px;margin:12px 0 10px;border:0;border-radius:12px;background:#181818;color:#fff;font-weight:800;cursor:pointer;transition:.2s ease}.buyNowButton:hover:not(:disabled){background:#e31837;transform:translateY(-1px)}.buyNowButton:disabled{opacity:.5;cursor:not-allowed}body.dark-mode .buyNowButton{background:#f4f4f4;color:#111}
