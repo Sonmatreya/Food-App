@@ -18,6 +18,8 @@ import { API_URL } from "../config/api";
 
 // Styles
 import "../Styles/Home.css";
+import RecentlyViewed from "../Components/RecentlyViewed";
+import FoodRecommendations from "../Components/FoodRecommendations";
 
 
 /* =========================================================
