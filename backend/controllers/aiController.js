@@ -1,4 +1,5 @@
 const Food = require("../models/Food");
+const Order = require("../models/Order");
 
 const fallbackReply = (message, foods) => {
   const text = String(message || "").toLowerCase();
@@ -27,6 +28,11 @@ const chatWithAssistant = async (req, res) => {
       .sort({ rating: -1 })
       .limit(60)
       .lean();
+
+    let latestOrder = null;
+    if (req.user?.id) {
+      latestOrder = await Order.findOne({ userId: req.user.id }).sort({ createdAt: -1 }).select("orderNumber status deliveryType createdAt items.name").lean();
+    }
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
@@ -62,7 +68,7 @@ const chatWithAssistant = async (req, res) => {
               "ingredients, coupons, delivery times, order statuses, or restaurant policies. " +
               "If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. " +
               "Keep answers concise, friendly, and useful. Use the same currency shown by the catalogue for prices. " +
-              "Catalogue:\n" + JSON.stringify(catalogue),
+              "Catalogue:\n" + JSON.stringify(catalogue) + "\nCustomer cart:\n" + JSON.stringify(req.body?.cartItems || []) + "\nLatest customer order (if logged in):\n" + JSON.stringify(latestOrder || null),
           },
           { role: "user", content: message },
         ],
