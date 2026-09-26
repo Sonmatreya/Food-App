@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import WishlistToast from "./WishlistToast";
-import { FaArrowRight, FaHeart } from "react-icons/fa";
+import { FaArrowRight, FaHeart, FaShoppingBag } from "react-icons/fa";
+import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import "../Styles/Menu.css";
 
 function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
   const numericPrice = Number(price);
   const numericRating = Number(rating || 0);
+  const { addToCart } = useCart();
+  const { showToast } = useToast();
   const [wishlisted, setWishlisted] = useState(false);
   const [wishlistToast, setWishlistToast] = useState({ visible: false, action: "", foodName: "" });
 
@@ -22,7 +26,7 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
   useEffect(() => {
     if (!wishlistToast.visible) return undefined;
     const timer = setTimeout(() => setWishlistToast({ visible: false, action: "", foodName: "" }), 3000);
-    return () => clearTimeout(timer);
+    const handleQuickAdd = (event) => {\n    event.preventDefault();\n    event.stopPropagation();\n    addToCart({ _id: id, image, name, price: numericPrice, category, rating, isAvailable }, 1);\n    showToast(`${name} added to cart`);\n  };\n\n  return () => clearTimeout(timer);
   }, [wishlistToast.visible]);
 
   const toggleWishlist = (event) => {
@@ -72,13 +76,13 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
           <h2>{name}</h2>
           <div className="menuCardFooter">
             <p className="menuPrice">
-              {Number.isFinite(numericPrice) ? `$${numericPrice.toFixed(2)}` : "Price unavailable"}
+              {Number.isFinite(numericPrice) ? `₹${numericPrice.toFixed(2)}` : "Price unavailable"}
             </p>
             <span className="menuViewDetails">View details <FaArrowRight aria-hidden="true" /></span>
           </div>
         </div>
       </Link>
-      <WishlistToast
+      <button type="button" className="menuQuickAdd" onClick={handleQuickAdd} disabled={!isAvailable}><FaShoppingBag /> {isAvailable ? "Add to Cart" : "Unavailable"}</button>\n      <WishlistToast
         visible={wishlistToast.visible}
         action={wishlistToast.action}
         foodName={wishlistToast.foodName}
