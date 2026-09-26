@@ -466,8 +466,7 @@ function Home() {
             <em>just got better.</em>
           </h2>
           <p>
-            Use <strong>WELCOME20</strong> at checkout and get 20% off
-            your first order.
+            Check the latest Food App offers and apply an eligible coupon at checkout.
           </p>
           <Link to="/menu" className="offerButton">
             Claim the offer
