@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { API_URL } from "../config/api";
+import { useCart } from "../context/CartContext";
 import "../Styles/AIAssistant.css";
 
 const suggestions = [
@@ -17,6 +18,7 @@ function AIAssistant() {
     { role: "assistant", text: "Hi! I’m FoodAI 👋 Tell me what you’re craving and I’ll help you choose from our menu." },
   ]);
   const [loading, setLoading] = useState(false);
+  const { cartItems } = useCart();
 
   if (location.pathname.startsWith("/admin")) return null;
 
@@ -31,7 +33,7 @@ function AIAssistant() {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
+        body: JSON.stringify({\n          message: text,\n          cartItems: cartItems.map((item) => ({ name: item.name, category: item.category, price: item.price, quantity: item.quantity, cookingRequest: item.cookingRequest || "" })),\n        }),
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Assistant unavailable.");
