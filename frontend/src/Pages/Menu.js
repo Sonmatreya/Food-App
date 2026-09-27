@@ -6,7 +6,7 @@ import "../Styles/Menu.css";
 
 function Menu() {
   const [foods, setFoods] = useState([]);
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get("search") || "");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("default");
@@ -84,10 +84,29 @@ function Menu() {
     return result;
   }, [foods, searchTerm, selectedCategory, sortOption]);
 
+  const updateMenuUrl = (nextSearch, nextCategory) => {
+    const params = new URLSearchParams();
+    if (nextSearch.trim()) params.set("search", nextSearch.trim());
+    if (nextCategory && nextCategory !== "All") params.set("category", nextCategory);
+    setSearchParams(params);
+  };
+
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    setShowSuggestions(true);
+    updateMenuUrl(value, selectedCategory);
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    updateMenuUrl(searchTerm, category);
+  };
+
   const resetFilters = () => {
     setSearchTerm("");
     setSelectedCategory("All");
     setSortOption("default");
+    setSearchParams({});
   };
 
   return (
@@ -115,7 +134,7 @@ function Menu() {
             placeholder="Search pizza, burgers, pasta..."
             value={searchTerm}
             onFocus={() => setShowSuggestions(true)}
-            onChange={(event) => { setSearchTerm(event.target.value); setShowSuggestions(true); }}
+            onChange={(event) => handleSearchChange(event.target.value)}
             onKeyDown={(event) => { if (event.key === "Escape") setShowSuggestions(false); }}
             aria-label="Search food"
             autoComplete="off"
@@ -133,7 +152,7 @@ function Menu() {
             <button
               type="button"
               className="clearSearch"
-              onClick={() => setSearchTerm("")}
+              onClick={() => handleSearchChange("")}
               aria-label="Clear search"
             >
               ✕
@@ -148,7 +167,7 @@ function Menu() {
                 type="button"
                 key={category}
                 className={selectedCategory === category ? "categoryFilter active" : "categoryFilter"}
-                onClick={() => setSelectedCategory(category)}
+                onClick={() => handleCategoryChange(category)}
               >
                 {category}
               </button>
