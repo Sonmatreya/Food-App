@@ -485,3 +485,42 @@
     padding: 0 13px;
   }
 }
+
+
+/* Phase 2: global food search */
+.navbar-search {
+  flex: 1 1 280px;
+  max-width: 330px;
+  min-width: 180px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 13px;
+  border: 1px solid var(--nav-border);
+  border-radius: 13px;
+  background: var(--nav-surface);
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.navbar-search:focus-within,
+.navbar-search.active { border-color: rgba(227,24,55,.35); box-shadow: 0 0 0 3px rgba(227,24,55,.06); background: #fff; }
+.navbar-search > span { color: var(--nav-muted); font-size: 23px; line-height: 1; transform: rotate(-20deg); }
+.navbar-search input { min-width: 0; flex: 1; height: 100%; border: 0; outline: 0; background: transparent; color: var(--nav-text); font: 500 12px/1 "Inter", "Poppins", system-ui, sans-serif; }
+.navbar-search input::placeholder { color: #999; }
+.navbar-search-clear { width: 25px; height: 25px; border: 0; border-radius: 50%; background: #eee; color: #666; cursor: pointer; font-size: 16px; line-height: 1; }
+.navbar-search-clear:hover { background: #ffe5e5; color: var(--nav-accent); }
+@media (max-width: 1180px) { .navbar-search { max-width: 260px; } }
+@media (max-width: 930px) { .navbar-search { max-width: 220px; } .menu-links { margin-left: 0; } }
+@media (max-width: 800px) {
+  .navbar-search { flex: 1; max-width: none; min-width: 0; height: 40px; }
+  .navbar-search input { font-size: 11px; }
+}
+@media (max-width: 520px) {
+  .navbar-search { height: 38px; padding-left: 9px; }
+  .navbar-search > span { font-size: 20px; }
+  .navbar-search-clear { width: 23px; height: 23px; }
+}
+body.dark-mode .navbar-search { background: #171717; border-color: #333; }
+body.dark-mode .navbar-search:focus-within,
+body.dark-mode .navbar-search.active { background: #1d1d1d; border-color: rgba(255,255,255,.18); }
+body.dark-mode .navbar-search-clear { background: #303030; color: #ddd; }
