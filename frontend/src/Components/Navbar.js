@@ -19,6 +19,8 @@ function Navbar() {
   const [locationText, setLocationText] = useState(() => localStorage.getItem("foodAppLocation") || "Choose your location");
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchOpen, setSearchOpen] = useState(false);
 
   useEffect(() => {
 
@@ -28,6 +30,14 @@ function Navbar() {
   }, []);
 
   const closeMenu = () => setIsOpen(false);
+
+  const handleSearchSubmit = (event) => {
+    event.preventDefault();
+    const query = searchTerm.trim();
+    setSearchOpen(false);
+    closeMenu();
+    navigate(query ? `/menu?search=${encodeURIComponent(query)}` : "/menu");
+  };
   const handleLocation = () => {
     if (!navigator.geolocation) {
       setLocationError("Location is not supported by this browser.");
@@ -96,6 +106,18 @@ function Navbar() {
           </div>
         </button>
         
+        <form className={`navbar-search ${searchOpen ? "active" : ""}`} onSubmit={handleSearchSubmit} role="search">
+          <span aria-hidden="true">⌕</span>
+          <input
+            type="search"
+            value={searchTerm}
+            placeholder="Search food..."
+            aria-label="Search food"
+            onFocus={() => setSearchOpen(true)}
+            onChange={(event) => setSearchTerm(event.target.value)}
+          />
+          {searchTerm && <button type="button" className="navbar-search-clear" onClick={() => setSearchTerm("")} aria-label="Clear search">×</button>}
+        </form>
         <nav className={`menu-links ${isOpen ? "active" : ""}`}>
           <div className="mobile-menu-head"><span>Food App</span><button type="button" onClick={closeMenu} aria-label="Close menu"><CloseIcon /></button></div>
           <Link to="/" onClick={closeMenu}>Home</Link><Link to="/menu" onClick={closeMenu}>Menu</Link><Link to="/about" onClick={closeMenu}>About</Link><Link to="/services" onClick={closeMenu}>Services</Link><Link to="/contact" onClick={closeMenu}>Contact</Link>
