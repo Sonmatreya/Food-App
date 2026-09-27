@@ -452,6 +452,45 @@
   text-align: right;
 }
 
+.couponOffer {
+  position: relative;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 3px 12px;
+  width: 100%;
+  opacity: .78;
+}
+.couponOffer.eligible {
+  opacity: 1;
+}
+.couponOfferMain {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.couponOfferMain > span {
+  color: #555 !important;
+  font-size: 11px !important;
+  text-align: left !important;
+}
+.couponOfferAction {
+  color: var(--color-brand, #e31837);
+  font-size: 11px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.couponOffer small {
+  grid-column: 1 / -1;
+  color: #888;
+  font-size: 10px;
+}
+.couponOffer.eligible:hover .couponOfferAction {
+  text-decoration: underline;
+}
+
 .appliedCoupon {
   display: flex;
   align-items: center;
@@ -781,4 +820,4 @@
   }
 }
 
-.deliveryProgress{padding:13px 14px;margin-bottom:16px;border:1px solid #eee1d8;border-radius:13px;background:#fff8f3;color:#555;font-size:11px}.deliveryProgress strong{color:#e31837}.deliveryProgressBar{height:6px;margin-top:9px;border-radius:99px;background:#eee;overflow:hidden}.deliveryProgressBar span{display:block;height:100%;border-radius:inherit;background:#e31837;transition:width .3s ease}body.dark-mode .deliveryProgress{background:#241b17;border-color:#46352e;color:#bbb}.body.dark-mode .deliveryProgressBar{background:#333}
+.deliveryProgress{padding:13px 14px;margin-bottom:16px;border:1px solid #eee1d8;border-radius:13px;background:#fff8f3;color:#555;font-size:11px}.deliveryProgress strong{color:#e31837}.deliveryProgressBar{height:6px;margin-top:9px;border-radius:99px;background:#eee;overflow:hidden}.deliveryProgressBar span{display:block;height:100%;border-radius:inherit;background:#e31837;transition:width .3s ease}body.dark-mode .deliveryProgress{background:#241b17;border-color:#46352e;color:#bbb}body.dark-mode .deliveryProgressBar{background:#333}
