@@ -68,7 +68,20 @@ function Cart() {
   };
 
   const handleRemoveCoupon = () => { setAppliedCoupon(null); setCouponCode(""); setCouponMessage(""); showToast("Coupon removed", "info"); };
-  const handleSelectCoupon = (coupon) => { setCouponCode(coupon.code); setCouponMessage(""); };
+  const handleSelectCoupon = (coupon) => {
+    if (subtotal < Number(coupon.minimum)) {
+      setCouponCode(coupon.code);
+      setCouponMessage(
+        `Add ${Math.max(Number(coupon.minimum) - subtotal, 0).toFixed(2)} more to use ${coupon.code}.`
+      );
+      return;
+    }
+
+    setCouponCode(coupon.code);
+    setAppliedCoupon(coupon);
+    setCouponMessage(`Coupon ${coupon.code} applied successfully!`);
+    showToast(`Coupon ${coupon.code} applied`, "success");
+  };
   const handleProceedToCheckout = () => {
     const checkoutState = {
       cartItems,
@@ -137,7 +150,23 @@ function Cart() {
           <div className="cartCard"><div className="cartCardHeader"><h2>Offers & Coupons</h2></div><div className="couponBox">
             <div className="couponInput"><span>🏷️</span><input type="text" value={couponCode} onChange={(event) => { setCouponCode(event.target.value.toUpperCase()); setCouponMessage(""); }} onKeyDown={(event) => event.key === "Enter" && handleApplyCoupon()} placeholder="Enter coupon code" maxLength={20}/><button type="button" onClick={handleApplyCoupon} disabled={!couponCode.trim() || couponLoading}>Apply</button></div>
             {couponMessage && <p className={`couponMessage ${appliedCoupon ? "success" : "error"}`}>{couponMessage}</p>}
-            <div className="availableCoupons"><p>Available Coupons</p>{availableCoupons.map((coupon) => <button type="button" key={coupon.id || coupon.code} onClick={() => handleSelectCoupon(coupon)}><strong>{coupon.code}</strong><span>{coupon.type === "percentage" ? `${coupon.value}% OFF` : `₹${Number(coupon.value).toFixed(2)} OFF`} on orders above ₹{Number(coupon.minimum).toFixed(2)}</span></button>)}{!couponLoading && !availableCoupons.length && <small>No active coupons available right now.</small>}</div>
+            <div className="availableCoupons">
+              <p>Available Coupons</p>
+              {availableCoupons.map((coupon) => {
+                const minimum = Number(coupon.minimum || 0);
+                const eligible = subtotal >= minimum;
+                const discountLabel = coupon.type === "percentage" ? `${coupon.value}% OFF` : `₹${Number(coupon.value).toFixed(2)} OFF`;
+                const capLabel = coupon.type === "percentage" && coupon.maxDiscount !== null && coupon.maxDiscount !== undefined ? ` · Max ₹${Number(coupon.maxDiscount).toFixed(2)}` : "";
+                return (
+                  <button type="button" key={coupon.id || coupon.code} className={eligible ? "couponOffer eligible" : "couponOffer"} onClick={() => handleSelectCoupon(coupon)}>
+                    <span className="couponOfferMain"><strong>{coupon.code}</strong><span>{discountLabel}{capLabel}</span></span>
+                    <span className="couponOfferAction">{eligible ? "Apply" : `Add ₹${Math.max(minimum - subtotal, 0).toFixed(2)}`}</span>
+                    <small>Minimum order ₹{minimum.toFixed(2)}</small>
+                  </button>
+                );
+              })}
+              {!couponLoading && !availableCoupons.length && <small>No active coupons available right now.</small>}
+            </div>
             {appliedCoupon && <div className="appliedCoupon"><span className="couponAppliedIcon">✓</span><div><strong>{appliedCoupon.code}</strong><p>Coupon applied</p></div><button type="button" onClick={handleRemoveCoupon}>Remove</button></div>}
           </div></div>
         </div>
