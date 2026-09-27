@@ -99,8 +99,23 @@ function DeliveryAddress() {
         const list = data.addresses || [];
         setSavedAddresses(list);
 
-        const defaultAddress = list.find((item) => item.isDefault) || list[0];
-        if (defaultAddress && !checkoutData?.address?.name) {
+        const defaultAddress =
+          list.find((item) => item.isDefault) ||
+          list[0];
+
+        // Prefer an address already supplied by the previous checkout step;
+        // otherwise automatically select the user's default saved address.
+        if (checkoutData?.address?.name) {
+          const matchingAddress = list.find(
+            (item) =>
+              item.name === checkoutData.address.name &&
+              item.phone === checkoutData.address.phone &&
+              item.addressLine === checkoutData.address.addressLine
+          );
+          if (matchingAddress) {
+            setSelectedSavedAddressId(matchingAddress._id);
+          }
+        } else if (defaultAddress) {
           setSelectedSavedAddressId(defaultAddress._id);
           setAddress({
             name: defaultAddress.name || "",
