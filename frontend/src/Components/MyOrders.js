@@ -219,7 +219,7 @@ function MyOrders() {
         orderItems.map(async (item) => {
           const foodId = item.foodId || item._id || item.id;
 
-          if (!/^[a-f\\d]{24}$/i.test(String(foodId || ""))) {
+          if (!/^[a-f\d]{24}$/i.test(String(foodId || ""))) {
             return { available: false, reason: "invalid" };
           }
 
@@ -708,7 +708,7 @@ function MyOrders() {
                           <section className="my-order-reviews" aria-label="Review ordered food">
                             <h3>Ratings & Reviews</h3>
                             <p>Share feedback on food from this completed order.</p>
-                            {order.items.filter((item) => /^[a-f\\d]{24}$/i.test(String(item.foodId || ""))).map((item) => {
+                            {order.items.filter((item) => /^[a-f\d]{24}$/i.test(String(item.foodId || ""))).map((item) => {
                               const foodId = String(item.foodId);
                               const key = `${order.id}:${foodId}`;
                               const alreadyReviewed = myReviews.some((review) => String(review.orderId) === String(order.id) && String(review.foodId) === foodId);
@@ -740,7 +740,7 @@ function MyOrders() {
                                 </form>
                               );
                             })}
-                            {order.items.every((item) => !/^[a-f\\d]{24}$/i.test(String(item.foodId || ""))) && <p>Reviews are unavailable for items without a valid food record.</p>}
+                            {order.items.every((item) => !/^[a-f\d]{24}$/i.test(String(item.foodId || ""))) && <p>Reviews are unavailable for items without a valid food record.</p>}
                           </section>
                         )}
                       </div>
