@@ -29,6 +29,25 @@ function Cart() {
 
   useEffect(() => { loadCoupons(); }, [loadCoupons]);
 
+  const subtotal = getCartTotal();
+  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const discount = appliedCoupon && subtotal >= Number(appliedCoupon.minimum)
+    ? Math.min(
+        appliedCoupon.type === "percentage"
+          ? (subtotal * Number(appliedCoupon.value)) / 100
+          : Math.min(Number(appliedCoupon.value), subtotal),
+        appliedCoupon.maxDiscount !== null && appliedCoupon.maxDiscount !== undefined && Number.isFinite(Number(appliedCoupon.maxDiscount))
+          ? Number(appliedCoupon.maxDiscount)
+          : Infinity,
+        subtotal
+      )
+    : 0;
+  const discountedSubtotal = Math.max(subtotal - discount, 0);
+  const deliveryFee = deliveryType === "pickup" ? 0 : discountedSubtotal >= 40 ? 0 : 2.99;
+  const serviceFee = deliveryType === "delivery" ? 1.49 : 0;
+  const tax = (discountedSubtotal + serviceFee) * 0.05;
+  const grandTotal = discountedSubtotal + deliveryFee + serviceFee + tax;
+
   // A coupon selected from the Profile > Coupons page is kept until the
   // customer reaches the cart, where eligibility is checked against subtotal.
   useEffect(() => {
@@ -51,25 +70,6 @@ function Cart() {
     setCouponMessage(`Coupon ${coupon.code} applied successfully!`);
     showToast(`Coupon ${coupon.code} applied`, "success");
   }, [availableCoupons, subtotal, showToast]);
-
-  const subtotal = getCartTotal();
-  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
-  const discount = appliedCoupon && subtotal >= Number(appliedCoupon.minimum)
-    ? Math.min(
-        appliedCoupon.type === "percentage"
-          ? (subtotal * Number(appliedCoupon.value)) / 100
-          : Math.min(Number(appliedCoupon.value), subtotal),
-        appliedCoupon.maxDiscount !== null && appliedCoupon.maxDiscount !== undefined && Number.isFinite(Number(appliedCoupon.maxDiscount))
-          ? Number(appliedCoupon.maxDiscount)
-          : Infinity,
-        subtotal
-      )
-    : 0;
-  const discountedSubtotal = Math.max(subtotal - discount, 0);
-  const deliveryFee = deliveryType === "pickup" ? 0 : discountedSubtotal >= 40 ? 0 : 2.99;
-  const serviceFee = deliveryType === "delivery" ? 1.49 : 0;
-  const tax = (discountedSubtotal + serviceFee) * 0.05;
-  const grandTotal = discountedSubtotal + deliveryFee + serviceFee + tax;
 
   useEffect(() => {
     if (appliedCoupon && subtotal < Number(appliedCoupon.minimum)) {
