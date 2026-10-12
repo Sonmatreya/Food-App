@@ -55,6 +55,30 @@ const getFoodReviews = async (req, res) => {
   }
 };
 
+const getMyReviews = async (req, res) => {
+  try {
+    const reviews = await Review.find({ userId: req.user.userId })
+      .sort({ createdAt: -1 })
+      .select("foodId orderId rating comment createdAt")
+      .lean();
+
+    return res.json({
+      success: true,
+      reviews: reviews.map((review) => ({
+        id: String(review._id),
+        foodId: String(review.foodId),
+        orderId: String(review.orderId),
+        rating: review.rating,
+        comment: review.comment,
+        createdAt: review.createdAt,
+      })),
+    });
+  } catch (error) {
+    console.error("Get my reviews error:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to load your reviews." });
+  }
+};
+
 const createReview = async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -223,4 +247,4 @@ const getAdminReviews = async (req, res) => {
   }
 };
 
-module.exports = { getFoodReviews, createReview, getAdminReviews, deleteAdminReview };
+module.exports = { getFoodReviews, getMyReviews, createReview, getAdminReviews, deleteAdminReview };
