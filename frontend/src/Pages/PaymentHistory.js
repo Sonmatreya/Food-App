@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { API_URL } from "../config/api";
 import "../Styles/CustomerTools.css";
 
@@ -70,7 +69,7 @@ export default function PaymentHistory() {
           <div className="tool-state">
             <h2>No payment history yet</h2>
             <p>Your completed and current orders will appear here after you place an order.</p>
-            <Link to="/menu"><button type="button">Browse Menu</button></Link>
+            <button type="button" onClick={() => { window.location.href = "/menu"; }}>Browse Menu</button>
           </div>
         ) : (
           <div className="payment-history-list">
