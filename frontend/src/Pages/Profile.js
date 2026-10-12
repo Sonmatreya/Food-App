@@ -227,7 +227,7 @@ function Profile() {
               <span className="list-icon">💳</span>
               <span className="list-content">
                 <strong>Payment & Checkout</strong>
-                <small>Review your cart and continue to checkout
+                <small>Review your cart and continue to checkout</small>
               </span>
               <span className="list-arrow">›</span>
             </button>
