@@ -222,12 +222,12 @@ function Profile() {
             <button
               type="button"
               className="profile-list-item"
-              onClick={() => navigate("/payment")}
+              onClick={() => navigate("/cart")}
             >
               <span className="list-icon">💳</span>
               <span className="list-content">
-                <strong>Payment</strong>
-                <small>Payment is available after you proceed through checkout</small>
+                <strong>Payment & Checkout</strong>
+                <small>Review your cart and continue to checkout
               </span>
               <span className="list-arrow">›</span>
             </button>
@@ -242,7 +242,7 @@ function Profile() {
             </div>
           </div>
           <div className="profile-list">
-            <button type="button" className="profile-list-item" onClick={() => navigate("/payment")}>
+            <button type="button" className="profile-list-item" onClick={() => navigate("/cart")}>
               <span className="list-icon">💳</span><span className="list-content"><strong>Payment Methods</strong><small>Choose a payment option during checkout</small></span><span className="list-arrow">›</span>
             </button>
             <button type="button" className="profile-list-item" onClick={() => navigate("/payment-history")}>
@@ -265,8 +265,7 @@ function Profile() {
             <div>
               <strong>Review your food after an eligible order</strong>
               <p>
-                Completed and picked-up orders can be reviewed from the
-                order experience when review support is available.
+                The server can validate reviews for delivered or picked-up orders, but the customer review form is not connected yet. This section is informational until that form is added.
               </p>
             </div>
           </div>
