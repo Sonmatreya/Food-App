@@ -29,6 +29,29 @@ function Cart() {
 
   useEffect(() => { loadCoupons(); }, [loadCoupons]);
 
+  // A coupon selected from the Profile > Coupons page is kept until the
+  // customer reaches the cart, where eligibility is checked against subtotal.
+  useEffect(() => {
+    if (!availableCoupons.length) return;
+    const pendingCode = localStorage.getItem("foodPendingCouponCode");
+    if (!pendingCode) return;
+    const coupon = availableCoupons.find((item) => item.code === pendingCode && item.active);
+    localStorage.removeItem("foodPendingCouponCode");
+    if (!coupon) {
+      setCouponCode(pendingCode);
+      setCouponMessage("That coupon is no longer available. Please choose an active offer.");
+      return;
+    }
+    setCouponCode(coupon.code);
+    if (subtotal < Number(coupon.minimum || 0)) {
+      setCouponMessage(`Add ₹${Math.max(Number(coupon.minimum || 0) - subtotal, 0).toFixed(2)} more to use ${coupon.code}.`);
+      return;
+    }
+    setAppliedCoupon(coupon);
+    setCouponMessage(`Coupon ${coupon.code} applied successfully!`);
+    showToast(`Coupon ${coupon.code} applied`, "success");
+  }, [availableCoupons, subtotal, showToast]);
+
   const subtotal = getCartTotal();
   const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
   const discount = appliedCoupon && subtotal >= Number(appliedCoupon.minimum)
