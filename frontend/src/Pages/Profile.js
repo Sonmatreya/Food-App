@@ -75,9 +75,9 @@ function Profile() {
           <div className="summary-icon">⭐</div>
           <div className="summary-content">
             <h3>Foodie Rewards</h3>
-            <p>Earn points when you order your favorite food.</p>
+            <p>Reward points are not enabled yet. We will show a balance here once points can be earned and redeemed.</p>
           </div>
-          <div className="summary-value"><strong>0</strong><span>Points</span></div>
+          <div className="summary-value"><strong>Coming soon</strong><span>Rewards</span></div>
         </div>
         <div className="profile-quick-card">
           <button type="button" onClick={() => navigate("/coupons")}>
@@ -227,7 +227,7 @@ function Profile() {
               <span className="list-icon">💳</span>
               <span className="list-content">
                 <strong>Payment</strong>
-                <small>Continue to the payment section</small>
+                <small>Payment is available after you proceed through checkout</small>
               </span>
               <span className="list-arrow">›</span>
             </button>
@@ -243,7 +243,7 @@ function Profile() {
           </div>
           <div className="profile-list">
             <button type="button" className="profile-list-item" onClick={() => navigate("/payment")}>
-              <span className="list-icon">💳</span><span className="list-content"><strong>Payment Methods</strong><small>Choose your payment option</small></span><span className="list-arrow">›</span>
+              <span className="list-icon">💳</span><span className="list-content"><strong>Payment Methods</strong><small>Choose a payment option during checkout</small></span><span className="list-arrow">›</span>
             </button>
             <button type="button" className="profile-list-item" onClick={() => navigate("/payment")}>
               <span className="list-icon">💰</span><span className="list-content"><strong>Payment History</strong><small>View your payment activity through orders</small></span><span className="list-arrow">›</span>
@@ -257,7 +257,7 @@ function Profile() {
               <h2>Ratings & Reviews</h2>
               <p>Share feedback after your completed orders</p>
             </div>
-            <span className="coming-soon">Order based</span>
+            <span className="coming-soon">Not available yet</span>
           </div>
 
           <div className="profile-info-panel">
