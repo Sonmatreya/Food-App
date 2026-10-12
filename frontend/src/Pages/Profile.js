@@ -257,7 +257,7 @@ function Profile() {
               <h2>Ratings & Reviews</h2>
               <p>Share feedback after your completed orders</p>
             </div>
-            <span className="coming-soon">Not available yet</span>
+            <span className="coming-soon">After delivery</span>
           </div>
 
           <div className="profile-info-panel">
@@ -265,7 +265,7 @@ function Profile() {
             <div>
               <strong>Review your food after an eligible order</strong>
               <p>
-                The server can validate reviews for delivered or picked-up orders, but the customer review form is not connected yet. This section is informational until that form is added.
+                Open a completed order in My Orders below to rate each eligible food item and leave feedback. The server prevents reviews before delivery and duplicate reviews for the same food and order.
               </p>
             </div>
           </div>
