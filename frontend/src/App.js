@@ -22,6 +22,7 @@ import Payment from "./Pages/Payment";
 import OrderSuccess from "./Pages/OrderSuccess";
 import Profile from "./Pages/Profile";
 import Coupons from "./Pages/Coupons";
+import PaymentHistory from "./Pages/PaymentHistory";
 import Wishlist from "./Pages/Wishlist";
 import Notifications from "./Pages/Notifications";
 import Security from "./Pages/Security";
@@ -60,6 +61,7 @@ function AppRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/coupons" element={<ProtectedRoute><Coupons /></ProtectedRoute>} />
+        <Route path="/payment-history" element={<ProtectedRoute><PaymentHistory /></ProtectedRoute>} />
         <Route path="/wishlist" element={<ProtectedRoute><Wishlist /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
         <Route path="/security" element={<ProtectedRoute><Security /></ProtectedRoute>} />
