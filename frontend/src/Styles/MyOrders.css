@@ -911,3 +911,46 @@
     flex-basis: 36px;
   }
 }
+
+
+/* Customer reviews for completed orders */
+.my-order-reviews {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-color, rgba(128, 128, 128, 0.25));
+}
+.my-order-reviews h3 { margin: 0 0 6px; }
+.my-order-reviews > p { margin: 0 0 14px; opacity: 0.78; }
+.my-order-review-form {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  margin: 12px 0;
+  border: 1px solid var(--border-color, rgba(128, 128, 128, 0.25));
+  border-radius: 12px;
+}
+.my-order-review-form > strong { font-size: 1rem; }
+.my-order-review-form label { display: grid; gap: 6px; font-size: 0.92rem; }
+.my-order-review-form select,
+.my-order-review-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color, #c9c9c9);
+  border-radius: 8px;
+  font: inherit;
+  color: inherit;
+  background: var(--input-bg, transparent);
+}
+.my-order-review-form textarea { resize: vertical; }
+.my-order-review-form button {
+  justify-self: start;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.my-order-review-form button:disabled { cursor: not-allowed; opacity: 0.6; }
+.my-order-review-success { color: #16803c; margin: 0; }
+.my-order-review-error { color: #c62828; margin: 0; }
