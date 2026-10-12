@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
 import "../Styles/CustomerTools.css";
 
@@ -22,6 +23,7 @@ const statusLabels = {
 };
 
 export default function PaymentHistory() {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -69,7 +71,7 @@ export default function PaymentHistory() {
           <div className="tool-state">
             <h2>No payment history yet</h2>
             <p>Your completed and current orders will appear here after you place an order.</p>
-            <button type="button" onClick={() => { window.location.href = "/menu"; }}>Browse Menu</button>
+            <button type="button" onClick={() => navigate("/menu")}>Browse Menu</button>
           </div>
         ) : (
           <div className="payment-history-list">
