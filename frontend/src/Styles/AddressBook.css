@@ -13,3 +13,57 @@
 .address-book-map-location small{display:block;margin-top:3px;color:#92979e;font-size:8px}
 .address-book-coordinates{color:#198754!important;font-weight:700}
 @media(max-width:700px){.address-book-map-header{align-items:stretch;flex-direction:column}.address-book-current-location{width:100%}.address-book-map-wrapper{height:280px}}
+
+/* Keyboard accessibility and resilient small-screen layout */
+.address-book-page button:focus-visible,
+.address-book-page input:focus-visible,
+.address-book-page textarea:focus-visible {
+  outline: 3px solid rgba(227, 24, 55, .4);
+  outline-offset: 2px;
+}
+
+.address-book-page button:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}
+
+.address-book-card,
+.address-book-form-card,
+.address-book-empty {
+  min-width: 0;
+}
+
+.address-book-card p,
+.address-book-map-location strong {
+  overflow-wrap: anywhere;
+}
+
+.address-book-map-location small {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 520px) {
+  .address-book-map-section {
+    padding: 10px;
+  }
+
+  .address-book-map-wrapper {
+    height: 250px;
+  }
+
+  .address-book-card-actions button {
+    flex: 1 1 auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .address-book-page *,
+  .address-book-page *::before,
+  .address-book-page *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+
