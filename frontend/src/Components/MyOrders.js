@@ -38,6 +38,10 @@ function MyOrders() {
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [orderSearch, setOrderSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [myReviews, setMyReviews] = useState([]);
+  const [reviewDrafts, setReviewDrafts] = useState({});
+  const [reviewStates, setReviewStates] = useState({});
+  const [reviewsLoading, setReviewsLoading] = useState(true);
   const [reorderState, setReorderState] = useState({
     loading: false,
     orderId: null,
@@ -113,6 +117,60 @@ function MyOrders() {
   useEffect(() => {
     fetchOrders(1, false);
   }, [fetchOrders]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const fetchMyReviews = async () => {
+      setReviewsLoading(true);
+      try {
+        const response = await fetch(`${API_URL}/api/reviews/mine`, { credentials: "include" });
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error(data.message || "Unable to load your reviews.");
+        if (!cancelled) setMyReviews(data.reviews || []);
+      } catch (error) {
+        if (!cancelled) console.error("Fetch my reviews error:", error);
+      } finally {
+        if (!cancelled) setReviewsLoading(false);
+      }
+    };
+    fetchMyReviews();
+    return () => { cancelled = true; };
+  }, [API_URL]);
+
+  const handleReviewChange = (key, field, value) => {
+    setReviewDrafts((current) => ({
+      ...current,
+      [key]: { rating: 5, comment: "", ...(current[key] || {}), [field]: value },
+    }));
+  };
+
+  const submitReview = async (order, item) => {
+    const foodId = String(item.foodId || "");
+    const key = `${order.id}:${foodId}`;
+    const draft = { rating: 5, comment: "", ...(reviewDrafts[key] || {}) };
+    setReviewStates((current) => ({ ...current, [key]: { loading: true, message: "", error: false } }));
+    try {
+      const response = await fetch(`${API_URL}/api/reviews`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ foodId, orderId: order.id, rating: Number(draft.rating), comment: draft.comment }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Unable to submit review.");
+      setMyReviews((current) => [...current, {
+        ...(data.review || {}),
+        id: data.review?.id || data.review?._id,
+        foodId,
+        orderId: String(order.id),
+        rating: Number(draft.rating),
+        comment: draft.comment.trim(),
+      }]);
+      setReviewStates((current) => ({ ...current, [key]: { loading: false, message: "Thank you! Your review was submitted.", error: false } }));
+    } catch (error) {
+      setReviewStates((current) => ({ ...current, [key]: { loading: false, message: error.message || "Unable to submit review.", error: true } }));
+    }
+  };
 
   const handleLoadMore = () => {
     if (!pagination || loadingMore) {
@@ -645,6 +703,46 @@ function MyOrders() {
                             </button>
                           </div>
                         </div>
+
+                        {["delivered", "picked_up"].includes(order.status) && (
+                          <section className="my-order-reviews" aria-label="Review ordered food">
+                            <h3>Ratings & Reviews</h3>
+                            <p>Share feedback on food from this completed order.</p>
+                            {order.items.filter((item) => /^[a-f\\d]{24}$/i.test(String(item.foodId || ""))).map((item) => {
+                              const foodId = String(item.foodId);
+                              const key = `${order.id}:${foodId}`;
+                              const alreadyReviewed = myReviews.some((review) => String(review.orderId) === String(order.id) && String(review.foodId) === foodId);
+                              const draft = { rating: 5, comment: "", ...(reviewDrafts[key] || {}) };
+                              const state = reviewStates[key] || {};
+                              return (
+                                <form className="my-order-review-form" key={key} onSubmit={(event) => { event.preventDefault(); submitReview(order, item); }}>
+                                  <strong>{item.name}</strong>
+                                  {alreadyReviewed ? (
+                                    <p className="my-order-review-success">✓ Reviewed — {myReviews.find((review) => String(review.orderId) === String(order.id) && String(review.foodId) === foodId)?.rating || ""} ★</p>
+                                  ) : (
+                                    <>
+                                      <label>
+                                        Rating
+                                        <select value={draft.rating} onChange={(event) => handleReviewChange(key, "rating", event.target.value)} disabled={state.loading}>
+                                          {[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating} star{rating === 1 ? "" : "s"}</option>)}
+                                        </select>
+                                      </label>
+                                      <label>
+                                        Comment (optional)
+                                        <textarea value={draft.comment} maxLength={500} rows={3} placeholder="What did you think of this food?" onChange={(event) => handleReviewChange(key, "comment", event.target.value)} disabled={state.loading} />
+                                      </label>
+                                      <button type="submit" disabled={state.loading || reviewsLoading}>
+                                        {state.loading ? "Submitting…" : "Submit review"}
+                                      </button>
+                                      {state.message && <p className={state.error ? "my-order-review-error" : "my-order-review-success"} role="status">{state.message}</p>}
+                                    </>
+                                  )}
+                                </form>
+                              );
+                            })}
+                            {order.items.every((item) => !/^[a-f\\d]{24}$/i.test(String(item.foodId || ""))) && <p>Reviews are unavailable for items without a valid food record.</p>}
+                          </section>
+                        )}
                       </div>
                     )}
                   </div>
