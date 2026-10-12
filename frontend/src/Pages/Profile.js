@@ -245,8 +245,8 @@ function Profile() {
             <button type="button" className="profile-list-item" onClick={() => navigate("/payment")}>
               <span className="list-icon">💳</span><span className="list-content"><strong>Payment Methods</strong><small>Choose a payment option during checkout</small></span><span className="list-arrow">›</span>
             </button>
-            <button type="button" className="profile-list-item" onClick={() => navigate("/payment")}>
-              <span className="list-icon">💰</span><span className="list-content"><strong>Payment History</strong><small>View your payment activity through orders</small></span><span className="list-arrow">›</span>
+            <button type="button" className="profile-list-item" onClick={() => navigate("/payment-history")}>
+              <span className="list-icon">💰</span><span className="list-content"><strong>Payment History</strong><small>View recorded payment methods, status and order totals</small></span><span className="list-arrow">›</span>
             </button>
           </div>
         </section>
