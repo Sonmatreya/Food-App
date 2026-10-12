@@ -237,13 +237,13 @@ function Profile() {
         <section className="profile-card">
           <div className="profile-card-heading">
             <div>
-              <h2>Payments & Wallet</h2>
-              <p>Manage your payment preferences</p>
+              <h2>Payments</h2>
+              <p>View previous order payments or continue to checkout</p>
             </div>
           </div>
           <div className="profile-list">
             <button type="button" className="profile-list-item" onClick={() => navigate("/cart")}>
-              <span className="list-icon">💳</span><span className="list-content"><strong>Payment Methods</strong><small>Choose a payment option during checkout</small></span><span className="list-arrow">›</span>
+              <span className="list-icon">💳</span><span className="list-content"><strong>Payment Options</strong><small>Choose a payment option for your next order</small></span><span className="list-arrow">›</span>
             </button>
             <button type="button" className="profile-list-item" onClick={() => navigate("/payment-history")}>
               <span className="list-icon">💰</span><span className="list-content"><strong>Payment History</strong><small>View recorded payment methods, status and order totals</small></span><span className="list-arrow">›</span>
