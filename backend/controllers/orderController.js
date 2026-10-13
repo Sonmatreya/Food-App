@@ -26,6 +26,7 @@ const buildOrderResponse = (order) => ({
   address: order.deliveryType === "delivery" ? order.address : null,
   location: order.deliveryType === "delivery" ? order.location : null,
   paymentMethod: order.paymentMethod,
+  demoChannel: order.demoChannel || null,
   paymentStatus: order.paymentStatus,
   status: order.status,
   createdAt: order.createdAt,
@@ -161,7 +162,7 @@ const createOrder = async (req, res) => {
     }
 
     const paymentMethod = body.paymentMethod;
-    if (paymentMethod === "demo" && String(body.demoCardNumber ?? "").replace(/\D/g, "") !== "4111111111111111") return res.status(400).json({ success: false, message: "Invalid demo payment card" });
+    if (paymentMethod === "demo" && (!["upi", "card", "netbanking", "wallet"].includes(body.demoChannel) || body.demoOutcome !== "success")) return res.status(400).json({ success: false, message: "Demo payment must use a supported demo method and a successful simulated result" });
     if (!["upi", "card", "netbanking", "cod", "demo"].includes(paymentMethod)) return res.status(400).json({ success: false, message: "Invalid payment method" });
     if (paymentMethod === "cod" && deliveryType === "pickup") return res.status(400).json({ success: false, message: "Cash on Delivery is only available for delivery orders" });
 
@@ -203,7 +204,7 @@ const createOrder = async (req, res) => {
     let order = null;
     for (let attempt = 0; attempt < 3 && !order; attempt += 1) {
       try {
-        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, deliveryType, address, location, paymentMethod, paymentStatus: paymentMethod === "cod" ? "cod_pending" : paymentMethod === "demo" ? "paid" : "pending", status: "placed", statusHistory: [{ status: "placed", changedAt: new Date(), changedBy: userId }] });
+        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, deliveryType, address, location, paymentMethod, demoChannel: paymentMethod === "demo" ? body.demoChannel : undefined, paymentStatus: paymentMethod === "cod" ? "cod_pending" : paymentMethod === "demo" ? "paid" : "pending", status: "placed", statusHistory: [{ status: "placed", changedAt: new Date(), changedBy: userId }] });
       } catch (error) {
         if (error.code === 11000 && attempt < 2) continue;
         throw error;
