@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { createOrder } = require("./orderController");
 
 const PAYU_TEST_URL = "https://test.payu.in/_payment";
-const CLIENT_URL = process.env.CLIENT_URL || "https://food-app-5qi5.onrender.com";
+const CLIENT_URL = (process.env.CLIENT_URL || "https://food-app-5qi5.onrender.com").replace(/\\/+$/, "");
 const CALLBACK_URL = process.env.PAYU_CALLBACK_URL || "https://food-app-backend-lxic.onrender.com/api/payments/payu/return";
 
 const sha512 = (value) => crypto.createHash("sha512").update(value, "utf8").digest("hex");
@@ -127,8 +127,12 @@ const processPayUResponse = async (req, res, isWebhook = false) => {
         order.paymentStatus = "paid";
         await order.save();
       }
-    } else if (order.paymentStatus !== "paid") {
+    } else if (["failure", "usercancelled", "cancel"].includes(status) && order.paymentStatus !== "paid") {
       order.paymentStatus = "failed";
+      if (order.status !== "cancelled") {
+        order.status = "cancelled";
+        order.statusHistory.push({ status: "cancelled", changedAt: new Date(), changedBy: order.userId });
+      }
       await order.save();
     }
 
