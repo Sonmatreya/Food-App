@@ -139,7 +139,7 @@ const orderSchema = new mongoose.Schema(
       default: "cod",
     },
 
-    // No gateway yet — non-COD stays "pending" until a gateway phase
+    // Online payments remain pending until a verified PayU callback
     demoChannel: {
       type: String,
       enum: ["upi", "card", "netbanking", "wallet", null],
