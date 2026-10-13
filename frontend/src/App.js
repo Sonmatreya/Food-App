@@ -19,6 +19,7 @@ import Register from "./Pages/Register";
 import Cart from "./Pages/Cart";
 import DeliveryAddress from "./Pages/DeliveryAddress";
 import Payment from "./Pages/Payment";
+import PaymentResult from "./Pages/PaymentResult";
 import OrderSuccess from "./Pages/OrderSuccess";
 import Profile from "./Pages/Profile";
 import Coupons from "./Pages/Coupons";
@@ -82,6 +83,7 @@ function AppRoutes() {
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
         <Route path="/delivery-address" element={<ProtectedRoute><DeliveryAddress /></ProtectedRoute>} />
         <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+        <Route path="/payment-result" element={<ProtectedRoute><PaymentResult /></ProtectedRoute>} />
         <Route path="/order-success/:orderId" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
         <Route path="*" element={<Home />} />
       </Routes>
