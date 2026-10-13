@@ -53,7 +53,8 @@ const initiatePayU = async (req, res) => {
     // Create an unpaid order first; it becomes paid only after a verified PayU callback.
     const orderBody = { ...req.body, paymentMethod: channel };
     delete orderBody.channel;
-    const orderReq = { ...req, body: orderBody };
+    const orderReq = Object.create(req);
+    orderReq.body = orderBody;
     let createStatus = 200;
     let createPayload = null;
     const captureRes = {
