@@ -140,6 +140,12 @@ const orderSchema = new mongoose.Schema(
     },
 
     // No gateway yet — non-COD stays "pending" until a gateway phase
+    demoChannel: {
+      type: String,
+      enum: ["upi", "card", "netbanking", "wallet", null],
+      default: null,
+    },
+
     paymentStatus: {
       type: String,
       enum: ["pending", "cod_pending", "paid", "failed"],
