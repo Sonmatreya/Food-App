@@ -13,6 +13,8 @@ function Payment() {
 
   const [paymentMethod, setPaymentMethod] = useState("upi");
   const [upiId, setUpiId] = useState("");
+  const [demoChannel, setDemoChannel] = useState("card");
+  const [demoOutcome, setDemoOutcome] = useState("success");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderError, setOrderError] = useState("");
 
@@ -68,8 +70,12 @@ function Payment() {
     }
 
     setOrderError("");
-    if (paymentMethod === "demo") {
-      // The demo gateway uses a fixed test card on the server.
+    if (paymentMethod === "demo" && demoOutcome !== "success") {
+      const outcomeMessage = demoOutcome === "failure"
+        ? "Demo payment failed. No order was created and no money was charged."
+        : "Demo payment cancelled. No order was created and no money was charged.";
+      setOrderError(outcomeMessage);
+      return;
     }
     setIsPlacingOrder(true);
 
@@ -113,7 +119,8 @@ function Payment() {
                 ? { latitude, longitude, locationText }
                 : undefined,
             paymentMethod,
-            demoCardNumber: paymentMethod === "demo" ? "4111111111111111" : undefined,
+            demoChannel: paymentMethod === "demo" ? demoChannel : undefined,
+            demoOutcome: paymentMethod === "demo" ? demoOutcome : undefined,
             couponCode: coupon?.code ?? "",
           }),
         }
@@ -543,6 +550,58 @@ function Payment() {
 
             </div>
 
+            {paymentMethod === "demo" && (
+              <div className="demoPaymentPanel" aria-label="Demo payment simulator">
+                <div className="demoPaymentPanelHeader">
+                  <span className="demoPaymentBadge">DEMO MODE · NO REAL MONEY</span>
+                  <h3>Simulate a payment</h3>
+                  <p>This is a local project simulation, not a real payment gateway.</p>
+                </div>
+
+                <fieldset className="demoChoiceGroup">
+                  <legend>Choose a demo payment method</legend>
+                  <div className="demoChoiceGrid">
+                    {[
+                      { value: "upi", label: "UPI", icon: "📱" },
+                      { value: "card", label: "Card", icon: "💳" },
+                      { value: "netbanking", label: "Net banking", icon: "🏦" },
+                      { value: "wallet", label: "Wallet", icon: "👛" },
+                    ].map((option) => (
+                      <button
+                        key={option.value}
+                        type="button"
+                        className={`demoChoiceButton ${demoChannel === option.value ? "active" : ""}`}
+                        aria-pressed={demoChannel === option.value}
+                        onClick={() => setDemoChannel(option.value)}
+                      >
+                        <span aria-hidden="true">{option.icon}</span>
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
+                </fieldset>
+
+                <fieldset className="demoChoiceGroup">
+                  <legend>Choose the test result</legend>
+                  <div className="demoOutcomeGrid">
+                    <button type="button" className={`demoOutcomeButton success ${demoOutcome === "success" ? "active" : ""}`} aria-pressed={demoOutcome === "success"} onClick={() => { setDemoOutcome("success"); setOrderError(""); }}>
+                      ✓ Simulate success
+                    </button>
+                    <button type="button" className={`demoOutcomeButton failure ${demoOutcome === "failure" ? "active" : ""}`} aria-pressed={demoOutcome === "failure"} onClick={() => { setDemoOutcome("failure"); setOrderError(""); }}>
+                      ✕ Simulate failure
+                    </button>
+                    <button type="button" className={`demoOutcomeButton cancel ${demoOutcome === "cancel" ? "active" : ""}`} aria-pressed={demoOutcome === "cancel"} onClick={() => { setDemoOutcome("cancel"); setOrderError(""); }}>
+                      ↩ Simulate cancel
+                    </button>
+                  </div>
+                </fieldset>
+
+                <p className="demoPaymentDisclaimer">
+                  Only a simulated success creates an order marked as demo-paid. Failure and cancellation do not create an order.
+                </p>
+              </div>
+            )}
+
             {/* UPI FORM */}
 
             {paymentMethod === "upi" && (
@@ -867,7 +926,7 @@ function Payment() {
               </>
             ) : (
               <>
-                {paymentMethod === "demo" ? "Pay ₹" + grandTotal.toFixed(2) : "Place Order"}
+                {paymentMethod === "demo" ? "Simulate ₹" + grandTotal.toFixed(2) : "Place Order"}
                 <span>→</span>
               </>
             )}
