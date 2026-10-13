@@ -69,11 +69,9 @@ function Payment() {
   );
 
   const handlePlaceOrder = async () => {
-    if (isPlacingOrder) {
-      return;
-    }
-
+    if (isPlacingOrder) return;
     setOrderError("");
+
     if (paymentMethod === "demo" && demoOutcome !== "success") {
       const outcomeMessage = demoOutcome === "failure"
         ? "Demo payment failed. No order was created and no money was charged."
@@ -81,91 +79,88 @@ function Payment() {
       setOrderError(outcomeMessage);
       return;
     }
-    setIsPlacingOrder(true);
 
+    setIsPlacingOrder(true);
     try {
-      // Backend recomputes all pricing — client totals
-      // are never sent or trusted.
+      const orderPayload = {
+        items: cartItems.map((item) => ({
+          foodId: String(item._id ?? item.id ?? item.cartItemId ?? ""),
+          name: item.name,
+          category: item.category ?? "",
+          price: item.price,
+          quantity: item.quantity,
+          cookingRequest: item.cookingRequest ?? "",
+          image: /^https?:\\/\\//.test(item.image ?? "") ? item.image : "",
+        })),
+        deliveryType,
+        address: deliveryType === "delivery" ? {
+          name: address.name,
+          phone: address.phone,
+          addressLine: address.addressLine,
+          city: address.city,
+          pincode: address.pincode,
+          landmark: address.landmark || "",
+        } : undefined,
+        location: deliveryType === "delivery" ? { latitude, longitude, locationText } : undefined,
+        paymentMethod,
+        demoChannel: paymentMethod === "demo" ? demoChannel : undefined,
+        demoOutcome: paymentMethod === "demo" ? demoOutcome : undefined,
+        couponCode: coupon?.code ?? "",
+      };
+
+      const isPayU = paymentMethod === "payu";
+      if (isPayU) orderPayload.channel = demoChannel;
       const response = await fetch(
-        `${API_URL}/api/orders`,
+        isPayU ? `${API_URL}/api/payments/payu/initiate` : `${API_URL}/api/orders`,
         {
           method: "POST",
           credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            items: cartItems.map((item) => ({
-              foodId: String(item._id ?? item.id ?? item.cartItemId ?? ""),
-              name: item.name,
-              category: item.category ?? "",
-              price: item.price,
-              quantity: item.quantity,
-              cookingRequest: item.cookingRequest ?? "",
-              image: /^https?:\/\//.test(item.image ?? "")
-                ? item.image
-                : "",
-            })),
-            deliveryType,
-            address:
-              deliveryType === "delivery"
-                ? {
-                    name: address.name,
-                    phone: address.phone,
-                    addressLine: address.addressLine,
-                    city: address.city,
-                    pincode: address.pincode,
-                    landmark: address.landmark || "",
-                  }
-                : undefined,
-            location:
-              deliveryType === "delivery"
-                ? { latitude, longitude, locationText }
-                : undefined,
-            paymentMethod,
-            demoChannel: paymentMethod === "demo" ? demoChannel : undefined,
-            demoOutcome: paymentMethod === "demo" ? demoOutcome : undefined,
-            couponCode: coupon?.code ?? "",
-          }),
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderPayload),
         }
       );
 
       let data = {};
-
-      try {
-        data = await response.json();
-      } catch {
-        // Non-JSON response
-      }
+      try { data = await response.json(); } catch { /* Non-JSON response */ }
 
       if (response.status === 401) {
-        setOrderError(
-          "Your session has expired. Please log in again."
-        );
+        setOrderError("Your session has expired. Please log in again.");
+        return;
+      }
+      if (!response.ok || !data.success) {
+        setOrderError(data.message || "Unable to start checkout. Please try again.");
         return;
       }
 
-      if (!response.ok || !data.success || !data.order) {
-        setOrderError(
-          data.message ||
-            "Unable to place your order. Please try again."
-        );
+      if (isPayU) {
+        if (!data.action || !data.fields) {
+          setOrderError("PayU did not return valid test checkout details.");
+          return;
+        }
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = data.action;
+        Object.entries(data.fields).forEach(([name, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = name;
+          input.value = String(value ?? "");
+          form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
         return;
       }
 
-      // Order saved on the server — clear the cart and
-      // show the real order confirmation.
+      if (!data.order) {
+        setOrderError(data.message || "Unable to place your order. Please try again.");
+        return;
+      }
       clearCart();
-
-      navigate(`/order-success/${data.order.id}`, {
-        state: { justPlaced: true },
-      });
+      navigate(`/order-success/${data.order.id}`, { state: { justPlaced: true } });
     } catch (placeError) {
       console.error("Place order error:", placeError);
-
-      setOrderError(
-        "Unable to reach the server. Please check your connection and try again."
-      );
+      setOrderError("Unable to reach the server. Please check your connection and try again.");
     } finally {
       setIsPlacingOrder(false);
     }
@@ -510,13 +505,26 @@ function Payment() {
 
             </div>
 
-            {paymentMethod === "demo" && (
+              <button
+                type="button"
+                className={`paymentMethod ${paymentMethod === "payu" ? "active" : ""}`}
+                onClick={() => { setPaymentMethod("payu"); setOrderError(""); }}
+              >
+                <div className="paymentMethodIcon">🔐</div>
+                <div className="paymentMethodInfo">
+                  <strong>PayU Test Checkout</strong>
+                  <span>Hosted test payment only — no live transactions</span>
+                </div>
+                <div className="paymentMethodRadio">{paymentMethod === "payu" ? "●" : "○"}</div>
+              </button>
+
+            {(paymentMethod === "demo" || paymentMethod === "payu") && (
               <div className="gatewayDemo" aria-label="Sandbox payment checkout">
                 <div className="gatewayDemoTop">
                   <div>
-                    <span className="gatewayDemoEyebrow"><span className="gatewayLiveDot" /> SANDBOX CHECKOUT</span>
+                    <span className="gatewayDemoEyebrow"><span className="gatewayLiveDot" /> {paymentMethod === "payu" ? "PAYU TEST MODE" : "SANDBOX CHECKOUT"}</span>
                     <h3>Complete your payment</h3>
-                    <p>Choose a payment option below. This is a demo gateway for your project; no bank, UPI app, or card network is contacted.</p>
+                    <p>{paymentMethod === "payu" ? "Continue to PayU’s hosted test checkout. Only test credentials are enabled; no live payment is processed." : "Choose a payment option below. This demo does not contact a bank, UPI app, or card network."}</p>
                   </div>
                   <div className="gatewayAmount">
                     <span>AMOUNT DUE</span>
@@ -598,7 +606,7 @@ function Payment() {
                   </div>
                 )}
 
-                <details className="gatewayAdvancedDemo" open={showAdvancedDemo} onToggle={(event) => setShowAdvancedDemo(event.currentTarget.open)}>
+                {paymentMethod === "demo" && (<details className="gatewayAdvancedDemo" open={showAdvancedDemo} onToggle={(event) => setShowAdvancedDemo(event.currentTarget.open)}>
                   <summary>Developer test scenarios <span>Optional</span></summary>
                   <p>For project demonstrations only, choose what the mock gateway returns after you click Pay.</p>
                   <div className="gatewayScenarioChoices">
@@ -606,8 +614,8 @@ function Payment() {
                     <button type="button" className={`gatewayScenario ${demoOutcome === "failure" ? "active" : ""}`} onClick={() => { setDemoOutcome("failure"); setOrderError(""); }}>✕ Failure</button>
                     <button type="button" className={`gatewayScenario ${demoOutcome === "cancel" ? "active" : ""}`} onClick={() => { setDemoOutcome("cancel"); setOrderError(""); }}>↩ Cancel</button>
                   </div>
-                </details>
-                <div className="gatewayDemoFooter"><span>🔒</span> Test environment · No real payment · No credentials required</div>
+                </details>)}
+                <div className="gatewayDemoFooter"><span>🔒</span> {paymentMethod === "payu" ? "PayU test environment · No live payment" : "Demo simulation · No real payment · No credentials required"}</div>
               </div>
             )}
 
@@ -931,11 +939,11 @@ function Payment() {
             {isPlacingOrder ? (
               <>
                 <span className="loadingSpinner"></span>
-                {paymentMethod === "demo" ? "Authorizing demo payment..." : "Processing..."}
+                {paymentMethod === "demo" ? "Authorizing demo payment..." : paymentMethod === "payu" ? "Opening PayU test checkout..." : "Processing..."}
               </>
             ) : (
               <>
-                {paymentMethod === "demo" ? "Pay ₹" + grandTotal.toFixed(2) + " · Demo" : "Place Order"}
+                {paymentMethod === "demo" ? "Pay ₹" + grandTotal.toFixed(2) + " · Demo" : paymentMethod === "payu" ? "Continue to PayU Test" : "Place Order"}
                 <span>→</span>
               </>
             )}
