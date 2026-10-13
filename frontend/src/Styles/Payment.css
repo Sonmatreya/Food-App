@@ -811,3 +811,96 @@
     display: none;
   }
 }
+
+/* Local payment simulator — never processes real payments */
+.demoPaymentPanel {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid #ead9a6;
+  border-radius: 14px;
+  background: #fffaf0;
+}
+.demoPaymentPanelHeader h3 {
+  margin: 12px 0 5px;
+  color: #28231a;
+  font-size: 17px;
+}
+.demoPaymentPanelHeader p,
+.demoPaymentDisclaimer {
+  margin: 0;
+  color: #766c55;
+  font-size: 12px;
+  line-height: 1.55;
+}
+.demoChoiceGroup {
+  min-width: 0;
+  margin: 18px 0 0;
+  padding: 0;
+  border: 0;
+}
+.demoChoiceGroup legend {
+  margin-bottom: 9px;
+  color: #393328;
+  font-size: 12px;
+  font-weight: 800;
+}
+.demoChoiceGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+.demoChoiceButton,
+.demoOutcomeButton {
+  min-width: 0;
+  min-height: 44px;
+  padding: 9px 8px;
+  border: 1px solid #e1d7bd;
+  border-radius: 9px;
+  background: #fff;
+  color: #433d30;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.demoChoiceButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.demoChoiceButton.active {
+  border-color: #b78612;
+  background: #fff0bd;
+  box-shadow: 0 0 0 2px rgba(183, 134, 18, .12);
+}
+.demoOutcomeGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.demoOutcomeButton.success.active {
+  border-color: #25804b;
+  background: #eaf8ef;
+  color: #176637;
+}
+.demoOutcomeButton.failure.active {
+  border-color: #c43a3a;
+  background: #fff0f0;
+  color: #a32222;
+}
+.demoOutcomeButton.cancel.active {
+  border-color: #6b7280;
+  background: #f1f3f5;
+  color: #374151;
+}
+.demoPaymentDisclaimer {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #eadfbe;
+}
+@media (max-width: 560px) {
+  .demoChoiceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .demoOutcomeGrid { grid-template-columns: 1fr; }
+}
