@@ -22,14 +22,23 @@ const makePayUHash = (fields, salt) => sha512([
 ].join("|"));
 
 const verifyPayUHash = (body, salt) => {
-  const hashString = [
+  // PayU's standard reverse hash. If PayU adds additional charges, its
+  // documentation requires the additional-charges value before the Salt.
+  const additionalCharges = body.additional_charges || body.additionalCharges || "";
+  const hashParts = [
     salt, body.status || "", "", "", "", "",
     body.udf5 || "", body.udf4 || "", body.udf3 || "",
     body.udf2 || "", body.udf1 || "", body.email || "",
     body.firstname || "", body.productinfo || "", body.amount || "",
     body.txnid || "", body.key || "",
-  ].join("|");
-  return safeEqual(sha512(hashString), body.hash);
+  ];
+  const standardHash = sha512(hashParts.join("|"));
+  if (!additionalCharges) return safeEqual(standardHash, body.hash);
+
+  const withAdditionalCharges = sha512([
+    additionalCharges, ...hashParts,
+  ].join("|"));
+  return safeEqual(withAdditionalCharges, body.hash);
 };
 
 const initiatePayU = async (req, res) => {
@@ -81,8 +90,13 @@ const initiatePayU = async (req, res) => {
       firstname: String(order.address?.name || user.name || "Food App Customer").trim().slice(0, 60),
       email: String(user.email).trim().slice(0, 100),
       phone: String(order.address?.phone || user.phone || "").replace(/\D/g, "").slice(-10) || "9999999999",
+      address1: String(order.address?.addressLine || "Not provided").trim().slice(0, 100),
+      city: String(order.address?.city || "India").trim().slice(0, 50),
+      country: "India",
+      zipcode: String(order.address?.pincode || "").trim().slice(0, 10),
       surl: CALLBACK_URL,
       furl: CALLBACK_URL,
+      curl: CALLBACK_URL,
       udf1: String(order.id),
       udf2: "",
       udf3: "",
