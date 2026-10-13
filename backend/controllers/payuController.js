@@ -18,12 +18,12 @@ const amountString = (value) => Number(value).toFixed(2);
 const makePayUHash = (fields, salt) => sha512([
   fields.key, fields.txnid, fields.amount, fields.productinfo, fields.firstname,
   fields.email, fields.udf1 || "", fields.udf2 || "", fields.udf3 || "",
-  fields.udf4 || "", fields.udf5 || "", "", "", "", "", "", "", salt,
+  fields.udf4 || "", fields.udf5 || "", "", "", "", "", "", salt,
 ].join("|"));
 
 const verifyPayUHash = (body, salt) => {
   const hashString = [
-    salt, body.status || "", "", "", "", "", "",
+    salt, body.status || "", "", "", "", "",
     body.udf5 || "", body.udf4 || "", body.udf3 || "",
     body.udf2 || "", body.udf1 || "", body.email || "",
     body.firstname || "", body.productinfo || "", body.amount || "",
