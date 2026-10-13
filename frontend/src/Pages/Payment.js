@@ -931,11 +931,11 @@ function Payment() {
             {isPlacingOrder ? (
               <>
                 <span className="loadingSpinner"></span>
-                {paymentMethod === "demo" ? "Processing Demo Payment..." : "Processing..."}
+                {paymentMethod === "demo" ? "Authorizing demo payment..." : "Processing..."}
               </>
             ) : (
               <>
-                {paymentMethod === "demo" ? "Simulate ₹" + grandTotal.toFixed(2) : "Place Order"}
+                {paymentMethod === "demo" ? "Pay ₹" + grandTotal.toFixed(2) + " · Demo" : "Place Order"}
                 <span>→</span>
               </>
             )}
