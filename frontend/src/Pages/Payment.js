@@ -11,9 +11,13 @@ function Payment() {
 
   const orderData = location.state;
 
-  const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [paymentMethod, setPaymentMethod] = useState("demo");
   const [upiId, setUpiId] = useState("");
-  const [demoChannel, setDemoChannel] = useState("card");
+  const [demoChannel, setDemoChannel] = useState("upi");
+  const [demoApp, setDemoApp] = useState("Google Pay");
+  const [demoBank, setDemoBank] = useState("State Bank of India");
+  const [demoWallet, setDemoWallet] = useState("Paytm Wallet");
+  const [showAdvancedDemo, setShowAdvancedDemo] = useState(false);
   const [demoOutcome, setDemoOutcome] = useState("success");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderError, setOrderError] = useState("");
@@ -489,26 +493,6 @@ function Payment() {
 
               </button>
 
-              {/* DEMO PAYMENT */}
-
-              <button
-                type="button"
-                className={`paymentMethod ${paymentMethod === "demo" ? "active" : ""}`}
-                onClick={() => {
-                  setPaymentMethod("demo");
-                  setOrderError("");
-                }}
-              >
-                <div className="paymentMethodIcon">🧪</div>
-                <div className="paymentMethodInfo">
-                  <strong>Demo Payment</strong>
-                  <span>Test checkout — no real money is charged</span>
-                </div>
-                <div className="paymentMethodRadio">
-                  {paymentMethod === "demo" ? "●" : "○"}
-                </div>
-              </button>
-
               {/* CASH ON DELIVERY */}
 
               {deliveryType === "delivery" && (
@@ -551,54 +535,103 @@ function Payment() {
             </div>
 
             {paymentMethod === "demo" && (
-              <div className="demoPaymentPanel" aria-label="Demo payment simulator">
-                <div className="demoPaymentPanelHeader">
-                  <span className="demoPaymentBadge">DEMO MODE · NO REAL MONEY</span>
-                  <h3>Simulate a payment</h3>
-                  <p>This is a local project simulation, not a real payment gateway.</p>
+              <div className="gatewayDemo" aria-label="Sandbox payment checkout">
+                <div className="gatewayDemoTop">
+                  <div>
+                    <span className="gatewayDemoEyebrow"><span className="gatewayLiveDot" /> SANDBOX CHECKOUT</span>
+                    <h3>Complete your payment</h3>
+                    <p>Choose a payment option below. This is a demo gateway for your project; no bank, UPI app, or card network is contacted.</p>
+                  </div>
+                  <div className="gatewayAmount">
+                    <span>AMOUNT DUE</span>
+                    <strong>₹{grandTotal.toFixed(2)}</strong>
+                  </div>
                 </div>
 
-                <fieldset className="demoChoiceGroup">
-                  <legend>Choose a demo payment method</legend>
-                  <div className="demoChoiceGrid">
-                    {[
-                      { value: "upi", label: "UPI", icon: "📱" },
-                      { value: "card", label: "Card", icon: "💳" },
-                      { value: "netbanking", label: "Net banking", icon: "🏦" },
-                      { value: "wallet", label: "Wallet", icon: "👛" },
-                    ].map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        className={`demoChoiceButton ${demoChannel === option.value ? "active" : ""}`}
-                        aria-pressed={demoChannel === option.value}
-                        onClick={() => setDemoChannel(option.value)}
-                      >
-                        <span aria-hidden="true">{option.icon}</span>
-                        {option.label}
-                      </button>
-                    ))}
-                  </div>
-                </fieldset>
+                <div className="gatewayMethodTabs" role="group" aria-label="Demo payment method">
+                  {[
+                    { value: "upi", label: "UPI", icon: "⌁" },
+                    { value: "card", label: "Cards", icon: "▤" },
+                    { value: "netbanking", label: "Net banking", icon: "▥" },
+                    { value: "wallet", label: "Wallets", icon: "▣" },
+                  ].map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      className={`gatewayMethodTab ${demoChannel === option.value ? "active" : ""}`}
+                      aria-pressed={demoChannel === option.value}
+                      onClick={() => { setDemoChannel(option.value); setOrderError(""); }}
+                    >
+                      <span aria-hidden="true">{option.icon}</span>
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
 
-                <fieldset className="demoChoiceGroup">
-                  <legend>Choose the test result</legend>
-                  <div className="demoOutcomeGrid">
-                    <button type="button" className={`demoOutcomeButton success ${demoOutcome === "success" ? "active" : ""}`} aria-pressed={demoOutcome === "success"} onClick={() => { setDemoOutcome("success"); setOrderError(""); }}>
-                      ✓ Simulate success
-                    </button>
-                    <button type="button" className={`demoOutcomeButton failure ${demoOutcome === "failure" ? "active" : ""}`} aria-pressed={demoOutcome === "failure"} onClick={() => { setDemoOutcome("failure"); setOrderError(""); }}>
-                      ✕ Simulate failure
-                    </button>
-                    <button type="button" className={`demoOutcomeButton cancel ${demoOutcome === "cancel" ? "active" : ""}`} aria-pressed={demoOutcome === "cancel"} onClick={() => { setDemoOutcome("cancel"); setOrderError(""); }}>
-                      ↩ Simulate cancel
-                    </button>
+                {demoChannel === "upi" && (
+                  <div className="gatewayOptionContent">
+                    <h4>Pay with UPI</h4>
+                    <p className="gatewayMuted">Select a familiar app to preview the flow.</p>
+                    <div className="gatewayAppChoices">
+                      {["Google Pay", "PhonePe", "Paytm", "Other UPI"].map((app) => (
+                        <button type="button" key={app} className={`gatewayAppChoice ${demoApp === app ? "active" : ""}`} onClick={() => setDemoApp(app)} aria-pressed={demoApp === app}>
+                          <span className={`gatewayAppLogo appLogo${app.replace(/\s/g, "")}`}>{app === "Google Pay" ? "G" : app === "PhonePe" ? "पे" : app === "Paytm" ? "P" : "UPI"}</span>
+                          <span>{app}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="gatewayInfoStrip"><span>ⓘ</span><p><strong>{demoApp} demo</strong><br />In a live gateway this would open the selected app. Here, continue to simulate the checkout only.</p></div>
                   </div>
-                </fieldset>
+                )}
 
-                <p className="demoPaymentDisclaimer">
-                  Only a simulated success creates an order marked as demo-paid. Failure and cancellation do not create an order.
-                </p>
+                {demoChannel === "card" && (
+                  <div className="gatewayOptionContent">
+                    <h4>Credit or debit card</h4>
+                    <div className="gatewayCardPreview">
+                      <div className="gatewayCardPreviewTop"><span>FOOD APP</span><span>DEMO CARD</span></div>
+                      <div className="gatewayCardNumber">•••• &nbsp; •••• &nbsp; •••• &nbsp; 4242</div>
+                      <div className="gatewayCardPreviewBottom"><span>TEST PAYMENT</span><strong>VISA</strong></div>
+                    </div>
+                    <div className="gatewayInfoStrip"><span>ⓘ</span><p>This sample card is only a visual preview. <strong>Do not enter real card details.</strong> No card data is needed for this simulation.</p></div>
+                  </div>
+                )}
+
+                {demoChannel === "netbanking" && (
+                  <div className="gatewayOptionContent">
+                    <h4>Choose your bank</h4>
+                    <label className="gatewayFieldLabel" htmlFor="demoBank">Bank for demo</label>
+                    <select id="demoBank" className="gatewaySelect" value={demoBank} onChange={(event) => setDemoBank(event.target.value)}>
+                      {["State Bank of India", "HDFC Bank", "ICICI Bank", "Axis Bank", "Kotak Mahindra Bank", "Punjab National Bank"].map((bank) => <option key={bank} value={bank}>{bank}</option>)}
+                    </select>
+                    <div className="gatewayInfoStrip"><span>ⓘ</span><p><strong>{demoBank}</strong> is selected for display only. This demo will not open a bank website or request bank credentials.</p></div>
+                  </div>
+                )}
+
+                {demoChannel === "wallet" && (
+                  <div className="gatewayOptionContent">
+                    <h4>Choose a wallet</h4>
+                    <div className="gatewayWalletChoices">
+                      {["Paytm Wallet", "Amazon Pay", "Mobikwik"].map((wallet) => (
+                        <button type="button" key={wallet} className={`gatewayWalletChoice ${demoWallet === wallet ? "active" : ""}`} onClick={() => setDemoWallet(wallet)} aria-pressed={demoWallet === wallet}>
+                          <span>{wallet === "Paytm Wallet" ? "P" : wallet === "Amazon Pay" ? "a" : "M"}</span>
+                          {wallet}
+                        </button>
+                      ))}
+                    </div>
+                    <div className="gatewayInfoStrip"><span>ⓘ</span><p><strong>{demoWallet}</strong> selected for demo. No wallet account is connected.</p></div>
+                  </div>
+                )}
+
+                <details className="gatewayAdvancedDemo" open={showAdvancedDemo} onToggle={(event) => setShowAdvancedDemo(event.currentTarget.open)}>
+                  <summary>Developer test scenarios <span>Optional</span></summary>
+                  <p>For project demonstrations only, choose what the mock gateway returns after you click Pay.</p>
+                  <div className="gatewayScenarioChoices">
+                    <button type="button" className={`gatewayScenario ${demoOutcome === "success" ? "active" : ""}`} onClick={() => { setDemoOutcome("success"); setOrderError(""); }}>✓ Success</button>
+                    <button type="button" className={`gatewayScenario ${demoOutcome === "failure" ? "active" : ""}`} onClick={() => { setDemoOutcome("failure"); setOrderError(""); }}>✕ Failure</button>
+                    <button type="button" className={`gatewayScenario ${demoOutcome === "cancel" ? "active" : ""}`} onClick={() => { setDemoOutcome("cancel"); setOrderError(""); }}>↩ Cancel</button>
+                  </div>
+                </details>
+                <div className="gatewayDemoFooter"><span>🔒</span> Test environment · No real payment · No credentials required</div>
               </div>
             )}
 
