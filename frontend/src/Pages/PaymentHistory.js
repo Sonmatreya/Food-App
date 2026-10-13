@@ -8,7 +8,7 @@ const paymentLabels = {
   card: "Card",
   netbanking: "Net Banking",
   cod: "Cash on Delivery",
-  demo: "Demo card (test payment)",
+  demo: "Demo payment (simulation)",
 };
 
 const statusLabels = {
@@ -87,7 +87,7 @@ export default function PaymentHistory() {
                     </div>
                     <strong>{money(pricing.grandTotal ?? order.grandTotal)}</strong>
                   </div>
-                  <p><strong>Payment method:</strong> {paymentLabels[order.paymentMethod] || order.paymentMethod || "Not recorded"}</p>
+                  <p><strong>Payment method:</strong> {paymentLabels[order.paymentMethod] || order.paymentMethod || "Not recorded"}{order.paymentMethod === "demo" && order.demoChannel ? ` · ${({ upi: "UPI", card: "Card", netbanking: "Net banking", wallet: "Wallet" })[order.demoChannel] || order.demoChannel}` : ""}</p>
                   <p><strong>Payment status:</strong> {order.paymentStatus || "Not recorded"}</p>
                   <p><strong>Order status:</strong> {statusLabels[order.status] || order.status || "Unknown"}</p>
                   <p><strong>Items:</strong> {Array.isArray(order.items) ? order.items.map((item) => `${item.name || "Food"} × ${item.quantity || 1}`).join(", ") : "Details unavailable"}</p>
