@@ -503,8 +503,6 @@ function Payment() {
                 </button>
               )}
 
-            </div>
-
               <button
                 type="button"
                 className={`paymentMethod ${paymentMethod === "payu" ? "active" : ""}`}
@@ -517,6 +515,10 @@ function Payment() {
                 </div>
                 <div className="paymentMethodRadio">{paymentMethod === "payu" ? "●" : "○"}</div>
               </button>
+
+            </div>
+
+
 
             {(paymentMethod === "demo" || paymentMethod === "payu") && (
               <div className="gatewayDemo" aria-label="Sandbox payment checkout">
