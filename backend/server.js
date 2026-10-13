@@ -12,6 +12,7 @@ const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const captchaRoutes = require("./routes/captchaRoutes");
 const orderRoutes = require("./routes/orderRoutes");
+const payuRoutes = require("./routes/payuRoutes");
 const foodRoutes = require("./routes/foodRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const couponRoutes = require("./routes/couponRoutes");
@@ -40,6 +41,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "X-Captcha-Proof"],
 }));
 app.use(express.json({ limit: "100kb" }));
+app.use(express.urlencoded({ extended: false, limit: "100kb" }));
 app.use(cookieParser());
 app.use(passport.initialize());
 
@@ -47,6 +49,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/captcha", captchaRoutes);
 app.use("/api/foods", foodRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/payments/payu", payuRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/admin/customers", adminCustomerRoutes);
