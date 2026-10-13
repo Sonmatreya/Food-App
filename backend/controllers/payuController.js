@@ -4,7 +4,7 @@ const User = require("../models/User");
 const { createOrder } = require("./orderController");
 
 const PAYU_TEST_URL = "https://test.payu.in/_payment";
-const CLIENT_URL = (process.env.CLIENT_URL || "https://food-app-5qi5.onrender.com").replace(/\\/+$/, "");
+const CLIENT_URL = (process.env.CLIENT_URL || "https://food-app-5qi5.onrender.com").replace(/\/+$/, "");
 const CALLBACK_URL = process.env.PAYU_CALLBACK_URL || "https://food-app-backend-lxic.onrender.com/api/payments/payu/return";
 
 const sha512 = (value) => crypto.createHash("sha512").update(value, "utf8").digest("hex");
