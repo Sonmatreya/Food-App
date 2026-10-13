@@ -49,6 +49,11 @@ const initiatePayU = async (req, res) => {
       return res.status(400).json({ success: false, message: "Choose UPI, card, net banking, or wallet." });
     }
 
+    const user = await User.findById(req.user.userId).select("name email phone").lean();
+    if (!user?.email) {
+      return res.status(400).json({ success: false, message: "A valid email address is required for PayU test checkout. Add an email to your account and retry." });
+    }
+
     // Reuse the existing order validation and server-side price calculation.
     // Create an unpaid order first; it becomes paid only after a verified PayU callback.
     const orderBody = { ...req.body, paymentMethod: channel };
@@ -67,11 +72,6 @@ const initiatePayU = async (req, res) => {
     }
 
     const order = createPayload.order;
-    const user = await User.findById(req.user.userId).select("name email phone").lean();
-    if (!user?.email) {
-      await Order.findByIdAndUpdate(order.id, { paymentStatus: "failed" });
-      return res.status(400).json({ success: false, message: "A valid email address is required for PayU test checkout. Add an email to your account and retry." });
-    }
 
     const fields = {
       key,
