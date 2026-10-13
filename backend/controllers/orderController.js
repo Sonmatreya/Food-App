@@ -5,6 +5,10 @@ const Order = require("../models/Order");
 const Coupon = require("../models/Coupon");
 const Food = require("../models/Food");
 
+// Mock payments are enabled locally by default, but must be explicitly
+// enabled in production. This is a simulation only, not a real gateway.
+const demoPaymentsEnabled = process.env.DEMO_PAYMENTS_ENABLED === "true" || process.env.NODE_ENV !== "production";
+
 const DELIVERY_FEE = 2.99;
 const FREE_DELIVERY_THRESHOLD = 40;
 const SERVICE_FEE = 1.49;
@@ -162,6 +166,9 @@ const createOrder = async (req, res) => {
     }
 
     const paymentMethod = body.paymentMethod;
+    if (paymentMethod === "demo" && !demoPaymentsEnabled) {
+      return res.status(503).json({ success: false, message: "Demo payments are disabled on this server. Enable DEMO_PAYMENTS_ENABLED=true only for a non-live project demonstration." });
+    }
     if (paymentMethod === "demo" && (!["upi", "card", "netbanking", "wallet"].includes(body.demoChannel) || body.demoOutcome !== "success")) return res.status(400).json({ success: false, message: "Demo payment must use a supported demo method and a successful simulated result" });
     if (!["upi", "card", "netbanking", "cod", "demo"].includes(paymentMethod)) return res.status(400).json({ success: false, message: "Invalid payment method" });
     if (paymentMethod === "cod" && deliveryType === "pickup") return res.status(400).json({ success: false, message: "Cash on Delivery is only available for delivery orders" });
