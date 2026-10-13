@@ -393,14 +393,8 @@ function Payment() {
 
               <button
                 type="button"
-                className={`paymentMethod ${
-                  paymentMethod === "upi"
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setPaymentMethod("upi")
-                }
+                className={`paymentMethod ${paymentMethod === "demo" && demoChannel === "upi" ? "active" : ""}`}
+                onClick={() => { setPaymentMethod("demo"); setDemoChannel("upi"); setOrderError(""); }}
               >
 
                 <div className="paymentMethodIcon">
@@ -417,9 +411,7 @@ function Payment() {
                 </div>
 
                 <div className="paymentMethodRadio">
-                  {paymentMethod === "upi"
-                    ? "●"
-                    : "○"}
+                  {paymentMethod === "demo" && demoChannel === "upi" ? "●" : "○"}
                 </div>
 
               </button>
@@ -428,14 +420,8 @@ function Payment() {
 
               <button
                 type="button"
-                className={`paymentMethod ${
-                  paymentMethod === "card"
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setPaymentMethod("card")
-                }
+                className={`paymentMethod ${paymentMethod === "demo" && demoChannel === "card" ? "active" : ""}`}
+                onClick={() => { setPaymentMethod("demo"); setDemoChannel("card"); setOrderError(""); }}
               >
 
                 <div className="paymentMethodIcon">
@@ -452,9 +438,7 @@ function Payment() {
                 </div>
 
                 <div className="paymentMethodRadio">
-                  {paymentMethod === "card"
-                    ? "●"
-                    : "○"}
+                  {paymentMethod === "demo" && demoChannel === "card" ? "●" : "○"}
                 </div>
 
               </button>
@@ -463,14 +447,8 @@ function Payment() {
 
               <button
                 type="button"
-                className={`paymentMethod ${
-                  paymentMethod === "netbanking"
-                    ? "active"
-                    : ""
-                }`}
-                onClick={() =>
-                  setPaymentMethod("netbanking")
-                }
+                className={`paymentMethod ${paymentMethod === "demo" && demoChannel === "netbanking" ? "active" : ""}`}
+                onClick={() => { setPaymentMethod("demo"); setDemoChannel("netbanking"); setOrderError(""); }}
               >
 
                 <div className="paymentMethodIcon">
@@ -486,9 +464,7 @@ function Payment() {
                 </div>
 
                 <div className="paymentMethodRadio">
-                  {paymentMethod === "netbanking"
-                    ? "●"
-                    : "○"}
+                  {paymentMethod === "demo" && demoChannel === "netbanking" ? "●" : "○"}
                 </div>
 
               </button>
