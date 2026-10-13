@@ -904,3 +904,311 @@
   .demoChoiceGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .demoOutcomeGrid { grid-template-columns: 1fr; }
 }
+
+
+/* =========================================================
+   POLISHED SANDBOX GATEWAY — simulation only
+========================================================= */
+.gatewayDemo {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 10px 28px rgba(22, 34, 55, .07);
+}
+.gatewayDemoTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 22px;
+  background: linear-gradient(135deg, #fff 0%, #f7f9ff 100%);
+  border-bottom: 1px solid #edf0f5;
+}
+.gatewayDemoEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #43506a;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1px;
+}
+.gatewayLiveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #e0a126;
+  box-shadow: 0 0 0 4px #fff2d5;
+}
+.gatewayDemoTop h3 {
+  margin: 10px 0 6px;
+  color: #172033;
+  font-size: 21px;
+  font-weight: 850;
+  letter-spacing: -.45px;
+}
+.gatewayDemoTop p {
+  max-width: 470px;
+  margin: 0;
+  color: #687386;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.gatewayAmount {
+  flex: 0 0 auto;
+  min-width: 118px;
+  padding: 12px 14px;
+  border: 1px solid #e2e7f0;
+  border-radius: 12px;
+  background: #fff;
+  text-align: right;
+}
+.gatewayAmount span {
+  display: block;
+  margin-bottom: 5px;
+  color: #8791a3;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: .8px;
+}
+.gatewayAmount strong {
+  color: #172033;
+  font-size: 20px;
+  font-weight: 900;
+}
+.gatewayMethodTabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+  padding: 12px;
+  border-bottom: 1px solid #edf0f5;
+  background: #fbfcfe;
+}
+.gatewayMethodTab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 66px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: #6d7789;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.gatewayMethodTab > span { font-size: 20px; line-height: 1; }
+.gatewayMethodTab:hover { background: #f2f5fb; }
+.gatewayMethodTab.active {
+  border-color: #cbd7f5;
+  background: #eef3ff;
+  color: #254fa5;
+  box-shadow: inset 0 0 0 1px rgba(37, 79, 165, .04);
+}
+.gatewayOptionContent { padding: 22px; }
+.gatewayOptionContent h4 {
+  margin: 0 0 5px;
+  color: #202b3e;
+  font-size: 16px;
+  font-weight: 850;
+}
+.gatewayMuted {
+  margin: 0;
+  color: #778195;
+  font-size: 12px;
+}
+.gatewayAppChoices {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 17px;
+}
+.gatewayAppChoice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 100px;
+  padding: 10px 6px;
+  border: 1px solid #e5e9f0;
+  border-radius: 12px;
+  background: #fff;
+  color: #3d4759;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.gatewayAppChoice:hover, .gatewayAppChoice.active {
+  border-color: #9bb4ee;
+  background: #f7f9ff;
+}
+.gatewayAppLogo {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: #eef2f8;
+  color: #24334d;
+  font-size: 16px;
+  font-weight: 900;
+}
+.appLogoGooglePay { background: #eaf1ff; color: #285bb5; }
+.appLogoPhonePe { background: #f1eaff; color: #6939a8; }
+.appLogoPaytm { background: #e5f6ff; color: #0877a8; }
+.appLogoOtherUPI { background: #e9f8ef; color: #21804a; font-size: 10px; }
+.gatewayInfoStrip {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 17px;
+  padding: 12px 13px;
+  border: 1px solid #e2e9f7;
+  border-radius: 10px;
+  background: #f7f9fe;
+}
+.gatewayInfoStrip > span { color: #315ca9; font-size: 16px; line-height: 1.2; }
+.gatewayInfoStrip p {
+  margin: 0;
+  color: #69758a;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.gatewayInfoStrip strong { color: #34435d; }
+.gatewayCardPreview {
+  max-width: 370px;
+  margin: 16px 0 0;
+  padding: 18px 20px;
+  border-radius: 15px;
+  background: linear-gradient(130deg, #1d2d50 0%, #345a9c 58%, #5276b7 100%);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(30, 55, 100, .18);
+}
+.gatewayCardPreviewTop, .gatewayCardPreviewBottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+.gatewayCardPreviewTop { color: #dce6ff; font-size: 9px; font-weight: 850; letter-spacing: 1px; }
+.gatewayCardNumber { margin: 26px 0 22px; font-size: 17px; font-weight: 750; letter-spacing: 1px; }
+.gatewayCardPreviewBottom { color: #dce6ff; font-size: 9px; font-weight: 800; }
+.gatewayCardPreviewBottom strong { color: #fff; font-size: 18px; font-style: italic; }
+.gatewayFieldLabel {
+  display: block;
+  margin: 16px 0 7px;
+  color: #586477;
+  font-size: 11px;
+  font-weight: 800;
+}
+.gatewaySelect {
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 12px;
+  border: 1px solid #dce2ec;
+  border-radius: 10px;
+  background: #fff;
+  color: #263247;
+  font: inherit;
+  font-size: 13px;
+}
+.gatewayWalletChoices {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin-top: 16px;
+}
+.gatewayWalletChoice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 54px;
+  padding: 9px;
+  border: 1px solid #e2e7ef;
+  border-radius: 10px;
+  background: #fff;
+  color: #465267;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.gatewayWalletChoice > span {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 7px;
+  background: #edf2fb;
+  color: #315ca9;
+  font-size: 13px;
+  font-weight: 900;
+}
+.gatewayWalletChoice.active { border-color: #9bb4ee; background: #f7f9ff; }
+.gatewayAdvancedDemo {
+  margin: 0 22px 18px;
+  padding: 13px 14px;
+  border: 1px dashed #d6dce6;
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+.gatewayAdvancedDemo summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #5d687a;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.gatewayAdvancedDemo summary span { color: #8c95a5; font-size: 10px; font-weight: 600; }
+.gatewayAdvancedDemo > p {
+  margin: 10px 0;
+  color: #7b8493;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.gatewayScenarioChoices { display: flex; flex-wrap: wrap; gap: 7px; }
+.gatewayScenario {
+  padding: 8px 11px;
+  border: 1px solid #e0e5ed;
+  border-radius: 8px;
+  background: #fff;
+  color: #687386;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.gatewayScenario.active { border-color: #9bb4ee; background: #eef3ff; color: #254fa5; }
+.gatewayDemoFooter {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 12px;
+  border-top: 1px solid #edf0f5;
+  background: #fbfcfe;
+  color: #7d8797;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: center;
+}
+@media (max-width: 620px) {
+  .gatewayDemoTop { flex-direction: column; padding: 18px; }
+  .gatewayAmount { width: 100%; box-sizing: border-box; text-align: left; }
+  .gatewayMethodTabs { gap: 4px; padding: 8px; }
+  .gatewayMethodTab { min-height: 60px; font-size: 10px; }
+  .gatewayOptionContent { padding: 17px; }
+  .gatewayAppChoices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .gatewayWalletChoices { grid-template-columns: 1fr; }
+  .gatewayAdvancedDemo { margin: 0 17px 15px; }
+}
