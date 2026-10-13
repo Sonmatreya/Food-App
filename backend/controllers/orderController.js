@@ -170,7 +170,7 @@ const createOrder = async (req, res) => {
       return res.status(503).json({ success: false, message: "Demo payments are disabled on this server. Enable DEMO_PAYMENTS_ENABLED=true only for a non-live project demonstration." });
     }
     if (paymentMethod === "demo" && (!["upi", "card", "netbanking", "wallet"].includes(body.demoChannel) || body.demoOutcome !== "success")) return res.status(400).json({ success: false, message: "Demo payment must use a supported demo method and a successful simulated result" });
-    if (!["upi", "card", "netbanking", "cod", "demo"].includes(paymentMethod)) return res.status(400).json({ success: false, message: "Invalid payment method" });
+    if (!["upi", "card", "netbanking", "wallet", "cod", "demo"].includes(paymentMethod)) return res.status(400).json({ success: false, message: "Invalid payment method" });
     if (paymentMethod === "cod" && deliveryType === "pickup") return res.status(400).json({ success: false, message: "Cash on Delivery is only available for delivery orders" });
 
     const couponCode = String(body.couponCode ?? "").trim().toUpperCase();
