@@ -90,7 +90,7 @@ function Payment() {
           price: item.price,
           quantity: item.quantity,
           cookingRequest: item.cookingRequest ?? "",
-          image: /^https?:\\/\\//.test(item.image ?? "") ? item.image : "",
+          image: String(item.image ?? "").startsWith("https://") || String(item.image ?? "").startsWith("http://") ? item.image : "",
         })),
         deliveryType,
         address: deliveryType === "delivery" ? {
