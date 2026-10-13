@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { API_URL } from "../config/api";
@@ -28,6 +28,7 @@ function OrderSuccess() {
   const { orderId } = useParams();
   const routerLocation = useLocation();
   const { clearCart } = useCart();
+  const payuCartCleared = useRef(false);
 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -41,8 +42,11 @@ function OrderSuccess() {
 
   // A verified PayU return arrives after a full-page redirect; clear the cart only on success.
   useEffect(() => {
-    if (new URLSearchParams(routerLocation.search).get("payment") === "success") clearCart();
-  }, [routerLocation.search, clearCart]);
+    if (new URLSearchParams(routerLocation.search).get("payment") === "success" && !payuCartCleared.current) {
+      payuCartCleared.current = true;
+      clearCart();
+    }
+  }, [routerLocation.search]);
 
   // Fetch the real order from the backend
   useEffect(() => {
