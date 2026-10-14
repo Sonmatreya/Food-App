@@ -31,7 +31,7 @@ app.set("io", io);
 app.disable("x-powered-by");
 app.set("trust proxy", env.trustProxy);
 app.use(helmet());
-app.use(cors({
+const corsMiddleware = cors({
   origin(origin, callback) {
     if (!origin || env.corsOrigins.includes(origin)) return callback(null, true);
     return callback(new Error("Origin is not allowed by CORS"));
@@ -39,7 +39,17 @@ app.use(cors({
   credentials: true,
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "X-Captcha-Proof"],
-}));
+});
+
+// PayU returns the customer by posting a signed form to this public callback.
+// CORS is for browser JavaScript access, not top-level form navigation; don't
+// reject PayU's callback origin here. The controller validates PayU's response hash.
+app.use((req, res, next) => {
+  if (req.path === "/api/payments/payu/return" || req.path === "/api/payments/payu/webhook") {
+    return next();
+  }
+  return corsMiddleware(req, res, next);
+});
 app.use(express.json({ limit: "100kb" }));
 app.use(express.urlencoded({ extended: false, limit: "100kb" }));
 app.use(cookieParser());
