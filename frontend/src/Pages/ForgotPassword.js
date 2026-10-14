@@ -5,7 +5,7 @@ import "../Styles/Login.css";
 
 // Demo password reset is shown only in a local Vite development build when
 // VITE_ENABLE_DEMO_PASSWORD_RESET=true. Production keeps email-link recovery.
-const demoMode = import.meta.env.DEV && import.meta.env.VITE_ENABLE_DEMO_PASSWORD_RESET === "true";
+const demoMode = process.env.NODE_ENV === "development" && process.env.REACT_APP_ENABLE_DEMO_PASSWORD_RESET === "true";
 
 export default function ForgotPassword() {
   const location = useLocation();
