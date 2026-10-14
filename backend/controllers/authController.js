@@ -413,7 +413,7 @@ const requestPasswordReset = async (req, res) => {
       console.error("Password reset email is not configured: missing SMTP environment variables.");
       return res.status(503).json({ success: false, message: "Password recovery is temporarily unavailable. Please contact the site administrator." });
     }
-    const user = await User.findOne({ email }).select("+passwordResetTokenHash +passwordResetExpires");
+    const user = await User.findOne({ email }).select("+password +passwordResetTokenHash +passwordResetExpires");
     if (user && user.password) {
       const crypto = require("crypto");
       const nodemailer = require("nodemailer");
