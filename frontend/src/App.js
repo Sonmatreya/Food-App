@@ -15,6 +15,8 @@ import Services from "./Pages/Services";
 import About from "./Pages/About";
 import Contact from "./Pages/Contact";
 import Login from "./Pages/Login";
+import ForgotPassword from "./Pages/ForgotPassword";
+import ResetPassword from "./Pages/ResetPassword";
 import Register from "./Pages/Register";
 import Cart from "./Pages/Cart";
 import DeliveryAddress from "./Pages/DeliveryAddress";
@@ -59,6 +61,8 @@ function AppRoutes() {
         <Route path="/services" element={<Services />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/coupons" element={<ProtectedRoute><Coupons /></ProtectedRoute>} />
