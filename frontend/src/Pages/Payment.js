@@ -92,6 +92,8 @@ function Payment() {
       };
 
       const isPayU = paymentMethod === "payu";
+      // Required by the backend's PayU initiation validation; PayU's hosted checkout handles the available methods.
+      if (isPayU) orderPayload.channel = "upi";
       const response = await fetch(
         isPayU ? `${API_URL}/api/payments/payu/initiate` : `${API_URL}/api/orders`,
         {
