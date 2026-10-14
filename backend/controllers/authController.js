@@ -399,7 +399,90 @@ const updateProfile = async (req, res) => {
   }
 };
 
+
+// Request a password reset. Always return a generic response to avoid revealing
+// whether an email address is registered.
+const requestPasswordReset = async (req, res) => {
+  const genericMessage = "If an account with that email exists, a password reset link will be sent.";
+  try {
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
+    }
+    if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS || !process.env.SMTP_FROM) {
+      console.error("Password reset email is not configured: missing SMTP environment variables.");
+      return res.status(503).json({ success: false, message: "Password recovery is temporarily unavailable. Please contact the site administrator." });
+    }
+    const user = await User.findOne({ email }).select("+passwordResetTokenHash +passwordResetExpires");
+    if (user && user.password) {
+      const crypto = require("crypto");
+      const nodemailer = require("nodemailer");
+      const rawToken = crypto.randomBytes(32).toString("hex");
+      user.passwordResetTokenHash = crypto.createHash("sha256").update(rawToken).digest("hex");
+      user.passwordResetExpires = new Date(Date.now() + 30 * 60 * 1000);
+      await user.save();
+      const resetUrl = `${clientUrl}/reset-password?token=${rawToken}`;
+      try {
+        const transporter = nodemailer.createTransport({
+          host: process.env.SMTP_HOST,
+          port: Number(process.env.SMTP_PORT),
+          secure: String(process.env.SMTP_SECURE || "").toLowerCase() === "true",
+          auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+        });
+        await transporter.sendMail({
+          from: process.env.SMTP_FROM,
+          to: user.email,
+          subject: "Reset your Food-App password",
+          text: `We received a request to reset your Food-App password. Open this link within 30 minutes: ${resetUrl}\n\nIf you did not request this, you can ignore this email.`,
+          html: `<div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;padding:24px"><h2>Reset your Food-App password</h2><p>Click below to choose a new password. This link expires in 30 minutes and can only be used once.</p><p><a href="${resetUrl}" style="display:inline-block;background:#e31837;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none">Reset Password</a></p><p>If you did not request this, ignore this email.</p></div>`,
+        });
+      } catch (mailError) {
+        user.passwordResetTokenHash = undefined;
+        user.passwordResetExpires = undefined;
+        await user.save();
+        console.error("Password reset email error:", mailError.message);
+        return res.status(502).json({ success: false, message: "Unable to send the reset email right now. Please try again later." });
+      }
+    }
+    return res.json({ success: true, message: genericMessage });
+  } catch (error) {
+    console.error("Password reset request error:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to process the password reset request." });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body || {};
+    if (!token || typeof token !== "string" || !newPassword) {
+      return res.status(400).json({ success: false, message: "Reset link and new password are required." });
+    }
+    if (typeof newPassword !== "string" || newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long." });
+    }
+    const crypto = require("crypto");
+    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
+    const user = await User.findOne({
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpires: { $gt: new Date() },
+    }).select("+passwordResetTokenHash +passwordResetExpires +password");
+    if (!user) {
+      return res.status(400).json({ success: false, message: "This reset link is invalid or expired. Please request a new one." });
+    }
+    user.password = await bcrypt.hash(newPassword, 12);
+    user.passwordResetTokenHash = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+    return res.json({ success: true, message: "Password reset successful. You can now log in with your new password." });
+  } catch (error) {
+    console.error("Reset password error:", error.message);
+    return res.status(500).json({ success: false, message: "Password reset failed. Please try again." });
+  }
+};
+
 module.exports = {
+  requestPasswordReset,
+  resetPassword,
   register,
   login,
   googleLoginSuccess,
