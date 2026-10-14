@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { API_URL } from "../config/api";
 import "../Styles/Login.css";
 
 export default function ForgotPassword() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [email, setEmail] = useState(location.state?.email || "");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
