@@ -512,8 +512,6 @@ const demoResetPassword = async (req, res) => {
         message: "Direct password reset is available only for the configured demo account.",
       });
     }
-      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
-    }
     if (typeof newPassword !== "string" || newPassword.length < 8) {
       return res.status(400).json({ success: false, message: "Password must be at least 8 characters long." });
     }
