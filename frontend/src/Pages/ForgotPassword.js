@@ -7,7 +7,7 @@ import "../Styles/PasswordToggle.css";
 // Show direct password reset fields only in the local React development build.
 // The backend independently requires ENABLE_DEMO_PASSWORD_RESET=true and
 // refuses this endpoint in production. Production keeps email-link recovery.
-const demoMode = process.env.NODE_ENV === "development";
+const demoMode = process.env.NODE_ENV === "development" || process.env.REACT_APP_DEMO_PASSWORD_RESET === "true";
 
 export default function ForgotPassword() {
   const location = useLocation();
