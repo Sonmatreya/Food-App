@@ -11,7 +11,7 @@ function Payment() {
 
   const orderData = location.state;
 
-  const [paymentMethod, setPaymentMethod] = useState("cod");
+  const [paymentMethod, setPaymentMethod] = useState(orderData?.deliveryType === "pickup" ? "payu" : "cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderError, setOrderError] = useState("");
 
