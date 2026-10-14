@@ -20,6 +20,7 @@ const {
   loginLimiter,
   registerLimiter,
   googleAuthLimiter,
+  passwordResetLimiter,
 } = require("../middleware/rateLimiters");
 
 const router = express.Router();
@@ -31,8 +32,8 @@ const router = express.Router();
 router.post("/register", registerLimiter, register);
 
 router.post("/login", loginLimiter, requireCaptcha, login);
-router.post("/forgot-password", requestPasswordReset);
-router.post("/reset-password", resetPassword);
+router.post("/forgot-password", passwordResetLimiter, requestPasswordReset);
+router.post("/reset-password", passwordResetLimiter, resetPassword);
 
 router.post("/logout", logout);
 
