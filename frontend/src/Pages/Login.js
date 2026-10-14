@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { API_URL } from "../config/api";
@@ -21,15 +21,15 @@ function Login() {
   const audioRef = useRef(null);
   const audioUrlRef = useRef(null);
 
-  const stopCaptchaAudio = () => {
+  const stopCaptchaAudio = useCallback(() => {
     try {
       if (audioRef.current) { audioRef.current.pause(); audioRef.current.currentTime = 0; audioRef.current = null; }
       if (audioUrlRef.current) { URL.revokeObjectURL(audioUrlRef.current); audioUrlRef.current = null; }
     } catch (error) { console.error("Audio cleanup error:", error); }
     setIsSpeaking(false);
-  };
+  }, []);
 
-  const loadCaptcha = async () => {
+  const loadCaptcha = useCallback(async () => {
     try {
       setCaptchaLoading(true); setError(""); stopCaptchaAudio(); setCaptchaAnswer("");
       const response = await fetch(`${API_URL}/api/captcha/generate`);
@@ -38,9 +38,9 @@ function Login() {
       setCaptchaId(data.captchaId); setCaptchaImage(data.captchaImage);
     } catch (error) { console.error("CAPTCHA loading error:", error); setError("Unable to load CAPTCHA. Please refresh the page."); }
     finally { setCaptchaLoading(false); }
-  };
+  }, [stopCaptchaAudio]);
 
-  useEffect(() => { loadCaptcha(); return () => { stopCaptchaAudio(); }; }, []);
+  useEffect(() => { loadCaptcha(); return () => { stopCaptchaAudio(); }; }, [loadCaptcha, stopCaptchaAudio]);
 
   const handleChange = (e) => { const { name, value } = e.target; setFormData((previousData) => ({ ...previousData, [name]: value })); };
   const handleCaptchaChange = (e) => { const value = e.target.value.replace(/[^a-zA-Z0-9]/g, "").toUpperCase(); setCaptchaAnswer(value); setError(""); };
