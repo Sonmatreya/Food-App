@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { API_URL } from "../config/api";
 import "../Styles/Login.css";
+import "../Styles/PasswordToggle.css";
 
 // Show direct password reset fields only in the local React development build.
 // The backend independently requires ENABLE_DEMO_PASSWORD_RESET=true and
@@ -13,6 +14,8 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState(location.state?.email || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -56,14 +59,14 @@ export default function ForgotPassword() {
 
   return <div className="login-page"><div className="login-container">
     <div className="login-header"><div className="login-logo">🔐</div><h1>Forgot Password?</h1><p>{demoMode ? "Local project demo: enter your account email and choose a new password." : "Enter your account email and we'll send you a secure reset link."}</p></div>
-    {demoMode && <div className="auth-status error" role="note">Local demo mode only. This direct-reset option is disabled on production servers.</div>}
+    {demoMode && <div className="auth-status error" role="note">Local demo only: direct password reset is intended for local testing and is blocked on production servers.</div>}
     {error && <div className="auth-status error" role="alert">{error}</div>}
     {message && <div className="auth-status success" role="status">{message}</div>}
     <form className="login-form" onSubmit={submit}>
       <div className="login-field"><label htmlFor="reset-email">Email ID</label><input id="reset-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your account email" autoComplete="email" required /></div>
       {demoMode && <>
-        <div className="login-field"><label htmlFor="new-password">New Password</label><input id="new-password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} minLength={8} autoComplete="new-password" placeholder="At least 8 characters" required /></div>
-        <div className="login-field"><label htmlFor="confirm-password">Re-enter New Password</label><input id="confirm-password" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} minLength={8} autoComplete="new-password" placeholder="Enter the same password again" required /></div>
+        <div className="login-field"><label htmlFor="new-password">New Password</label><div className="password-input-wrapper"><input id="new-password" type={showPassword ? "text" : "password"} value={password} onChange={(e) => setPassword(e.target.value)} minLength={8} autoComplete="new-password" placeholder="At least 8 characters" required /><button type="button" className="password-toggle" onClick={() => setShowPassword((previous) => !previous)} aria-label={showPassword ? "Hide password" : "Show password"} title={showPassword ? "Hide password" : "Show password"}>{showPassword ? "🙈" : "👁️"}</button></div></div>
+        <div className="login-field"><label htmlFor="confirm-password">Re-enter New Password</label><div className="password-input-wrapper"><input id="confirm-password" type={showConfirmPassword ? "text" : "password"} value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} minLength={8} autoComplete="new-password" placeholder="Enter the same password again" required /><button type="button" className="password-toggle" onClick={() => setShowConfirmPassword((previous) => !previous)} aria-label={showConfirmPassword ? "Hide confirm password" : "Show confirm password"} title={showConfirmPassword ? "Hide confirm password" : "Show confirm password"}>{showConfirmPassword ? "🙈" : "👁️"}</button></div></div>
       </>}
       <button className="login-button" type="submit" disabled={loading}>{loading ? (demoMode ? "Updating password..." : "Sending link...") : (demoMode ? "Set New Password" : "Send Reset Link")}</button>
     </form>
