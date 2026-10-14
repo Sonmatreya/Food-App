@@ -409,8 +409,6 @@ const requestPasswordReset = async (req, res) => {
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return res.status(400).json({ success: false, message: "Please enter a valid email address." });
     }
-      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
-    }
     if (!process.env.SMTP_HOST || !process.env.SMTP_PORT || !process.env.SMTP_USER || !process.env.SMTP_PASS || !process.env.SMTP_FROM) {
       console.error("Password reset email is not configured: missing SMTP environment variables.");
       return res.status(503).json({ success: false, message: "Password recovery is temporarily unavailable. Please contact the site administrator." });
