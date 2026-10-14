@@ -10,6 +10,8 @@ const {
   getMe,
   updateProfile,
   changePassword,
+  requestPasswordReset,
+  resetPassword,
 } = require("../controllers/authController");
 
 const protect = require("../middleware/authMiddleware");
@@ -29,6 +31,8 @@ const router = express.Router();
 router.post("/register", registerLimiter, register);
 
 router.post("/login", loginLimiter, requireCaptcha, login);
+router.post("/forgot-password", requestPasswordReset);
+router.post("/reset-password", resetPassword);
 
 router.post("/logout", logout);
 
