@@ -485,10 +485,15 @@ const resetPassword = async (req, res) => {
 // It is deliberately blocked in production because an email address alone
 // does not prove account ownership.
 const demoResetPassword = async (req, res) => {
-  if (isProduction || process.env.ENABLE_DEMO_PASSWORD_RESET !== "true") {
+  // Explicit opt-in is required everywhere. On Render/production, restrict
+  // direct reset to one configured demo account so other users cannot reset
+  // their passwords by knowing only an email address.
+  const demoResetEnabled = process.env.ENABLE_DEMO_PASSWORD_RESET === "true";
+  const configuredDemoEmail = String(process.env.DEMO_RESET_EMAIL || "").trim().toLowerCase();
+  if (!demoResetEnabled || (isProduction && !configuredDemoEmail)) {
     return res.status(403).json({
       success: false,
-      message: "Direct password reset is disabled. Use the email reset link instead.",
+      message: "Demo password reset is disabled. Configure it only for a dedicated demo account.",
     });
   }
 
