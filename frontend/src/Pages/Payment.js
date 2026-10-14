@@ -11,14 +11,7 @@ function Payment() {
 
   const orderData = location.state;
 
-  const [paymentMethod, setPaymentMethod] = useState("demo");
-  const [upiId, setUpiId] = useState("");
-  const [demoChannel, setDemoChannel] = useState("upi");
-  const [demoApp, setDemoApp] = useState("Google Pay");
-  const [demoBank, setDemoBank] = useState("State Bank of India");
-  const [demoWallet, setDemoWallet] = useState("Paytm Wallet");
-  const [showAdvancedDemo, setShowAdvancedDemo] = useState(false);
-  const [demoOutcome, setDemoOutcome] = useState("success");
+  const [paymentMethod, setPaymentMethod] = useState("cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderError, setOrderError] = useState("");
 
@@ -72,14 +65,6 @@ function Payment() {
     if (isPlacingOrder) return;
     setOrderError("");
 
-    if (paymentMethod === "demo" && demoOutcome !== "success") {
-      const outcomeMessage = demoOutcome === "failure"
-        ? "Demo payment failed. No order was created and no money was charged."
-        : "Demo payment cancelled. No order was created and no money was charged.";
-      setOrderError(outcomeMessage);
-      return;
-    }
-
     setIsPlacingOrder(true);
     try {
       const orderPayload = {
@@ -103,13 +88,10 @@ function Payment() {
         } : undefined,
         location: deliveryType === "delivery" ? { latitude, longitude, locationText } : undefined,
         paymentMethod,
-        demoChannel: paymentMethod === "demo" ? demoChannel : undefined,
-        demoOutcome: paymentMethod === "demo" ? demoOutcome : undefined,
         couponCode: coupon?.code ?? "",
       };
 
       const isPayU = paymentMethod === "payu";
-      if (isPayU) orderPayload.channel = demoChannel;
       const response = await fetch(
         isPayU ? `${API_URL}/api/payments/payu/initiate` : `${API_URL}/api/orders`,
         {
@@ -384,86 +366,6 @@ function Payment() {
 
             <div className="paymentMethods">
 
-              {/* UPI */}
-
-              <button
-                type="button"
-                className={`paymentMethod ${paymentMethod === "demo" && demoChannel === "upi" ? "active" : ""}`}
-                onClick={() => { setPaymentMethod("demo"); setDemoChannel("upi"); setOrderError(""); }}
-              >
-
-                <div className="paymentMethodIcon">
-                  📱
-                </div>
-
-                <div className="paymentMethodInfo">
-                  <strong>UPI</strong>
-
-                  <span>
-                    Pay using Google Pay, PhonePe,
-                    Paytm or other UPI apps
-                  </span>
-                </div>
-
-                <div className="paymentMethodRadio">
-                  {paymentMethod === "demo" && demoChannel === "upi" ? "●" : "○"}
-                </div>
-
-              </button>
-
-              {/* CARD */}
-
-              <button
-                type="button"
-                className={`paymentMethod ${paymentMethod === "demo" && demoChannel === "card" ? "active" : ""}`}
-                onClick={() => { setPaymentMethod("demo"); setDemoChannel("card"); setOrderError(""); }}
-              >
-
-                <div className="paymentMethodIcon">
-                  💳
-                </div>
-
-                <div className="paymentMethodInfo">
-                  <strong>Credit / Debit Card</strong>
-
-                  <span>
-                    Visa, Mastercard, RuPay and
-                    other supported cards
-                  </span>
-                </div>
-
-                <div className="paymentMethodRadio">
-                  {paymentMethod === "demo" && demoChannel === "card" ? "●" : "○"}
-                </div>
-
-              </button>
-
-              {/* NET BANKING */}
-
-              <button
-                type="button"
-                className={`paymentMethod ${paymentMethod === "demo" && demoChannel === "netbanking" ? "active" : ""}`}
-                onClick={() => { setPaymentMethod("demo"); setDemoChannel("netbanking"); setOrderError(""); }}
-              >
-
-                <div className="paymentMethodIcon">
-                  🏦
-                </div>
-
-                <div className="paymentMethodInfo">
-                  <strong>Net Banking</strong>
-
-                  <span>
-                    Pay directly through your bank
-                  </span>
-                </div>
-
-                <div className="paymentMethodRadio">
-                  {paymentMethod === "demo" && demoChannel === "netbanking" ? "●" : "○"}
-                </div>
-
-              </button>
-
               {/* CASH ON DELIVERY */}
 
               {deliveryType === "delivery" && (
@@ -519,186 +421,6 @@ function Payment() {
             </div>
 
 
-
-            {(paymentMethod === "demo" || paymentMethod === "payu") && (
-              <div className="gatewayDemo" aria-label="Sandbox payment checkout">
-                <div className="gatewayDemoTop">
-                  <div>
-                    <span className="gatewayDemoEyebrow"><span className="gatewayLiveDot" /> {paymentMethod === "payu" ? "PAYU TEST MODE" : "SANDBOX CHECKOUT"}</span>
-                    <h3>Complete your payment</h3>
-                    <p>{paymentMethod === "payu" ? "Continue to PayU’s hosted test checkout. Only test credentials are enabled; no live payment is processed." : "Choose a payment option below. This demo does not contact a bank, UPI app, or card network."}</p>
-                  </div>
-                  <div className="gatewayAmount">
-                    <span>AMOUNT DUE</span>
-                    <strong>₹{grandTotal.toFixed(2)}</strong>
-                  </div>
-                </div>
-
-                <div className="gatewayMethodTabs" role="group" aria-label="Demo payment method">
-                  {[
-                    { value: "upi", label: "UPI", icon: "⌁" },
-                    { value: "card", label: "Cards", icon: "▤" },
-                    { value: "netbanking", label: "Net banking", icon: "▥" },
-                    { value: "wallet", label: "Wallets", icon: "▣" },
-                  ].map((option) => (
-                    <button
-                      key={option.value}
-                      type="button"
-                      className={`gatewayMethodTab ${demoChannel === option.value ? "active" : ""}`}
-                      aria-pressed={demoChannel === option.value}
-                      onClick={() => { setDemoChannel(option.value); setOrderError(""); }}
-                    >
-                      <span aria-hidden="true">{option.icon}</span>
-                      {option.label}
-                    </button>
-                  ))}
-                </div>
-
-                {demoChannel === "upi" && (
-                  <div className="gatewayOptionContent">
-                    <h4>Pay with UPI</h4>
-                    <p className="gatewayMuted">Select a familiar app to preview the flow.</p>
-                    <div className="gatewayAppChoices">
-                      {["Google Pay", "PhonePe", "Paytm", "Other UPI"].map((app) => (
-                        <button type="button" key={app} className={`gatewayAppChoice ${demoApp === app ? "active" : ""}`} onClick={() => setDemoApp(app)} aria-pressed={demoApp === app}>
-                          <span className={`gatewayAppLogo appLogo${app.replace(/\s/g, "")}`}>{app === "Google Pay" ? "G" : app === "PhonePe" ? "पे" : app === "Paytm" ? "P" : "UPI"}</span>
-                          <span>{app}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="gatewayInfoStrip"><span>ⓘ</span><p><strong>{demoApp} demo</strong><br />In a live gateway this would open the selected app. Here, continue to simulate the checkout only.</p></div>
-                  </div>
-                )}
-
-                {demoChannel === "card" && (
-                  <div className="gatewayOptionContent">
-                    <h4>Credit or debit card</h4>
-                    <div className="gatewayCardPreview">
-                      <div className="gatewayCardPreviewTop"><span>FOOD APP</span><span>DEMO CARD</span></div>
-                      <div className="gatewayCardNumber">•••• &nbsp; •••• &nbsp; •••• &nbsp; 4242</div>
-                      <div className="gatewayCardPreviewBottom"><span>TEST PAYMENT</span><strong>VISA</strong></div>
-                    </div>
-                    <div className="gatewayInfoStrip"><span>ⓘ</span><p>This sample card is only a visual preview. <strong>Do not enter real card details.</strong> No card data is needed for this simulation.</p></div>
-                  </div>
-                )}
-
-                {demoChannel === "netbanking" && (
-                  <div className="gatewayOptionContent">
-                    <h4>Choose your bank</h4>
-                    <label className="gatewayFieldLabel" htmlFor="demoBank">Bank for demo</label>
-                    <select id="demoBank" className="gatewaySelect" value={demoBank} onChange={(event) => setDemoBank(event.target.value)}>
-                      {["State Bank of India", "HDFC Bank", "ICICI Bank", "Axis Bank", "Kotak Mahindra Bank", "Punjab National Bank"].map((bank) => <option key={bank} value={bank}>{bank}</option>)}
-                    </select>
-                    <div className="gatewayInfoStrip"><span>ⓘ</span><p><strong>{demoBank}</strong> is selected for display only. This demo will not open a bank website or request bank credentials.</p></div>
-                  </div>
-                )}
-
-                {demoChannel === "wallet" && (
-                  <div className="gatewayOptionContent">
-                    <h4>Choose a wallet</h4>
-                    <div className="gatewayWalletChoices">
-                      {["Paytm Wallet", "Amazon Pay", "Mobikwik"].map((wallet) => (
-                        <button type="button" key={wallet} className={`gatewayWalletChoice ${demoWallet === wallet ? "active" : ""}`} onClick={() => setDemoWallet(wallet)} aria-pressed={demoWallet === wallet}>
-                          <span>{wallet === "Paytm Wallet" ? "P" : wallet === "Amazon Pay" ? "a" : "M"}</span>
-                          {wallet}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="gatewayInfoStrip"><span>ⓘ</span><p><strong>{demoWallet}</strong> selected for demo. No wallet account is connected.</p></div>
-                  </div>
-                )}
-
-                {paymentMethod === "demo" && (<details className="gatewayAdvancedDemo" open={showAdvancedDemo} onToggle={(event) => setShowAdvancedDemo(event.currentTarget.open)}>
-                  <summary>Developer test scenarios <span>Optional</span></summary>
-                  <p>For project demonstrations only, choose what the mock gateway returns after you click Pay.</p>
-                  <div className="gatewayScenarioChoices">
-                    <button type="button" className={`gatewayScenario ${demoOutcome === "success" ? "active" : ""}`} onClick={() => { setDemoOutcome("success"); setOrderError(""); }}>✓ Success</button>
-                    <button type="button" className={`gatewayScenario ${demoOutcome === "failure" ? "active" : ""}`} onClick={() => { setDemoOutcome("failure"); setOrderError(""); }}>✕ Failure</button>
-                    <button type="button" className={`gatewayScenario ${demoOutcome === "cancel" ? "active" : ""}`} onClick={() => { setDemoOutcome("cancel"); setOrderError(""); }}>↩ Cancel</button>
-                  </div>
-                </details>)}
-                <div className="gatewayDemoFooter"><span>🔒</span> {paymentMethod === "payu" ? "PayU test environment · No live payment" : "Demo simulation · No real payment · No credentials required"}</div>
-              </div>
-            )}
-
-            {/* UPI FORM */}
-
-            {paymentMethod === "upi" && (
-              <div className="paymentForm">
-
-                <label htmlFor="upiId">
-                  UPI ID
-                </label>
-
-                <div className="upiInputWrapper">
-
-                  <input
-                    id="upiId"
-                    type="text"
-                    value={upiId}
-                    onChange={(event) =>
-                      setUpiId(event.target.value)
-                    }
-                    placeholder="example@upi"
-                  />
-
-                </div>
-
-                <p className="paymentFormNote">
-                  You will be redirected to your UPI
-                  app during real payment processing.
-                </p>
-
-              </div>
-            )}
-
-            {/* CARD INFORMATION */}
-
-            {paymentMethod === "card" && (
-              <div className="paymentInfoBox">
-
-                <div className="paymentInfoIcon">
-                  🔒
-                </div>
-
-                <div>
-                  <strong>
-                    Secure Card Payment
-                  </strong>
-
-                  <p>
-                    Card payment will be securely
-                    processed through our payment
-                    gateway.
-                  </p>
-                </div>
-
-              </div>
-            )}
-
-            {/* NET BANKING */}
-
-            {paymentMethod === "netbanking" && (
-              <div className="paymentInfoBox">
-
-                <div className="paymentInfoIcon">
-                  🏦
-                </div>
-
-                <div>
-                  <strong>
-                    Net Banking
-                  </strong>
-
-                  <p>
-                    You will be redirected to your
-                    selected bank during real payment
-                    processing.
-                  </p>
-                </div>
-
-              </div>
-            )}
 
             {/* COD */}
 
@@ -941,11 +663,11 @@ function Payment() {
             {isPlacingOrder ? (
               <>
                 <span className="loadingSpinner"></span>
-                {paymentMethod === "demo" ? "Authorizing demo payment..." : paymentMethod === "payu" ? "Opening PayU test checkout..." : "Processing..."}
+                {paymentMethod === "payu" ? "Opening PayU test checkout..." : "Placing COD order..."}
               </>
             ) : (
               <>
-                {paymentMethod === "demo" ? "Pay ₹" + grandTotal.toFixed(2) + " · Demo" : paymentMethod === "payu" ? "Continue to PayU Test" : "Place Order"}
+                {paymentMethod === "payu" ? "Continue to PayU Test" : "Place COD Order"}
                 <span>→</span>
               </>
             )}
