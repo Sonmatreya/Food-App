@@ -59,7 +59,7 @@ export default function ForgotPassword() {
 
   return <div className="login-page"><div className="login-container">
     <div className="login-header"><div className="login-logo">🔐</div><h1>Forgot Password?</h1><p>{demoMode ? "Local project demo: enter your account email and choose a new password." : "Enter your account email and we'll send you a secure reset link."}</p></div>
-    {demoMode && <div className="auth-status error" role="note">Local demo only: direct password reset is intended for local testing and is blocked on production servers.</div>}
+    {demoMode && <div className="auth-status error" role="note">Demo mode: direct password reset is enabled only for the configured demo account on the hosted demo.</div>}
     {error && <div className="auth-status error" role="alert">{error}</div>}
     {message && <div className="auth-status success" role="status">{message}</div>}
     <form className="login-form" onSubmit={submit}>
