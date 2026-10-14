@@ -3,9 +3,10 @@ import { Link, useLocation } from "react-router-dom";
 import { API_URL } from "../config/api";
 import "../Styles/Login.css";
 
-// Demo password reset is shown only in a local Vite development build when
-// VITE_ENABLE_DEMO_PASSWORD_RESET=true. Production keeps email-link recovery.
-const demoMode = process.env.NODE_ENV === "development" && process.env.REACT_APP_ENABLE_DEMO_PASSWORD_RESET === "true";
+// Show direct password reset fields only in the local React development build.
+// The backend independently requires ENABLE_DEMO_PASSWORD_RESET=true and
+// refuses this endpoint in production. Production keeps email-link recovery.
+const demoMode = process.env.NODE_ENV === "development";
 
 export default function ForgotPassword() {
   const location = useLocation();
