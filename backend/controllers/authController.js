@@ -480,7 +480,48 @@ const resetPassword = async (req, res) => {
   }
 };
 
+
+// Development-only direct password reset for project demonstrations.
+// It is deliberately blocked in production because an email address alone
+// does not prove account ownership.
+const demoResetPassword = async (req, res) => {
+  if (isProduction || process.env.ENABLE_DEMO_PASSWORD_RESET !== "true") {
+    return res.status(403).json({
+      success: false,
+      message: "Direct password reset is disabled. Use the email reset link instead.",
+    });
+  }
+
+  try {
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    const { newPassword } = req.body || {};
+
+    if (!email || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email)) {
+      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
+    }
+    if (typeof newPassword !== "string" || newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long." });
+    }
+
+    const user = await User.findOne({ email }).select("+password");
+    if (!user || !user.password) {
+      return res.status(404).json({ success: false, message: "No password-based account was found for this email." });
+    }
+
+    user.password = await bcrypt.hash(newPassword, 12);
+    user.passwordResetTokenHash = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    return res.json({ success: true, message: "Demo password updated. You can now log in with your new password." });
+  } catch (error) {
+    console.error("Demo password reset error:", error.message);
+    return res.status(500).json({ success: false, message: "Could not update the demo password." });
+  }
+};
+
 module.exports = {
+  demoResetPassword,
   requestPasswordReset,
   resetPassword,
   register,
