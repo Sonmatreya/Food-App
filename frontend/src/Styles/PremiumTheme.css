@@ -196,3 +196,196 @@ body.dark-mode .profile-page {
   background: #ffffff !important;
   color: #191817;
 }
+
+
+/* Premium UI pass: consistent customer-facing surfaces and components.
+   Admin pages are intentionally excluded so the admin dashboard can stay dark. */
+:root {
+  --app-brand: #d9233f;
+  --app-brand-hover: #b91c35;
+  --app-ink: #201b19;
+  --app-muted: #77716d;
+  --app-surface: #ffffff;
+  --app-page: #fffdfb;
+  --app-border: #eee7e1;
+  --app-radius-sm: 12px;
+  --app-radius-md: 18px;
+  --app-radius-lg: 26px;
+  --app-shadow-sm: 0 8px 24px rgba(35, 24, 18, .06);
+  --app-shadow-md: 0 18px 44px rgba(35, 24, 18, .10);
+}
+
+body:not(.admin-mode) {
+  background: #fff;
+  color: var(--app-ink);
+}
+
+.App > main:not(.admin-dashboard):not(.admin-page),
+.App > .menuPage,
+.App > .cartPage,
+.App > .paymentPage,
+.App > .foodDetailsPage,
+.App > .customer-tool-page,
+.App > .profile-page {
+  background-color: #fff;
+}
+
+.homePage .heroSection {
+  border-radius: 0 0 32px 32px;
+}
+
+.homePage .heroFoodCard,
+.homePage .foodCard,
+.homePage .categoryCard,
+.homePage .benefitCard,
+.homePage .reviewCard {
+  border: 1px solid var(--app-border);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.homePage .foodCard,
+.homePage .categoryCard,
+.homePage .benefitCard,
+.homePage .reviewCard {
+  border-radius: 20px;
+  overflow: hidden;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.homePage .foodCard:hover,
+.homePage .categoryCard:hover,
+.homePage .benefitCard:hover,
+.homePage .reviewCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--app-shadow-md);
+  border-color: rgba(217, 35, 63, .22);
+}
+
+.homePage .heroSearch {
+  border: 1px solid rgba(255,255,255,.25);
+  box-shadow: 0 16px 36px rgba(0,0,0,.16);
+}
+
+.homePage .heroSearch input {
+  min-width: 0;
+}
+
+.homePage .heroSearch button,
+.homePage .heroFoodButton,
+.homePage .addFoodButton,
+.homePage .whyButton,
+.homePage .offerButton,
+.homePage .finalCtaButton {
+  border-radius: 999px;
+  transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease;
+}
+
+.homePage .heroSearch button:hover,
+.homePage .heroFoodButton:hover,
+.homePage .addFoodButton:hover,
+.homePage .whyButton:hover,
+.homePage .offerButton:hover,
+.homePage .finalCtaButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(217, 35, 63, .22);
+}
+
+.menuPage,
+.cartPage,
+.paymentPage,
+.foodDetailsPage,
+.customer-tool-page,
+.profile-page {
+  background: #fff !important;
+  color: #201b19 !important;
+}
+
+.menuPage .menuSection,
+.cartPage .cartCard,
+.cartPage .cartSummary,
+.paymentPage .paymentCard,
+.paymentPage .paymentSummary,
+.foodDetailsPage .foodDetails,
+.profile-page .profile-card,
+.profile-page .profile-header-card,
+.wishlist-card,
+.coupon-card {
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-md);
+  box-shadow: var(--app-shadow-sm);
+}
+
+.menuPage .menuCard {
+  border-radius: 18px;
+  border: 1px solid var(--app-border);
+  box-shadow: 0 5px 18px rgba(35,24,18,.04);
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+
+.menuPage .menuCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--app-shadow-md);
+}
+
+.menuPage button,
+.cartPage button,
+.paymentPage button,
+.foodDetailsPage button,
+.customer-tool-page button,
+.profile-page button {
+  transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+
+.menuPage button:not(:disabled):hover,
+.cartPage button:not(:disabled):hover,
+.paymentPage button:not(:disabled):hover,
+.foodDetailsPage button:not(:disabled):hover,
+.customer-tool-page button:not(:disabled):hover,
+.profile-page button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.menuPage input,
+.menuPage select,
+.cartPage input,
+.paymentPage input,
+.paymentPage select,
+.customer-tool-page input,
+.customer-tool-page select,
+.profile-page input,
+.profile-page select {
+  border-radius: 12px;
+}
+
+body.dark-mode .homePage,
+body.dark-mode .menuPage,
+body.dark-mode .cartPage,
+body.dark-mode .paymentPage,
+body.dark-mode .foodDetailsPage,
+body.dark-mode .customer-tool-page,
+body.dark-mode .profile-page {
+  background: #fff !important;
+  color: #201b19 !important;
+}
+
+body.dark-mode .homePage .categoryCard,
+body.dark-mode .homePage .foodCard,
+body.dark-mode .homePage .benefitCard,
+body.dark-mode .homePage .reviewCard {
+  background: #fff;
+  color: #201b19;
+  border-color: var(--app-border);
+}
+
+@media (max-width: 700px) {
+  .homePage .heroSection {
+    border-radius: 0 0 22px 22px;
+  }
+
+  .homePage .foodCard,
+  .homePage .categoryCard,
+  .homePage .benefitCard,
+  .homePage .reviewCard {
+    border-radius: 16px;
+  }
+}
