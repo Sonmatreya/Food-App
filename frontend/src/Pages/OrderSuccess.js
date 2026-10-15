@@ -46,7 +46,7 @@ function OrderSuccess() {
       payuCartCleared.current = true;
       clearCart();
     }
-  }, [routerLocation.search]);
+  }, [routerLocation.search, clearCart]);
 
   // Fetch the real order from the backend
   useEffect(() => {
@@ -262,7 +262,6 @@ function OrderSuccess() {
     deliveryType = "delivery",
     paymentMethod = "upi",
     address = {},
-    location = {},
     createdAt,
   } = order;
 
