@@ -174,3 +174,25 @@ body.dark-mode .navbar button {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Premium customer experience: keep customer-facing pages clean and white. */
+.menuPage,
+.cartPage,
+.paymentPage,
+.foodDetailsPage,
+.customer-tool-page,
+.profile-page {
+  background: #ffffff !important;
+  color: #191817;
+}
+
+body.dark-mode .menuPage,
+body.dark-mode .cartPage,
+body.dark-mode .paymentPage,
+body.dark-mode .foodDetailsPage,
+body.dark-mode .customer-tool-page,
+body.dark-mode .profile-page {
+  background: #ffffff !important;
+  color: #191817;
+}
