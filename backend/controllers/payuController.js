@@ -25,12 +25,16 @@ const verifyPayUHash = (body, salt) => {
   // PayU's standard reverse hash. If PayU adds additional charges, its
   // documentation requires the additional-charges value before the Salt.
   const additionalCharges = body.additional_charges || body.additionalCharges || "";
+  // PayU reverse hash includes all ten UDF fields, from udf10 down to udf1.
+  // Even when udf6-udf10 are blank in the callback, their empty positions matter.
   const hashParts = [
-    salt, body.status || "", "", "", "", "",
-    body.udf5 || "", body.udf4 || "", body.udf3 || "",
-    body.udf2 || "", body.udf1 || "", body.email || "",
-    body.firstname || "", body.productinfo || "", body.amount || "",
-    body.txnid || "", body.key || "",
+    salt, body.status || "",
+    body.udf10 || "", body.udf9 || "", body.udf8 || "",
+    body.udf7 || "", body.udf6 || "", body.udf5 || "",
+    body.udf4 || "", body.udf3 || "", body.udf2 || "",
+    body.udf1 || "", body.email || "", body.firstname || "",
+    body.productinfo || "", body.amount || "", body.txnid || "",
+    body.key || "",
   ];
   const standardHash = sha512(hashParts.join("|"));
   if (!additionalCharges) return safeEqual(standardHash, body.hash);
