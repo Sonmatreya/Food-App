@@ -266,14 +266,15 @@ function OrderSuccess() {
     createdAt,
   } = order;
 
-  const locationText = location.locationText || "";
+  const locationText = order.location?.locationText || "";
   const grandTotal = pricing.grandTotal ?? 0;
   const orderDate = createdAt;
   const cartItems = items;
 
   // Phase 2D — celebration hero only right after checkout
   const justPlaced = Boolean(
-    routerLocation.state?.justPlaced
+    routerLocation.state?.justPlaced ||
+    new URLSearchParams(routerLocation.search).get("payment") === "success"
   );
 
   const isPickup = deliveryType === "pickup";
