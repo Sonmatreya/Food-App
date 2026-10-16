@@ -524,3 +524,25 @@ body.dark-mode .navbar-search { background: #171717; border-color: #333; }
 body.dark-mode .navbar-search:focus-within,
 body.dark-mode .navbar-search.active { background: #1d1d1d; border-color: rgba(255,255,255,.18); }
 body.dark-mode .navbar-search-clear { background: #303030; color: #ddd; }
+
+
+/* Shared navigation brand refresh */
+:root {
+  --nav-text: #171711;
+  --nav-muted: #67665b;
+  --nav-border: #e4e0d1;
+  --nav-accent: #b94727;
+  --nav-surface: #f2f0e7;
+  --nav-shadow: 0 12px 34px rgba(34,31,20,.08);
+}
+.navbar {
+  border-bottom-color: rgba(228,224,209,.72);
+}
+.menu-links > a::after {
+  background: var(--nav-accent);
+}
+.navbar-search:focus-within,
+.navbar-search.active {
+  border-color: rgba(185,71,39,.38);
+  box-shadow: 0 0 0 3px rgba(185,71,39,.08);
+}
