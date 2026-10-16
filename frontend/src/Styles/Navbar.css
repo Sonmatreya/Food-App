@@ -1,9 +1,9 @@
 :root {
-  --nav-text: #1c1c1c;
-  --nav-muted: #747474;
-  --nav-border: #ebe9e5;
-  --nav-accent: #e31837;
-  --nav-surface: #f7f6f3;
+  --nav-text: #040404;
+  --nav-muted: #5e5c57;
+  --nav-border: #e2ddcf;
+  --nav-accent: #b83b1d;
+  --nav-surface: #f3f0e8;
   --nav-shadow: 0 10px 35px rgba(24, 24, 24, 0.08);
 }
 
@@ -12,7 +12,7 @@
   top: 0;
   z-index: 1000;
   width: 100%;
-  background: rgba(255, 255, 255, 0.97);
+  background: rgba(251, 250, 246, 0.97);
   border-bottom: 1px solid transparent;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
