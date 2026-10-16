@@ -308,3 +308,18 @@ body.dark-mode .theme-toggle-button {
     transition-duration: .01ms !important;
   }
 }
+
+
+/* Foodgo-inspired brand tokens used across shared controls. */
+:root {
+  --app-brand: #b94727;
+  --app-brand-hover: #86301c;
+  --app-brand-soft: rgba(185, 71, 39, .10);
+  --app-ink: #171711;
+  --app-muted: #67665b;
+  --app-surface: #fffdf6;
+  --app-page: #f8f7f0;
+  --app-border: #e4e0d1;
+  --app-shadow-sm: 0 10px 28px rgba(34, 31, 20, .05);
+  --app-shadow-md: 0 22px 42px rgba(34, 31, 20, .10);
+}
