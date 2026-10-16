@@ -1769,3 +1769,107 @@
 .homePage .heroEditorialFloating small { color:#8a8182; font-size:9px; }
 @media(max-width:950px) { .homePage .heroSection.heroEditorialLayout { grid-template-columns:minmax(0,1fr) minmax(300px,.85fr); gap:22px; padding:42px 28px; } .homePage .heroEditorialCopy h1 { font-size:clamp(48px,6vw,66px); letter-spacing:-3px; } .homePage .heroEditorialVisual { min-height:430px; } .homePage .heroEditorialImage { height:360px; } .homePage .heroEditorialStats { gap:20px; } }
 @media(max-width:700px) { .homePage .heroSection.heroEditorialLayout { width:calc(100% - 20px); margin-top:10px; grid-template-columns:minmax(0,1fr); padding:34px 20px 28px; gap:16px; border-radius:20px; } .homePage .heroEditorialCopy h1 { margin-top:22px; font-size:clamp(47px,12vw,66px); letter-spacing:-3px; } .homePage .heroEditorialCopy > p { font-size:13px; } .homePage .heroEditorialSearch { height:58px; } .homePage .heroEditorialSearch button { min-width:84px; width:84px; } .homePage .heroEditorialStats { margin-top:25px; padding-top:18px; justify-content:space-between; gap:12px; } .homePage .heroEditorialStats strong { font-size:20px; } .homePage .heroEditorialVisual { min-height:370px; margin-top:2px; } .homePage .heroEditorialImage { width:84%; height:320px; } .homePage .heroEditorialStamp { width:92px; height:92px; right:0; top:2%; } .homePage .heroEditorialStamp strong { font-size:14px; } .homePage .heroEditorialFeature { left:0; bottom:3%; width:85%; padding:15px; } .homePage .heroEditorialFloating { top:18%; left:-1%; padding:9px 11px; } }
+
+
+/* Food-App premium red brand pass — deliberately overrides legacy olive/brown palette. */
+:root {
+  --home-ink: #201216;
+  --home-muted: #716168;
+  --home-soft: #fff0f2;
+  --home-card: #ffffff;
+  --home-border: #f0dce0;
+  --home-accent: #e31837;
+  --home-accent-dark: #b10f2b;
+  --home-green: #e31837;
+  --home-shadow: 0 22px 60px rgba(91, 14, 32, .10);
+}
+.homePage {
+  background: #fffaf9;
+  color: #201216;
+}
+.homePage .heroSection.heroEditorialLayout {
+  background:
+    radial-gradient(circle at 8% 5%, rgba(227,24,55,.07), transparent 32%),
+    linear-gradient(135deg, #fffaf9 0%, #fff 65%, #fff1f3 100%);
+  border: 1px solid #f5e2e5;
+  box-shadow: 0 24px 70px rgba(91,14,32,.07);
+}
+.homePage .heroEditorialEyebrow,
+.homePage .heroEditorialFeatureLabel,
+.homePage .offerContent > span,
+.homePage .finalCta > div > span {
+  color: #e31837;
+}
+.homePage .heroEditorialCopy h1 em,
+.homePage .offerContent h2 em {
+  color: #e31837;
+  text-decoration-color: rgba(227,24,55,.28);
+}
+.homePage .heroEditorialPrimary,
+.homePage .heroEditorialSearch button,
+.homePage .offerButton,
+.homePage .finalCtaButton {
+  background: #e31837;
+  color: #fff;
+  box-shadow: 0 10px 24px rgba(227,24,55,.20);
+}
+.homePage .heroEditorialPrimary:hover,
+.homePage .heroEditorialSearch button:hover,
+.homePage .offerButton:hover,
+.homePage .finalCtaButton:hover {
+  background: #b10f2b;
+  color: #fff;
+  transform: translateY(-2px);
+}
+.homePage .heroEditorialSearch {
+  border-color: #f0dce0;
+  box-shadow: 0 12px 32px rgba(91,14,32,.06);
+}
+.homePage .heroEditorialSearch:focus-within {
+  border-color: rgba(227,24,55,.6);
+  box-shadow: 0 0 0 4px rgba(227,24,55,.09);
+}
+.homePage .heroEditorialStamp,
+.homePage .offerCircle {
+  background: #e31837;
+  color: #fff;
+  box-shadow: 0 18px 40px rgba(227,24,55,.22);
+}
+.homePage .heroEditorialFeature {
+  border: 1px solid #f0dce0;
+  box-shadow: 0 20px 48px rgba(51,13,22,.13);
+}
+.homePage .heroEditorialFeatureRow button,
+.homePage .addFoodButton,
+.homePage .foodCardBottom button {
+  background: #e31837;
+  color: #fff;
+}
+.homePage .categoryCard,
+.homePage .foodCard,
+.homePage .benefitCard {
+  border-color: #f0dce0;
+  box-shadow: 0 10px 32px rgba(91,14,32,.045);
+}
+.homePage .categoryCard:hover,
+.homePage .foodCard:hover {
+  border-color: rgba(227,24,55,.38);
+  box-shadow: 0 18px 42px rgba(91,14,32,.10);
+}
+.homePage .categoryIcon,
+.homePage .benefitIcon {
+  background: #fff0f2;
+  color: #e31837;
+}
+.homePage .finalCta {
+  background: linear-gradient(115deg, #fff0f2 0%, #fff 70%);
+  border: 1px solid #f5dce1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .homePage *, .homePage *::before, .homePage *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
