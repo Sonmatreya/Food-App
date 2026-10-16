@@ -8,12 +8,15 @@ import CloseIcon from "@mui/icons-material/Close";
 import Logo from "../assets/pizza-logo-png.png";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { useCart } from "../context/CartContext";
 import "../Styles/Navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { isDark, toggleTheme } = useTheme();
+  const { cartItems } = useCart();
+  const cartCount = cartItems.reduce((total, item) => total + Number(item.quantity || 0), 0);
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [locationText, setLocationText] = useState(() => localStorage.getItem("foodAppLocation") || "Choose your location");
@@ -133,7 +136,7 @@ function Navbar() {
         </nav>
         <button type="button" className="theme-toggle-button" onClick={toggleTheme} aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"} title={isDark ? "Light mode" : "Dark mode"}>{isDark ? "☀️" : "🌙"}</button>
         <div className="navbar-actions">
-          <Link to="/cart" className="nav-icon-button cart-link" aria-label="Shopping cart" onClick={closeMenu}><ShoppingCartIcon /></Link>
+          <Link to="/cart" className="nav-icon-button cart-link" aria-label={`Shopping cart, ${cartCount} ${cartCount === 1 ? "item" : "items"}`} onClick={closeMenu}><ShoppingCartIcon />{cartCount > 0 && <span className="cart-count-badge" aria-hidden="true">{cartCount > 99 ? "99+" : cartCount}</span>}</Link>
           {user ? <button type="button" className="account-button" onClick={() => navigate("/profile")}>{user.profileImage ? <img src={user.profileImage} alt="Profile" className="user-avatar" /> : <span className="user-avatar-placeholder">{user.name ? user.name.charAt(0).toUpperCase() : "U"}</span>}<span>{user.name || "Account"}</span></button> : <button type="button" className="login-btn" onClick={() => navigate("/login")}>Sign In</button>}
         </div>
         <button type="button" className="toggle-button" onClick={() => setIsOpen((previous) => !previous)} aria-label="Open navigation menu" aria-expanded={isOpen}>{isOpen ? <CloseIcon /> : <ReorderIcon />}</button>
