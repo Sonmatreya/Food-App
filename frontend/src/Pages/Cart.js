@@ -20,6 +20,7 @@ function Cart() {
   const [couponLoadError, setCouponLoadError] = useState("");
 
   const loadCoupons = useCallback(async () => {
+    setCouponLoading(true);
     try {
       setCouponLoadError("");
       const response = await fetch(`${API_URL}/api/coupons`, { credentials: "include" });
