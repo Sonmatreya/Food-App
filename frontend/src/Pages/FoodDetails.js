@@ -158,7 +158,9 @@ function FoodDetails() {
   }
 
   const imageUrl = food.image || FALLBACK_IMAGE;
-  const rating = Number(food.rating || 0);
+  const rating = Number(food.rating);
+  const ratingCount = Number(food.ratingCount || 0);
+  const hasRating = Number.isFinite(rating) && rating > 0 && ratingCount > 0;
   const price = Number(food.price || 0);
   const totalPrice = price * quantity;
   const ingredients = Array.isArray(food.ingredients) ? food.ingredients : [];
@@ -266,7 +268,7 @@ function FoodDetails() {
       <section className="foodDetails">
         <div className="foodDetailsImageWrapper">
           <div className="foodDetailsImage" style={{ backgroundImage: `url("${imageUrl}")` }} role="img" aria-label={food.name}>
-            <div className="foodImageBadge">⭐ {rating.toFixed(1)}</div>
+            {hasRating && <div className="foodImageBadge">⭐ {rating.toFixed(1)}</div>}
             {!food.isAvailable && <div className="unavailableBadge">Currently Unavailable</div>}
           </div>
         </div>
@@ -274,13 +276,13 @@ function FoodDetails() {
         <div className="foodDetailsContent">
           <span className="foodCategory">{food.category}</span>
           <h1>{food.name}</h1>
-          <div className="foodRatingRow"><span className="ratingStars">★★★★★</span><strong>{rating.toFixed(1)}</strong><span className="ratingText">{Number(food.ratingCount || 0)} customer ratings</span></div>
+          <div className="foodRatingRow">{hasRating ? <><span className="ratingStars" aria-label="Rated out of five">★★★★★</span><strong>{rating.toFixed(1)}</strong><span className="ratingText">{ratingCount} customer rating{ratingCount === 1 ? "" : "s"}</span></> : <span className="ratingText">No customer ratings yet</span>}</div>
           <div className="foodPrice">₹{price.toFixed(2)}</div>
           <p className="foodDescription">{food.description}</p>
 
           <div className="foodInfoGrid">
-            <div className="foodInfoItem"><span className="foodInfoIcon">🚚</span><div><strong>Fast Delivery</strong><p>30–45 min</p></div></div>
-            <div className="foodInfoItem"><span className="foodInfoIcon">🥗</span><div><strong>Fresh Ingredients</strong><p>Prepared fresh</p></div></div>
+            <div className="foodInfoItem"><span className="foodInfoIcon">🍽️</span><div><strong>Choose your portion</strong><p>Adjust quantity before adding to cart</p></div></div>
+            <div className="foodInfoItem"><span className="foodInfoIcon">✍️</span><div><strong>Make it yours</strong><p>Add an optional cooking request</p></div></div>
           </div>
 
           <div className="ingredients">
@@ -331,7 +333,7 @@ function FoodDetails() {
       <section className="foodReviewsSection">
         <div className="foodReviewsHeader">
           <div><span className="foodReviewsEyebrow">CUSTOMER FEEDBACK</span><h2>Ratings & Reviews</h2><p>See what customers who ordered this food had to say.</p></div>
-          <div className="foodReviewsAverage"><strong>{rating.toFixed(1)}</strong><span>★★★★★</span><small>{Number(food.ratingCount || 0)} ratings</small></div>
+          <div className="foodReviewsAverage"><strong>{hasRating ? rating.toFixed(1) : "—"}</strong>{hasRating && <span>★★★★★</span>}<small>{ratingCount} rating{ratingCount === 1 ? "" : "s"}</small></div>
         </div>
 
         {user && eligibleOrders.length > 0 && (
