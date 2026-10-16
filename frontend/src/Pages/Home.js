@@ -85,7 +85,7 @@ function Home() {
   const fallbackFoods = MenuList.filter((food) => food.isAvailable !== false);
   const popularFoods = (availableFoods.length > 0 ? availableFoods : fallbackFoods).slice(0, 4);
   const featuredFood = popularFoods[0] || fallbackFoods[0];
-  const isCartableFood = (food) => /^[a-f\\d]{24}$/i.test(String(food?._id || food?.id || ""));
+  const isCartableFood = (food) => /^[a-f\d]{24}$/i.test(String(food?._id || food?.id || ""));
 
   const categoryIcons = {
     pizza: "🍕",
