@@ -531,7 +531,7 @@ body.dark-mode .navbar-search-clear { background: #303030; color: #ddd; }
   --nav-text: #171711;
   --nav-muted: #67665b;
   --nav-border: #e4e0d1;
-  --nav-accent: #b94727;
+  --nav-accent: #e31837;
   --nav-surface: #f2f0e7;
   --nav-shadow: 0 12px 34px rgba(34,31,20,.08);
 }
@@ -543,6 +543,6 @@ body.dark-mode .navbar-search-clear { background: #303030; color: #ddd; }
 }
 .navbar-search:focus-within,
 .navbar-search.active {
-  border-color: rgba(185,71,39,.38);
-  box-shadow: 0 0 0 3px rgba(185,71,39,.08);
+  border-color: rgba(227,24,55,.38);
+  box-shadow: 0 0 0 3px rgba(227,24,55,.08);
 }
