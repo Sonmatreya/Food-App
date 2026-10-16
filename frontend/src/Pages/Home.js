@@ -14,6 +14,7 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import BannerImage from "../assets/pizza.jpeg";
 import { MenuList } from "../helpers/MenuList";
 import { useCart } from "../context/CartContext";
+import { useToast } from "../context/ToastContext";
 import { API_URL } from "../config/api";
 
 // Styles
@@ -34,12 +35,14 @@ function Home() {
 
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { showToast } = useToast();
 
   const [addedFoodIds, setAddedFoodIds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [availableFoods, setAvailableFoods] = useState([]);
   const [foodsLoading, setFoodsLoading] = useState(true);
   const [foodsError, setFoodsError] = useState("");
+  const [reloadFoods, setReloadFoods] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -72,7 +75,7 @@ function Home() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadFoods]);
 
 
   /* =======================================================
@@ -166,6 +169,7 @@ function Home() {
 
   const handleAddToCart = (food) => {
     addToCart(food, 1);
+    showToast(`${food.name} added to your cart`, "success");
     const foodId = food._id || food.id;
 
     setAddedFoodIds((currentIds) => {
@@ -369,7 +373,8 @@ function Home() {
 
         {foodsError && (
           <p className="homeMenuNotice" role="status">
-            {foodsError} <Link to="/menu">Open the full menu</Link>
+            {foodsError} <Link to="/menu">Open the full menu</Link>{" "}
+            <button type="button" onClick={() => { setFoodsLoading(true); setFoodsError(""); setReloadFoods((value) => value + 1); }}>Try again</button>
           </p>
         )}
         {foodsLoading && (
@@ -394,7 +399,7 @@ function Home() {
                   to={`/food/${foodId}`}
                   className="foodCardImage"
                 >
-                  <img src={food.image} alt={food.name} />
+                  <img src={food.image || BannerImage} alt={food.name} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }} />
                   <span className="foodRating">
                     <StarRoundedIcon />
                     {food.rating}
