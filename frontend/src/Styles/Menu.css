@@ -459,3 +459,172 @@ body.dark-mode .menuSkeletonCard { background:#1b1b1b; border-color:#333; }
 body.dark-mode .skeletonImage,body.dark-mode .skeletonLine { background:linear-gradient(90deg,#242424 25%,#303030 37%,#242424 63%); background-size:400% 100%; }
 @media(max-width:1000px){.menuSkeletonGrid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.menuSkeletonGrid{grid-template-columns:1fr}.skeletonImage{height:250px}.menuQuickAdd{width:calc(100% - 36px);margin:0 18px 18px}}
+
+
+/* Premium red menu refresh: clearer hierarchy, tactile filters and branded cards. */
+.menuPage {
+  background: #fffaf9;
+  color: #251419;
+}
+.menuPage .menuHero {
+  min-height: 390px;
+  background:
+    linear-gradient(90deg, rgba(31, 10, 16, .92) 0%, rgba(48, 9, 20, .76) 48%, rgba(48, 9, 20, .25) 100%),
+    url("https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1800&q=85") center 52% / cover;
+  position: relative;
+}
+.menuPage .menuHero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 5px;
+  background: linear-gradient(90deg, #e31837 0%, #ff8799 48%, transparent 100%);
+}
+.menuPage .menuHeroContent {
+  position: relative;
+  z-index: 1;
+}
+.menuPage .menuHeroContent > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 13px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 999px;
+  background: rgba(227,24,55,.18);
+  color: #ffd9df;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 2px;
+}
+.menuPage .menuHeroContent h1 {
+  max-width: 720px;
+  margin-top: 20px;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: .99;
+  letter-spacing: -2.8px;
+  text-wrap: balance;
+}
+.menuPage .menuHeroContent p {
+  max-width: 520px;
+  color: rgba(255,255,255,.82);
+  line-height: 1.8;
+}
+.menuPage .menuSection {
+  position: relative;
+}
+.menuPage .menuSearchBox {
+  border: 1px solid #f0d9de;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 16px 44px rgba(91,14,32,.10);
+}
+.menuPage .menuSearchBox:focus-within {
+  border-color: rgba(227,24,55,.55);
+  box-shadow: 0 0 0 4px rgba(227,24,55,.08), 0 16px 44px rgba(91,14,32,.09);
+}
+.menuPage .menuSearchBox input {
+  color: #251419;
+}
+.menuPage .menuToolbar {
+  padding: 18px 0;
+  border-bottom: 1px solid #f0dfe2;
+}
+.menuPage .categoryFilters {
+  gap: 9px;
+}
+.menuPage .categoryFilter {
+  border: 1px solid #f0dce0;
+  border-radius: 999px;
+  background: #fff;
+  color: #65545a;
+  font-weight: 750;
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+}
+.menuPage .categoryFilter:hover {
+  border-color: rgba(227,24,55,.42);
+  color: #c91531;
+  transform: translateY(-1px);
+}
+.menuPage .categoryFilter.active {
+  border-color: #e31837;
+  background: #e31837;
+  color: #fff;
+  box-shadow: 0 7px 18px rgba(227,24,55,.19);
+}
+.menuPage .sortBox select {
+  border: 1px solid #eadde0;
+  border-radius: 10px;
+  background-color: #fff;
+  color: #36232a;
+}
+.menuPage .menuResultHeader {
+  margin-top: 30px;
+}
+.menuPage .menuResultHeader h2 {
+  color: #251419;
+  letter-spacing: -.8px;
+}
+.menuPage .menuResultHeader p {
+  color: #806f75;
+}
+.menuPage .menuGrid {
+  gap: 24px;
+}
+.menuPage .menuCard,
+.menuPage .foodCard {
+  border: 1px solid #f0dfe2;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 32px rgba(70,18,31,.055);
+  overflow: hidden;
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.menuPage .menuCard:hover,
+.menuPage .foodCard:hover {
+  transform: translateY(-5px);
+  border-color: rgba(227,24,55,.35);
+  box-shadow: 0 22px 48px rgba(70,18,31,.12);
+}
+.menuPage .menuQuickAdd,
+.menuPage .menuAddButton {
+  border-radius: 12px;
+  background: #e31837;
+  color: #fff;
+  box-shadow: 0 8px 18px rgba(227,24,55,.16);
+}
+.menuPage .menuQuickAdd:hover:not(:disabled),
+.menuPage .menuAddButton:hover:not(:disabled) {
+  background: #b10f2b;
+}
+.menuPage .noFoodFound {
+  border: 1px dashed #e9cbd1;
+  border-radius: 22px;
+  background: #fff;
+}
+.menuPage .noFoodFound button {
+  border: 0;
+  border-radius: 11px;
+  background: #e31837;
+  color: #fff;
+  font-weight: 800;
+}
+.menuPage .menuSearchSuggestions {
+  border-color: #f0dce0;
+  border-radius: 15px;
+}
+.menuPage .menuSearchSuggestions button:hover {
+  background: #fff0f2;
+}
+@media (max-width: 650px) {
+  .menuPage .menuHero { min-height: 310px; background-position: 58% center; }
+  .menuPage .menuHeroContent h1 { letter-spacing: -1.5px; }
+  .menuPage .menuGrid { gap: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menuPage *, .menuPage *::before, .menuPage *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
