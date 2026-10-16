@@ -380,7 +380,7 @@ function Home() {
 
         {foodsError && (
           <p className="homeMenuNotice" role="status">
-            {foodsError} <Link to="/menu">Open the full menu</Link>{" · "}<button type="button" onClick={() => { setFoodsLoading(true); setReloadFoods((value) => value + 1); }}>Try again</button>{" "}
+            {foodsError} <Link to="/menu">Open the full menu</Link>{" "}
             <button type="button" onClick={() => { setFoodsLoading(true); setFoodsError(""); setReloadFoods((value) => value + 1); }}>Try again</button>
           </p>
         )}
