@@ -38,6 +38,8 @@ function Home() {
   const [addedFoodIds, setAddedFoodIds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [availableFoods, setAvailableFoods] = useState([]);
+  const [foodsLoading, setFoodsLoading] = useState(true);
+  const [foodsError, setFoodsError] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -49,10 +51,20 @@ function Home() {
         });
         const data = await response.json();
 
-        if (!response.ok || !data.success) return;
-        if (!cancelled) setAvailableFoods(Array.isArray(data.foods) ? data.foods : []);
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "The live menu is temporarily unavailable.");
+        }
+        if (!cancelled) {
+          setAvailableFoods(Array.isArray(data.foods) ? data.foods : []);
+          setFoodsError("");
+        }
       } catch (error) {
-        if (!cancelled) setAvailableFoods([]);
+        if (!cancelled) {
+          setAvailableFoods([]);
+          setFoodsError("Showing the sample menu because the live menu could not be loaded.");
+        }
+      } finally {
+        if (!cancelled) setFoodsLoading(false);
       }
     };
 
@@ -253,7 +265,7 @@ function Home() {
                   <h3>{featuredFood?.name || "Fresh & Delicious Food"}</h3>
                   <p>{featuredFood?.description || "Fresh ingredients · Made to order"}</p>
                 </div>
-                <strong>${Number(featuredFood?.price || 0).toFixed(2)}</strong>
+                <strong>₹{Number(featuredFood?.price || 0).toFixed(2)}</strong>
               </div>
 
               <Link to={featuredFood ? "/food/" + (featuredFood._id || featuredFood.id) : "/menu"} className="heroFoodButton">
@@ -282,7 +294,7 @@ function Home() {
           <LocalShippingOutlinedIcon />
           <div>
             <strong>Free delivery</strong>
-            <span>On orders over $40</span>
+            <span>On orders over ₹40</span>
           </div>
         </div>
 
@@ -355,6 +367,21 @@ function Home() {
           </Link>
         </div>
 
+        {foodsError && (
+          <p className="homeMenuNotice" role="status">
+            {foodsError} <Link to="/menu">Open the full menu</Link>
+          </p>
+        )}
+        {foodsLoading && (
+          <p className="homeMenuNotice" role="status" aria-live="polite">
+            Checking today's menu…
+          </p>
+        )}
+        {!foodsLoading && !popularFoods.length && (
+          <p className="homeMenuNotice" role="status">
+            No dishes are available right now. Please check the full menu again soon.
+          </p>
+        )}
         <div className="foodGrid">
           {popularFoods.map((food) => {
             const foodId = food._id || food.id;
@@ -391,7 +418,7 @@ function Home() {
 
                   {/* Price and add-to-cart button */}
                   <div className="foodCardBottom">
-                    <strong>${Number(food.price || 0).toFixed(2)}</strong>
+                    <strong>₹{Number(food.price || 0).toFixed(2)}</strong>
                     <button
                       type="button"
                       className={`addFoodButton ${isAdded ? "added" : ""}`}
