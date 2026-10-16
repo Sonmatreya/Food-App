@@ -218,6 +218,7 @@ function Menu() {
                 price={menuItem.price}
                 category={menuItem.category}
                 rating={menuItem.rating}
+                ratingCount={menuItem.ratingCount}
                 isAvailable={menuItem.isAvailable}
               />
             ))}
