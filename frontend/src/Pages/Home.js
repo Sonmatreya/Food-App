@@ -180,104 +180,75 @@ function Home() {
       {/* ===================================================
           4.1 HERO SECTION
           =================================================== */}
-      <section className="heroSection">
-        <div
-          className="heroBackgroundImage"
-          style={{ backgroundImage: `url(${BannerImage})` }}
-        />
-        <div className="heroShade" />
-
-        <div className="heroContent">
-          {/* Hero text */}
-          <div className="heroText">
-            <div className="heroSmallText">
-              <span className="heroLiveDot" />
-              Freshly prepared · Fast delivery
-            </div>
-
-            <h1>
-              Your cravings,
-              <br />
-              <em>delivered.</em>
-            </h1>
-
-            <p>
-              Discover something delicious, order in a few taps and let us
-              bring your next favourite meal straight to your doorstep.
-            </p>
-
-            {/* Hero search */}
-            <form className="heroSearch" onSubmit={handleSearch}>
-              <SearchRoundedIcon className="searchIcon" />
-
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search for pizza, burgers, pasta..."
-                aria-label="Search food"
-              />
-
-              <button type="submit">Find food</button>
-            </form>
-
-            {/* Trust information */}
-            <div className="heroTrustRow">
-              <div>
-                <StarRoundedIcon />
-                <span><strong>Live menu</strong> updated from available dishes</span>
-              </div>
-              <div>
-                <AccessTimeOutlinedIcon />
-                <span><strong>Easy</strong> online ordering</span>
-              </div>
-              <div>
-                <VerifiedOutlinedIcon />
-                <span><strong>Browse</strong> available items</span>
-              </div>
-            </div>
+      <section className="heroSection heroEditorialLayout">
+        <div className="heroEditorialCopy">
+          <div className="heroEditorialEyebrow">
+            <span className="heroLiveDot" />
+            GOOD FOOD. GOOD MOOD.
           </div>
+          <h1>
+            Make room
+            <br />
+            for <em>something</em>
+            <br />
+            delicious.
+          </h1>
+          <p>
+            Your next favourite meal is waiting. Explore the menu, find what
+            you love, and order in a few simple steps.
+          </p>
 
-          {/* Hero featured food */}
-          <div className="heroVisual">
-            <div className="heroVisualGlow" />
+          <form className="heroSearch heroEditorialSearch" onSubmit={handleSearch}>
+            <SearchRoundedIcon className="searchIcon" />
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="What are you craving today?"
+              aria-label="Search food"
+            />
+            <button type="submit">Search</button>
+          </form>
 
-            <div className="heroFoodCard">
-              <div className="heroFoodImageWrap">
-                <img
-                  src={featuredFood?.image || BannerImage}
-                  alt={featuredFood?.name || "Food menu"}
-                  onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }}
-                />
-                <span className="heroFoodBadge">
-                  <StarRoundedIcon />
-                  {featuredFood?.isFeatured ? "Featured dish" : "From the menu"}
-                </span>
-              </div>
-
-              <div className="heroFoodInfo">
-                <div>
-                  <span>{featuredFood?.isFeatured ? "FEATURED DISH" : "FROM OUR MENU"}</span>
-                  <h3>{featuredFood?.name || "Fresh & Delicious Food"}</h3>
-                  <p>{featuredFood?.description || "Fresh ingredients · Made to order"}</p>
-                </div>
-                <strong>₹{Number(featuredFood?.price || 0).toFixed(2)}</strong>
-              </div>
-
-              <Link to={featuredFood ? "/food/" + (featuredFood._id || featuredFood.id) : "/menu"} className="heroFoodButton">
-                Explore menu
-                <ArrowForwardIcon />
-              </Link>
-            </div>
-
-            <div className="floatingDeliveryCard">
-              <span className="deliveryCheck">✓</span>
-              <div>
-                <strong>Ready to order?</strong>
-                <small>Explore the available menu</small>
-              </div>
-            </div>
+          <div className="heroEditorialActions">
+            <Link to="/menu" className="heroEditorialPrimary">
+              Explore menu <ArrowForwardIcon />
+            </Link>
+            <span><VerifiedOutlinedIcon /> Browse live menu items</span>
           </div>
+          <div className="heroEditorialStats">
+            <div><strong>{availableFoods.length}</strong><span>menu items</span></div>
+            <div><strong>01</strong><span>easy destination</span></div>
+            <div><strong>∞</strong><span>ways to crave</span></div>
+          </div>
+        </div>
+
+        <div className="heroEditorialVisual">
+          <div className="heroEditorialBackdrop" />
+          <div className="heroEditorialImage">
+            <img
+              src={featuredFood?.image || BannerImage}
+              alt={featuredFood?.name || "Discover food from the menu"}
+              onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }}
+            />
+          </div>
+          <div className="heroEditorialStamp"><span>MADE FOR</span><strong>FOOD<br />LOVERS</strong><i>✳</i></div>
+          <article className="heroEditorialFeature">
+            <span className="heroEditorialFeatureLabel">
+              {featuredFood?.isFeatured ? "FEATURED FROM THE MENU" : "DISCOVER THE MENU"}
+            </span>
+            <div className="heroEditorialFeatureRow">
+              <div>
+                <h2>{featuredFood?.name || "Something delicious"}</h2>
+                <p>{featuredFood?.category || "Explore available dishes"}</p>
+              </div>
+              <strong>₹{Number(featuredFood?.price || 0).toFixed(2)}</strong>
+            </div>
+            <Link to={featuredFood ? "/food/" + (featuredFood._id || featuredFood.id) : "/menu"}>
+              Discover dish <ArrowForwardIcon />
+            </Link>
+          </article>
+          <div className="heroEditorialFloating"><span>↗</span><div><strong>Find your favourite</strong><small>Start with the live menu</small></div></div>
         </div>
       </section>
 
