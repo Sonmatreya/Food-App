@@ -293,12 +293,12 @@ function FoodDetails() {
           <div className="cookingRequest">
             <h3>Add a cooking request <span>(optional)</span></h3>
             <p>The restaurant will try its best to fulfil your requests. However, refunds or cancellations related to such requests won't be possible.</p>
-            <div className="cookingRequestInput"><textarea value={cookingRequest} onChange={handleCookingRequestChange} placeholder="e.g. Don't make it too spicy" maxLength={100} disabled={!food.isAvailable} /><span>{cookingRequest.length}/100</span></div>
+            <div className="cookingRequestInput"><textarea aria-label="Optional cooking request" value={cookingRequest} onChange={handleCookingRequestChange} placeholder="e.g. Don't make it too spicy" maxLength={100} disabled={!food.isAvailable} /><span>{cookingRequest.length}/100</span></div>
           </div>
 
           <div className="quantitySection">
             <h3>Quantity</h3>
-            <div className="quantityControls"><button type="button" onClick={decreaseQuantity} disabled={!food.isAvailable || quantity === 1}>−</button><span>{quantity}</span><button type="button" onClick={increaseQuantity} disabled={!food.isAvailable}>+</button></div>
+            <div className="quantityControls" aria-label="Choose quantity"><button type="button" onClick={decreaseQuantity} disabled={!food.isAvailable || quantity === 1} aria-label="Decrease quantity">−</button><span aria-live="polite" aria-atomic="true">{quantity}</span><button type="button" onClick={increaseQuantity} disabled={!food.isAvailable} aria-label="Increase quantity">+</button></div>
           </div>
 
           <div className="orderSummary"><div><span>Price</span><strong>₹{price.toFixed(2)}</strong></div><div><span>Quantity</span><strong>× {quantity}</strong></div><div className="summaryTotal"><span>Total</span><strong>₹{totalPrice.toFixed(2)}</strong></div></div>
@@ -351,7 +351,7 @@ function FoodDetails() {
           </form>
         )}
 
-        {reviewMessage && <div className="reviewMessage">{reviewMessage}</div>}
+        {reviewMessage && <div className="reviewMessage" role={reviewMessage.includes("successfully") ? "status" : "alert"} aria-live="polite">{reviewMessage}</div>}
 
         {reviewsLoading ? (
           <div className="reviewsState">Loading reviews...</div>
