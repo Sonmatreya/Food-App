@@ -312,9 +312,9 @@ body.dark-mode .theme-toggle-button {
 
 /* Foodgo-inspired brand tokens used across shared controls. */
 :root {
-  --app-brand: #b94727;
-  --app-brand-hover: #86301c;
-  --app-brand-soft: rgba(185, 71, 39, .10);
+  --app-brand: #d9233f;
+  --app-brand-hover: #b91c35;
+  --app-brand-soft: rgba(217, 35, 63, .09);
   --app-ink: #171711;
   --app-muted: #67665b;
   --app-surface: #fffdf6;
