@@ -478,27 +478,27 @@ function Home() {
       {/* ===================================================
           4.6 OFFER SECTION
           =================================================== */}
-      <section className="offerSection">
+      <section className="offerSection" aria-label="Explore the menu">
         <div className="offerContent">
-          <span>WELCOME TO FOOD APP</span>
+          <span>GOOD FOOD, MADE EASY</span>
           <h2>
-            Your first order
+            Find your next
             <br />
-            <em>just got better.</em>
+            <em>favourite meal.</em>
           </h2>
           <p>
-            Check the latest Food App offers and apply an eligible coupon at checkout.
+            Explore the live menu, discover available dishes, and order your way.
           </p>
           <Link to="/menu" className="offerButton">
-            Claim the offer
+            Explore the menu
             <ArrowForwardIcon />
           </Link>
         </div>
 
-        <div className="offerCircle">
-          <span>20</span>
-          <small>% OFF</small>
-          <b>FIRST ORDER</b>
+        <div className="offerCircle" aria-label="Discover good food">
+          <span>YUM</span>
+          <small>YOUR WAY</small>
+          <b>EXPLORE • ORDER • ENJOY</b>
         </div>
       </section>
 
