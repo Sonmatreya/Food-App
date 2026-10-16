@@ -921,3 +921,214 @@
 }
 
 .buyNowButton{width:100%;min-height:48px;margin:12px 0 10px;border:0;border-radius:12px;background:#181818;color:#fff;font-weight:800;cursor:pointer;transition:.2s ease}.buyNowButton:hover:not(:disabled){background:#e31837;transform:translateY(-1px)}.buyNowButton:disabled{opacity:.5;cursor:not-allowed}body.dark-mode .buyNowButton{background:#f4f4f4;color:#111}
+
+/* Foodgo-inspired premium product detail refresh */
+.foodDetailsPage {
+  background:
+    radial-gradient(ellipse at 8% 2%, rgba(227, 24, 55, 0.055), transparent 30rem),
+    #fffaf9;
+  color: #281b1d;
+}
+
+.foodBreadcrumb {
+  color: #9a8588;
+}
+.foodBreadcrumb a { color: #756165; }
+.foodBreadcrumb a:hover { color: #c91531; }
+
+.foodDetails {
+  gap: clamp(28px, 5vw, 68px);
+}
+
+.foodDetailsImage {
+  min-height: 400px;
+  border: 1px solid rgba(80, 20, 30, 0.07);
+  border-radius: 28px;
+  background-color: #f5e8e8;
+  box-shadow: 0 24px 65px rgba(85, 22, 34, 0.14);
+}
+.foodDetailsImage::after {
+  background: linear-gradient(180deg, rgba(30, 8, 13, 0.04), transparent 45%, rgba(30, 8, 13, 0.12));
+}
+.foodDetailsContent {
+  padding: clamp(4px, 1vw, 14px) 0;
+}
+.foodCategory {
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  border: 1px solid #f4d3d9;
+  border-radius: 999px;
+  background: #fff0f3;
+  color: #c91531;
+  letter-spacing: 1.25px;
+}
+.foodDetailsContent h1 {
+  max-width: 680px;
+  color: #281b1d;
+  font-size: clamp(35px, 4.4vw, 54px);
+  line-height: 1.04;
+  letter-spacing: -1.7px;
+}
+.foodRatingRow {
+  margin-bottom: 20px;
+}
+.foodPrice {
+  margin-bottom: 15px;
+  color: #c91531;
+  font-size: 35px;
+  letter-spacing: -1px;
+}
+.foodDescription {
+  color: #756568;
+  line-height: 1.85;
+}
+.foodInfoItem {
+  border-color: #f0e1e2;
+  border-radius: 17px;
+  background: rgba(255,255,255,.82);
+  box-shadow: 0 7px 22px rgba(70, 24, 31, .035);
+}
+.foodInfoIcon {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  place-items: center;
+  border-radius: 14px;
+  background: #fff0f3;
+}
+.foodInfoItem strong { color: #382629; }
+.ingredients h3,
+.quantitySection h3,
+.cookingRequest h3 { color: #332326; }
+.ingredientTag {
+  border-color: #f0dfe2;
+  background: #fff;
+  color: #6c555a;
+}
+.cookingRequestInput textarea {
+  border-color: #ead9dc;
+  border-radius: 16px;
+  background: #fff;
+}
+.cookingRequestInput textarea:focus {
+  border-color: #e31837;
+  box-shadow: 0 0 0 4px rgba(227, 24, 55, .09);
+}
+.quantityControls {
+  border-color: #ead8dc;
+  border-radius: 14px;
+  box-shadow: 0 5px 15px rgba(70, 24, 31, .04);
+}
+.quantityControls button { min-width: 48px; }
+.quantityControls button:hover:not(:disabled) {
+  background: #fff0f3;
+  color: #c91531;
+}
+.orderSummary {
+  margin-top: 6px;
+  padding: 20px 0;
+  border-color: #ecdde0;
+}
+.orderSummary > div { color: #806e72; }
+.orderSummary strong { color: #382629; }
+.summaryTotal {
+  border-top-color: #ecdde0;
+}
+.summaryTotal strong { color: #c91531; }
+.wishlistDetailButton {
+  border-color: #efd7dc;
+  border-radius: 14px;
+  background: #fff;
+}
+.wishlistDetailButton:hover,
+.wishlistDetailButton.active {
+  border-color: #e31837;
+  background: #fff0f3;
+  color: #c91531;
+}
+.buyNowButton {
+  min-height: 54px;
+  border-radius: 14px;
+  background: #c91531;
+  box-shadow: 0 12px 25px rgba(201, 21, 49, .18);
+}
+.buyNowButton:hover:not(:disabled) {
+  background: #a80e27;
+  box-shadow: 0 15px 30px rgba(201, 21, 49, .24);
+}
+body.dark-mode .buyNowButton {
+  background: #c91531;
+  color: #fff;
+}
+.addToCartButton {
+  min-height: 54px;
+  border-radius: 14px;
+}
+.viewCartButton {
+  border-color: #efd7dc;
+  border-radius: 14px;
+  color: #c91531;
+}
+.viewCartButton:hover {
+  border-color: #c91531;
+  background: #fff0f3;
+  color: #a80e27;
+}
+.backToMenu { color: #8a7479; }
+.foodReviewsSection {
+  border-top-color: #efdfe2;
+}
+.foodReviewsAverage,
+.reviewForm,
+.reviewItem,
+.reviewsState,
+.foodExtraCard {
+  border-color: #f0e1e3;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgba(70, 24, 31, .035);
+}
+.foodReviewsHeader h2 { color: #281b1d; }
+.reviewForm select,
+.reviewForm textarea { border-color: #ead9dc; }
+.reviewMessage {
+  border-color: #f1d2d8;
+  background: #fff0f3;
+  color: #a80e27;
+}
+.foodExtraCard > span {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  place-items: center;
+  border-radius: 15px;
+  background: #fff0f3;
+}
+.foodNotFound { background: #fffaf9; }
+
+@media (max-width: 650px) {
+  .foodDetailsImage {
+    min-height: 0;
+    border-radius: 22px;
+    box-shadow: 0 16px 38px rgba(85, 22, 34, .12);
+  }
+  .foodDetailsContent h1 {
+    font-size: clamp(32px, 9vw, 42px);
+    letter-spacing: -1.2px;
+  }
+  .foodPrice { font-size: 30px; }
+  .foodInfoItem { border-radius: 15px; }
+  .foodReviewsAverage { border-radius: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foodDetailsPage *,
+  .foodDetailsPage *::before,
+  .foodDetailsPage *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+}
