@@ -546,3 +546,26 @@ body.dark-mode .navbar-search-clear { background: #303030; color: #ddd; }
   border-color: rgba(227,24,55,.38);
   box-shadow: 0 0 0 3px rgba(227,24,55,.08);
 }
+
+
+/* Live cart quantity badge */
+.navbar .cart-link { position: relative; }
+.navbar .cart-count-badge {
+  position: absolute;
+  top: -7px;
+  right: -7px;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--app-surface, #fff);
+  border-radius: 999px;
+  background: var(--app-brand, #d9233f);
+  color: #fff;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
