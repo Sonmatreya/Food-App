@@ -106,7 +106,7 @@ function Cart() {
     if (subtotal < Number(coupon.minimum)) {
       setCouponCode(coupon.code);
       setCouponMessage(
-        `Add ${Math.max(Number(coupon.minimum) - subtotal, 0).toFixed(2)} more to use ${coupon.code}.`
+        `Add ₹${Math.max(Number(coupon.minimum) - subtotal, 0).toFixed(2)} more to use ${coupon.code}.`
       );
       return;
     }
