@@ -81,7 +81,7 @@ function Menu() {
 
     if (sortOption === "lowToHigh") return [...result].sort((a, b) => a.price - b.price);
     if (sortOption === "highToLow") return [...result].sort((a, b) => b.price - a.price);
-    if (sortOption === "rating") return [...result].sort((a, b) => b.rating - a.rating);
+    if (sortOption === "rating") return [...result].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
     return result;
   }, [foods, searchTerm, selectedCategory, sortOption]);
 
@@ -143,7 +143,7 @@ function Menu() {
           {showSuggestions && searchSuggestions.length > 0 && (
             <div className="menuSearchSuggestions">
               {searchSuggestions.map((food) => (
-                <button type="button" key={food._id} onMouseDown={(event) => event.preventDefault()} onClick={() => { setSearchTerm(food.name); setShowSuggestions(false); }}>
+                <button type="button" key={food._id} onMouseDown={(event) => event.preventDefault()} onClick={() => { handleSearchChange(food.name); setShowSuggestions(false); }}>
                   <span>🍽️</span><div><strong>{food.name}</strong><small>{food.category} · ₹{Number(food.price || 0).toFixed(2)}</small></div>
                 </button>
               ))}
