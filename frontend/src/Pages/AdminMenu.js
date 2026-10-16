@@ -9,7 +9,6 @@ const emptyForm = {
   name: "",
   category: "Pizza",
   price: "",
-  rating: "4.5",
   description: "",
   ingredients: "",
   image: "",
@@ -110,7 +109,6 @@ const AdminMenu = () => {
       name: food.name || "",
       category: food.category || "Pizza",
       price: food.price ?? "",
-      rating: food.rating ?? "4.5",
       description: food.description || "",
       ingredients: Array.isArray(food.ingredients) ? food.ingredients.join(", ") : "",
       image: food.image || "",
@@ -175,7 +173,6 @@ const AdminMenu = () => {
     event.preventDefault();
     const name = form.name.trim();
     const price = Number(form.price);
-    const rating = Number(form.rating);
 
     if (!name || name.length < 2) {
       setError("Food name must contain at least 2 characters.");
@@ -185,16 +182,11 @@ const AdminMenu = () => {
       setError("Enter a valid non-negative price.");
       return;
     }
-    if (!Number.isFinite(rating) || rating < 0 || rating > 5) {
-      setError("Rating must be between 0 and 5.");
-      return;
-    }
-
     const payload = {
       name,
       category: form.category.trim() || "Pizza",
       price: Number(price.toFixed(2)),
-      rating: Number(rating.toFixed(1)),
+      rating: Number(editingFood?.rating || 0),
       ratingCount: Number(editingFood?.ratingCount || 0),
       description: form.description.trim(),
       ingredients: form.ingredients.split(",").map((item) => item.trim()).filter(Boolean),
@@ -327,8 +319,8 @@ const AdminMenu = () => {
                   <tr key={food._id}>
                     <td><div className="admin-menu-food"><div className="admin-menu-thumb">{food.image ? <img src={food.image} alt="" /> : <span>🍽️</span>}</div><div><strong>{food.name}</strong><div className="admin-menu-food-meta">{food.isFeatured && <span className="admin-menu-featured">★ Featured</span>}<small>{food.description || "No description"}</small></div></div></div></td>
                     <td><span className="admin-menu-category">{food.category}</span></td>
-                    <td><strong className="admin-menu-price">{"$"}{Number(food.price || 0).toFixed(2)}</strong></td>
-                    <td><span className="admin-menu-rating">★ {Number(food.rating || 0).toFixed(1)}</span></td>
+                    <td><strong className="admin-menu-price">₹{Number(food.price || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</strong></td>
+                    <td>{Number(food.ratingCount || 0) > 0 && Number(food.rating || 0) > 0 ? <span className="admin-menu-rating">★ {Number(food.rating).toFixed(1)} <small>({Number(food.ratingCount)})</small></span> : <span className="admin-menu-rating">Not rated</span>}</td>
                     <td><button type="button" className={`admin-menu-availability ${food.isAvailable ? "available" : "unavailable"}`} onClick={() => toggleAvailability(food)}>{food.isAvailable ? "Available" : "Unavailable"}</button></td>
                     <td><div className="admin-menu-actions"><button type="button" onClick={() => openEdit(food)}>Edit</button><button type="button" className="danger" onClick={() => deleteFood(food)}>Delete</button></div></td>
                   </tr>
@@ -384,7 +376,6 @@ const AdminMenu = () => {
               <label>Food name<input required value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} /></label>
               <label>Category<input value={form.category} onChange={(event) => setForm({ ...form, category: event.target.value })} /></label>
               <label>Price<input required type="number" min="0" step="0.01" value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} /></label>
-              <label>Rating<input type="number" min="0" max="5" step="0.1" value={form.rating} onChange={(event) => setForm({ ...form, rating: event.target.value })} /></label>
               <label className="wide">Image URL<input value={form.image} onChange={(event) => setForm({ ...form, image: event.target.value })} placeholder="https://..." /></label>
               {form.image.trim() && (
                 <div className="admin-menu-image-preview wide">
