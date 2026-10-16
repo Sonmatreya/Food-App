@@ -13,6 +13,7 @@ function Menu() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [reloadFoods, setReloadFoods] = useState(0);
 
   useEffect(() => {
     const search = searchParams.get("search") || "";
@@ -53,7 +54,7 @@ function Menu() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reloadFoods]);
 
 
   const searchSuggestions = useMemo(() => {
@@ -203,8 +204,8 @@ function Menu() {
             <div className="noFoodIcon">⚠️</div>
             <h2>Unable to load menu</h2>
             <p>{error}</p>
-            <button type="button" onClick={() => window.location.reload()}>
-              Try Again
+            <button type="button" onClick={() => setReloadFoods((value) => value + 1)} disabled={loading}>
+              {loading ? "Retrying..." : "Try Again"}
             </button>
           </div>
         ) : filteredFoods.length > 0 ? (
