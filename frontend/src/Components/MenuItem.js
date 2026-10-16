@@ -6,9 +6,10 @@ import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import "../Styles/Menu.css";
 
-function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
+function MenuItem({ id, image, name, price, category, rating, ratingCount, isAvailable }) {
   const numericPrice = Number(price);
-  const numericRating = Number(rating || 0);
+  const numericRating = Number(rating);
+  const hasRating = Number.isFinite(numericRating) && numericRating > 0 && Number(ratingCount) > 0;
   const { addToCart } = useCart();
   const { showToast } = useToast();
   const [wishlisted, setWishlisted] = useState(false);
@@ -46,6 +47,11 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
   const handleQuickAdd = (event) => {
     event.preventDefault();
     event.stopPropagation();
+
+    if (!isAvailable || !Number.isFinite(numericPrice) || numericPrice <= 0) {
+      showToast("This item cannot be added right now", "error");
+      return;
+    }
 
     addToCart(
       {
@@ -133,7 +139,7 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
         <div className="menuContent">
           <div className="menuMeta">
             <span className="menuCategory">{category}</span>
-            <span className="menuRating">★ {numericRating.toFixed(1)}</span>
+            {hasRating ? <span className="menuRating" aria-label={`${numericRating.toFixed(1)} out of 5 from ${ratingCount} ratings`}>★ {numericRating.toFixed(1)} <small>({ratingCount})</small></span> : <span className="menuRating unrated">New dish</span>}
           </div>
 
           <h2>{name}</h2>
@@ -155,7 +161,7 @@ function MenuItem({ id, image, name, price, category, rating, isAvailable }) {
         type="button"
         className="menuQuickAdd"
         onClick={handleQuickAdd}
-        disabled={!isAvailable}
+        disabled={!isAvailable || !Number.isFinite(numericPrice) || numericPrice <= 0}
       >
         <FaShoppingBag /> {isAvailable ? "Add to Cart" : "Unavailable"}
       </button>
