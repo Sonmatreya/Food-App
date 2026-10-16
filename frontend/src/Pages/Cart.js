@@ -17,14 +17,25 @@ function Cart() {
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponMessage, setCouponMessage] = useState("");
   const [couponLoading, setCouponLoading] = useState(true);
+  const [couponLoadError, setCouponLoadError] = useState("");
 
   const loadCoupons = useCallback(async () => {
     try {
-      const response = await fetch(`${API_URL}/api/coupons`);
+      setCouponLoadError("");
+      const response = await fetch(`${API_URL}/api/coupons`, { credentials: "include" });
       const data = await response.json();
-      if (response.ok && data.success) setAvailableCoupons(data.coupons || []);
-    } catch (error) { console.error("Load coupons error:", error); }
-    finally { setCouponLoading(false); }
+      if (!response.ok || !data.success) throw new Error(data.message || "Unable to load coupons.");
+      const now = Date.now();
+      const activeCoupons = (Array.isArray(data.coupons) ? data.coupons : []).filter((coupon) =>
+        coupon.active === true && coupon.status === "active" &&
+        (!coupon.expiresAt || new Date(coupon.expiresAt).getTime() > now) &&
+        typeof coupon.code === "string" && Number(coupon.value) > 0
+      );
+      setAvailableCoupons(activeCoupons);
+    } catch (error) {
+      setCouponLoadError(error.message || "Unable to load coupons. Please try again.");
+      setAvailableCoupons([]);
+    } finally { setCouponLoading(false); }
   }, []);
 
   useEffect(() => { loadCoupons(); }, [loadCoupons]);
@@ -54,7 +65,7 @@ function Cart() {
     if (!availableCoupons.length) return;
     const pendingCode = localStorage.getItem("foodPendingCouponCode");
     if (!pendingCode) return;
-    const coupon = availableCoupons.find((item) => item.code === pendingCode && item.active);
+    const coupon = availableCoupons.find((item) => item.code === pendingCode && item.active === true && item.status === "active");
     localStorage.removeItem("foodPendingCouponCode");
     if (!coupon) {
       setCouponCode(pendingCode);
@@ -82,7 +93,7 @@ function Cart() {
   const handleApplyCoupon = () => {
     const enteredCode = couponCode.trim().toUpperCase();
     if (!enteredCode) return setCouponMessage("Please enter a coupon code.");
-    const coupon = availableCoupons.find((item) => item.code === enteredCode && item.active);
+    const coupon = availableCoupons.find((item) => item.code === enteredCode && item.active === true && item.status === "active");
     if (!coupon) return setCouponMessage("Invalid or inactive coupon code. Please try another one.");
     if (subtotal < Number(coupon.minimum)) return setCouponMessage(`Minimum order value for this coupon is ₹${Number(coupon.minimum).toFixed(2)}.`);
     setAppliedCoupon(coupon);
@@ -175,6 +186,8 @@ function Cart() {
             {couponMessage && <p className={`couponMessage ${appliedCoupon ? "success" : "error"}`}>{couponMessage}</p>}
             <div className="availableCoupons">
               <p>Available Coupons</p>
+              {couponLoading && <small>Checking current offers…</small>}
+              {couponLoadError && <div className="couponMessage error" role="alert">{couponLoadError} <button type="button" onClick={loadCoupons} disabled={couponLoading}>Retry</button></div>}
               {availableCoupons.map((coupon) => {
                 const minimum = Number(coupon.minimum || 0);
                 const eligible = subtotal >= minimum;
@@ -188,7 +201,7 @@ function Cart() {
                   </button>
                 );
               })}
-              {!couponLoading && !availableCoupons.length && <small>No active coupons available right now.</small>}
+              {!couponLoading && !couponLoadError && !availableCoupons.length && <small>No active coupons available right now.</small>}
             </div>
             {appliedCoupon && <div className="appliedCoupon"><span className="couponAppliedIcon">✓</span><div><strong>{appliedCoupon.code}</strong><p>Coupon applied</p></div><button type="button" onClick={handleRemoveCoupon}>Remove</button></div>}
           </div></div>
