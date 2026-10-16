@@ -85,6 +85,7 @@ function Home() {
   const fallbackFoods = MenuList.filter((food) => food.isAvailable !== false);
   const popularFoods = (availableFoods.length > 0 ? availableFoods : fallbackFoods).slice(0, 4);
   const featuredFood = popularFoods[0] || fallbackFoods[0];
+  const isCartableFood = (food) => /^[a-f\\d]{24}$/i.test(String(food?._id || food?.id || ""));
 
   const categoryIcons = {
     pizza: "🍕",
@@ -168,6 +169,12 @@ function Home() {
   };
 
   const handleAddToCart = (food) => {
+    if (!isCartableFood(food)) {
+      showToast("This is a sample dish. Open the live menu to order available items.", "info");
+      navigate("/menu");
+      return;
+    }
+
     addToCart(food, 1);
     showToast(`${food.name} added to your cart`, "success");
     const foodId = food._id || food.id;
@@ -373,7 +380,7 @@ function Home() {
 
         {foodsError && (
           <p className="homeMenuNotice" role="status">
-            {foodsError} <Link to="/menu">Open the full menu</Link>{" "}
+            {foodsError} <Link to="/menu">Open the full menu</Link>{" · "}<button type="button" onClick={() => { setFoodsLoading(true); setReloadFoods((value) => value + 1); }}>Try again</button>{" "}
             <button type="button" onClick={() => { setFoodsLoading(true); setFoodsError(""); setReloadFoods((value) => value + 1); }}>Try again</button>
           </p>
         )}
@@ -435,7 +442,7 @@ function Home() {
                       }
                     >
                       <AddRoundedIcon />
-                      {isAdded ? "Added" : "Add"}
+                      {!isCartableFood(food) ? "View menu" : isAdded ? "Added" : "Add"}
                     </button>
                   </div>
                 </div>
