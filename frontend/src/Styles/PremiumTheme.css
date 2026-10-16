@@ -1,208 +1,8 @@
-:root {
-  --app-brand: #e31837;
-  --app-brand-hover: #c91531;
-  --app-brand-soft: rgba(227, 24, 55, 0.09);
-  --app-ink: #191817;
-  --app-muted: #73716d;
-  --app-surface: #ffffff;
-  --app-page: #f8f7f4;
-  --app-border: #e9e5df;
-  --app-radius-sm: 10px;
-  --app-radius-md: 16px;
-  --app-radius-lg: 22px;
-  --app-shadow-sm: 0 5px 18px rgba(26, 22, 18, 0.05);
-  --app-shadow-md: 0 14px 36px rgba(26, 22, 18, 0.09);
-  --app-shadow-lg: 0 24px 60px rgba(26, 22, 18, 0.14);
-}
-
-html {
-  text-rendering: optimizeLegibility;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  transition: background-color .25s ease, color .25s ease;
-}
-
-::selection {
-  color: #fff;
-  background: var(--app-brand);
-}
-
-:where(button, a, input, textarea, select):focus-visible {
-  outline: 3px solid rgba(227, 24, 55, .42);
-  outline-offset: 3px;
-}
-
-:where(button, input, textarea, select):disabled {
-  cursor: not-allowed;
-  opacity: .62;
-}
-
-.theme-toggle-button {
-  width: 38px;
-  height: 38px;
-  border: 1px solid var(--app-border);
-  border-radius: 50%;
-  background: var(--app-surface);
-  color: var(--app-ink);
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  font-size: 16px;
-  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-}
-
-.theme-toggle-button:hover {
-  transform: translateY(-1px);
-  box-shadow: var(--app-shadow-sm);
-  border-color: rgba(227, 24, 55, .3);
-}
-
-body.dark-mode {
-  color-scheme: dark;
-  background: #101010;
-  color: #f5f5f5;
-  --app-ink: #f5f5f5;
-  --app-muted: #aaa7a3;
-  --app-surface: #181818;
-  --app-page: #101010;
-  --app-border: #303030;
-  --app-shadow-sm: 0 5px 18px rgba(0, 0, 0, .18);
-  --app-shadow-md: 0 14px 36px rgba(0, 0, 0, .25);
-  --app-shadow-lg: 0 24px 60px rgba(0, 0, 0, .35);
-}
-
-body.dark-mode .menuPage,
-body.dark-mode .cartPage,
-body.dark-mode .paymentPage,
-body.dark-mode .foodDetailsPage,
-body.dark-mode .customer-tool-page,
-body.dark-mode .profile-page {
-  background: var(--app-page) !important;
-  color: var(--app-ink);
-}
-
-body.dark-mode .menuSection,
-body.dark-mode .cartCard,
-body.dark-mode .paymentCard,
-body.dark-mode .foodDetails,
-body.dark-mode .profile-card,
-body.dark-mode .profile-header-card {
-  background: var(--app-surface);
-  color: var(--app-ink);
-  border-color: var(--app-border);
-}
-
-body.dark-mode .menuSearchBox,
-body.dark-mode .categoryFilter,
-body.dark-mode .sortBox select,
-body.dark-mode .menuCard,
-body.dark-mode .cartSummary,
-body.dark-mode .paymentSummary,
-body.dark-mode .wishlist-card,
-body.dark-mode .coupon-card {
-  background: #1b1b1b;
-  color: var(--app-ink);
-  border-color: #333;
-}
-
-body.dark-mode input,
-body.dark-mode textarea,
-body.dark-mode select {
-  background-color: #151515;
-  color: var(--app-ink);
-  border-color: #3a3a3a;
-}
-
-body.dark-mode input::placeholder,
-body.dark-mode textarea::placeholder {
-  color: #969696;
-}
-
-body.dark-mode .menuResultHeader h2,
-body.dark-mode .menuContent h2,
-body.dark-mode .cartCard h2,
-body.dark-mode .paymentCard h2,
-body.dark-mode .foodDetailsContent h1 {
-  color: var(--app-ink);
-}
-
-body.dark-mode .menuResultHeader p,
-body.dark-mode .foodDescription,
-body.dark-mode .cartItemUnitPrice,
-body.dark-mode .paymentCardHeader p {
-  color: var(--app-muted);
-}
-
-body.dark-mode .theme-toggle-button {
-  background: #202020;
-  border-color: #3b3b3b;
-  color: #f5f5f5;
-}
-
-body.dark-mode .navbar {
-  background: rgba(16, 16, 16, .94);
-  border-color: #2d2d2d;
-}
-
-body.dark-mode .navbar a,
-body.dark-mode .navbar button {
-  color: #f5f5f5;
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .theme-toggle-button:hover {
-    transform: translateY(-1px);
-  }
-}
-
-@media (max-width: 700px) {
-  .theme-toggle-button {
-    width: 35px;
-    height: 35px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: .01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: .01ms !important;
-  }
-}
-
-
-/* Premium customer experience: keep customer-facing pages clean and white. */
-.menuPage,
-.cartPage,
-.paymentPage,
-.foodDetailsPage,
-.customer-tool-page,
-.profile-page {
-  background: #ffffff !important;
-  color: #191817;
-}
-
-body.dark-mode .menuPage,
-body.dark-mode .cartPage,
-body.dark-mode .paymentPage,
-body.dark-mode .foodDetailsPage,
-body.dark-mode .customer-tool-page,
-body.dark-mode .profile-page {
-  background: #ffffff !important;
-  color: #191817;
-}
-
-
-/* Premium UI pass: consistent customer-facing surfaces and components.
-   Admin pages are intentionally excluded so the admin dashboard can stay dark. */
+/* Shared design tokens */
 :root {
   --app-brand: #d9233f;
   --app-brand-hover: #b91c35;
+  --app-brand-soft: rgba(217, 35, 63, .09);
   --app-ink: #201b19;
   --app-muted: #77716d;
   --app-surface: #ffffff;
@@ -213,23 +13,155 @@ body.dark-mode .profile-page {
   --app-radius-lg: 26px;
   --app-shadow-sm: 0 8px 24px rgba(35, 24, 18, .06);
   --app-shadow-md: 0 18px 44px rgba(35, 24, 18, .10);
+  --app-shadow-lg: 0 24px 60px rgba(35, 24, 18, .14);
 }
 
-body:not(.admin-mode) {
-  background: #fff;
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  transition: background-color .2s ease, color .2s ease;
+}
+
+::selection {
+  color: #fff;
+  background: var(--app-brand);
+}
+
+:where(button, a, input, textarea, select):focus-visible {
+  outline: 3px solid rgba(217, 35, 63, .42);
+  outline-offset: 3px;
+}
+
+:where(button, input, textarea, select):disabled {
+  cursor: not-allowed;
+  opacity: .62;
+}
+
+.theme-toggle-button {
+  display: grid;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  border: 1px solid var(--app-border);
+  border-radius: 50%;
+  background: var(--app-surface);
+  color: var(--app-ink);
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.theme-toggle-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--app-shadow-sm);
+  border-color: rgba(217, 35, 63, .35);
+}
+
+/* Customer pages: white/light theme is the stable default.
+   Dark-mode rules are scoped to the theme class and never force white. */
+body:not(.dark-mode) .menuPage,
+body:not(.dark-mode) .cartPage,
+body:not(.dark-mode) .paymentPage,
+body:not(.dark-mode) .foodDetailsPage,
+body:not(.dark-mode) .customer-tool-page,
+body:not(.dark-mode) .profile-page {
+  background: var(--app-page);
   color: var(--app-ink);
 }
 
-.App > main:not(.admin-dashboard):not(.admin-page),
-.App > .menuPage,
-.App > .cartPage,
-.App > .paymentPage,
-.App > .foodDetailsPage,
-.App > .customer-tool-page,
-.App > .profile-page {
-  background-color: #fff;
+body.dark-mode {
+  color-scheme: dark;
+  --app-ink: #f5f2ef;
+  --app-muted: #b4aca6;
+  --app-surface: #1b1a19;
+  --app-page: #11100f;
+  --app-border: #35302d;
+  --app-shadow-sm: 0 8px 24px rgba(0, 0, 0, .18);
+  --app-shadow-md: 0 18px 44px rgba(0, 0, 0, .28);
+  --app-shadow-lg: 0 24px 60px rgba(0, 0, 0, .36);
+  background: #11100f;
+  color: #f5f2ef;
 }
 
+body.dark-mode .menuPage,
+body.dark-mode .cartPage,
+body.dark-mode .paymentPage,
+body.dark-mode .foodDetailsPage,
+body.dark-mode .customer-tool-page,
+body.dark-mode .profile-page {
+  background: var(--app-page);
+  color: var(--app-ink);
+}
+
+body.dark-mode .menuSection,
+body.dark-mode .cartCard,
+body.dark-mode .paymentCard,
+body.dark-mode .foodDetails,
+body.dark-mode .profile-card,
+body.dark-mode .profile-header-card,
+body.dark-mode .wishlist-card,
+body.dark-mode .coupon-card,
+body.dark-mode .cartSummary,
+body.dark-mode .paymentSummary {
+  background: var(--app-surface);
+  color: var(--app-ink);
+  border-color: var(--app-border);
+}
+
+body.dark-mode .menuSearchBox,
+body.dark-mode .categoryFilter,
+body.dark-mode .sortBox select,
+body.dark-mode .menuCard {
+  background: #211f1d;
+  color: var(--app-ink);
+  border-color: var(--app-border);
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  background-color: #191817;
+  color: var(--app-ink);
+  border-color: #49413c;
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #aaa19a;
+}
+
+body.dark-mode .menuResultHeader h2,
+body.dark-mode .menuContent h2,
+body.dark-mode .cartCard h2,
+body.dark-mode .paymentCard h2,
+body.dark-mode .foodDetailsContent h1,
+body.dark-mode .menuResultHeader p,
+body.dark-mode .foodDescription,
+body.dark-mode .cartItemUnitPrice,
+body.dark-mode .paymentCardHeader p {
+  color: var(--app-ink);
+}
+
+body.dark-mode .navbar {
+  background: rgba(17, 16, 15, .96);
+  border-color: var(--app-border);
+}
+
+body.dark-mode .navbar a,
+body.dark-mode .navbar button {
+  color: #f5f2ef;
+}
+
+body.dark-mode .theme-toggle-button {
+  background: #24211f;
+  border-color: #49413c;
+  color: #f5f2ef;
+}
+
+/* Premium homepage components */
 .homePage .heroSection {
   border-radius: 0 0 32px 32px;
 }
@@ -258,12 +190,12 @@ body:not(.admin-mode) {
 .homePage .reviewCard:hover {
   transform: translateY(-4px);
   box-shadow: var(--app-shadow-md);
-  border-color: rgba(217, 35, 63, .22);
+  border-color: rgba(217, 35, 63, .25);
 }
 
 .homePage .heroSearch {
-  border: 1px solid rgba(255,255,255,.25);
-  box-shadow: 0 16px 36px rgba(0,0,0,.16);
+  border: 1px solid rgba(255, 255, 255, .3);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .16);
 }
 
 .homePage .heroSearch input {
@@ -290,16 +222,7 @@ body:not(.admin-mode) {
   box-shadow: 0 8px 20px rgba(217, 35, 63, .22);
 }
 
-.menuPage,
-.cartPage,
-.paymentPage,
-.foodDetailsPage,
-.customer-tool-page,
-.profile-page {
-  background: #fff !important;
-  color: #201b19 !important;
-}
-
+/* Menu, cart, checkout and account surfaces */
 .menuPage .menuSection,
 .cartPage .cartCard,
 .cartPage .cartSummary,
@@ -316,9 +239,9 @@ body:not(.admin-mode) {
 }
 
 .menuPage .menuCard {
-  border-radius: 18px;
   border: 1px solid var(--app-border);
-  box-shadow: 0 5px 18px rgba(35,24,18,.04);
+  border-radius: 18px;
+  box-shadow: 0 5px 18px rgba(35, 24, 18, .04);
   transition: transform .22s ease, box-shadow .22s ease;
 }
 
@@ -357,26 +280,6 @@ body:not(.admin-mode) {
   border-radius: 12px;
 }
 
-body.dark-mode .homePage,
-body.dark-mode .menuPage,
-body.dark-mode .cartPage,
-body.dark-mode .paymentPage,
-body.dark-mode .foodDetailsPage,
-body.dark-mode .customer-tool-page,
-body.dark-mode .profile-page {
-  background: #fff !important;
-  color: #201b19 !important;
-}
-
-body.dark-mode .homePage .categoryCard,
-body.dark-mode .homePage .foodCard,
-body.dark-mode .homePage .benefitCard,
-body.dark-mode .homePage .reviewCard {
-  background: #fff;
-  color: #201b19;
-  border-color: var(--app-border);
-}
-
 @media (max-width: 700px) {
   .homePage .heroSection {
     border-radius: 0 0 22px 22px;
@@ -387,5 +290,21 @@ body.dark-mode .homePage .reviewCard {
   .homePage .benefitCard,
   .homePage .reviewCard {
     border-radius: 16px;
+  }
+
+  .theme-toggle-button {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
   }
 }
