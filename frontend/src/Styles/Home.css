@@ -1455,8 +1455,8 @@
   --home-soft: #f2f0e7;
   --home-card: #fffdf6;
   --home-border: #e4e0d1;
-  --home-accent: #b94727;
-  --home-accent-dark: #86301c;
+  --home-accent: #e31837;
+  --home-accent-dark: #c91531;
   --home-green: #64783c;
   background: #f8f7f0;
   color: #171711;
@@ -1489,7 +1489,7 @@
 }
 
 .homePage .heroSection::after {
-  background: rgba(185, 71, 39, .18);
+  background: rgba(227, 24, 55, .18);
   filter: blur(78px);
 }
 
@@ -1527,7 +1527,7 @@
 .homePage .heroText h1 em,
 .homePage .whyText h2 em,
 .homePage .offerContent h2 em {
-  color: #b94727;
+  color: #e31837;
 }
 
 .homePage .heroText > p {
@@ -1547,7 +1547,7 @@
 .homePage .whyButton,
 .homePage .offerButton,
 .homePage .finalCtaButton {
-  background: #b94727;
+  background: #e31837;
   color: #fffdf6;
 }
 
@@ -1557,8 +1557,8 @@
 .homePage .whyButton:hover,
 .homePage .offerButton:hover,
 .homePage .finalCtaButton:hover {
-  background: #86301c;
-  box-shadow: 0 10px 24px rgba(134,48,28,.22);
+  background: #c91531;
+  box-shadow: 0 10px 24px rgba(201,21,49,.22);
 }
 
 .homePage .heroTrustRow {
