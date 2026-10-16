@@ -12,7 +12,6 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 // Data, context and assets
 import BannerImage from "../assets/pizza.jpeg";
-import { MenuList } from "../helpers/MenuList";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { API_URL } from "../config/api";
@@ -64,7 +63,7 @@ function Home() {
       } catch (error) {
         if (!cancelled) {
           setAvailableFoods([]);
-          setFoodsError("Showing the sample menu because the live menu could not be loaded.");
+          setFoodsError(error.message || "The live menu could not be loaded. Please try again.");
         }
       } finally {
         if (!cancelled) setFoodsLoading(false);
@@ -82,9 +81,10 @@ function Home() {
      2. HOME PAGE DATA
      ======================================================= */
 
-  const fallbackFoods = MenuList.filter((food) => food.isAvailable !== false);
-  const popularFoods = (availableFoods.length > 0 ? availableFoods : fallbackFoods).slice(0, 4);
-  const featuredFood = popularFoods[0] || fallbackFoods[0];
+  const popularFoods = [...availableFoods]
+    .sort((a, b) => Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured)))
+    .slice(0, 4);
+  const featuredFood = availableFoods.find((food) => food.isFeatured) || popularFoods[0];
   const isCartableFood = (food) => /^[a-f\d]{24}$/i.test(String(food?._id || food?.id || ""));
 
   const categoryIcons = {
@@ -100,7 +100,7 @@ function Home() {
   };
 
   const categories = useMemo(() => {
-    const source = availableFoods.length > 0 ? availableFoods : fallbackFoods;
+    const source = availableFoods;
     const counts = source.reduce((result, food) => {
       const name = food.category?.trim();
       if (name) result[name] = (result[name] || 0) + 1;
@@ -132,23 +132,7 @@ function Home() {
     },
   ];
 
-  const reviews = [
-    {
-      initial: "A",
-      name: "Arjun Sharma",
-      text: "The food was fresh, delicious and arrived much faster than I expected. Definitely ordering again!",
-    },
-    {
-      initial: "P",
-      name: "Priya Das",
-      text: "Amazing taste and a really smooth ordering experience. The pizza was absolutely delicious.",
-    },
-    {
-      initial: "R",
-      name: "Rahul Singh",
-      text: "Great variety and a simple checkout. Everything from browsing to delivery felt easy.",
-    },
-  ];
+
 
 
   /* =======================================================
@@ -241,15 +225,15 @@ function Home() {
             <div className="heroTrustRow">
               <div>
                 <StarRoundedIcon />
-                <span><strong>4.8</strong> rating</span>
+                <span><strong>Live menu</strong> updated from available dishes</span>
               </div>
               <div>
                 <AccessTimeOutlinedIcon />
-                <span><strong>30 min</strong> delivery</span>
+                <span><strong>Easy</strong> online ordering</span>
               </div>
               <div>
                 <VerifiedOutlinedIcon />
-                <span><strong>100%</strong> fresh</span>
+                <span><strong>Browse</strong> available items</span>
               </div>
             </div>
           </div>
@@ -262,17 +246,18 @@ function Home() {
               <div className="heroFoodImageWrap">
                 <img
                   src={featuredFood?.image || BannerImage}
-                  alt={featuredFood?.name || "Featured fresh food"}
+                  alt={featuredFood?.name || "Food menu"}
+                  onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }}
                 />
                 <span className="heroFoodBadge">
                   <StarRoundedIcon />
-                  Top choice
+                  {featuredFood?.isFeatured ? "Featured dish" : "From the menu"}
                 </span>
               </div>
 
               <div className="heroFoodInfo">
                 <div>
-                  <span>FEATURED TODAY</span>
+                  <span>{featuredFood?.isFeatured ? "FEATURED DISH" : "FROM OUR MENU"}</span>
                   <h3>{featuredFood?.name || "Fresh & Delicious Food"}</h3>
                   <p>{featuredFood?.description || "Fresh ingredients · Made to order"}</p>
                 </div>
@@ -288,8 +273,8 @@ function Home() {
             <div className="floatingDeliveryCard">
               <span className="deliveryCheck">✓</span>
               <div>
-                <strong>On-time delivery</strong>
-                <small>Your food is on the way</small>
+                <strong>Ready to order?</strong>
+                <small>Explore the available menu</small>
               </div>
             </div>
           </div>
@@ -304,24 +289,24 @@ function Home() {
         <div>
           <LocalShippingOutlinedIcon />
           <div>
-            <strong>Free delivery</strong>
-            <span>On orders over ₹40</span>
+            <strong>Delivery options</strong>
+            <span>See available options at checkout</span>
           </div>
         </div>
 
         <div>
           <VerifiedOutlinedIcon />
           <div>
-            <strong>Secure checkout</strong>
-            <span>Safe &amp; protected payment</span>
+            <strong>Simple ordering</strong>
+            <span>Choose items from the live menu</span>
           </div>
         </div>
 
         <div>
           <AccessTimeOutlinedIcon />
           <div>
-            <strong>Open every day</strong>
-            <span>Fresh food when you want it</span>
+            <strong>Menu availability</strong>
+            <span>Check currently listed dishes</span>
           </div>
         </div>
       </section>
@@ -389,7 +374,7 @@ function Home() {
             Checking today's menu…
           </p>
         )}
-        {!foodsLoading && !popularFoods.length && (
+        {!foodsLoading && !foodsError && !popularFoods.length && (
           <p className="homeMenuNotice" role="status">
             No dishes are available right now. Please check the full menu again soon.
           </p>
@@ -407,10 +392,7 @@ function Home() {
                   className="foodCardImage"
                 >
                   <img src={food.image || BannerImage} alt={food.name} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }} />
-                  <span className="foodRating">
-                    <StarRoundedIcon />
-                    {food.rating}
-                  </span>
+                  {Number.isFinite(Number(food.rating)) && Number(food.rating) > 0 && Number(food.ratingCount) > 0 && <span className="foodRating"><StarRoundedIcon />{Number(food.rating).toFixed(1)}</span>}
                 </Link>
 
                 {/* Food information */}
@@ -419,7 +401,7 @@ function Home() {
                     <span className="foodCategory">
                       {food.category}
                     </span>
-                    <span>Fresh</span>
+                    <span>{food.isFeatured ? "Featured" : food.isVegetarian ? "Vegetarian" : "Menu item"}</span>
                   </div>
 
                   <Link to={`/food/${foodId}`}>
@@ -522,43 +504,6 @@ function Home() {
 
 
       {/* ===================================================
-          4.7 CUSTOMER REVIEWS
-          =================================================== */}
-      <section className="reviewSection">
-        <div className="sectionHeading reviewHeading">
-          <div>
-            <span>REAL PEOPLE · REAL CRAVINGS</span>
-            <h2>Loved after the first bite.</h2>
-          </div>
-        </div>
-
-        <div className="reviewGrid">
-          {reviews.map((review) => (
-            <article className="reviewCard" key={review.name}>
-              <div className="reviewStars">
-                <StarRoundedIcon />
-                <StarRoundedIcon />
-                <StarRoundedIcon />
-                <StarRoundedIcon />
-                <StarRoundedIcon />
-              </div>
-
-              <p>“{review.text}”</p>
-
-              <div className="reviewUser">
-                <div className="reviewAvatar">{review.initial}</div>
-                <div>
-                  <h4>{review.name}</h4>
-                  <span>Verified customer</span>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
-
-
-      {/* ===================================================
           4.8 FINAL CALL TO ACTION
           =================================================== */}
       <section className="finalCta">
@@ -576,6 +521,7 @@ function Home() {
           <ArrowForwardIcon />
         </Link>
       </section>
+      <RecentlyViewed />
       <PromoBanners />
     </main>
   );
