@@ -1442,3 +1442,281 @@
     height: 215px;
   }
 }
+
+
+/* =========================================================
+   FOODGO-INSPIRED HOMEPAGE REFRESH
+   Explicit overrides are kept here so the new design is
+   visible without changing the existing component structure.
+   ========================================================= */
+.homePage {
+  --home-ink: #171711;
+  --home-muted: #67665b;
+  --home-soft: #f2f0e7;
+  --home-card: #fffdf6;
+  --home-border: #e4e0d1;
+  --home-accent: #b94727;
+  --home-accent-dark: #86301c;
+  --home-green: #64783c;
+  background: #f8f7f0;
+  color: #171711;
+}
+
+.homePage .heroSection {
+  min-height: 650px;
+  margin: 14px auto 0;
+  width: calc(100% - 28px);
+  max-width: 1600px;
+  border-radius: 28px;
+  background: #e9e7d9;
+  color: #171711;
+}
+
+.homePage .heroBackgroundImage {
+  left: 44%;
+  inset-block: 0;
+  opacity: .96;
+  background-position: center;
+  transform: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 16%);
+}
+
+.homePage .heroShade {
+  background:
+    linear-gradient(90deg, #e9e7d9 0%, #e9e7d9 36%, rgba(233,231,217,.92) 47%, rgba(233,231,217,.35) 67%, rgba(12,12,10,.06) 100%),
+    linear-gradient(0deg, rgba(12,12,10,.12), transparent 40%);
+}
+
+.homePage .heroSection::after {
+  background: rgba(185, 71, 39, .18);
+  filter: blur(78px);
+}
+
+.homePage .heroContent {
+  width: min(1240px, calc(100% - 76px));
+  grid-template-columns: minmax(0, 1.05fr) minmax(330px, .72fr);
+  gap: clamp(28px, 4vw, 66px);
+  padding: 56px 0;
+}
+
+.homePage .heroText {
+  color: #171711;
+}
+
+.homePage .heroSmallText {
+  border-color: rgba(100,120,60,.26);
+  background: rgba(255,253,246,.68);
+  color: #454a31;
+  backdrop-filter: blur(14px);
+}
+
+.homePage .heroLiveDot {
+  background: #64783c;
+  box-shadow: 0 0 0 5px rgba(100,120,60,.13);
+}
+
+.homePage .heroText h1 {
+  max-width: 660px;
+  font-size: clamp(52px, 6vw, 82px);
+  line-height: .98;
+  letter-spacing: -4px;
+  color: #171711;
+}
+
+.homePage .heroText h1 em,
+.homePage .whyText h2 em,
+.homePage .offerContent h2 em {
+  color: #b94727;
+}
+
+.homePage .heroText > p {
+  color: #626153;
+  max-width: 520px;
+}
+
+.homePage .heroSearch {
+  border-color: rgba(30,30,20,.10);
+  border-radius: 16px;
+  box-shadow: 0 18px 46px rgba(34,31,20,.12);
+}
+
+.homePage .heroSearch button,
+.homePage .heroFoodButton,
+.homePage .addFoodButton,
+.homePage .whyButton,
+.homePage .offerButton,
+.homePage .finalCtaButton {
+  background: #b94727;
+  color: #fffdf6;
+}
+
+.homePage .heroSearch button:hover,
+.homePage .heroFoodButton:hover,
+.homePage .addFoodButton:hover,
+.homePage .whyButton:hover,
+.homePage .offerButton:hover,
+.homePage .finalCtaButton:hover {
+  background: #86301c;
+  box-shadow: 0 10px 24px rgba(134,48,28,.22);
+}
+
+.homePage .heroTrustRow {
+  color: #626153;
+}
+
+.homePage .heroTrustRow svg {
+  color: #64783c;
+}
+
+.homePage .heroFoodCard {
+  border: 1px solid rgba(255,253,246,.82);
+  border-radius: 26px;
+  box-shadow: 0 28px 80px rgba(20,19,13,.20);
+  background: #fffdf6;
+}
+
+.homePage .heroFoodBadge {
+  background: #64783c;
+  color: #fffdf6;
+}
+
+.homePage .floatingDeliveryCard {
+  border: 1px solid rgba(228,224,209,.9);
+  background: rgba(255,253,246,.94);
+  color: #171711;
+  box-shadow: 0 16px 42px rgba(20,19,13,.14);
+  backdrop-filter: blur(16px);
+}
+
+.homePage .quickInfoBar {
+  width: min(1160px, calc(100% - 56px));
+  margin: 24px auto 72px;
+  padding: 20px 26px;
+  border: 1px solid #e4e0d1;
+  border-radius: 22px;
+  background: #fffdf6;
+  box-shadow: 0 12px 32px rgba(34,31,20,.045);
+}
+
+.homePage .quickInfoBar svg {
+  color: #b94727;
+}
+
+.homePage .categorySection,
+.homePage .popularSection,
+.homePage .whySection,
+.homePage .offerSection,
+.homePage .finalCta {
+  scroll-margin-top: 100px;
+}
+
+.homePage .categoryCard,
+.homePage .foodCard,
+.homePage .benefitCard {
+  border: 1px solid #e4e0d1;
+  border-radius: 22px;
+  background: #fffdf6;
+  box-shadow: 0 10px 28px rgba(34,31,20,.045);
+}
+
+.homePage .categoryCard:hover,
+.homePage .foodCard:hover,
+.homePage .benefitCard:hover {
+  border-color: rgba(100,120,60,.48);
+  box-shadow: 0 22px 42px rgba(34,31,20,.10);
+}
+
+.homePage .categoryIcon,
+.homePage .benefitIcon {
+  background: #eeeddf;
+  color: #64783c;
+}
+
+.homePage .foodCardImage {
+  background: #eeeddf;
+}
+
+.homePage .foodCategory {
+  color: #64783c;
+}
+
+.homePage .foodCardBottom strong {
+  color: #171711;
+}
+
+.homePage .addFoodButton {
+  border-radius: 999px;
+}
+
+.homePage .offerSection {
+  border-radius: 28px;
+  background: #22261a;
+  box-shadow: 0 22px 56px rgba(34,38,26,.14);
+}
+
+.homePage .offerSection::before {
+  background: rgba(100,120,60,.28);
+}
+
+.homePage .offerCircle {
+  border-color: rgba(231,229,207,.28);
+  background: rgba(231,229,207,.06);
+}
+
+.homePage .offerCircle small {
+  color: #c7c6a6;
+}
+
+.homePage .finalCta {
+  border-radius: 26px;
+  background: #eeeddf;
+}
+
+.homePage .finalCta h2 {
+  color: #171711;
+}
+
+@media (max-width: 800px) {
+  .homePage .heroSection {
+    width: calc(100% - 20px);
+    min-height: 0;
+    border-radius: 22px;
+  }
+  .homePage .heroBackgroundImage {
+    left: 0;
+    opacity: .28;
+    -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
+    mask-image: linear-gradient(180deg, #000 0%, transparent 90%);
+  }
+  .homePage .heroShade {
+    background: linear-gradient(180deg, rgba(233,231,217,.70), #e9e7d9 52%);
+  }
+  .homePage .heroContent {
+    width: calc(100% - 36px);
+    grid-template-columns: minmax(0,1fr);
+    gap: 28px;
+    padding: 48px 0 34px;
+  }
+  .homePage .heroText h1 {
+    font-size: clamp(44px, 11vw, 68px);
+    letter-spacing: -2.8px;
+  }
+  .homePage .heroTrustRow {
+    color: #454438;
+  }
+  .homePage .quickInfoBar {
+    width: calc(100% - 28px);
+    margin: 18px auto 48px;
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homePage .foodCard,
+  .homePage .categoryCard,
+  .homePage .benefitCard,
+  .homePage .heroFoodCard {
+    transition: none;
+  }
+}
