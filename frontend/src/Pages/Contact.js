@@ -30,6 +30,7 @@ function Contact() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    const formElement = event.currentTarget;
     if (submitting) return;
     setSubmitting(true);
     setSubmission({ type: "", text: "" });
@@ -61,7 +62,7 @@ function Contact() {
         text: `Your support request was received successfully. Reference: ${data.requestId || "saved"}.`,
       });
       setMessage("");
-      event.currentTarget.reset();
+      formElement.reset();
       setOrderNumber("");
       setSubject("order");
     } catch (error) {
