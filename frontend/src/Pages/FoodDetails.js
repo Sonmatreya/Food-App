@@ -334,6 +334,9 @@ function FoodDetails() {
               };
               const imageName = aliases[normalizedName.toLowerCase()] || normalizedName;
               const imageUrl = `https://www.themealdb.com/images/ingredients/${encodeURIComponent(imageName)}.png`;
+              const ingredientFallback = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(
+                `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="18" fill="#fff0f3"/><circle cx="48" cy="40" r="23" fill="#f7d7de"/><text x="48" y="48" text-anchor="middle" font-size="27" font-family="Arial,sans-serif">🥗</text><text x="48" y="79" text-anchor="middle" font-size="9" font-family="Arial,sans-serif" fill="#8b2438">${imageName.slice(0, 15)}</text></svg>`
+              )}`;
               return (
                 <div className="ingredientCard" key={`${ingredient}-${index}`}>
                   <img
@@ -345,10 +348,7 @@ function FoodDetails() {
                       const image = event.currentTarget;
                       if (image.dataset.fallbackAttempted !== "true") {
                         image.dataset.fallbackAttempted = "true";
-                        image.src = `https://loremflickr.com/96/96/${encodeURIComponent(imageName)},food?lock=${index + 101}`;
-                      } else {
-                        image.onerror = null;
-                        image.style.display = "none";
+                        image.src = ingredientFallback;
                       }
                     }}
                   />
