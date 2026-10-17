@@ -15,6 +15,7 @@ import BannerImage from "../assets/pizza.jpeg";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { API_URL } from "../config/api";
+import { resolveFoodImage } from "../utils/foodImage";
 
 // Styles
 import "../Styles/Home.css";
@@ -227,7 +228,7 @@ function Home() {
           <div className="heroEditorialBackdrop" />
           <div className="heroEditorialImage">
             <img
-              src={featuredFood?.image || BannerImage}
+              src={resolveFoodImage(featuredFood?.image) || BannerImage}
               alt={featuredFood?.name || "Discover food from the menu"}
               onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }}
             />
