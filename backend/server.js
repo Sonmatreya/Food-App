@@ -21,6 +21,7 @@ const adminOrderRoutes = require("./routes/adminOrderRoutes");
 const adminStaffRoutes = require("./routes/adminStaffRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const aiRoutes = require("./routes/aiRoutes");
+const supportRoutes = require("./routes/supportRoutes");
 const passport = require("./config/googleAuth");
 const { initializeSocket } = require("./config/socket");
 
@@ -67,6 +68,7 @@ app.use("/api/admin/orders", adminOrderRoutes);
 app.use("/api/admin/staff", adminStaffRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/support", supportRoutes);
 
 app.get("/api/health", (req, res) => res.json({ success: true, message: "Food App API is running" }));
 app.use((req, res) => res.status(404).json({ success: false, message: "API route not found" }));
