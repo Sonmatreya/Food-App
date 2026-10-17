@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { API_URL } from "../config/api";
+import { resolveFoodImage } from "../utils/foodImage";
 import "../Styles/FoodRecommendations.css";
 
 export default function FoodRecommendations({ currentFoodId, title = "You may also like", subtitle = "More dishes selected from our current menu." }) {
@@ -37,8 +38,8 @@ export default function FoodRecommendations({ currentFoodId, title = "You may al
       <div className="recommendationGrid">
         {recommendations.map((food) => (
           <Link className="recommendationCard" to={`/food/${food._id}`} key={food._id}>
-            <img src={food.image} alt={food.name} loading="lazy" />
-            <div><span>{food.category}</span><h3>{food.name}</h3><p>★ {Number(food.rating || 0).toFixed(1)} <strong>₹{Number(food.price || 0).toFixed(2)}</strong></p></div>
+            <img src={resolveFoodImage(food.image) || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80"} alt={food.name} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=700&q=80"; }} />
+            <div><span>{food.category}</span><h3>{food.name}</h3><p>{Number(food.ratingCount || 0) > 0 && Number(food.rating || 0) > 0 ? `★ ${Number(food.rating).toFixed(1)} · ${food.ratingCount} reviews` : "New dish"} <strong>₹{Number(food.price || 0).toFixed(2)}</strong></p></div>
           </Link>
         ))}
       </div>
