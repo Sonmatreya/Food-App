@@ -1164,3 +1164,35 @@ body.dark-mode .buyNowButton {
 .ingredientImage { display: block; width: 76px; height: 76px; border-radius: 12px; object-fit: cover; background: #fff0f3; }
 .ingredientCard .ingredientTag { display: block; max-width: 100%; padding: 0; border: 0; background: transparent; color: #6c555a; line-height: 1.35; overflow-wrap: anywhere; }
 @media (max-width: 480px) { .ingredientCard { min-width: 76px; flex-basis: 82px; padding: 7px; } .ingredientImage { width: 62px; height: 62px; } }
+
+
+/* Compact ingredient thumbnails: fit more ingredients in each row. */
+.ingredientList {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 8px;
+}
+.ingredientCard {
+  min-width: 0;
+  max-width: none;
+  flex: initial;
+  gap: 5px;
+  padding: 7px 4px;
+  border-radius: 11px;
+  box-shadow: none;
+}
+.ingredientImage {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+}
+.ingredientCard .ingredientTag {
+  font-size: 10px;
+  line-height: 1.25;
+}
+@media (max-width: 480px) {
+  .ingredientList { grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 6px; }
+  .ingredientCard { padding: 6px 3px; }
+  .ingredientImage { width: 36px; height: 36px; }
+  .ingredientCard .ingredientTag { font-size: 9px; }
+}
