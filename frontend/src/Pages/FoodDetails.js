@@ -304,7 +304,6 @@ function FoodDetails() {
             <h3>Ingredients</h3>
             <div className="ingredientList">{ingredients.map((ingredient, index) => {
               const ingredientName = String(ingredient).split(",")[0].trim();
-              const mealDbName = ingredientName.replace(/\s+/g, "%20");
               return (
                 <div className="ingredientCard" key={`${ingredient}-${index}`}>
                   <img
