@@ -606,41 +606,129 @@
   color: #222;
 }
 
+/* Invoice document is hidden on screen and shown only for printing/PDF export. */
+.invoicePrintOnly { display: none; }
+
 @media print {
-  body {
+  @page { size: A4; margin: 14mm; }
+
+  html, body, #root {
+    width: 100% !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
     background: #fff !important;
   }
 
-  .orderSuccessPage {
-    max-width: none;
-    padding: 20px;
-    background: #fff;
+  body * { visibility: hidden !important; }
+
+  .invoicePrintOnly,
+  .invoicePrintOnly * { visibility: visible !important; }
+
+  .invoicePrintOnly {
+    display: block !important;
+    position: absolute !important;
+    inset: 0 auto auto 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: #202020 !important;
+    background: #fff !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 10pt !important;
+    line-height: 1.45 !important;
+    box-sizing: border-box !important;
   }
 
-  .successPrimaryButton,
-  .successSecondaryButton,
-  .successInvoiceButton,
-  .orderLiveStatus,
-  .successThankYou {
-    display: none !important;
+  .invoicePrintHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    padding-bottom: 18px;
+    border-bottom: 2px solid #e31837;
   }
 
-  .orderSuccessLayout {
-    display: block;
+  .invoiceBrand { font-size: 25pt; font-weight: 900; letter-spacing: -1px; }
+  .invoiceBrand span { color: #e31837; }
+  .invoicePrintHeader p { margin: 4px 0; color: #555 !important; font-size: 9pt; }
+  .invoiceTitleBlock { text-align: right; }
+  .invoiceTitleBlock h1 { margin: 0 0 8px; font-size: 24pt; letter-spacing: 2px; }
+  .invoiceTitleBlock p { margin: 6px 0; }
+
+  .invoicePrintStatus {
+    display: inline-block;
+    margin: 18px 0;
+    padding: 5px 10px;
+    border: 1px solid #b8dfc7;
+    border-radius: 3px;
+    background: #f0faf3 !important;
+    color: #237443 !important;
+    font-size: 8pt;
+    font-weight: 800;
+    letter-spacing: 1px;
   }
 
-  .successSummary {
-    position: static;
-    margin-top: 18px;
-    box-shadow: none;
+  .invoicePrintParties {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin: 0 0 24px;
   }
+  .invoicePrintParties > div { min-width: 0; }
+  .invoicePrintParties h2 { margin: 0 0 8px; color: #666 !important; font-size: 8pt; letter-spacing: .8px; }
+  .invoicePrintParties p { margin: 3px 0; overflow-wrap: anywhere; }
 
-  .successCard,
-  .successSummary,
-  .orderStatusCard {
-    break-inside: avoid;
-    box-shadow: none;
+  .invoicePrintTable { width: 100%; border-collapse: collapse; table-layout: fixed; }
+  .invoicePrintTable th {
+    padding: 10px 8px;
+    background: #f3f3f3 !important;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #bbb;
+    color: #222 !important;
+    text-align: left;
+    font-size: 8pt;
   }
+  .invoicePrintTable th:nth-child(1) { width: 48%; }
+  .invoicePrintTable th:nth-child(2) { width: 10%; text-align: center; }
+  .invoicePrintTable th:nth-child(3),
+  .invoicePrintTable th:nth-child(4) { width: 21%; text-align: right; }
+  .invoicePrintTable td { padding: 11px 8px; border-bottom: 1px solid #e5e5e5; vertical-align: top; overflow-wrap: anywhere; }
+  .invoicePrintTable td:nth-child(2) { text-align: center; }
+  .invoicePrintTable td:nth-child(3),
+  .invoicePrintTable td:nth-child(4) { text-align: right; white-space: nowrap; }
+  .invoicePrintNote { display: block; margin-top: 3px; color: #666 !important; font-size: 8pt; }
+
+  .invoicePrintTotals {
+    width: 62%;
+    max-width: 360px;
+    margin: 20px 0 0 auto;
+  }
+  .invoicePrintTotals > div { display: flex; justify-content: space-between; gap: 16px; padding: 5px 0; }
+  .invoicePrintTotals span { color: #555 !important; }
+  .invoicePrintTotals strong { text-align: right; white-space: nowrap; }
+  .invoicePrintTotals .invoicePrintGrandTotal {
+    margin-top: 8px;
+    padding: 12px 0;
+    border-top: 2px solid #222;
+    border-bottom: 2px solid #222;
+    font-size: 13pt;
+    font-weight: 800;
+  }
+  .invoicePrintGrandTotal strong { color: #e31837 !important; }
+
+  .invoicePrintFooter {
+    margin-top: 48px;
+    padding-top: 14px;
+    border-top: 1px solid #ddd;
+    text-align: center;
+  }
+  .invoicePrintFooter p { margin: 5px 0 0; color: #666 !important; font-size: 8pt; }
+
+  .invoicePrintTable tr,
+  .invoicePrintTotals > div,
+  .invoicePrintParties { break-inside: avoid; }
 }
 
 /* Thank you */
