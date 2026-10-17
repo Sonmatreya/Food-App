@@ -931,3 +931,23 @@
     padding: 12px;
   }
 }
+
+@media print {
+  .invoicePrintOnly { font-size: 11pt !important; line-height: 1.55 !important; }
+  .invoiceBrand { font-size: 29pt; }
+  .invoiceTitleBlock h1 { font-size: 27pt; }
+  .invoicePrintHeader p, .invoicePrintTitleBlock p { font-size: 10pt; }
+  .invoicePrintInfoCard { padding: 14px; border: 1px solid #ddd; background: #fafafa !important; break-inside: avoid; }
+  .invoicePrintCustomerName { font-size: 13pt !important; font-weight: 800; }
+  .invoicePrintMeta { display: grid; grid-template-columns: 1fr 1fr; margin: 0 0 22px; border: 1px solid #ddd; break-inside: avoid; }
+  .invoicePrintMeta > div { display: flex; flex-direction: column; gap: 5px; padding: 11px 12px; border-bottom: 1px solid #e7e7e7; }
+  .invoicePrintMeta > div:nth-child(odd) { border-right: 1px solid #e7e7e7; }
+  .invoicePrintMeta span { color: #666 !important; font-size: 9pt; text-transform: uppercase; }
+  .invoicePrintMeta strong { overflow-wrap: anywhere; font-size: 11pt; }
+  .invoicePrintSectionTitle { margin: 0 0 10px; padding-bottom: 7px; border-bottom: 1px solid #bbb; font-size: 11pt; font-weight: 800; }
+  .invoicePrintParties p { font-size: 10.5pt; }
+  .invoicePrintTable th { padding: 13px 9px; font-size: 9.5pt; }
+  .invoicePrintTable td { padding: 14px 9px; font-size: 10.5pt; }
+  .invoicePrintTotals > div { padding: 8px 0; font-size: 10.5pt; }
+  .invoicePrintTotals .invoicePrintGrandTotal { font-size: 15pt; padding: 15px 0; }
+}
