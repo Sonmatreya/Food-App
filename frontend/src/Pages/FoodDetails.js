@@ -303,19 +303,49 @@ function FoodDetails() {
           <div className="ingredients">
             <h3>Ingredients</h3>
             <div className="ingredientList">{ingredients.map((ingredient, index) => {
-              const ingredientName = String(ingredient).split(",")[0].trim();
+              const rawName = String(ingredient).split(",")[0].trim();
+              const normalizedName = rawName
+                .replace(/^(fresh|chopped|diced|sliced|grated|minced|boiled|cooked|roasted|ground|crushed)\\s+/i, "")
+                .replace(/\\s*\\([^)]*\\)\\s*/g, "")
+                .trim();
+              const aliases = {
+                "spring onions": "Spring Onion",
+                "green onions": "Spring Onion",
+                "bell pepper": "Green Pepper",
+                "capsicum": "Green Pepper",
+                "chilli": "Green Chilli",
+                "chillies": "Green Chilli",
+                "red chili": "Red Chilli",
+                "red chilli": "Red Chilli",
+                "chicken breast": "Chicken",
+                "chicken thighs": "Chicken",
+                "mozzarella cheese": "Mozzarella",
+                "parmesan cheese": "Parmesan",
+                "coriander leaves": "Coriander",
+                "cilantro": "Coriander",
+                "cumin powder": "Cumin",
+                "black pepper powder": "Black Pepper",
+                "olive oil": "Olive Oil",
+                "vegetable oil": "Oil",
+                "all purpose flour": "Flour",
+                "plain flour": "Flour",
+                "basmati rice": "Rice",
+                "paneer cubes": "Paneer",
+              };
+              const imageName = aliases[normalizedName.toLowerCase()] || normalizedName;
+              const imageUrl = `https://www.themealdb.com/images/ingredients/${encodeURIComponent(imageName)}.png`;
               return (
                 <div className="ingredientCard" key={`${ingredient}-${index}`}>
                   <img
                     className="ingredientImage"
-                    src={`https://www.themealdb.com/images/ingredients/${encodeURIComponent(ingredientName)}-Small.png`}
-                    alt={`${ingredientName} ingredient`}
+                    src={imageUrl}
+                    alt={`${rawName} ingredient`}
                     loading="lazy"
                     onError={(event) => {
                       const image = event.currentTarget;
                       if (image.dataset.fallbackAttempted !== "true") {
                         image.dataset.fallbackAttempted = "true";
-                        image.src = `https://loremflickr.com/160/160/${encodeURIComponent(ingredientName)},ingredient`;
+                        image.src = `https://loremflickr.com/96/96/${encodeURIComponent(imageName)},food?lock=${index + 101}`;
                       } else {
                         image.onerror = null;
                         image.style.display = "none";
@@ -325,8 +355,7 @@ function FoodDetails() {
                   <span className="ingredientTag">{ingredient}</span>
                 </div>
               );
-            })}</div>
-          </div>
+            })}</div>          </div>
 
           <div className="cookingRequest">
             <h3>Add a cooking request <span>(optional)</span></h3>
