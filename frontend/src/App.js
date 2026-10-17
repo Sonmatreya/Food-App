@@ -23,6 +23,7 @@ import DeliveryAddress from "./Pages/DeliveryAddress";
 import Payment from "./Pages/Payment";
 import PaymentResult from "./Pages/PaymentResult";
 import OrderSuccess from "./Pages/OrderSuccess";
+import PaymentSuccess from "./Pages/PaymentSuccess";
 import Profile from "./Pages/Profile";
 import Coupons from "./Pages/Coupons";
 import PaymentHistory from "./Pages/PaymentHistory";
@@ -88,6 +89,7 @@ function AppRoutes() {
         <Route path="/delivery-address" element={<ProtectedRoute><DeliveryAddress /></ProtectedRoute>} />
         <Route path="/payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
         <Route path="/payment-result" element={<ProtectedRoute><PaymentResult /></ProtectedRoute>} />
+        <Route path="/payment-success/:orderId" element={<ProtectedRoute><PaymentSuccess /></ProtectedRoute>} />
         <Route path="/order-success/:orderId" element={<ProtectedRoute><OrderSuccess /></ProtectedRoute>} />
         <Route path="*" element={<Home />} />
       </Routes>
