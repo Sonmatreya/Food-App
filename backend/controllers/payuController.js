@@ -160,7 +160,7 @@ const processPayUResponse = async (req, res, isWebhook = false) => {
 
     const result = status === "success" && order.paymentStatus === "paid" ? "success" : "failed";
     return res.redirect(303, result === "success"
-      ? `${CLIENT_URL}/order-success/${order._id}?payment=success`
+      ? `${CLIENT_URL}/payment-success/${order._id}?payment=success`
       : `${CLIENT_URL}/payment-result?status=failed&orderId=${order._id}`);
   } catch (error) {
     console.error("PayU response handling error:", error.message);
