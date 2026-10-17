@@ -302,7 +302,7 @@ function FoodDetails() {
 
           <div className="ingredients">
             <h3>Ingredients</h3>
-            <div className="ingredientList">{ingredients.map((ingredient, index) => <span className="ingredientTag" key={`${ingredient}-${index}`}>✓ {ingredient}</span>)}</div>
+            <div className="ingredientList">{ingredients.map((ingredient, index) => <div className="ingredientCard" key={`${ingredient}-${index}`}><img className="ingredientImage" src={`https://loremflickr.com/160/160/${encodeURIComponent(String(ingredient).split(",")[0].trim())},food`} alt={ingredient} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=160&h=160&q=75"; }} /><span className="ingredientTag">{ingredient}</span></div>)}</div>
           </div>
 
           <div className="cookingRequest">
