@@ -344,23 +344,31 @@ function OrderSuccess() {
             <p><strong>Date</strong><br />{order?.createdAt ? new Date(order.createdAt).toLocaleString() : new Date().toLocaleString()}</p>
           </div>
         </header>
-        <div className="invoicePrintStatus">ORDER RECEIPT</div>
+        <div className="invoicePrintStatus">{(order?.paymentStatus || "ORDER RECEIVED").replaceAll("_", " ").toUpperCase()}</div>
         <section className="invoicePrintParties">
-          <div>
-            <h2>DELIVERY DETAILS</h2>
-            <p>{order?.address?.name || "Customer"}</p>
-            {order?.address?.phone && <p>{order.address.phone}</p>}
-            {order?.address?.addressLine && <p>{order.address.addressLine}</p>}
-            {[order?.address?.city, order?.address?.state, order?.address?.pincode].filter(Boolean).join(", ") && <p>{[order?.address?.city, order?.address?.state, order?.address?.pincode].filter(Boolean).join(", ")}</p>}
-            {order?.deliveryType === "pickup" && <p>Restaurant pickup</p>}
+          <div className="invoicePrintInfoCard">
+            <h2>BILL TO / CUSTOMER</h2>
+            <p className="invoicePrintCustomerName">{order?.address?.name || "Customer"}</p>
+            {order?.address?.phone && <p>Phone: {order.address.phone}</p>}
+            <p>Order type: {order?.deliveryType === "pickup" ? "Restaurant pickup" : "Home delivery"}</p>
           </div>
-          <div>
-            <h2>PAYMENT DETAILS</h2>
-            <p>Method: {(order?.paymentMethod || "online").replaceAll("_", " ").toUpperCase()}</p>
-            <p>Status: {(order?.paymentStatus || "pending").replaceAll("_", " ").toUpperCase()}</p>
-            <p>Order status: {(order?.status || "placed").replaceAll("_", " ").toUpperCase()}</p>
+          <div className="invoicePrintInfoCard">
+            <h2>SHIP TO / DELIVERY ADDRESS</h2>
+            {order?.deliveryType === "pickup" ? <p>Restaurant pickup</p> : <>
+              {order?.address?.addressLine && <p>{order.address.addressLine}</p>}
+              {[order?.address?.city, order?.address?.state, order?.address?.pincode].filter(Boolean).join(", ") && <p>{[order?.address?.city, order?.address?.state, order?.address?.pincode].filter(Boolean).join(", ")}</p>}
+              {order?.address?.landmark && <p>Landmark: {order.address.landmark}</p>}
+              {locationText && <p>Location: {locationText}</p>}
+            </>}
           </div>
         </section>
+        <section className="invoicePrintMeta">
+          <div><span>Order reference</span><strong>{order?.orderNumber || order?._id || orderId}</strong></div>
+          <div><span>Order date</span><strong>{order?.createdAt ? new Date(order.createdAt).toLocaleDateString() : new Date().toLocaleDateString()}</strong></div>
+          <div><span>Payment method</span><strong>{(order?.paymentMethod || "online").replaceAll("_", " ").toUpperCase()}</strong></div>
+          <div><span>Order status</span><strong>{(order?.status || "placed").replaceAll("_", " ").toUpperCase()}</strong></div>
+        </section>
+        <div className="invoicePrintSectionTitle">ORDERED ITEMS</div>
         <table className="invoicePrintTable">
           <thead><tr><th>Item Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead>
           <tbody>
