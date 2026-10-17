@@ -5,6 +5,7 @@ import { FaArrowRight, FaHeart, FaShoppingBag } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import "../Styles/Menu.css";
+import { resolveFoodImage } from "../utils/foodImage";
 
 const FALLBACK_FOOD_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80";
 
@@ -108,7 +109,7 @@ function MenuItem({ id, image, name, price, category, rating, ratingCount, isAva
         >
           <div className="menuImage">
             <img
-              src={image || FALLBACK_FOOD_IMAGE}
+              src={resolveFoodImage(image) || FALLBACK_FOOD_IMAGE}
               alt={name ? `${name} food photograph` : "Food item"}
               loading="lazy"
               decoding="async"
