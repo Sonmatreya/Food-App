@@ -6,6 +6,8 @@ import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import "../Styles/Menu.css";
 
+const FALLBACK_FOOD_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80";
+
 function MenuItem({ id, image, name, price, category, rating, ratingCount, isAvailable }) {
   const numericPrice = Number(price);
   const numericRating = Number(rating);
@@ -104,12 +106,20 @@ function MenuItem({ id, image, name, price, category, rating, ratingCount, isAva
           className="menuCardLink"
           aria-label={`View details for ${name}`}
         >
-          <div
-            className="menuImage"
-            style={{ backgroundImage: `url(${image})` }}
-            role="img"
-            aria-label={name}
-          >
+          <div className="menuImage">
+            <img
+              src={image || FALLBACK_FOOD_IMAGE}
+              alt={name ? `${name} food photograph` : "Food item"}
+              loading="lazy"
+              decoding="async"
+              onError={(event) => {
+                if (event.currentTarget.src !== FALLBACK_FOOD_IMAGE) {
+                  event.currentTarget.src = FALLBACK_FOOD_IMAGE;
+                } else {
+                  event.currentTarget.style.visibility = "hidden";
+                }
+              }}
+            />
             {!isAvailable && (
               <span className="menuAvailability">Currently Unavailable</span>
             )}
