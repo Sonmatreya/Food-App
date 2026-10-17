@@ -8,7 +8,7 @@ import FoodRecommendations from "../Components/FoodRecommendations";
 import { useToast } from "../context/ToastContext";
 import "../Styles/FoodDetails.css";
 
-const FALLBACK_IMAGE = "https://loremflickr.com/800/600/food?lock=999";
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=85";
 
 function FoodDetails() {
   const { id } = useParams();
@@ -267,7 +267,21 @@ function FoodDetails() {
 
       <section className="foodDetails">
         <div className="foodDetailsImageWrapper">
-          <div className="foodDetailsImage" style={{ backgroundImage: `url("${imageUrl}")` }} role="img" aria-label={food.name}>
+          <div className="foodDetailsImage">
+            <img
+              className="foodDetailsPhoto"
+              src={imageUrl}
+              alt={`${food.name} food photograph`}
+              loading="eager"
+              decoding="async"
+              onError={(event) => {
+                if (event.currentTarget.src !== FALLBACK_IMAGE) {
+                  event.currentTarget.src = FALLBACK_IMAGE;
+                } else {
+                  event.currentTarget.style.visibility = "hidden";
+                }
+              }}
+            />
             {hasRating && <div className="foodImageBadge">⭐ {rating.toFixed(1)}</div>}
             {!food.isAvailable && <div className="unavailableBadge">Currently Unavailable</div>}
           </div>
