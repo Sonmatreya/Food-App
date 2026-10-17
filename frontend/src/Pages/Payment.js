@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
+import { resolveFoodImage } from "../utils/foodImage";
 import { useCart } from "../context/CartContext";
 import "../Styles/Payment.css";
 
@@ -507,7 +508,7 @@ function Payment() {
                   className="paymentItemImage"
                   style={{
                     backgroundImage:
-                      `url(${item.image})`,
+                      `url("${resolveFoodImage(item.image) || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80"}")`,
                   }}
                 ></div>
 
