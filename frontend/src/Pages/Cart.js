@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useToast } from "../context/ToastContext";
 import { API_URL } from "../config/api";
+import { resolveFoodImage } from "../utils/foodImage";
 import "../Styles/Cart.css";
 import FoodRecommendations from "../Components/FoodRecommendations";
 
@@ -167,7 +168,7 @@ function Cart() {
         <div className="cartMain">
           <div className="cartCard"><div className="cartCardHeader"><h2>Order Items</h2><span>{totalQuantity} {totalQuantity === 1 ? "item" : "items"}</span></div><div className="cartItems">
             {cartItems.map((item) => { const itemId = getCartItemKey(item); return <div className="cartItem" key={itemId}>
-              <div className="cartItemImage" style={{ backgroundImage: `url(${item.image})` }}></div>
+              <div className="cartItemImage" style={{ backgroundImage: `url("${resolveFoodImage(item.image) || "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80"}")` }}></div>
               <div className="cartItemDetails"><span className="cartItemCategory">{item.category}</span><h3>{item.name}</h3><p className="cartItemUnitPrice">₹{Number(item.price).toFixed(2)} each</p>
                 {item.cookingRequest && <div className="cartCookingRequest"><span>Cooking request:</span><p>{item.cookingRequest}</p></div>}
                 <div className="cartItemBottom"><div className="cartQuantity"><button type="button" onClick={() => decreaseQuantity(itemId)} aria-label={`Decrease quantity of ${item.name}`}>−</button><span>{item.quantity}</span><button type="button" onClick={() => increaseQuantity(itemId)} aria-label={`Increase quantity of ${item.name}`}>+</button></div><button type="button" className="removeButton" onClick={() => removeFromCart(itemId)}>Remove</button></div>
