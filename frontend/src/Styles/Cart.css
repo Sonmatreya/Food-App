@@ -903,3 +903,18 @@
 @media(prefers-reduced-motion:reduce) {
   .cartPage *, .cartPage *::before, .cartPage *::after { transition-duration: .01ms !important; }
 }
+
+
+/* Ensure cart product photos render as real images and crop consistently. */
+.cartItemImage {
+  position: relative;
+  overflow: hidden;
+  background: #fff0f3 center / cover no-repeat;
+}
+.cartItemImage img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
