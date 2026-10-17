@@ -331,6 +331,62 @@ function OrderSuccess() {
 
   return (
     <div className="orderSuccessPage">
+      {/* Dedicated document used only by the browser's Print / Save as PDF action */}
+      <section className="invoicePrintOnly" aria-label="Printable invoice">
+        <header className="invoicePrintHeader">
+          <div>
+            <div className="invoiceBrand">FOOD<span>APP</span></div>
+            <p>Food order invoice</p>
+          </div>
+          <div className="invoiceTitleBlock">
+            <h1>INVOICE</h1>
+            <p><strong>Invoice / Order No.</strong><br />{order?.orderNumber || order?._id || orderId}</p>
+            <p><strong>Date</strong><br />{order?.createdAt ? new Date(order.createdAt).toLocaleString() : new Date().toLocaleString()}</p>
+          </div>
+        </header>
+        <div className="invoicePrintStatus">ORDER RECEIPT</div>
+        <section className="invoicePrintParties">
+          <div>
+            <h2>DELIVERY DETAILS</h2>
+            <p>{order?.address?.name || "Customer"}</p>
+            {order?.address?.phone && <p>{order.address.phone}</p>}
+            {order?.address?.addressLine && <p>{order.address.addressLine}</p>}
+            {[order?.address?.city, order?.address?.state, order?.address?.pincode].filter(Boolean).join(", ") && <p>{[order?.address?.city, order?.address?.state, order?.address?.pincode].filter(Boolean).join(", ")}</p>}
+            {order?.deliveryType === "pickup" && <p>Restaurant pickup</p>}
+          </div>
+          <div>
+            <h2>PAYMENT DETAILS</h2>
+            <p>Method: {(order?.paymentMethod || "online").replaceAll("_", " ").toUpperCase()}</p>
+            <p>Status: {(order?.paymentStatus || "pending").replaceAll("_", " ").toUpperCase()}</p>
+            <p>Order status: {(order?.status || "placed").replaceAll("_", " ").toUpperCase()}</p>
+          </div>
+        </section>
+        <table className="invoicePrintTable">
+          <thead><tr><th>Item Description</th><th>Qty</th><th>Unit Price</th><th>Amount</th></tr></thead>
+          <tbody>
+            {(order?.items || []).map((item, index) => (
+              <tr key={item.foodId || item.name || index}>
+                <td>{item.name || "Food item"}{item.cookingRequest ? <small className="invoicePrintNote">Note: {item.cookingRequest}</small> : null}</td>
+                <td>{Number(item.quantity || 0)}</td>
+                <td>₹{Number(item.price || 0).toFixed(2)}</td>
+                <td>₹{(Number(item.price || 0) * Number(item.quantity || 0)).toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <section className="invoicePrintTotals">
+          <div><span>Subtotal</span><strong>₹{Number(order?.pricing?.subtotal || 0).toFixed(2)}</strong></div>
+          {Number(order?.pricing?.discount || 0) > 0 && <div><span>Discount{order?.pricing?.couponCode ? ` (${order.pricing.couponCode})` : ""}</span><strong>-₹{Number(order.pricing.discount).toFixed(2)}</strong></div>}
+          <div><span>Delivery fee</span><strong>{Number(order?.pricing?.deliveryFee || 0) === 0 ? "FREE" : `₹${Number(order.pricing.deliveryFee).toFixed(2)}`}</strong></div>
+          <div><span>Service fee</span><strong>₹{Number(order?.pricing?.serviceFee || 0).toFixed(2)}</strong></div>
+          <div><span>Tax</span><strong>₹{Number(order?.pricing?.tax || 0).toFixed(2)}</strong></div>
+          <div className="invoicePrintGrandTotal"><span>Total paid / due</span><strong>₹{Number(order?.pricing?.grandTotal || 0).toFixed(2)}</strong></div>
+        </section>
+        <footer className="invoicePrintFooter">
+          <strong>Thank you for ordering with FoodApp!</strong>
+          <p>This is a computer-generated order invoice.</p>
+        </footer>
+      </section>
 
       {/* ================= SUCCESS MESSAGE ================= */}
 
