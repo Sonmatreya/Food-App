@@ -7,6 +7,7 @@ import WishlistToast from "../Components/WishlistToast";
 import FoodRecommendations from "../Components/FoodRecommendations";
 import { useToast } from "../context/ToastContext";
 import "../Styles/FoodDetails.css";
+import { resolveFoodImage } from "../utils/foodImage";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1200&q=85";
 
@@ -157,7 +158,7 @@ function FoodDetails() {
     );
   }
 
-  const imageUrl = food.image || FALLBACK_IMAGE;
+  const imageUrl = resolveFoodImage(food.image) || FALLBACK_IMAGE;
   const rating = Number(food.rating);
   const ratingCount = Number(food.ratingCount || 0);
   const hasRating = Number.isFinite(rating) && rating > 0 && ratingCount > 0;
