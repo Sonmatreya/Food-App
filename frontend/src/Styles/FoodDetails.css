@@ -1196,3 +1196,162 @@ body.dark-mode .buyNowButton {
   .ingredientImage { width: 36px; height: 36px; }
   .ingredientCard .ingredientTag { font-size: 9px; }
 }
+
+
+/* Mobile-first polish: improve readability and reduce unnecessary page height. */
+@media (max-width: 650px) {
+  .foodDetailsPage {
+    padding: 14px 0 36px;
+    overflow-x: clip;
+  }
+
+  .foodBreadcrumb,
+  .foodDetails,
+  .foodReviewsSection {
+    width: calc(100% - 32px);
+  }
+
+  .foodBreadcrumb {
+    gap: 6px;
+    margin-bottom: 14px;
+    font-size: 11px;
+  }
+
+  .foodDetails {
+    gap: 22px;
+  }
+
+  .foodDetailsImage {
+    height: auto;
+    aspect-ratio: 1.12 / 1;
+    min-height: 0;
+    border-radius: 18px;
+  }
+
+  .foodDetailsContent {
+    width: 100%;
+    min-width: 0;
+    padding: 0;
+  }
+
+  .foodCategory {
+    margin-bottom: 9px;
+    padding: 5px 9px;
+    font-size: 9px;
+  }
+
+  .foodDetailsContent h1 {
+    margin-bottom: 9px;
+    font-size: clamp(25px, 7vw, 34px);
+    line-height: 1.12;
+    letter-spacing: -.7px;
+    overflow-wrap: anywhere;
+  }
+
+  .foodRatingRow {
+    gap: 6px;
+    margin-bottom: 12px;
+    font-size: 12px;
+  }
+
+  .foodPrice {
+    margin-bottom: 10px;
+    font-size: 25px;
+  }
+
+  .foodDescription {
+    margin-bottom: 18px;
+    font-size: 13px;
+    line-height: 1.65;
+  }
+
+  .foodInfoGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .foodInfoItem {
+    align-items: flex-start;
+    gap: 8px;
+    min-width: 0;
+    padding: 10px;
+  }
+
+  .foodInfoIcon {
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
+    font-size: 16px;
+    border-radius: 9px;
+  }
+
+  .foodInfoItem strong { font-size: 11px; line-height: 1.35; }
+  .foodInfoItem p { font-size: 10px; line-height: 1.4; }
+
+  .ingredients,
+  .cookingRequest { margin-bottom: 20px; }
+
+  .ingredients h3,
+  .quantitySection h3,
+  .cookingRequest h3 { margin-bottom: 9px; font-size: 14px; }
+
+  .ingredientList {
+    grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+    gap: 6px;
+  }
+
+  .ingredientCard { padding: 7px 3px; }
+  .ingredientImage { width: 34px; height: 34px; }
+  .ingredientCard .ingredientTag { font-size: 10px; }
+
+  .cookingRequest > p { margin-bottom: 9px; font-size: 11px; }
+  .cookingRequestInput textarea { min-height: 86px; padding: 11px 12px 28px; font-size: 13px; }
+
+  .quantitySection { margin-bottom: 18px; }
+  .quantityControls button { width: 42px; min-width: 42px; height: 40px; }
+  .quantityControls span { width: 38px; }
+
+  .orderSummary { margin-bottom: 14px; padding: 14px 0; }
+  .orderSummary > div { margin-bottom: 8px; font-size: 12px; }
+  .summaryTotal { margin-top: 10px; padding-top: 10px; }
+  .summaryTotal span { font-size: 14px; }
+  .summaryTotal strong { font-size: 20px; }
+
+  .addToCartButton,
+  .buyNowButton { min-height: 48px; font-size: 13px; }
+  .viewCartButton,
+  .wishlistDetailButton { min-height: 44px; font-size: 12px; }
+  .backToMenu { margin-top: 12px; font-size: 12px; }
+
+  .foodReviewsSection {
+    margin-top: 42px;
+    padding-top: 28px;
+  }
+
+  .foodReviewsHeader { gap: 14px; margin-bottom: 18px; }
+  .foodReviewsHeader h2 { font-size: 23px; }
+  .foodReviewsHeader p { font-size: 12px; line-height: 1.5; }
+  .foodReviewsAverage { padding: 12px; }
+  .reviewForm { margin-bottom: 16px; padding: 14px; }
+  .reviewItem { padding: 14px; }
+}
+
+/* Recommendation cards should be compact on phones, not a long single-column feed. */
+@media (max-width: 500px) {
+  .recommendationSection {
+    width: calc(100% - 32px);
+    margin: 34px auto 44px;
+  }
+
+  .recommendationHeader { gap: 10px; margin-bottom: 14px; }
+  .recommendationHeader h2 { font-size: 22px; line-height: 1.2; }
+  .recommendationHeader p { font-size: 11px; line-height: 1.5; }
+  .recommendationGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .recommendationCard { min-width: 0; border-radius: 13px; }
+  .recommendationCard img { height: 112px; }
+  .recommendationCard div { padding: 9px; }
+  .recommendationCard h3 { margin: 5px 0 7px; font-size: 12px; line-height: 1.35; overflow-wrap: anywhere; }
+  .recommendationCard p { font-size: 10px; line-height: 1.4; }
+  .recommendationCard strong { float: none; display: block; margin-top: 5px; font-size: 12px; }
+}
