@@ -153,3 +153,56 @@
 @media(prefers-reduced-motion:reduce) {
   .contact *, .contact *::before, .contact *::after { transition-duration: .01ms !important; }
 }
+
+/* Order support center refresh */
+.contactHelpCenter { display: block; overflow: visible; min-height: 0; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.contactHelpHero { display: grid; grid-template-columns: 1.05fr .95fr; min-height: 360px; overflow: hidden; border-radius: 24px; background: #fff; box-shadow: 0 18px 55px rgba(65,14,29,.08); }
+.contactHelpHeroCopy { align-self: center; padding: clamp(28px,5vw,64px); }
+.contactEyebrow { display: inline-block; color: #e31837; font-size: 11px; font-weight: 900; letter-spacing: 1.6px; }
+.contactHelpHeroCopy h1 { margin: 14px 0; color: #28151a; font-size: clamp(36px,5vw,58px); line-height: 1.03; letter-spacing: -2px; }
+.contactHelpHeroCopy p, .contactSectionHeading p, .contactHelpFormIntro > p { color: #78676b; font-size: 15px; line-height: 1.8; }
+.contactHelpTrust { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 22px; color: #5c4a4e; font-size: 12px; font-weight: 700; }
+.contactHelpTrust span { color: #16834a; font-weight: 900; }
+.contactHelpHeroImage { min-height: 360px; background-position: center; background-size: cover; }
+.contactHelpTopics { padding: 62px 0 54px; }
+.contactSectionHeading { margin-bottom: 23px; }
+.contactSectionHeading h2, .contactHelpFormIntro h2 { margin: 9px 0; color: #28151a; font-size: clamp(25px,3vw,34px); letter-spacing: -.8px; }
+.contactSectionHeading p { margin: 0; font-size: 14px; }
+.contactHelpTopicGrid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 14px; }
+.contactHelpTopic { display: flex; flex-direction: column; align-items: flex-start; min-height: 190px; padding: 20px; border: 1px solid #eee2e5; border-radius: 16px; background: white; color: #28151a; text-align: left; cursor: pointer; transition: border-color .18s, transform .18s, box-shadow .18s; }
+.contactHelpTopic:hover { transform: translateY(-3px); border-color: #e8a6b2; box-shadow: 0 12px 28px rgba(65,14,29,.07); }
+.contactHelpTopic.active { border: 2px solid #e31837; padding: 19px; background: #fff8f9; }
+.contactHelpTopicIcon { display: grid; width: 42px; height: 42px; place-items: center; margin-bottom: 15px; border-radius: 12px; background: #fff0f2; font-size: 21px; }
+.contactHelpTopicTitle { font-size: 14px; font-weight: 850; }
+.contactHelpTopicText { margin-top: 8px; color: #78676b; font-size: 12px; line-height: 1.6; }
+.contactHelpTopicAction { margin-top: auto; padding-top: 14px; color: #d41534; font-size: 11px; font-weight: 850; }
+.contactHelpFormSection { display: grid; grid-template-columns: minmax(220px,.75fr) minmax(0,1.25fr); gap: clamp(24px,5vw,64px); margin-bottom: 64px; padding: clamp(24px,4vw,48px); border: 1px solid #f0e2e5; border-radius: 24px; background: #fff; box-shadow: 0 18px 55px rgba(65,14,29,.06); }
+.contactHelpFormIntro { align-self: start; }
+.contactHelpFormIntro > p { font-size: 13px; }
+.contactHelpSideNote { display: flex; flex-direction: column; gap: 7px; margin-top: 25px; padding: 16px; border-radius: 12px; background: #fff5f6; color: #78676b; font-size: 12px; line-height: 1.6; }
+.contactHelpSideNote strong { color: #28151a; font-size: 13px; }
+.contactHelpOrderLink { display: inline-flex; gap: 10px; margin-top: 20px; color: #d41534; font-size: 13px; font-weight: 850; text-decoration: none; }
+.contactHelpFormSection #contact-form { display: flex; flex-direction: column; gap: 15px; min-width: 0; }
+.contactFormHeading { display: flex; align-items: center; gap: 12px; margin-bottom: 2px; }
+.contactFormHeadingSpaced { margin-top: 13px; }
+.contactFormStep { display: grid; width: 37px; height: 37px; flex: 0 0 37px; place-items: center; border-radius: 11px; background: #fff0f2; color: #d41534; font-size: 12px; font-weight: 900; }
+.contactFormHeading h3 { margin: 0 0 3px; color: #28151a; font-size: 16px; }
+.contactFormHeading p { margin: 0; color: #89777c; font-size: 12px; }
+.contactFormTwoColumns { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+.contactHelpFormSection #contact-form button[type="submit"]:disabled { cursor: not-allowed; opacity: .55; box-shadow: none; }
+.contactFormSetupNote { margin: 0; color: #8a777c; font-size: 11px; line-height: 1.6; }
+@media(max-width:900px) {
+  .contactHelpTopicGrid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .contactHelpFormSection { grid-template-columns: 1fr; }
+}
+@media(max-width:600px) {
+  .contactHelpHero { grid-template-columns: 1fr; border-radius: 18px; }
+  .contactHelpHeroCopy { padding: 30px 23px; }
+  .contactHelpHeroImage { min-height: 220px; }
+  .contactHelpTopics { padding: 40px 0; }
+  .contactHelpTopicGrid { gap: 10px; }
+  .contactHelpTopic { min-height: 185px; padding: 14px; }
+  .contactHelpTopic.active { padding: 13px; }
+  .contactHelpFormSection { gap: 28px; margin-bottom: 40px; padding: 22px 16px; border-radius: 18px; }
+  .contactFormTwoColumns { grid-template-columns: 1fr; gap: 15px; }
+}
