@@ -821,3 +821,85 @@
 }
 
 .deliveryProgress{padding:13px 14px;margin-bottom:16px;border:1px solid #eee1d8;border-radius:13px;background:#fff8f3;color:#555;font-size:11px}.deliveryProgress strong{color:#e31837}.deliveryProgressBar{height:6px;margin-top:9px;border-radius:99px;background:#eee;overflow:hidden}.deliveryProgressBar span{display:block;height:100%;border-radius:inherit;background:#e31837;transition:width .3s ease}body.dark-mode .deliveryProgress{background:#241b17;border-color:#46352e;color:#bbb}body.dark-mode .deliveryProgressBar{background:#333}
+
+/* Premium cart refresh: consistent red brand, stronger hierarchy and clearer totals. */
+.cartPage {
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(227,24,55,.07), transparent 35%),
+    #fffaf9;
+  color: #28151a;
+}
+.cartPageHeader h1,
+.cartPage h1,
+.cartPage h2 { letter-spacing: -.7px; }
+.cartPageHeader p,
+.cartPage .cartSubtitle { color: #806f75; }
+.cartLayout { gap: 24px; }
+.cartCard,
+.cartSummary {
+  border: 1px solid #f0dfe2;
+  border-radius: 22px;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 12px 36px rgba(69,18,30,.055);
+}
+.cartSummary { position: sticky; top: 24px; }
+.cartItem {
+  padding: 19px 0;
+  border-bottom-color: #f2e5e7;
+}
+.cartItemImage {
+  border: 1px solid #f0dfe2;
+  border-radius: 15px;
+  background: #fff0f2;
+}
+.cartItemDetails h3 { color: #28151a; font-weight: 800; }
+.cartItemTotal,
+.grandTotal strong { color: #e31837; }
+.quantityControl {
+  border: 1px solid #efd9de;
+  border-radius: 11px;
+  background: #fff8f9;
+}
+.quantityControl button {
+  border-radius: 8px;
+  color: #c91531;
+}
+.quantityControl button:hover { background: #ffe8ec; }
+.couponInput {
+  border: 1px solid #f0dce0;
+  border-radius: 13px;
+  background: #fff;
+}
+.couponInput input { min-width: 0; background: transparent; }
+.couponInput button,
+.cartPrimaryButton,
+.checkoutButton,
+.proceedButton {
+  border-radius: 12px;
+  background: #e31837;
+  color: #fff;
+  font-weight: 850;
+  box-shadow: 0 8px 18px rgba(227,24,55,.14);
+  transition: transform .18s ease, background .18s ease, box-shadow .18s ease;
+}
+.couponInput button:hover,
+.cartPrimaryButton:hover,
+.checkoutButton:hover,
+.proceedButton:hover {
+  background: #b10f2b;
+  transform: translateY(-1px);
+  box-shadow: 0 11px 23px rgba(227,24,55,.2);
+}
+.deliveryProgress {
+  border-color: #f0d9de;
+  border-radius: 13px;
+  background: #fff1f3;
+}
+.deliveryProgressBar { background: #f5dce1; }
+.deliveryProgressBar span { background: linear-gradient(90deg, #e31837, #ff6f87); }
+@media(max-width:800px) {
+  .cartSummary { position: static; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .cartPage *, .cartPage *::before, .cartPage *::after { transition-duration: .01ms !important; }
+}
