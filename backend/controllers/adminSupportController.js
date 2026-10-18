@@ -24,7 +24,7 @@ const listSupportRequests = async (req, res) => {
     }
 
     const [requests, total, newCount, inProgressCount, resolvedCount] = await Promise.all([
-      SupportRequest.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
+      SupportRequest.find(filter).select("-supportAccessTokenHash").sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(),
       SupportRequest.countDocuments(filter),
       SupportRequest.countDocuments({ status: "new" }),
       SupportRequest.countDocuments({ status: "in-progress" }),
@@ -60,7 +60,7 @@ const updateSupportRequestStatus = async (req, res) => {
     if (adminReply !== undefined) updates.adminReply = adminReply.slice(0, 3000);
     if (resolutionNote !== undefined) updates.resolutionNote = resolutionNote.slice(0, 3000);
     updates.resolvedAt = status === "resolved" ? new Date() : null;
-    const request = await SupportRequest.findByIdAndUpdate(id, { $set: updates }, { new: true, runValidators: true }).lean();
+    const request = await SupportRequest.findByIdAndUpdate(id, { $set: updates }, { new: true, runValidators: true }).select("-supportAccessTokenHash").lean();
     if (!request) return res.status(404).json({ success: false, message: "Support request not found." });
     return res.json({ success: true, message: "Support status updated.", request });
   } catch (error) {
