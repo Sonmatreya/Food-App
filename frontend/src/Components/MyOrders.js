@@ -42,6 +42,10 @@ function MyOrders() {
   const [reviewDrafts, setReviewDrafts] = useState({});
   const [reviewStates, setReviewStates] = useState({});
   const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [supportThreads, setSupportThreads] = useState({});
+  const [supportDrafts, setSupportDrafts] = useState({});
+  const [supportStates, setSupportStates] = useState({});
+
   const [reorderState, setReorderState] = useState({
     loading: false,
     orderId: null,
@@ -136,6 +140,50 @@ function MyOrders() {
     fetchMyReviews();
     return () => { cancelled = true; };
   }, [API_URL]);
+
+
+  const loadOrderSupport = useCallback(async (orderId) => {
+    if (!orderId) return;
+    try {
+      const response = await fetch(`${API_URL}/api/orders/${orderId}/support`, { credentials: "include" });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Unable to load support messages.");
+      setSupportThreads((current) => ({ ...current, [orderId]: data.requests || [] }));
+    } catch (error) {
+      setSupportStates((current) => ({ ...current, [orderId]: { ...(current[orderId] || {}), loadError: error.message || "Unable to load support messages." } }));
+    }
+  }, [API_URL]);
+
+  useEffect(() => {
+    if (!expandedOrderId) return undefined;
+    loadOrderSupport(expandedOrderId);
+    const interval = window.setInterval(() => loadOrderSupport(expandedOrderId), 15000);
+    return () => window.clearInterval(interval);
+  }, [expandedOrderId, loadOrderSupport]);
+
+  const submitOrderSupport = async (orderId) => {
+    const message = String(supportDrafts[orderId] || "").trim();
+    if (message.length < 10) {
+      setSupportStates((current) => ({ ...current, [orderId]: { ...(current[orderId] || {}), submitError: "Please enter at least 10 characters." } }));
+      return;
+    }
+    setSupportStates((current) => ({ ...current, [orderId]: { ...(current[orderId] || {}), sending: true, submitError: "" } }));
+    try {
+      const response = await fetch(`${API_URL}/api/orders/${orderId}/support`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject: "order", message }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Unable to send your message.");
+      setSupportDrafts((current) => ({ ...current, [orderId]: "" }));
+      setSupportStates((current) => ({ ...current, [orderId]: { ...(current[orderId] || {}), sending: false, submitError: "", notice: "Message sent. Replies will appear here." } }));
+      await loadOrderSupport(orderId);
+    } catch (error) {
+      setSupportStates((current) => ({ ...current, [orderId]: { ...(current[orderId] || {}), sending: false, submitError: error.message || "Unable to send your message." } }));
+    }
+  };
 
   const handleReviewChange = (key, field, value) => {
     setReviewDrafts((current) => ({
@@ -703,6 +751,60 @@ function MyOrders() {
                             </button>
                           </div>
                         </div>
+
+
+                        <section className="my-order-support" aria-label="Order support conversation">
+                          <div className="my-order-support-heading">
+                            <div>
+                              <h3>Order help & support</h3>
+                              <p>Send a message about this order and check replies here.</p>
+                            </div>
+                            <span className="my-order-support-live">Updates automatically</span>
+                          </div>
+                          {(supportThreads[order.id] || []).length === 0 ? (
+                            <p className="my-order-support-empty">No support messages for this order yet.</p>
+                          ) : (
+                            <div className="my-order-support-thread">
+                              {(supportThreads[order.id] || []).map((request) => (
+                                <article className="my-order-support-message" key={request.requestId}>
+                                  <div className="my-order-support-message-meta">
+                                    <strong>{request.subject === "order" ? "Order support" : request.subject}</strong>
+                                    <span className={"my-order-support-status status-" + request.status}>{request.status.replace("-", " ")}</span>
+                                    <time>{formatDate(request.createdAt)}</time>
+                                  </div>
+                                  <p className="my-order-support-customer-message">{request.message}</p>
+                                  {request.adminReply ? (
+                                    <div className="my-order-support-reply">
+                                      <strong>FoodApp support replied</strong>
+                                      <p>{request.adminReply}</p>
+                                      <time>Updated {formatDate(request.updatedAt)}</time>
+                                    </div>
+                                  ) : (
+                                    <p className="my-order-support-pending">Our team has not replied yet.</p>
+                                  )}
+                                </article>
+                              ))}
+                            </div>
+                          )}
+                          {supportStates[order.id]?.loadError && <p className="my-order-support-error" role="status">{supportStates[order.id].loadError}</p>}
+                          <label className="my-order-support-compose">
+                            <span>What do you need help with?</span>
+                            <textarea
+                              rows={3}
+                              maxLength={3000}
+                              minLength={10}
+                              value={supportDrafts[order.id] || ""}
+                              onChange={(event) => setSupportDrafts((current) => ({ ...current, [order.id]: event.target.value }))}
+                              placeholder="Describe the issue with this order (at least 10 characters)…"
+                              disabled={Boolean(supportStates[order.id]?.sending)}
+                            />
+                          </label>
+                          {supportStates[order.id]?.submitError && <p className="my-order-support-error" role="alert">{supportStates[order.id].submitError}</p>}
+                          {supportStates[order.id]?.notice && <p className="my-order-support-success" role="status">{supportStates[order.id].notice}</p>}
+                          <button type="button" className="my-order-support-send" onClick={() => submitOrderSupport(order.id)} disabled={Boolean(supportStates[order.id]?.sending)}>
+                            {supportStates[order.id]?.sending ? "Sending…" : "Send to support"}
+                          </button>
+                        </section>
 
                         {["delivered", "picked_up"].includes(order.status) && (
                           <section className="my-order-reviews" aria-label="Review ordered food">
