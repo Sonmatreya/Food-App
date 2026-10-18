@@ -1,6 +1,8 @@
 const express = require("express");
 
 const protect = require("../middleware/authMiddleware");
+const { createOrderSupportRequest, getOrderSupportRequests } = require("../controllers/supportController");
+
 const {
   createOrder,
   getMyOrders,
@@ -24,6 +26,10 @@ router.post("/", createOrder);
 
 // GET /api/orders — current user's order history
 router.get("/", getMyOrders);
+
+// GET/POST /api/orders/:id/support — support thread for an owned order
+router.get("/:id/support", getOrderSupportRequests);
+router.post("/:id/support", createOrderSupportRequest);
 
 // GET /api/orders/:id — single order (owner only)
 router.get("/:id", getOrderById);
