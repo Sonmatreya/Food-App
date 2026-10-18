@@ -954,3 +954,40 @@
 .my-order-review-form button:disabled { cursor: not-allowed; opacity: 0.6; }
 .my-order-review-success { color: #16803c; margin: 0; }
 .my-order-review-error { color: #c62828; margin: 0; }
+
+
+/* Order-linked customer support conversation */
+.my-order-support {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid var(--border-color, #e6e6e6);
+  border-radius: 14px;
+  background: var(--card-bg, #fff);
+  color: var(--text-color, #242424);
+}
+.my-order-support-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+.my-order-support h3 { margin:0 0 5px; font-size:16px; }
+.my-order-support-heading p, .my-order-support-empty { margin:0 0 12px; color:var(--muted-text, #777); font-size:12px; }
+.my-order-support-live { flex-shrink:0; border-radius:20px; padding:5px 8px; background:#f0f9f3; color:#197342; font-size:10px; font-weight:700; }
+.my-order-support-thread { display:grid; gap:12px; margin:12px 0 16px; }
+.my-order-support-message { padding:13px; border:1px solid var(--border-color, #e9e9e9); border-radius:10px; background:var(--surface-bg, #fafafa); }
+.my-order-support-message-meta { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+.my-order-support-message-meta strong { font-size:12px; text-transform:capitalize; }
+.my-order-support-message-meta time, .my-order-support-reply time { margin-left:auto; color:#888; font-size:10px; }
+.my-order-support-status { padding:3px 7px; border-radius:20px; background:#fff2d9; color:#895c00; font-size:10px; text-transform:capitalize; }
+.my-order-support-status.status-resolved { background:#e7f7ed; color:#176b39; }
+.my-order-support-customer-message, .my-order-support-reply p { margin:10px 0 0; font-size:13px; line-height:1.55; overflow-wrap:anywhere; }
+.my-order-support-reply { margin-top:12px; padding:12px; border-left:3px solid #e31837; border-radius:0 8px 8px 0; background:rgba(227,24,55,.055); }
+.my-order-support-reply strong { font-size:12px; }
+.my-order-support-pending { margin:10px 0 0; color:#946200; font-size:11px; }
+.my-order-support-compose { display:grid; gap:7px; margin-top:12px; font-size:12px; font-weight:700; }
+.my-order-support-compose textarea { width:100%; box-sizing:border-box; padding:11px 12px; border:1px solid var(--border-color, #d8d8d8); border-radius:9px; background:var(--input-bg, #fff); color:inherit; font:inherit; font-weight:400; resize:vertical; }
+.my-order-support-send { margin-top:10px; min-height:38px; padding:0 16px; border:0; border-radius:8px; background:#e31837; color:#fff; font-size:12px; font-weight:750; cursor:pointer; }
+.my-order-support-send:disabled { opacity:.6; cursor:wait; }
+.my-order-support-error { color:#b42332; font-size:12px; }
+.my-order-support-success { color:#187443; font-size:12px; }
+@media (max-width:600px) {
+  .my-order-support { padding:13px; }
+  .my-order-support-heading { flex-direction:column; }
+  .my-order-support-message-meta time { margin-left:0; }
+}
