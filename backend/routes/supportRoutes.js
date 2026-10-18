@@ -1,6 +1,6 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
-const { createSupportRequest } = require("../controllers/supportController");
+const { createSupportRequest, trackSupportRequest } = require("../controllers/supportController");
 
 const router = express.Router();
 
@@ -13,5 +13,6 @@ const supportRequestLimiter = rateLimit({
 });
 
 router.post("/", supportRequestLimiter, createSupportRequest);
+router.post("/track", rateLimit({ windowMs: 15 * 60 * 1000, limit: 20, standardHeaders: "draft-8", legacyHeaders: false }), trackSupportRequest);
 
 module.exports = router;
