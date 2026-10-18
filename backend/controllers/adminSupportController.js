@@ -56,7 +56,11 @@ const updateSupportRequestStatus = async (req, res) => {
       return res.status(400).json({ success: false, message: "Choose a valid support status." });
     }
 
-    const request = await SupportRequest.findByIdAndUpdate(id, { $set: { status } }, { new: true, runValidators: true }).lean();
+    const updates = { status };
+    if (adminReply !== undefined) updates.adminReply = adminReply.slice(0, 3000);
+    if (resolutionNote !== undefined) updates.resolutionNote = resolutionNote.slice(0, 3000);
+    updates.resolvedAt = status === "resolved" ? new Date() : null;
+    const request = await SupportRequest.findByIdAndUpdate(id, { $set: updates }, { new: true, runValidators: true }).lean();
     if (!request) return res.status(404).json({ success: false, message: "Support request not found." });
     return res.json({ success: true, message: "Support status updated.", request });
   } catch (error) {
