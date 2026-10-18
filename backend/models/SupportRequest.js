@@ -7,6 +7,9 @@ const supportRequestSchema = new mongoose.Schema(
     email: { type: String, required: true, trim: true, lowercase: true, maxlength: 254 },
     phone: { type: String, trim: true, maxlength: 30, default: "" },
     orderNumber: { type: String, trim: true, maxlength: 100, default: "" },
+    // Optional links used when a request is created from an authenticated order.
+    orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order", default: null, index: true },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User", default: null, index: true },
     subject: {
       type: String,
       required: true,
