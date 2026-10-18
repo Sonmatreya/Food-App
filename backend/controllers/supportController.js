@@ -1,6 +1,8 @@
 const crypto = require("crypto");
 const mongoose = require("mongoose");
 const SupportRequest = require("../models/SupportRequest");
+const Order = require("../models/Order");
+const User = require("../models/User");
 
 const hashAccessToken = (token) => crypto.createHash("sha256").update(token).digest("hex");
 
@@ -124,4 +126,97 @@ const trackSupportRequest = async (req, res) => {
   }
 };
 
-module.exports = { createSupportRequest, trackSupportRequest };
+
+const createOrderSupportRequest = async (req, res) => {
+  try {
+    const orderId = String(req.params.id || "").trim();
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ success: false, message: "Invalid order reference." });
+    }
+
+    const order = await Order.findOne({ _id: orderId, userId: req.user.userId }).lean();
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found." });
+    }
+
+    const subject = String(req.body?.subject || "order").trim();
+    const message = String(req.body?.message || "").trim();
+    if (!allowedSubjects.has(subject)) {
+      return res.status(400).json({ success: false, message: "Please choose a valid support topic." });
+    }
+    if (message.length < 10 || message.length > 3000) {
+      return res.status(400).json({ success: false, message: "Your message must be between 10 and 3000 characters." });
+    }
+
+    const user = await User.findById(req.user.userId).select("name email phone").lean();
+    if (!user?.email) {
+      return res.status(400).json({ success: false, message: "Add an email address to your account before contacting support." });
+    }
+    const nameParts = String(user.name || "Customer").trim().split(/\\s+/);
+    const request = await SupportRequest.create({
+      firstName: nameParts.shift() || "Customer",
+      lastName: nameParts.join(" ") || "-",
+      email: user.email,
+      phone: user.phone || "",
+      orderNumber: String(order.orderNumber || order._id),
+      orderId: order._id,
+      userId: user._id,
+      subject,
+      message,
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Your message was added to this order. Support will reply here.",
+      request: {
+        requestId: String(request._id),
+        orderId: String(order._id),
+        orderNumber: request.orderNumber,
+        subject: request.subject,
+        message: request.message,
+        status: request.status,
+        adminReply: request.adminReply || "",
+        createdAt: request.createdAt,
+        updatedAt: request.updatedAt,
+      },
+    });
+  } catch (error) {
+    console.error("Create order support request failed:", error);
+    return res.status(500).json({ success: false, message: "Unable to send your message right now. Please try again." });
+  }
+};
+
+const getOrderSupportRequests = async (req, res) => {
+  try {
+    const orderId = String(req.params.id || "").trim();
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      return res.status(400).json({ success: false, message: "Invalid order reference." });
+    }
+    const order = await Order.findOne({ _id: orderId, userId: req.user.userId }).select("_id").lean();
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found." });
+    }
+    const requests = await SupportRequest.find({ orderId: order._id, userId: req.user.userId })
+      .select("subject message status adminReply createdAt updatedAt resolvedAt")
+      .sort({ createdAt: -1 })
+      .lean();
+    return res.json({
+      success: true,
+      requests: requests.map((request) => ({
+        requestId: String(request._id),
+        subject: request.subject,
+        message: request.message,
+        status: request.status,
+        adminReply: request.adminReply || "",
+        createdAt: request.createdAt,
+        updatedAt: request.updatedAt,
+        resolvedAt: request.resolvedAt || null,
+      })),
+    });
+  } catch (error) {
+    console.error("Get order support requests failed:", error);
+    return res.status(500).json({ success: false, message: "Unable to load order messages right now." });
+  }
+};
+
+module.exports = { createSupportRequest, trackSupportRequest, createOrderSupportRequest, getOrderSupportRequests };
