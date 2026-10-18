@@ -14,6 +14,9 @@ const supportRequestSchema = new mongoose.Schema(
     },
     message: { type: String, required: true, trim: true, minlength: 10, maxlength: 3000 },
     status: { type: String, enum: ["new", "in-progress", "resolved"], default: "new", index: true },
+    adminReply: { type: String, trim: true, maxlength: 3000, default: "" },
+    resolutionNote: { type: String, trim: true, maxlength: 3000, default: "" },
+    resolvedAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
