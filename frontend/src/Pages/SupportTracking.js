@@ -52,6 +52,16 @@ export default function SupportTracking() {
     }
   }, [location.search, location.hash, fetchRequest]);
 
+  // Refresh the customer's view periodically so newly saved admin replies appear
+  // without requiring the customer to manually reload the tracking page.
+  useEffect(() => {
+    if (!request || !requestId || !trackingToken) return undefined;
+    const timer = window.setInterval(() => {
+      fetchRequest(requestId, trackingToken);
+    }, 15000);
+    return () => window.clearInterval(timer);
+  }, [request, requestId, trackingToken, fetchRequest]);
+
   return (
     <main className="support-tracking-page">
       <header className="support-tracking-hero">
