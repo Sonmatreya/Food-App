@@ -138,4 +138,5 @@ const analyzeSupportRequest = async (req, res) => {
     return res.status(500).json({ success: false, message: "Unable to analyze this support request." });
   }
 };
-\nmodule.exports = { listSupportRequests, updateSupportRequestStatus, analyzeSupportRequest };
+
+module.exports = { listSupportRequests, updateSupportRequestStatus, analyzeSupportRequest };
