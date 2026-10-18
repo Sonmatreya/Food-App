@@ -46,7 +46,9 @@ const listSupportRequests = async (req, res) => {
 const updateSupportRequestStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const status = String(req.body?.status || "");
+    const status = req.body?.status === undefined ? undefined : String(req.body.status);
+    const adminReply = req.body?.adminReply === undefined ? undefined : String(req.body.adminReply).trim();
+    const resolutionNote = req.body?.resolutionNote === undefined ? undefined : String(req.body.resolutionNote).trim();
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: "Invalid support request." });
     }
