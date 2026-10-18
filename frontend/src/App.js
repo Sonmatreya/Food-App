@@ -40,6 +40,7 @@ import AdminMenu from "./Pages/AdminMenu";
 import AdminCoupons from "./Pages/AdminCoupons";
 import AdminStaff from "./Pages/AdminStaff";
 import AdminReviews from "./Pages/AdminReviews";
+import AdminSupport from "./Pages/AdminSupport";
 import AIAssistant from "./Components/AIAssistant";
 import { AuthProvider } from "./context/AuthContext";
 import { CartProvider } from "./context/CartContext";
@@ -83,6 +84,7 @@ function AppRoutes() {
           <Route path="coupons" element={<AdminCoupons />} />
           <Route path="staff" element={<AdminStaff />} />
           <Route path="reviews" element={<AdminReviews />} />
+          <Route path="support" element={<AdminSupport />} />
         </Route>
 
         <Route path="/cart" element={<ProtectedRoute><Cart /></ProtectedRoute>} />
