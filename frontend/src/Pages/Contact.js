@@ -139,7 +139,7 @@ function Contact() {
               <strong>Support reference number</strong><code>{submission.requestId}</code>
               <strong>Private tracking key</strong><code>{submission.trackingToken}</code>
               <p>Keep these two values somewhere safe. The tracking key is shown only now; if you lose it, a new support request will be needed.</p>
-              <Link to="/support/track" className="contactTrackingLink">Track request / view admin reply →</Link>
+              <Link to={`/support/track?requestId=${encodeURIComponent(submission.requestId)}#key=${encodeURIComponent(submission.trackingToken)}`} className="contactTrackingLink">Open secure tracking page →</Link>
             </div>}
           </div>}
           <button type="submit" disabled={submitting}>{submitting ? "Sending request…" : "Send support request"}</button>
