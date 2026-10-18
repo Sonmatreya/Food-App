@@ -213,3 +213,5 @@
 .contactFormFeedback.success { border-color: #b9e7ce; background: #f0fff6; color: #176b3a; }
 .contactFormFeedback.error { border-color: #f0c4cc; background: #fff2f4; color: #a3132c; }
 .contactHelpFormSection #contact-form button[type="submit"]:disabled { cursor: wait; opacity: .7; }
+
+.contactFormFeedback>p{margin:0}.contactTrackingCredentials{display:grid;gap:8px;margin-top:12px}.contactTrackingCredentials strong{font-size:11px}.contactTrackingCredentials code{display:block;padding:10px;border:1px solid #cbe8d7;border-radius:8px;background:#fff;color:#176b3a;font-size:11px;overflow-wrap:anywhere;user-select:all}.contactTrackingCredentials p{margin:3px 0;color:#35684a;font-size:11px;line-height:1.6}.contactTrackingLink{display:inline-flex;justify-content:center;margin-top:5px;padding:11px 13px;border-radius:9px;background:#176b3a;color:#fff;font-size:12px;font-weight:850;text-decoration:none}
