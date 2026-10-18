@@ -59,7 +59,9 @@ function Contact() {
 
       setSubmission({
         type: "success",
-        text: `Your support request was received successfully. Reference: ${data.requestId || "saved"}.`,
+        text: "Your support request was received. Save both details below to check its status and read the admin reply later.",
+        requestId: data.requestId,
+        trackingToken: data.trackingToken,
       });
       setMessage("");
       formElement.reset();
@@ -131,7 +133,15 @@ function Contact() {
             <div className="field-group"><label htmlFor="subject">Support topic <span>*</span></label><select id="subject" name="subject" value={subject} onChange={(event) => setSubject(event.target.value)} required><option value="order">Order status or delivery</option><option value="payment">Payment or refund</option><option value="food">Food or item issue</option><option value="feedback">Feedback</option><option value="general">General question</option></select></div>
           </div>
           <div className="field-group"><label htmlFor="message">Describe your issue <span>*</span></label><textarea id="message" name="message" rows="5" value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Tell us what happened and what help you need…" minLength={10} maxLength={3000} required /></div>
-          {submission.text && <p className={`contactFormFeedback ${submission.type}`} role={submission.type === "error" ? "alert" : "status"}>{submission.text}</p>}
+          {submission.text && <div className={`contactFormFeedback ${submission.type}`} role={submission.type === "error" ? "alert" : "status"}>
+            <p>{submission.text}</p>
+            {submission.type === "success" && submission.requestId && <div className="contactTrackingCredentials">
+              <strong>Support reference number</strong><code>{submission.requestId}</code>
+              <strong>Private tracking key</strong><code>{submission.trackingToken}</code>
+              <p>Keep these two values somewhere safe. The tracking key is shown only now; if you lose it, a new support request will be needed.</p>
+              <Link to="/support/track" className="contactTrackingLink">Track request / view admin reply →</Link>
+            </div>}
+          </div>}
           <button type="submit" disabled={submitting}>{submitting ? "Sending request…" : "Send support request"}</button>
           <p className="contactFormSetupNote">Never share passwords, OTPs, or full card details in a support request.</p>
         </form>
