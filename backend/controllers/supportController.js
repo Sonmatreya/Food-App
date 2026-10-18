@@ -1,4 +1,8 @@
+const crypto = require("crypto");
+const mongoose = require("mongoose");
 const SupportRequest = require("../models/SupportRequest");
+
+const hashAccessToken = (token) => crypto.createHash("sha256").update(token).digest("hex");
 
 const allowedSubjects = new Set(["order", "payment", "food", "feedback", "general"]);
 
@@ -25,6 +29,8 @@ const createSupportRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: "Your message must be between 10 and 3000 characters." });
     }
 
+    // A random, unguessable access key lets the customer check this request without an account.
+    const trackingToken = crypto.randomBytes(32).toString("hex");
     const request = await SupportRequest.create({
       firstName,
       lastName,
@@ -33,6 +39,7 @@ const createSupportRequest = async (req, res) => {
       orderNumber,
       subject,
       message,
+      supportAccessTokenHash: hashAccessToken(trackingToken),
     });
 
     // Email notifications are optional; the request is saved in MongoDB regardless.
@@ -70,6 +77,7 @@ const createSupportRequest = async (req, res) => {
       success: true,
       message: "Your support request has been received.",
       requestId: request._id,
+      trackingToken,
     });
   } catch (error) {
     console.error("Create support request failed:", error);
@@ -77,4 +85,43 @@ const createSupportRequest = async (req, res) => {
   }
 };
 
-module.exports = { createSupportRequest };
+const trackSupportRequest = async (req, res) => {
+  try {
+    const requestId = String(req.body?.requestId || "").trim();
+    const trackingToken = String(req.body?.trackingToken || "").trim();
+    if (!mongoose.Types.ObjectId.isValid(requestId) || !/^[a-f0-9]{64}$/i.test(trackingToken)) {
+      return res.status(400).json({ success: false, message: "Enter a valid reference number and tracking key." });
+    }
+
+    const request = await SupportRequest.findById(requestId).select("+supportAccessTokenHash").lean();
+    if (!request || !request.supportAccessTokenHash) {
+      return res.status(404).json({ success: false, message: "We couldn't find that request. Check the reference number and tracking key." });
+    }
+    const submittedHash = hashAccessToken(trackingToken);
+    const expected = Buffer.from(request.supportAccessTokenHash, "hex");
+    const actual = Buffer.from(submittedHash, "hex");
+    if (expected.length !== actual.length || !crypto.timingSafeEqual(expected, actual)) {
+      return res.status(404).json({ success: false, message: "We couldn't find that request. Check the reference number and tracking key." });
+    }
+
+    return res.json({
+      success: true,
+      request: {
+        requestId: String(request._id),
+        firstName: request.firstName,
+        subject: request.subject,
+        message: request.message,
+        status: request.status,
+        adminReply: request.adminReply || "",
+        createdAt: request.createdAt,
+        updatedAt: request.updatedAt,
+        resolvedAt: request.resolvedAt || null,
+      },
+    });
+  } catch (error) {
+    console.error("Track support request failed:", error.message);
+    return res.status(500).json({ success: false, message: "Unable to check this request right now. Please try again." });
+  }
+};
+
+module.exports = { createSupportRequest, trackSupportRequest };
