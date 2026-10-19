@@ -16,4 +16,5 @@ module.exports = {
   passwordResetLimiter: createLimiter({ windowMs: 15 * 60 * 1000, limit: 5 }),
   otpGenerateLimiter: createLimiter({ windowMs: 15 * 60 * 1000, limit: 6 }),
   otpVerifyLimiter: createLimiter({ windowMs: 10 * 60 * 1000, limit: 10 }),
+  aiChatLimiter: createLimiter({ windowMs: 15 * 60 * 1000, limit: 20 }),
 };
