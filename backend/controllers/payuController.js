@@ -148,11 +148,10 @@ const processPayUResponse = async (req, res, isWebhook = false) => {
         await order.save();
       }
     } else if (["failure", "usercancelled", "cancel"].includes(status) && order.paymentStatus !== "paid") {
+      // A failed payment attempt is not the same as an operational order cancellation.
+      // Keep the order's lifecycle status intact so the customer/admin can review it
+      // and a legitimate retry or delayed verified success callback is not blocked.
       order.paymentStatus = "failed";
-      if (order.status !== "cancelled") {
-        order.status = "cancelled";
-        order.statusHistory.push({ status: "cancelled", changedAt: new Date(), changedBy: order.userId });
-      }
       await order.save();
     }
 
