@@ -159,8 +159,10 @@ const processPayUResponse = async (req, res, isWebhook = false) => {
     if (isWebhook) return res.status(200).send("OK");
 
     const result = status === "success" && order.paymentStatus === "paid" ? "success" : "failed";
+    // Use the same final confirmation page for mobile and desktop PayU returns.
+    // Keep /payment-success available for existing bookmarks and older links.
     return res.redirect(303, result === "success"
-      ? `${CLIENT_URL}/payment-success/${order._id}?payment=success`
+      ? `${CLIENT_URL}/order-success/${order._id}?payment=success`
       : `${CLIENT_URL}/payment-result?status=failed&orderId=${order._id}`);
   } catch (error) {
     console.error("PayU response handling error:", error.message);
