@@ -67,3 +67,15 @@ The project already contains a broad set of pages and components. Upgrade the ex
 - **Local build / tests executed:** no.
 - **Render deployment / live API verified:** no.
 - **Next recommended implementation:** Phase 1 stabilization checks, then order-centred support integration.
+
+## Implementation log (2026-10-19)
+
+The following source changes have since been committed directly to `main`:
+
+- Added `backend/scripts/check-syntax.js` and `npm run check` in `backend/package.json` to make backend JavaScript syntax checks repeatable.
+- Added `docs/ENVIRONMENT_SETUP.md` documenting required backend variables, optional AI settings, PayU test-mode configuration, and deployment checks. It does not assert that Render's live variables have been verified.
+- Added a 20-request / 15-minute rate limit to the public FoodAI chat endpoint.
+- Corrected whitespace splitting when deriving a customer's first and last name for an order-linked support request.
+- Restored the PayU success redirect to `/payment-success/:orderId?payment=success`, and the payment confirmation page now automatically advances to `/order-success/:orderId?payment=success` after a short display. The order page shows its success heading when it receives that return query.
+
+These changes were verified by fetching the committed files from GitHub `main`. They have **not** been locally built or run, and the PayU flow has **not** been tested end-to-end. The next work remains a proper frontend build/backend syntax run, followed by targeted order/support/admin tests and a live Render smoke test.
