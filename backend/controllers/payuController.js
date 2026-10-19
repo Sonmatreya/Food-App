@@ -157,7 +157,10 @@ const processPayUResponse = async (req, res, isWebhook = false) => {
 
     if (isWebhook) return res.status(200).send("OK");
 
-    const result = status === "success" && order.paymentStatus === "paid" ? "success" : "failed";
+    // Base the browser redirect on the persisted order state, not only this
+    // callback's status. A late duplicate failure callback must not show a failed
+    // payment page after an earlier verified success already marked the order paid.
+    const result = order.paymentStatus === "paid" ? "success" : "failed";
     // Use the same final confirmation page for mobile and desktop PayU returns.
     // Keep /payment-success available for existing bookmarks and older links.
     return res.redirect(303, result === "success"
