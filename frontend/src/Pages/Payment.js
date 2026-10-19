@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
 import { resolveFoodImage } from "../utils/foodImage";
@@ -14,6 +14,9 @@ function Payment() {
 
   const [paymentMethod, setPaymentMethod] = useState(orderData?.deliveryType === "pickup" ? "payu" : "cod");
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
+  // A ref closes the tiny window before React re-renders a disabled button.
+  // This prevents rapid double-clicks from creating two orders or payment sessions.
+  const submissionLock = useRef(false);
   const [orderError, setOrderError] = useState("");
 
   /*
@@ -63,7 +66,8 @@ function Payment() {
   );
 
   const handlePlaceOrder = async () => {
-    if (isPlacingOrder) return;
+    if (submissionLock.current || isPlacingOrder) return;
+    submissionLock.current = true;
     setOrderError("");
 
     setIsPlacingOrder(true);
@@ -147,6 +151,7 @@ function Payment() {
       console.error("Place order error:", placeError);
       setOrderError("Unable to reach the server. Please check your connection and try again.");
     } finally {
+      submissionLock.current = false;
       setIsPlacingOrder(false);
     }
   };
