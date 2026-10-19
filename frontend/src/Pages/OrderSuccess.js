@@ -270,10 +270,12 @@ function OrderSuccess() {
   const cartItems = items;
 
   // Phase 2D — celebration hero only right after checkout
+  // Preserve the original PayU return experience: when PayU redirects back
+  // with payment=success, show the order-placed confirmation hero on this page.
+  // The payment status shown in the payment card still comes from the backend order.
   const justPlaced = Boolean(
     routerLocation.state?.justPlaced ||
-    (new URLSearchParams(routerLocation.search).get("payment") === "success" &&
-      String(order.paymentStatus || "").toLowerCase() === "paid")
+    new URLSearchParams(routerLocation.search).get("payment") === "success"
   );
 
   const isPickup = deliveryType === "pickup";
