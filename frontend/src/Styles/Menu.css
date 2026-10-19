@@ -657,3 +657,61 @@ body.dark-mode .skeletonImage,body.dark-mode .skeletonLine { background:linear-g
   .menuImage > img { transition: none; }
   .menuCard:hover .menuImage > img { transform: none; }
 }
+
+
+/* Clear active search, category and sorting in one predictable action. */
+.menuResultHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.menuResetFilters {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border: 1px solid #f0cbd1;
+  border-radius: 999px;
+  background: #fff;
+  color: #c91530;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .2s ease;
+}
+
+.menuResetFilters span {
+  font-size: 17px;
+  line-height: 1;
+}
+
+.menuResetFilters:hover {
+  background: #fff0f2;
+  border-color: #e31837;
+  transform: translateY(-1px);
+}
+
+.menuResetFilters:focus-visible {
+  outline: 3px solid rgba(227, 24, 55, .25);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .menuResultHeader {
+    align-items: flex-start;
+  }
+
+  .menuResetFilters {
+    flex-shrink: 0;
+    padding: 8px 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .menuResetFilters {
+    transition: none;
+  }
+}
