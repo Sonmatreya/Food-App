@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { API_URL } from "../config/api";
 import { useCart } from "../context/CartContext";
 import "../Styles/PaymentSuccess.css";
 
 function PaymentSuccess() {
   const { orderId } = useParams();
+  const navigate = useNavigate();
   const [params] = useSearchParams();
   const { clearCart } = useCart();
   const [order, setOrder] = useState(null);
@@ -33,6 +34,11 @@ function PaymentSuccess() {
         if (active) {
           setOrder(data.order);
           clearCart();
+          // Match the original checkout journey: show Payment Successful briefly,
+          // then continue automatically to the full Order Placed Successfully page.
+          window.setTimeout(() => {
+            navigate(`/order-success/${orderId}?payment=success`, { replace: true });
+          }, 2200);
         }
       } catch (err) {
         if (active) setError(err.message || "Unable to verify your payment.");
@@ -42,7 +48,7 @@ function PaymentSuccess() {
     };
     loadOrder();
     return () => { active = false; };
-  }, [orderId, params, clearCart]);
+  }, [orderId, params, clearCart, navigate]);
 
   if (loading) {
     return <main className="paymentSuccessPage"><div className="paymentSuccessCard"><div className="paymentSuccessSpinner" /><h1>Confirming your payment</h1><p>Please wait while we verify your order.</p></div></main>;
