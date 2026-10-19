@@ -316,6 +316,8 @@ function OrderSuccess() {
     upi: "UPI",
     card: "Credit / Debit Card",
     netbanking: "Net Banking",
+    wallet: "Wallet",
+    payu: "PayU Test Checkout",
     cod: "Cash on Delivery",
     demo: "Demo Payment",
   };
@@ -323,6 +325,22 @@ function OrderSuccess() {
   const formattedPaymentMethod =
     paymentMethodNames[paymentMethod] ||
     "Online Payment";
+
+  const paymentStatus = String(order.paymentStatus || "pending").toLowerCase();
+  const paymentStatusLabel = {
+    paid: "Paid",
+    pending: "Awaiting payment confirmation",
+    failed: "Payment failed",
+    cod_pending: "Pay on delivery",
+  }[paymentStatus] || "Payment status unavailable";
+
+  const paymentStatusMessage = paymentStatus === "paid"
+    ? "Payment confirmed successfully."
+    : paymentStatus === "failed"
+    ? "The payment attempt failed. Check My Orders before retrying to avoid duplicate orders."
+    : paymentStatus === "cod_pending"
+    ? "Payment will be collected when your order is delivered."
+    : "Payment has not yet been confirmed. Refresh this page in a moment or check My Orders before trying again.";
 
   const formattedDate = orderDate
     ? new Date(orderDate).toLocaleString()
@@ -755,12 +773,10 @@ function OrderSuccess() {
                   {formattedPaymentMethod}
                 </h3>
 
-                <p>
-                  {paymentMethod === "cod"
-                    ? "Payment will be collected when your order is delivered."
-                    : paymentMethod === "demo"
-                    ? "Demo payment completed successfully. No real money was charged."
-                    : "Payment will be processed securely through the payment gateway."}
+                <p className={`paymentStatusMessage paymentStatus-${paymentStatus}`} role="status">
+                  <strong>{paymentStatusLabel}.</strong> {paymentMethod === "demo"
+                    ? "Demo payment only; no real money was charged."
+                    : paymentStatusMessage}
                 </p>
 
               </div>
