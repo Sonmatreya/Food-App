@@ -40,14 +40,6 @@ function OrderSuccess() {
   const [handoverLoading, setHandoverLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
 
-  // A verified PayU return arrives after a full-page redirect; clear the cart only on success.
-  useEffect(() => {
-    if (new URLSearchParams(routerLocation.search).get("payment") === "success" && !payuCartCleared.current) {
-      payuCartCleared.current = true;
-      clearCart();
-    }
-  }, [routerLocation.search, clearCart]);
-
   // Fetch the real order from the backend
   useEffect(() => {
     const fetchOrder = async () => {
@@ -79,6 +71,13 @@ function OrderSuccess() {
         } else {
           setOrder(data.order);
           setError("");
+
+          // A query string is not proof of payment: clear the cart only after the API confirms paid status.
+          const paymentReturn = new URLSearchParams(routerLocation.search).get("payment") === "success";
+          if (paymentReturn && String(data.order.paymentStatus || "").toLowerCase() === "paid" && !payuCartCleared.current) {
+            payuCartCleared.current = true;
+            clearCart();
+          }
         }
       } catch (fetchError) {
         console.error("Fetch order error:", fetchError);
@@ -97,7 +96,7 @@ function OrderSuccess() {
       setError("We could not find your order information.");
       setLoading(false);
     }
-  }, [orderId]);
+  }, [orderId, routerLocation.search, clearCart]);
 
   const refreshOrder = useCallback(async () => {
     const response = await fetch(
