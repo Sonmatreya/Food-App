@@ -272,7 +272,8 @@ function OrderSuccess() {
   // Phase 2D — celebration hero only right after checkout
   const justPlaced = Boolean(
     routerLocation.state?.justPlaced ||
-    new URLSearchParams(routerLocation.search).get("payment") === "success"
+    (new URLSearchParams(routerLocation.search).get("payment") === "success" &&
+      String(order.paymentStatus || "").toLowerCase() === "paid")
   );
 
   const isPickup = deliveryType === "pickup";
