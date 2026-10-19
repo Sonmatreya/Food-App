@@ -83,7 +83,14 @@ function Home() {
      ======================================================= */
 
   const popularFoods = [...availableFoods]
-    .sort((a, b) => Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured)))
+    .sort((a, b) => {
+      const featuredDifference = Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
+      if (featuredDifference) return featuredDifference;
+      const ratingA = Number(a.rating || 0);
+      const ratingB = Number(b.rating || 0);
+      if (ratingA !== ratingB) return ratingB - ratingA;
+      return Number(b.ratingCount || 0) - Number(a.ratingCount || 0);
+    })
     .slice(0, 4);
   const featuredFood = availableFoods.find((food) => food.isFeatured) || popularFoods[0];
   const isCartableFood = (food) => /^[a-f\d]{24}$/i.test(String(food?._id || food?.id || ""));
@@ -218,9 +225,9 @@ function Home() {
             <span><VerifiedOutlinedIcon /> Browse live menu items</span>
           </div>
           <div className="heroEditorialStats">
-            <div><strong>{availableFoods.length}</strong><span>menu items</span></div>
-            <div><strong>01</strong><span>easy destination</span></div>
-            <div><strong>∞</strong><span>ways to crave</span></div>
+            <div><strong>{availableFoods.length}</strong><span>{availableFoods.length === 1 ? "dish available" : "dishes available"}</span></div>
+            <div><strong>{categories.length}</strong><span>{categories.length === 1 ? "category" : "categories"}</span></div>
+            <div><strong>₹</strong><span>clear menu pricing</span></div>
           </div>
         </div>
 
@@ -342,9 +349,19 @@ function Home() {
           </p>
         )}
         {foodsLoading && (
-          <p className="homeMenuNotice" role="status" aria-live="polite">
-            Checking today's menu…
-          </p>
+          <div className="foodGrid homeFoodSkeletonGrid" role="status" aria-label="Loading menu items" aria-live="polite">
+            {Array.from({ length: 4 }, (_, index) => (
+              <article className="foodCard homeFoodSkeleton" key={`food-skeleton-${index}`} aria-hidden="true">
+                <div className="foodCardImage homeFoodSkeletonImage" />
+                <div className="foodCardContent">
+                  <span className="homeFoodSkeletonLine homeFoodSkeletonShort" />
+                  <span className="homeFoodSkeletonLine homeFoodSkeletonTitle" />
+                  <span className="homeFoodSkeletonLine" />
+                  <div className="foodCardBottom"><span className="homeFoodSkeletonLine homeFoodSkeletonPrice" /><span className="homeFoodSkeletonButton" /></div>
+                </div>
+              </article>
+            ))}
+          </div>
         )}
         {!foodsLoading && !foodsError && !popularFoods.length && (
           <p className="homeMenuNotice" role="status">
@@ -363,7 +380,7 @@ function Home() {
                   to={`/food/${foodId}`}
                   className="foodCardImage"
                 >
-                  <img src={food.image || BannerImage} alt={food.name} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }} />
+                  <img src={resolveFoodImage(food.image) || BannerImage} alt={food.name} loading="lazy" onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }} />
                   {Number.isFinite(Number(food.rating)) && Number(food.rating) > 0 && Number(food.ratingCount) > 0 && <span className="foodRating"><StarRoundedIcon />{Number(food.rating).toFixed(1)}</span>}
                 </Link>
 
