@@ -41,12 +41,6 @@ const getCustomers = async (req, res) => {
 
     const verification = String(req.query.verification || "").trim();
 
-    if (search.length > 100) {
-      return res.status(400).json({
-        success: false,
-        message: "Search must be 100 characters or fewer",
-      });
-    }
 
     if (verification && !["verified", "unverified"].includes(verification)) {
       return res.status(400).json({
