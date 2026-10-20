@@ -105,6 +105,9 @@ const getAdminOrders = async (req, res) => {
 
     const search = String(req.query.search || "").trim();
     const safeSearch = search.replace(/[.*+?^$\{\}()|[\]\\]/g, (character) => "\\" + character);
+    if (search.length > 100) {
+      return res.status(400).json({ success: false, message: "Search must be 100 characters or fewer" });
+    }
     const status = String(req.query.status || "").trim();
     const paymentStatus = String(req.query.paymentStatus || "").trim();
     const deliveryType = String(req.query.deliveryType || "").trim();
