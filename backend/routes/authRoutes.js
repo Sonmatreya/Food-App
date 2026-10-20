@@ -1,6 +1,6 @@
 const express = require("express");
 const passport = require("../config/googleAuth");
-const { clientUrl } = require("../config/env");
+const { clientUrl, googleOAuthEnabled } = require("../config/env");
 
 const {
   register,
@@ -25,6 +25,16 @@ const {
 } = require("../middleware/rateLimiters");
 
 const router = express.Router();
+
+const requireGoogleOAuth = (req, res, next) => {
+  if (!googleOAuthEnabled) {
+    return res.status(503).json({
+      success: false,
+      message: "Google login is not configured on this server. Use email/phone login instead.",
+    });
+  }
+  return next();
+};
 
 // ===============================
 // Normal Authentication
@@ -54,6 +64,7 @@ router.put("/password", protect, changePassword);
 router.get(
   "/google",
   googleAuthLimiter,
+  requireGoogleOAuth,
   passport.authenticate("google", {
     scope: ["profile", "email"],
   })
@@ -63,6 +74,7 @@ router.get(
 router.get(
   "/google/callback",
   googleAuthLimiter,
+  requireGoogleOAuth,
   passport.authenticate("google", {
     session: false,
     failureRedirect:
