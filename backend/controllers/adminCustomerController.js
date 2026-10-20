@@ -34,7 +34,7 @@ const getCustomers = async (req, res) => {
     );
 
     const search = String(req.query.search || "").trim();
-    const safeSearch = search.replace(/[.*+?^$\\{\\}()|[\\]\\\\]/g, (character) => "\\\\" + character);
+    const safeSearch = search.replace(/[.*+?^$\{\}()|[\]\\]/g, (character) => "\\" + character);
     if (search.length > 100) {
       return res.status(400).json({ success: false, message: "Search must be 100 characters or fewer" });
     }
