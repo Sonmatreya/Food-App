@@ -19,6 +19,14 @@ const getStaff = async (req, res) => {
     const search = String(req.query.search || "").trim();
     const role = String(req.query.role || "all").trim().toLowerCase();
 
+    if (search.length > 100) {
+      return res.status(400).json({ success: false, message: "Search must be 100 characters or fewer" });
+    }
+
+    if (!["all", "admin", "customer"].includes(role)) {
+      return res.status(400).json({ success: false, message: "Invalid staff role filter" });
+    }
+
     const filter = {};
     if (role === "admin" || role === "customer") {
       filter.role = role;
