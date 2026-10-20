@@ -34,6 +34,7 @@ const getCustomers = async (req, res) => {
     );
 
     const search = String(req.query.search || "").trim();
+    const escapedSearch = search.split("").map((character) => ". *+?^${}()|[]\\".replace(" ", "").includes(character) ? "\\" + character : character).join("");
     const verification = String(req.query.verification || "").trim();
 
     if (verification && !["verified", "unverified"].includes(verification)) {
@@ -53,9 +54,9 @@ const getCustomers = async (req, res) => {
 
     if (search) {
       filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { phone: { $regex: search, $options: "i" } },
+        { name: { $regex: escapedSearch, $options: "i" } },
+        { email: { $regex: escapedSearch, $options: "i" } },
+        { phone: { $regex: escapedSearch, $options: "i" } },
       ];
     }
 
