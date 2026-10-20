@@ -23,7 +23,19 @@ const clientUrl = normalizeUrl(
   process.env.CLIENT_URL || 'http://localhost:3000',
   'CLIENT_URL'
 );
-const googleCallbackUrl = required('GOOGLE_CALLBACK_URL');
+const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim() || '';
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim() || '';
+const rawGoogleCallbackUrl = process.env.GOOGLE_CALLBACK_URL?.trim() || '';
+const googleOAuthConfigured = Boolean(googleClientId && googleClientSecret && rawGoogleCallbackUrl);
+const googleOAuthPartiallyConfigured = Boolean(googleClientId || googleClientSecret || rawGoogleCallbackUrl);
+
+if (googleOAuthPartiallyConfigured && !googleOAuthConfigured) {
+  throw new Error('Google OAuth is partially configured. Set GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, and GOOGLE_CALLBACK_URL together, or leave all three unset to disable Google login.');
+}
+
+const googleCallbackUrl = googleOAuthConfigured
+  ? normalizeUrl(rawGoogleCallbackUrl, 'GOOGLE_CALLBACK_URL') + new URL(rawGoogleCallbackUrl).pathname
+  : '';
 const trustProxyValue = process.env.TRUST_PROXY;
 const configuredOrigins = (process.env.CORS_ORIGINS || clientUrl)
   .split(',')
@@ -40,12 +52,10 @@ module.exports = {
   captchaSecret: required('CAPTCHA_SECRET'),
   clientUrl,
   corsOrigins: [...new Set([clientUrl, ...configuredOrigins])],
-  googleClientId: required('GOOGLE_CLIENT_ID'),
-  googleClientSecret: required('GOOGLE_CLIENT_SECRET'),
-  googleCallbackUrl: normalizeUrl(
-    googleCallbackUrl,
-    'GOOGLE_CALLBACK_URL'
-  ) + new URL(googleCallbackUrl).pathname,
+  googleClientId,
+  googleClientSecret,
+  googleCallbackUrl,
+  googleOAuthEnabled: googleOAuthConfigured,
   trustProxy: trustProxyValue
     ? Number(trustProxyValue) || false
     : (nodeEnv === 'production' ? 1 : false),
