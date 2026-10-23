@@ -97,7 +97,7 @@ function Home() {
     healthy: "🥗",
     drinks: "🥤",
     beverage: "🥤",
-    beverages: "🥤",
+    momo: "🥤",
   };
 
   const categories = useMemo(() => {
