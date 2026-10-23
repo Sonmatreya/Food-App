@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
 import "../Styles/MyOrders.css";
+import OrderInvoice from "./OrderInvoice";
 
 const ORDERS_PER_PAGE = 5;
 
@@ -31,6 +32,7 @@ function MyOrders() {
   const navigate = useNavigate();
 
   const [orders, setOrders] = useState([]);
+  const [invoiceOrder, setInvoiceOrder] = useState(null);
   const [pagination, setPagination] = useState(null);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -740,6 +742,14 @@ function MyOrders() {
 
                             <button
                               type="button"
+                              className="my-orders-invoice"
+                              onClick={() => setInvoiceOrder(order)}
+                            >
+                              Invoice / Print
+                            </button>
+
+                            <button
+                              type="button"
                               className="my-orders-reorder"
                               onClick={() => handleReorder(order)}
                             >
@@ -882,6 +892,8 @@ function MyOrders() {
           </>
         )}
       </div>
+
+      {invoiceOrder && <OrderInvoice order={invoiceOrder} onClose={() => setInvoiceOrder(null)} />}
 
       {reorderState.message && (
         <div className={"my-orders-reorder-toast my-orders-reorder-toast-" + reorderState.type} role="status">
