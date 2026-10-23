@@ -991,3 +991,20 @@
   .my-order-support-heading { flex-direction:column; }
   .my-order-support-message-meta time { margin-left:0; }
 }
+
+
+/* Detailed order invoice action */
+.my-orders-invoice {
+  min-height: 30px;
+  padding: 5px 12px;
+  border: 1px solid #d9dde5;
+  border-radius: 7px;
+  background: #fff;
+  color: #333b49;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: .2s ease;
+}
+.my-orders-invoice:hover { border-color: #e31837; color: #e31837; background: #fff8f9; }
+.my-orders-invoice:focus-visible { outline: 2px solid #e31837; outline-offset: 2px; }
