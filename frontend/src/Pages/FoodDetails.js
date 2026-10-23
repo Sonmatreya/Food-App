@@ -305,8 +305,8 @@ function FoodDetails() {
             <div className="ingredientList">{ingredients.map((ingredient, index) => {
               const rawName = String(ingredient).split(",")[0].trim();
               const normalizedName = rawName
-                .replace(/^(fresh|chopped|diced|sliced|grated|minced|boiled|cooked|roasted|ground|crushed)\\s+/i, "")
-                .replace(/\\s*\\([^)]*\\)\\s*/g, "")
+                .replace(/^(fresh|chopped|diced|sliced|grated|minced|boiled|cooked|roasted|ground|crushed)\s+/i, "")
+                .replace(/\s*\([^)]*\)\s*/g, "")
                 .trim();
               const aliases = {
                 "spring onions": "Spring Onion",
