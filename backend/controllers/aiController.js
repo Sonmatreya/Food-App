@@ -2,24 +2,54 @@ const Food = require("../models/Food");
 const Order = require("../models/Order");
 const Coupon = require("../models/Coupon");
 
-const fallbackReply = (message, foods) => {
+const fallbackReply = (message, foods, cartItems = []) => {
   const text = String(message || "").toLowerCase();
   const available = foods.filter((food) => food.isAvailable !== false);
   if (!available.length) return "I could not find any available dishes right now. Please check the menu again shortly.";
-  const budgetMatch = text.match(/(?:under|below|less than|within)\s*(?:$|rs\.?|inr)?\s*(\d+(?:\.\d+)?)/i);
+
+  const budgetMatch = text.match(/(?:under|below|less than|within|budget(?: of)?|upto|up to)\s*(?:₹|rs\.?|inr|rupees?)?\s*(\d+(?:\.\d+)?)/i);
   const budget = budgetMatch ? Number(budgetMatch[1]) : null;
   let matches = available;
+
   if (/don't eat onions|do not eat onions|no onions|without onions|avoid onions/i.test(text)) {
     matches = matches.filter((food) => !(food.ingredients || []).some((ingredient) => /onion/i.test(String(ingredient))));
   }
-  if (budget !== null && Number.isFinite(budget)) matches = matches.filter((food) => Number(food.price) <= budget);
-  const categoryWords = ["pizza", "burger", "pasta", "noodle", "drink", "beverage", "healthy"];
+  if (/\b(vegetarian|veg food|pure veg|meatless)\b/i.test(text) && !/non.?veg/i.test(text)) {
+    const nonVeg = /chicken|mutton|lamb|beef|pork|fish|prawn|shrimp|seafood|bacon|ham|meat|egg/i;
+    matches = matches.filter((food) => !nonVeg.test([food.name, food.category, food.description, ...(food.ingredients || [])].join(" ")));
+  }
+  if (/\b(spicy|hot|fiery|chilli|chili)\b/i.test(text)) {
+    matches = matches.filter((food) => /spicy|hot|fiery|chilli|chili|pepper|masala|schezwan/i.test([food.name, food.category, food.description, ...(food.ingredients || [])].join(" ")));
+  }
+  if (budget !== null && Number.isFinite(budget)) {
+    matches = matches.filter((food) => Number(food.price) <= budget);
+  }
+
+  const categoryWords = ["pizza", "burger", "pasta", "noodle", "momo", "drink", "beverage", "salad", "dessert", "rice"];
   const category = categoryWords.find((word) => text.includes(word));
   if (category) matches = matches.filter((food) => (String(food.name) + " " + String(food.category) + " " + String(food.description)).toLowerCase().includes(category));
-  matches = [...matches].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0)).slice(0, 3);
-  if (!matches.length) return "I could not find a matching dish in the current catalogue. Try another category or a higher budget.";
+
+  const cartNames = (Array.isArray(cartItems) ? cartItems : []).map((item) => String(item.name || "").toLowerCase()).filter(Boolean);
+  if (/cart|goes with|pair|add.?on|complement|something else/i.test(text) && cartNames.length) {
+    const outsideCart = matches.filter((food) => !cartNames.includes(String(food.name || "").toLowerCase()));
+    if (outsideCart.length) matches = outsideCart;
+  }
+
+  const highestRated = /highest.?rated|best.?rated|top.?rated|most popular|best food/i.test(text);
+  matches = [...matches].sort((a, b) => {
+    const ratingDiff = Number(b.rating || 0) - Number(a.rating || 0);
+    if (highestRated && ratingDiff !== 0) return ratingDiff;
+    return Number(b.isFeatured === true) - Number(a.isFeatured === true) || ratingDiff || Number(a.price || 0) - Number(b.price || 0);
+  }).slice(0, 3);
+
+  if (!matches.length) return "I could not find a matching dish in the current catalogue. Try another category, remove a dietary filter, or increase your budget.";
   const recommendations = matches.map((food) => food.name + " — ₹" + Number(food.price).toFixed(2) + " (" + Number(food.rating || 0).toFixed(1) + "★)").join("\n");
-  return "Here are a few options from our current menu:\n\n" + recommendations + "\n\nOpen the Menu to explore them and choose what you like.";
+  const intro = /cart|goes with|pair|add.?on|complement|something else/i.test(text) && cartNames.length
+    ? "Based on your cart, here are a few other menu options:"
+    : budget !== null
+      ? "Here are a few menu options within your budget:"
+      : "Here are a few options from our current menu:";
+  return intro + "\n\n" + recommendations + "\n\nOpen the Menu to explore them and choose what you like.";
 };
 
 const chatWithAssistant = async (req, res) => {
@@ -43,13 +73,14 @@ const chatWithAssistant = async (req, res) => {
     ]);
 
     let latestOrder = null;
-    if (req.user?.id) {
-      latestOrder = await Order.findOne({ userId: req.user.id }).sort({ createdAt: -1 }).select("orderNumber status deliveryType createdAt items.name").lean();
+    const currentUserId = req.user?.userId || req.user?.id || req.user?._id;
+    if (currentUserId) {
+      latestOrder = await Order.findOne({ userId: currentUserId }).sort({ createdAt: -1 }).select("orderNumber status deliveryType createdAt items.name").lean();
     }
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return res.json({ success: true, reply: fallbackReply(message, foods), mode: "catalogue-fallback" });
+      return res.json({ success: true, reply: fallbackReply(message, foods, req.body?.cartItems), mode: "catalogue-fallback" });
     }
 
     const catalogue = foods.map((food) => ({
@@ -97,7 +128,7 @@ const chatWithAssistant = async (req, res) => {
       console.error("OpenRouter assistant error:", data);
       return res.json({
         success: true,
-        reply: fallbackReply(message, foods),
+        reply: fallbackReply(message, foods, req.body?.cartItems),
         mode: "catalogue-fallback",
       });
     }
@@ -106,7 +137,7 @@ const chatWithAssistant = async (req, res) => {
 
     return res.json({
       success: true,
-      reply: reply || fallbackReply(message, foods),
+      reply: reply || fallbackReply(message, foods, req.body?.cartItems),
       mode: "ai",
     });
   } catch (error) {
