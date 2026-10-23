@@ -5,8 +5,10 @@ const {
   googleClientId,
   googleClientSecret,
   googleCallbackUrl,
+  googleOAuthEnabled,
 } = require("./env");
 
+if (googleOAuthEnabled) {
 passport.use(
   new GoogleStrategy(
     {
@@ -71,5 +73,6 @@ passport.use(
     }
   )
 );
+}
 
 module.exports = passport;

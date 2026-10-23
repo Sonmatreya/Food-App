@@ -34,7 +34,13 @@ const getCustomers = async (req, res) => {
     );
 
     const search = String(req.query.search || "").trim();
+    const safeSearch = search.replace(/[.*+?^$\{\}()|[\]\\]/g, (character) => "\\" + character);
+    if (search.length > 100) {
+      return res.status(400).json({ success: false, message: "Search must be 100 characters or fewer" });
+    }
+
     const verification = String(req.query.verification || "").trim();
+
 
     if (verification && !["verified", "unverified"].includes(verification)) {
       return res.status(400).json({
@@ -53,9 +59,9 @@ const getCustomers = async (req, res) => {
 
     if (search) {
       filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { email: { $regex: search, $options: "i" } },
-        { phone: { $regex: search, $options: "i" } },
+        { name: { $regex: safeSearch, $options: "i" } },
+        { email: { $regex: safeSearch, $options: "i" } },
+        { phone: { $regex: safeSearch, $options: "i" } },
       ];
     }
 

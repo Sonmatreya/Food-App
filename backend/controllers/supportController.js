@@ -152,7 +152,7 @@ const createOrderSupportRequest = async (req, res) => {
     if (!user?.email) {
       return res.status(400).json({ success: false, message: "Add an email address to your account before contacting support." });
     }
-    const nameParts = String(user.name || "Customer").trim().split(/\\s+/);
+    const nameParts = String(user.name || "Customer").trim().split(/\s+/);
     const request = await SupportRequest.create({
       firstName: nameParts.shift() || "Customer",
       lastName: nameParts.join(" ") || "-",

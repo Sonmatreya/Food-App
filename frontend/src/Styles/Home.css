@@ -1873,3 +1873,65 @@
     scroll-behavior: auto !important;
   }
 }
+
+
+/* Home page loading state: preserve the food-card layout while live data loads. */
+.homeFoodSkeleton {
+  pointer-events: none;
+}
+
+.homeFoodSkeletonImage {
+  height: 230px;
+  background: linear-gradient(100deg, #eee9e3 20%, #f8f5f0 38%, #eee9e3 58%);
+  background-size: 220% 100%;
+  animation: homeFoodShimmer 1.35s ease-in-out infinite;
+}
+
+.homeFoodSkeletonLine,
+.homeFoodSkeletonButton {
+  display: block;
+  height: 11px;
+  border-radius: 999px;
+  background: linear-gradient(100deg, #eee9e3 20%, #f8f5f0 38%, #eee9e3 58%);
+  background-size: 220% 100%;
+  animation: homeFoodShimmer 1.35s ease-in-out infinite;
+}
+
+.homeFoodSkeletonShort {
+  width: 34%;
+  height: 8px;
+}
+
+.homeFoodSkeletonTitle {
+  width: 72%;
+  height: 17px;
+  margin-top: 15px;
+}
+
+.homeFoodSkeletonLine:not(.homeFoodSkeletonShort):not(.homeFoodSkeletonTitle):not(.homeFoodSkeletonPrice) {
+  width: 88%;
+  margin-top: 12px;
+}
+
+.homeFoodSkeletonPrice {
+  width: 24%;
+  height: 19px;
+}
+
+.homeFoodSkeletonButton {
+  width: 88px;
+  height: 34px;
+}
+
+@keyframes homeFoodShimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homeFoodSkeletonImage,
+  .homeFoodSkeletonLine,
+  .homeFoodSkeletonButton {
+    animation: none;
+  }
+}

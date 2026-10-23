@@ -79,10 +79,21 @@ function Menu() {
       return matchesSearch && matchesCategory;
     });
 
-    if (sortOption === "lowToHigh") return [...result].sort((a, b) => a.price - b.price);
-    if (sortOption === "highToLow") return [...result].sort((a, b) => b.price - a.price);
-    if (sortOption === "rating") return [...result].sort((a, b) => Number(b.rating || 0) - Number(a.rating || 0));
-    return result;
+    if (sortOption === "lowToHigh") return [...result].sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+    if (sortOption === "highToLow") return [...result].sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+    if (sortOption === "rating") {
+      return [...result].sort((a, b) => {
+        const ratingDifference = Number(b.rating || 0) - Number(a.rating || 0);
+        return ratingDifference || Number(b.ratingCount || 0) - Number(a.ratingCount || 0);
+      });
+    }
+    return [...result].sort((a, b) => {
+      const featuredDifference = Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
+      if (featuredDifference) return featuredDifference;
+      const ratingDifference = Number(b.rating || 0) - Number(a.rating || 0);
+      if (ratingDifference) return ratingDifference;
+      return Number(b.ratingCount || 0) - Number(a.ratingCount || 0);
+    });
   }, [foods, searchTerm, selectedCategory, sortOption]);
 
   const updateMenuUrl = (nextSearch, nextCategory) => {
@@ -188,11 +199,16 @@ function Menu() {
 
         <div className="menuResultHeader">
           <div>
-            <h2>{selectedCategory === "All" ? "Popular Food" : selectedCategory}</h2>
-            <p>
-              {loading ? "Loading menu..." : `${filteredFoods.length} food item${filteredFoods.length !== 1 ? "s" : ""} available`}
+            <h2>{selectedCategory === "All" ? "Explore the menu" : selectedCategory}</h2>
+            <p role="status" aria-live="polite">
+              {loading ? "Loading menu..." : `${filteredFoods.length} dish${filteredFoods.length !== 1 ? "es" : ""} ${searchTerm.trim() ? "match your search" : "available"}`}
             </p>
           </div>
+          {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default") && (
+            <button type="button" className="menuResetFilters" onClick={resetFilters}>
+              Clear filters <span aria-hidden="true">×</span>
+            </button>
+          )}
         </div>
 
         {loading ? (
