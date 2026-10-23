@@ -83,6 +83,10 @@ export function CartProvider({ children }) {
           getFoodId(item) === String(foodId)
             ? {
                 ...item,
+                // Refresh product fields from the latest food card/details.
+                // This repairs older persisted cart entries with missing images
+                // or stale names/prices while preserving quantity and notes.
+                ...food,
                 quantity: item.quantity + safeQuantity,
                 cookingRequest:
                   cookingRequest ||
