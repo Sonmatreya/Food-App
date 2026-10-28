@@ -8,6 +8,12 @@ const hashAccessToken = (token) => crypto.createHash("sha256").update(token).dig
 
 const allowedSubjects = new Set(["order", "payment", "food", "feedback", "general"]);
 
+// Accept the user ID keys used by common JWT payload shapes, while validating the ID before database queries.
+const getAuthenticatedUserId = (req) => {
+  const candidate = req.user?.userId || req.user?.id || req.user?._id;
+  return candidate && mongoose.Types.ObjectId.isValid(String(candidate)) ? String(candidate) : null;
+};
+
 const createSupportRequest = async (req, res) => {
   try {
     const firstName = String(req.body.firstName || "").trim();
@@ -134,7 +140,12 @@ const createOrderSupportRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid order reference." });
     }
 
-    const order = await Order.findOne({ _id: orderId, userId: req.user.userId }).lean();
+    const authenticatedUserId = getAuthenticatedUserId(req);
+    if (!authenticatedUserId) {
+      return res.status(401).json({ success: false, message: "Please sign in again to contact support." });
+    }
+
+    const order = await Order.findOne({ _id: orderId, userId: authenticatedUserId }).lean();
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found." });
     }
@@ -148,7 +159,7 @@ const createOrderSupportRequest = async (req, res) => {
       return res.status(400).json({ success: false, message: "Your message must be between 10 and 3000 characters." });
     }
 
-    const user = await User.findById(req.user.userId).select("name email phone").lean();
+    const user = await User.findById(authenticatedUserId).select("name email phone").lean();
     if (!user?.email) {
       return res.status(400).json({ success: false, message: "Add an email address to your account before contacting support." });
     }
@@ -192,11 +203,16 @@ const getOrderSupportRequests = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(orderId)) {
       return res.status(400).json({ success: false, message: "Invalid order reference." });
     }
-    const order = await Order.findOne({ _id: orderId, userId: req.user.userId }).select("_id").lean();
+    const authenticatedUserId = getAuthenticatedUserId(req);
+    if (!authenticatedUserId) {
+      return res.status(401).json({ success: false, message: "Please sign in again to view order support." });
+    }
+
+    const order = await Order.findOne({ _id: orderId, userId: authenticatedUserId }).select("_id").lean();
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found." });
     }
-    const requests = await SupportRequest.find({ orderId: order._id, userId: req.user.userId })
+    const requests = await SupportRequest.find({ orderId: order._id, userId: authenticatedUserId })
       .select("subject message status adminReply createdAt updatedAt resolvedAt")
       .sort({ createdAt: -1 })
       .lean();
