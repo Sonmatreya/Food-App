@@ -84,12 +84,14 @@ function OrderInvoice({ order, onClose }) {
             <div className="order-invoice-totals">
               <div><span>Subtotal</span><strong>{money(pricing.subtotal)}</strong></div>
               {Number(pricing.discount || 0) > 0 && <div className="discount"><span>Discount{pricing.couponCode ? " (" + pricing.couponCode + ")" : ""}</span><strong>−{money(pricing.discount)}</strong></div>}
+              {Number(pricing.rewardsDiscount || 0) > 0 && <div className="discount"><span>Foodie Points ({Number(order.rewardsPointsRedeemed || 0)})</span><strong>−{money(pricing.rewardsDiscount)}</strong></div>}
               <div><span>Delivery fee</span><strong>{Number(pricing.deliveryFee || 0) === 0 ? "FREE" : money(pricing.deliveryFee)}</strong></div>
               <div><span>Service fee</span><strong>{money(pricing.serviceFee)}</strong></div>
               <div><span>Tax</span><strong>{money(pricing.tax)}</strong></div>
               <div className="grand-total"><span>Total paid / due</span><strong>{money(pricing.grandTotal)}</strong></div>
             </div>
           </div>
+          {Number(order.rewardsPointsEarned || 0) > 0 && <p className="order-invoice-rewards">⭐ You earned {Number(order.rewardsPointsEarned)} Foodie Points on this order.</p>}
           <footer className="order-invoice-footer">Generated from your FoodApp order history · {dateTime(new Date())}</footer>
         </div>
       </section>
