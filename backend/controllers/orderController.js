@@ -5,6 +5,7 @@ const Order = require("../models/Order");
 const Coupon = require("../models/Coupon");
 const Food = require("../models/Food");
 const User = require("../models/User");
+const { awardFoodiePoints } = require("../services/foodieRewards");
 
 // Mock payments are enabled locally by default, but must be explicitly
 // enabled in production. This is a simulation only, not a real gateway.
@@ -383,7 +384,9 @@ const verifyHandoverCode = async (req, res) => {
       { new: true }
     );
     if (!updatedOrder) return res.status(409).json({ success: false, message: "Handover was already completed for this order" });
-    const updatedResponse = buildOrderResponse(updatedOrder);
+    await awardFoodiePoints(updatedOrder._id);
+    const refreshedOrder = await Order.findById(updatedOrder._id);
+    const updatedResponse = buildOrderResponse(refreshedOrder || updatedOrder);
     const eventPayload = {
       orderId: String(updatedOrder._id),
       orderNumber: updatedOrder.orderNumber,
