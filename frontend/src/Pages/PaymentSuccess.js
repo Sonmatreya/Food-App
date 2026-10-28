@@ -15,6 +15,7 @@ function PaymentSuccess() {
 
   useEffect(() => {
     let active = true;
+    let redirectTimer = null;
     const loadOrder = async () => {
       try {
         if (params.get("payment") !== "success") {
@@ -34,11 +35,11 @@ function PaymentSuccess() {
         if (active) {
           setOrder(data.order);
           clearCart();
-          // Match the original checkout journey: show Payment Successful briefly,
-          // then continue automatically to the full Order Placed Successfully page.
-          window.setTimeout(() => {
-            navigate(`/order-success/${orderId}?payment=success`, { replace: true });
-          }, 2200);
+          // Keep the payment confirmation visible long enough to read on desktop
+          // as well as mobile, then continue to the full order confirmation page.
+          redirectTimer = window.setTimeout(() => {
+            if (active) navigate(`/order-success/${orderId}?payment=success`, { replace: true });
+          }, 3200);
         }
       } catch (err) {
         if (active) setError(err.message || "Unable to verify your payment.");
@@ -47,7 +48,10 @@ function PaymentSuccess() {
       }
     };
     loadOrder();
-    return () => { active = false; };
+    return () => {
+      active = false;
+      if (redirectTimer) window.clearTimeout(redirectTimer);
+    };
   }, [orderId, params, clearCart, navigate]);
 
   if (loading) {
