@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const User = require("../models/User");
 const { getUserRoom, ADMIN_ROOM } = require("../config/socket");
+const { refundRedeemedFoodiePoints } = require("../services/foodieRewards");
 
 const OPERATIONAL_STATUSES = [
   "placed",
@@ -258,6 +259,7 @@ const updateAdminOrderStatus = async (req, res) => {
       changedBy: req.user.userId,
     });
     await order.save();
+    if (requestedStatus === "cancelled") await refundRedeemedFoodiePoints(order._id);
 
     const populated = await Order.findById(order._id)
       .populate("userId", "_id name email phone")
