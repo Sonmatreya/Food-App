@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { MapContainer, TileLayer, Marker, Popup, LayersControl, useMap, useMapEvents } from "react-leaflet";
@@ -54,6 +54,9 @@ function AddressBook() {
   const [editingId, setEditingId] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
+  const [busyAddressId, setBusyAddressId] = useState("");
+  const locationRequestRef = useRef(0);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("success");
@@ -63,13 +66,16 @@ function AddressBook() {
 
   const loadAddresses = useCallback(async () => {
     setLoading(true);
+    setLoadError("");
     try {
       const response = await fetch(API_URL + "/api/addresses", { credentials: "include" });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Unable to load addresses.");
-      setAddresses(data.addresses || []);
+      setAddresses(Array.isArray(data.addresses) ? data.addresses : []);
     } catch (error) {
-      setMessage(error.message);
+      const friendlyMessage = error.message || "Unable to load saved addresses. Please try again.";
+      setLoadError(friendlyMessage);
+      setMessage(friendlyMessage);
       setMessageType("error");
     } finally {
       setLoading(false);
@@ -115,6 +121,7 @@ function AddressBook() {
   };
 
   const fetchAddressFromCoordinates = async (latitude, longitude) => {
+    const requestId = ++locationRequestRef.current;
     setMapLocationText("Finding address...");
     try {
       const response = await fetch(
@@ -122,6 +129,7 @@ function AddressBook() {
       );
       if (!response.ok) throw new Error("Unable to fetch address.");
       const data = await response.json();
+      if (requestId !== locationRequestRef.current) return;
       const details = data.address || {};
       const houseNumber = details.house_number || "";
       const road = details.road || details.neighbourhood || "";
@@ -140,7 +148,8 @@ function AddressBook() {
       }));
       setMapLocationText(data.display_name || "Location selected");
     } catch (error) {
-      setMapLocationText("Location selected");
+      if (requestId !== locationRequestRef.current) return;
+      setMapLocationText("Location selected — enter or verify the address details below.");
       setForm((current) => ({ ...current, latitude, longitude, locationText: "Location selected" }));
     }
   };
@@ -178,6 +187,35 @@ function AddressBook() {
 
   const handleSave = async (event) => {
     event.preventDefault();
+    if (saving) return;
+
+    const cleanedPhone = form.phone.trim().replace(/[\\s\\-()]/g, "");
+    if (form.name.trim().length < 2 || form.name.trim().length > 50) {
+      setMessage("Name must be between 2 and 50 characters.");
+      setMessageType("error");
+      return;
+    }
+    if (!/^\\+?[0-9]{7,15}$/.test(cleanedPhone)) {
+      setMessage("Enter a valid phone number with 7–15 digits.");
+      setMessageType("error");
+      return;
+    }
+    if (!form.addressLine.trim()) {
+      setMessage("Please enter your complete address.");
+      setMessageType("error");
+      return;
+    }
+    if (!form.city.trim()) {
+      setMessage("Please enter your city.");
+      setMessageType("error");
+      return;
+    }
+    if (!/^\\d{6}$/.test(form.pincode.trim())) {
+      setMessage("Enter a valid 6-digit PIN code.");
+      setMessageType("error");
+      return;
+    }
+
     setSaving(true);
     setMessage("");
 
@@ -188,7 +226,7 @@ function AddressBook() {
           method: editingId ? "PUT" : "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify({ ...form, name: form.name.trim(), phone: cleanedPhone, addressLine: form.addressLine.trim(), city: form.city.trim(), pincode: form.pincode.trim(), landmark: form.landmark.trim() }),
         }
       );
       const data = await response.json();
@@ -211,7 +249,9 @@ function AddressBook() {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this saved address?")) return;
+    if (busyAddressId || saving || !window.confirm("Delete this saved address?")) return;
+    setBusyAddressId(id);
+    setMessage("");
 
     try {
       const response = await fetch(API_URL + "/api/addresses/" + id, {
@@ -226,10 +266,16 @@ function AddressBook() {
     } catch (error) {
       setMessage(error.message);
       setMessageType("error");
+    } finally {
+      setBusyAddressId("");
     }
   };
 
   const makeDefault = async (id) => {
+    if (busyAddressId || saving) return;
+    setBusyAddressId(id);
+    setMessage("");
+
     try {
       const response = await fetch(API_URL + "/api/addresses/" + id + "/default", {
         method: "PATCH",
@@ -243,6 +289,8 @@ function AddressBook() {
     } catch (error) {
       setMessage(error.message);
       setMessageType("error");
+    } finally {
+      setBusyAddressId("");
     }
   };
 
@@ -267,7 +315,7 @@ function AddressBook() {
               <h2>{editingId ? "Edit Address" : "Add New Address"}</h2>
               <p>Keep your delivery details ready for your next order.</p>
             </div>
-            <button type="button" onClick={() => setShowForm(false)} aria-label="Close">×</button>
+            <button type="button" onClick={() => setShowForm(false)} aria-label="Close" disabled={saving}>×</button>
           </div>
 
           <form onSubmit={handleSave}>
@@ -333,7 +381,7 @@ function AddressBook() {
             <label className="address-book-default"><input type="checkbox" name="isDefault" checked={form.isDefault} onChange={handleChange} /> Make this my default delivery address</label>
 
             <div className="address-book-form-actions">
-              <button type="button" onClick={() => setShowForm(false)}>Cancel</button>
+              <button type="button" onClick={() => setShowForm(false)} disabled={saving}>Cancel</button>
               <button type="submit" disabled={saving}>{saving ? "Saving..." : editingId ? "Save Changes" : "Save Address"}</button>
             </div>
           </form>
@@ -341,7 +389,14 @@ function AddressBook() {
       )}
 
       {loading ? (
-        <div className="address-book-state"><div className="address-book-spinner" /><p>Loading saved addresses...</p></div>
+        <div className="address-book-state" role="status"><div className="address-book-spinner" /><p>Loading saved addresses...</p></div>
+      ) : loadError ? (
+        <div className="address-book-empty address-book-load-error" role="alert">
+          <div>⚠️</div>
+          <h2>We couldn't load your addresses</h2>
+          <p>{loadError}</p>
+          <button type="button" onClick={loadAddresses}>Try Again</button>
+        </div>
       ) : addresses.length === 0 ? (
         <div className="address-book-empty">
           <div>📍</div>
@@ -366,9 +421,9 @@ function AddressBook() {
                 <p className="address-book-coordinates">📍 Map location saved</p>
               )}
               <div className="address-book-card-actions">
-                <button type="button" onClick={() => openEdit(address)}>Edit</button>
-                {!address.isDefault && <button type="button" onClick={() => makeDefault(address._id)}>Set Default</button>}
-                <button type="button" className="danger" onClick={() => handleDelete(address._id)}>Delete</button>
+                <button type="button" onClick={() => openEdit(address)} disabled={Boolean(busyAddressId) || saving}>Edit</button>
+                {!address.isDefault && <button type="button" onClick={() => makeDefault(address._id)} disabled={Boolean(busyAddressId) || saving}>{busyAddressId === address._id ? "Updating..." : "Set Default"}</button>}
+                <button type="button" className="danger" onClick={() => handleDelete(address._id)} disabled={Boolean(busyAddressId) || saving}>{busyAddressId === address._id ? "Working..." : "Delete"}</button>
               </div>
             </article>
           ))}
