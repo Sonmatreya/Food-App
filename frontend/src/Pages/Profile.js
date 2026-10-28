@@ -93,8 +93,8 @@ function Profile() {
             <p>Earn 1 point for every ₹100 of eligible food spend after delivery. Redeem 10 points for ₹1 off your next order.</p>
           </div>
           <div className="summary-value"><strong>{foodiePoints === null ? "…" : foodiePoints.toLocaleString("en-IN")}</strong><span>Foodie Points</span></div>
+          {rewardsError && <p className="profile-rewards-error" role="status">{rewardsError}</p>}
         </div>
-        {rewardsError && <p className="profile-rewards-error" role="status">{rewardsError}</p>}
         <div className="profile-quick-card">
           <button type="button" onClick={() => navigate("/coupons")}>
             <span>🏷️</span><strong>Coupons</strong><small>View available offers</small>
