@@ -46,14 +46,33 @@ const awardFoodiePoints = async (orderId) => {
 };
 
 const refundRedeemedFoodiePoints = async (orderId) => {
+  // Claim the refund atomically so concurrent cancellation requests cannot
+  // credit the same redeemed points twice.
   const order = await Order.findOneAndUpdate(
     { _id: orderId, rewardsPointsRedeemed: { $gt: 0 }, rewardsPointsRefunded: { $ne: true } },
     { $set: { rewardsPointsRefunded: true } },
     { new: true }
   );
   if (!order) return 0;
-  await User.updateOne({ _id: order.userId }, { $inc: { foodiePoints: order.rewardsPointsRedeemed } });
-  return order.rewardsPointsRedeemed;
+
+  try {
+    const credit = await User.updateOne(
+      { _id: order.userId },
+      { $inc: { foodiePoints: order.rewardsPointsRedeemed } }
+    );
+    if (credit.matchedCount === 0) {
+      throw new Error("Could not refund Foodie Points because the customer account was not found");
+    }
+    return order.rewardsPointsRedeemed;
+  } catch (error) {
+    // Make a failed credit retryable. The conditional reset avoids changing
+    // the flag if another recovery path has already changed it.
+    await Order.updateOne(
+      { _id: order._id, rewardsPointsRefunded: true },
+      { $set: { rewardsPointsRefunded: false } }
+    );
+    throw error;
+  }
 };
 
 module.exports = { awardFoodiePoints, refundRedeemedFoodiePoints };
