@@ -47,6 +47,7 @@ const buildAdminOrderResponse = (order) => ({
   pricing: {
     subtotal: Number(order.pricing?.subtotal || 0),
     discount: Number(order.pricing?.discount || 0),
+    rewardsDiscount: Number(order.pricing?.rewardsDiscount || 0),
     couponCode: order.pricing?.couponCode || "",
     deliveryFee: Number(order.pricing?.deliveryFee || 0),
     serviceFee: Number(order.pricing?.serviceFee || 0),
@@ -75,6 +76,8 @@ const buildAdminOrderResponse = (order) => ({
       : null,
   paymentMethod: order.paymentMethod || "",
   paymentStatus: order.paymentStatus || "",
+  rewardsPointsRedeemed: Number(order.rewardsPointsRedeemed || 0),
+  rewardsPointsEarned: Number(order.rewardsPointsEarned || 0),
   status: order.status || "",
   createdAt: order.createdAt || null,
   updatedAt: order.updatedAt || null,
