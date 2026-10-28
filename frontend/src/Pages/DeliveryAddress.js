@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -77,6 +77,7 @@ function DeliveryAddress() {
   const [locationText, setLocationText] =
     useState("Select your delivery location");
 
+  const locationRequestRef = useRef(0);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [savedAddressesLoading, setSavedAddressesLoading] = useState(true);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState("");
@@ -182,6 +183,8 @@ function DeliveryAddress() {
   } = checkoutData;
 
   const applySavedAddress = (savedAddress) => {
+    // Ignore any reverse-geocoding request started before this saved address was selected.
+    locationRequestRef.current += 1;
     setSelectedSavedAddressId(savedAddress._id);
     setAddress({
       name: savedAddress.name || "",
@@ -262,6 +265,7 @@ function DeliveryAddress() {
     latitude,
     longitude
   ) => {
+    const requestId = ++locationRequestRef.current;
     try {
       setLocationText(
         "Finding address..."
@@ -278,6 +282,7 @@ function DeliveryAddress() {
       }
 
       const data = await response.json();
+      if (requestId !== locationRequestRef.current) return;
 
       const addressDetails =
         data.address || {};
@@ -331,13 +336,14 @@ function DeliveryAddress() {
           "Location selected"
       );
     } catch (error) {
+      if (requestId !== locationRequestRef.current) return;
       console.error(
         "Reverse geocoding error:",
         error
       );
 
       setLocationText(
-        "Location selected"
+        "Location selected — please verify the address details."
       );
     }
   };
@@ -363,6 +369,8 @@ function DeliveryAddress() {
 
   const handleAddressChange = (event) => {
     const { name, value } = event.target;
+    // Manual edits mean the form no longer exactly represents the selected saved address.
+    setSelectedSavedAddressId("");
 
     setAddress((currentAddress) => ({
       ...currentAddress,
