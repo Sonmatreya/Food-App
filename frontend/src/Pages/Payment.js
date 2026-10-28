@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { API_URL } from "../config/api";
 import { resolveFoodImage } from "../utils/foodImage";
@@ -18,6 +18,22 @@ function Payment() {
   // This prevents rapid double-clicks from creating two orders or payment sessions.
   const submissionLock = useRef(false);
   const [orderError, setOrderError] = useState("");
+  const [availableFoodiePoints, setAvailableFoodiePoints] = useState(0);
+  const [rewardPointsLoading, setRewardPointsLoading] = useState(true);
+  const [rewardsPointsRedeemed, setRewardsPointsRedeemed] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+    fetch(`${API_URL}/api/rewards`, { credentials: "include" })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error(data.message || "Unable to load Foodie Rewards.");
+        if (active) setAvailableFoodiePoints(Math.max(0, Number(data.points || 0)));
+      })
+      .catch((error) => { if (active) console.error("Foodie Rewards balance:", error.message); })
+      .finally(() => { if (active) setRewardPointsLoading(false); });
+    return () => { active = false; };
+  }, []);
 
   /*
     If someone directly opens /payment without coming
@@ -94,6 +110,7 @@ function Payment() {
         location: deliveryType === "delivery" ? { latitude, longitude, locationText } : undefined,
         paymentMethod,
         couponCode: coupon?.code ?? "",
+        rewardsPointsRedeemed: safeRedeemedPoints,
       };
 
       const isPayU = paymentMethod === "payu";
@@ -636,7 +653,7 @@ function Payment() {
             </span>
 
             <strong>
-              ₹{grandTotal.toFixed(2)}
+              ₹{payableTotal.toFixed(2)}
             </strong>
 
           </div>
