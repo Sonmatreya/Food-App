@@ -224,6 +224,11 @@ const updateAdminOrderStatus = async (req, res) => {
     }
 
     if (requestedStatus === order.status) {
+      // A previous cancellation may have succeeded while the rewards refund
+      // failed. Retry the idempotent refund when an admin repeats the action.
+      if (requestedStatus === "cancelled") {
+        await refundRedeemedFoodiePoints(order._id);
+      }
       return res.status(200).json({ success: true, message: "Order status unchanged", order: buildAdminOrderResponse(await Order.findById(order._id).populate("userId", "_id name email phone").lean()) });
     }
 
