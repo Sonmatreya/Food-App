@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config/api";
 import EditProfileModal from "../Components/EditProfileModal";
 import MyOrders from "../Components/MyOrders";
 import "../Styles/Profile.css";
@@ -9,6 +10,20 @@ function Profile() {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [foodiePoints, setFoodiePoints] = useState(null);
+  const [rewardsError, setRewardsError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    fetch(`${API_URL}/api/rewards`, { credentials: "include" })
+      .then(async (response) => {
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error(data.message || "Rewards are temporarily unavailable.");
+        if (active) setFoodiePoints(Number(data.points || 0));
+      })
+      .catch((error) => { if (active) setRewardsError(error.message || "Rewards are temporarily unavailable."); });
+    return () => { active = false; };
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -75,10 +90,11 @@ function Profile() {
           <div className="summary-icon">⭐</div>
           <div className="summary-content">
             <h3>Foodie Rewards</h3>
-            <p>Reward points are not enabled yet. We will show a balance here once points can be earned and redeemed.</p>
+            <p>Earn 1 point for every ₹100 of eligible food spend after delivery. Redeem 10 points for ₹1 off your next order.</p>
           </div>
-          <div className="summary-value"><strong>Coming soon</strong><span>Rewards</span></div>
+          <div className="summary-value"><strong>{foodiePoints === null ? "…" : foodiePoints.toLocaleString("en-IN")}</strong><span>Foodie Points</span></div>
         </div>
+        {rewardsError && <p className="profile-rewards-error" role="status">{rewardsError}</p>}
         <div className="profile-quick-card">
           <button type="button" onClick={() => navigate("/coupons")}>
             <span>🏷️</span><strong>Coupons</strong><small>View available offers</small>
