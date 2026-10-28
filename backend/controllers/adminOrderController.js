@@ -168,7 +168,7 @@ const getAdminOrders = async (req, res) => {
             active: { $sum: { $cond: [{ $in: ["$status", ["placed", "confirmed", "preparing", "ready", "out_for_delivery"]] }, 1, 0] } },
             delivered: { $sum: { $cond: [{ $in: ["$status", ["delivered", "picked_up"]] }, 1, 0] } },
             cancelled: { $sum: { $cond: [{ $eq: ["$status", "cancelled"] }, 1, 0] } },
-            revenue: { $sum: { $cond: [{ $or: [{ $eq: ["$paymentStatus", "paid"] }, { $and: [{ $eq: ["$paymentMethod", "cod"] }, { $in: ["$status", ["delivered", "picked_up"]] }] }] }, "$pricing.grandTotal", 0] } },
+            revenue: { $sum: { $cond: [{ $and: [{ $ne: ["$status", "cancelled"] }, { $or: [{ $eq: ["$paymentStatus", "paid"] }, { $and: [{ $eq: ["$paymentMethod", "cod"] }, { $in: ["$status", ["delivered", "picked_up"]] }] }] }] }, "$pricing.grandTotal", 0] } },
           } },
       ]),
     ]);
