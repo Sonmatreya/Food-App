@@ -183,26 +183,6 @@ function Profile() {
         <section className="profile-card">
           <div className="profile-card-heading">
             <div>
-              <h2>Food Options</h2>
-              <p>Explore and manage your food choices</p>
-            </div>
-          </div>
-          <div className="profile-list">
-            <button type="button" className="profile-list-item" onClick={() => navigate("/wishlist")}>
-              <span className="list-icon">❤️</span><span className="list-content"><strong>Favorite Food</strong><small>Your favorite dishes</small></span><span className="list-arrow">›</span>
-            </button>
-            <button type="button" className="profile-list-item" onClick={() => navigate("/menu")}>
-              <span className="list-icon">🍽️</span><span className="list-content"><strong>Menu</strong><small>Explore available food</small></span><span className="list-arrow">›</span>
-            </button>
-            <button type="button" className="profile-list-item" onClick={() => navigate("/menu")}>
-              <span className="list-icon">🔥</span><span className="list-content"><strong>Today's Offers</strong><small>Discover special deals</small></span><span className="list-arrow">›</span>
-            </button>
-          </div>
-        </section>
-
-        <section className="profile-card">
-          <div className="profile-card-heading">
-            <div>
               <h2>Orders & Payments</h2>
               <p>Quick access to your shopping activity</p>
             </div>
@@ -225,44 +205,14 @@ function Profile() {
             <button
               type="button"
               className="profile-list-item"
-              onClick={() => navigate("/menu")}
+              onClick={() => navigate("/payment-history")}
             >
-              <span className="list-icon">🍕</span>
+              <span className="list-icon">💰</span>
               <span className="list-content">
-                <strong>Browse Menu</strong>
-                <small>Find food and start a new order</small>
+                <strong>Payment History</strong>
+                <small>Review recorded payment status and order totals</small>
               </span>
               <span className="list-arrow">›</span>
-            </button>
-
-            <button
-              type="button"
-              className="profile-list-item"
-              onClick={() => navigate("/cart")}
-            >
-              <span className="list-icon">💳</span>
-              <span className="list-content">
-                <strong>Payment & Checkout</strong>
-                <small>Review your cart and continue to checkout</small>
-              </span>
-              <span className="list-arrow">›</span>
-            </button>
-          </div>
-        </section>
-
-        <section className="profile-card">
-          <div className="profile-card-heading">
-            <div>
-              <h2>Payments</h2>
-              <p>View previous order payments or continue to checkout</p>
-            </div>
-          </div>
-          <div className="profile-list">
-            <button type="button" className="profile-list-item" onClick={() => navigate("/cart")}>
-              <span className="list-icon">💳</span><span className="list-content"><strong>Payment Options</strong><small>Choose a payment option for your next order</small></span><span className="list-arrow">›</span>
-            </button>
-            <button type="button" className="profile-list-item" onClick={() => navigate("/payment-history")}>
-              <span className="list-icon">💰</span><span className="list-content"><strong>Payment History</strong><small>View recorded payment methods, status and order totals</small></span><span className="list-arrow">›</span>
             </button>
           </div>
         </section>
