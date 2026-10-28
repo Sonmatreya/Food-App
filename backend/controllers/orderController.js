@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Order = require("../models/Order");
 const Coupon = require("../models/Coupon");
 const Food = require("../models/Food");
+const User = require("../models/User");
 
 // Mock payments are enabled locally by default, but must be explicitly
 // enabled in production. This is a simulation only, not a real gateway.
@@ -26,6 +27,8 @@ const buildOrderResponse = (order) => ({
   orderNumber: order.orderNumber,
   items: order.items,
   pricing: order.pricing,
+  rewardsPointsRedeemed: Number(order.rewardsPointsRedeemed || 0),
+  rewardsPointsEarned: Number(order.rewardsPointsEarned || 0),
   deliveryType: order.deliveryType,
   address: order.deliveryType === "delivery" ? order.address : null,
   location: order.deliveryType === "delivery" ? order.location : null,
@@ -123,7 +126,7 @@ const computePricing = (items, deliveryType, coupon) => {
   const serviceFee = deliveryType === "delivery" ? SERVICE_FEE : 0;
   const tax = round2((discountedSubtotal + serviceFee) * TAX_RATE);
   const grandTotal = round2(discountedSubtotal + deliveryFee + serviceFee + tax);
-  return { subtotal, discount, couponCode: coupon?.code || "", deliveryFee, serviceFee, tax, grandTotal };
+  return { subtotal, discount, rewardsDiscount: 0, couponCode: coupon?.code || "", deliveryFee, serviceFee, tax, grandTotal };
 };
 
 const createOrder = async (req, res) => {
@@ -208,15 +211,45 @@ const createOrder = async (req, res) => {
     }
 
     const pricing = computePricing(items, deliveryType, coupon);
+    const requestedRewardPoints = Number(body.rewardsPointsRedeemed || 0);
+    if (!Number.isInteger(requestedRewardPoints) || requestedRewardPoints < 0 || requestedRewardPoints % 10 !== 0) {
+      return res.status(400).json({ success: false, message: "Foodie Rewards redemption must be in multiples of 10 points." });
+    }
+    if (requestedRewardPoints > 0) {
+      const rewardUser = await User.findById(userId).select("foodiePoints").lean();
+      const availablePoints = Number(rewardUser?.foodiePoints || 0);
+      const eligibleSubtotal = Math.max(0, pricing.subtotal - pricing.discount);
+      const maxRedeemablePoints = Math.floor(eligibleSubtotal * 10 / 10) * 10;
+      if (requestedRewardPoints > availablePoints) {
+        return res.status(400).json({ success: false, message: "You do not have enough Foodie Points. Refresh your rewards balance and try again." });
+      }
+      if (requestedRewardPoints > maxRedeemablePoints) {
+        return res.status(400).json({ success: false, message: "Foodie Points cannot discount more than the food subtotal after coupon discounts." });
+      }
+      pricing.rewardsDiscount = round2(requestedRewardPoints / 10);
+      pricing.grandTotal = round2(Math.max(0, pricing.grandTotal - pricing.rewardsDiscount));
+    }
     let order = null;
     for (let attempt = 0; attempt < 3 && !order; attempt += 1) {
       try {
-        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, deliveryType, address, location, paymentMethod, demoChannel: paymentMethod === "demo" ? body.demoChannel : undefined, paymentStatus: paymentMethod === "cod" ? "cod_pending" : paymentMethod === "demo" ? "paid" : "pending", status: "placed", statusHistory: [{ status: "placed", changedAt: new Date(), changedBy: userId }] });
+        order = await Order.create({ orderNumber: generateOrderNumber(), userId, items, pricing, rewardsPointsRedeemed: requestedRewardPoints, deliveryType, address, location, paymentMethod, demoChannel: paymentMethod === "demo" ? body.demoChannel : undefined, paymentStatus: paymentMethod === "cod" ? "cod_pending" : paymentMethod === "demo" ? "paid" : "pending", status: "placed", statusHistory: [{ status: "placed", changedAt: new Date(), changedBy: userId }] });
       } catch (error) {
         if (error.code === 11000 && attempt < 2) continue;
         throw error;
       }
     }
+    if (requestedRewardPoints > 0) {
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: userId, foodiePoints: { $gte: requestedRewardPoints } },
+        { $inc: { foodiePoints: -requestedRewardPoints } },
+        { new: true }
+      ).select("foodiePoints").lean();
+      if (!updatedUser) {
+        await Order.deleteOne({ _id: order._id });
+        return res.status(409).json({ success: false, message: "Your Foodie Points balance changed during checkout. Please refresh and try again." });
+      }
+    }
+
     const orderResponse = buildOrderResponse(order);
     const eventPayload = {
       orderId: String(order._id),
