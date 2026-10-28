@@ -52,14 +52,23 @@ const updateSupportRequestStatus = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ success: false, message: "Invalid support request." });
     }
-    if (!["new", "in-progress", "resolved"].includes(status)) {
+    if (status !== undefined && !["new", "in-progress", "resolved"].includes(status)) {
       return res.status(400).json({ success: false, message: "Choose a valid support status." });
     }
+    if (status === undefined && adminReply === undefined && resolutionNote === undefined) {
+      return res.status(400).json({ success: false, message: "Provide a status, customer reply, or internal note to save." });
+    }
 
-    const updates = { status };
+    const existing = await SupportRequest.findById(id).select("status resolvedAt").lean();
+    if (!existing) return res.status(404).json({ success: false, message: "Support request not found." });
+    const updates = {};
+    if (status !== undefined) {
+      updates.status = status;
+      if (status === "resolved" && existing.status !== "resolved") updates.resolvedAt = new Date();
+      else if (status !== "resolved") updates.resolvedAt = null;
+    }
     if (adminReply !== undefined) updates.adminReply = adminReply.slice(0, 3000);
     if (resolutionNote !== undefined) updates.resolutionNote = resolutionNote.slice(0, 3000);
-    updates.resolvedAt = status === "resolved" ? new Date() : null;
     const request = await SupportRequest.findByIdAndUpdate(id, { $set: updates }, { new: true, runValidators: true }).select("-supportAccessTokenHash").lean();
     if (!request) return res.status(404).json({ success: false, message: "Support request not found." });
     return res.json({ success: true, message: "Support status updated.", request });
