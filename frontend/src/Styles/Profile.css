@@ -64,3 +64,149 @@
 .profile-rewards-error{grid-column:1/-1;margin:0;padding:9px 12px;border:1px solid #f2c7ce;border-radius:9px;background:#fff7f8;color:#a70e2a;font-size:12px}
 .profile-reward-card .summary-content p{max-width:620px;line-height:1.55}
 .profile-reward-card .summary-value strong{font-variant-numeric:tabular-nums}
+
+/* Profile dashboard and Foodie Rewards summary */
+.profile-summary-grid {
+  width: 100%;
+  max-width: 1320px;
+  margin: 15px auto 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(250px, .85fr);
+  gap: 12px;
+  align-items: stretch;
+}
+.profile-reward-card {
+  min-width: 0;
+  position: relative;
+  padding: 20px 22px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr) auto;
+  gap: 13px;
+  align-items: center;
+  background: linear-gradient(125deg, #fff 0%, #fff8f7 100%);
+  border: 1px solid #f0d9dc;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(20, 24, 30, .035);
+  box-sizing: border-box;
+}
+.profile-reward-card .summary-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #ffedf0;
+  font-size: 21px;
+}
+.profile-reward-card .summary-content { min-width: 0; }
+.profile-reward-card .summary-content h3 {
+  margin: 0 0 5px;
+  color: #25272b;
+  font-size: 15px;
+  font-weight: 800;
+}
+.profile-reward-card .summary-content p {
+  margin: 0;
+  color: #747982;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.profile-reward-card .summary-value {
+  min-width: 104px;
+  padding-left: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  border-left: 1px solid #f0d9dc;
+}
+.profile-reward-card .summary-value strong {
+  color: #d9233f;
+  font-size: 25px;
+  line-height: 1.1;
+  font-weight: 850;
+  letter-spacing: -.6px;
+}
+.profile-reward-card .summary-value span {
+  color: #7e7474;
+  font-size: 9px;
+  font-weight: 750;
+  text-transform: uppercase;
+  letter-spacing: .45px;
+}
+.profile-reward-card .profile-rewards-error { grid-column: 1 / -1; }
+.profile-quick-card {
+  min-width: 0;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #e6e8eb;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(20, 24, 30, .035);
+  box-sizing: border-box;
+}
+.profile-quick-card button {
+  min-width: 0;
+  padding: 12px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: #f8f8fa;
+  color: #292d33;
+  text-align: left;
+  cursor: pointer;
+}
+.profile-quick-card button:hover {
+  border-color: #f0c5cc;
+  background: #fff5f6;
+}
+.profile-quick-card button > span { font-size: 19px; line-height: 1.2; }
+.profile-quick-card button strong { font-size: 12px; font-weight: 800; }
+.profile-quick-card button small { color: #858b93; font-size: 9px; line-height: 1.35; }
+
+body.dark-mode .profile-reward-card {
+  background: linear-gradient(125deg, #211b1b 0%, #25191c 100%);
+  border-color: #513039;
+}
+body.dark-mode .profile-reward-card .summary-content h3,
+body.dark-mode .profile-quick-card button strong { color: #f5f2ef; }
+body.dark-mode .profile-reward-card .summary-content p,
+body.dark-mode .profile-reward-card .summary-value span,
+body.dark-mode .profile-quick-card button small { color: #b4aca6; }
+body.dark-mode .profile-reward-card .summary-icon { background: #3a2228; }
+body.dark-mode .profile-reward-card .summary-value { border-color: #513039; }
+body.dark-mode .profile-quick-card { background: var(--app-surface); border-color: var(--app-border); }
+body.dark-mode .profile-quick-card button { background: #24211f; color: #f5f2ef; }
+body.dark-mode .profile-quick-card button:hover { background: #332024; border-color: #61303a; }
+
+@media (max-width: 900px) {
+  .profile-summary-grid { grid-template-columns: minmax(0, 1fr); }
+  .profile-quick-card { min-height: 112px; }
+}
+@media (max-width: 600px) {
+  .profile-summary-grid { margin-top: 8px; padding: 0 10px; gap: 8px; box-sizing: border-box; }
+  .profile-reward-card { padding: 14px 12px; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 9px; border-radius: 12px; }
+  .profile-reward-card .summary-icon { width: 34px; height: 34px; border-radius: 10px; font-size: 17px; }
+  .profile-reward-card .summary-content h3 { font-size: 12px; }
+  .profile-reward-card .summary-content p { font-size: 9px; line-height: 1.4; }
+  .profile-reward-card .summary-value { min-width: 70px; padding-left: 9px; }
+  .profile-reward-card .summary-value strong { font-size: 20px; }
+  .profile-reward-card .summary-value span { font-size: 7px; letter-spacing: .2px; }
+  .profile-quick-card { min-height: 0; padding: 6px; gap: 6px; border-radius: 12px; }
+  .profile-quick-card button { padding: 10px; gap: 4px; }
+  .profile-quick-card button > span { font-size: 16px; }
+  .profile-quick-card button strong { font-size: 10px; }
+  .profile-quick-card button small { font-size: 8px; }
+}
+@media (max-width: 360px) {
+  .profile-reward-card { grid-template-columns: 30px minmax(0, 1fr); }
+  .profile-reward-card .summary-value { grid-column: 2; align-items: flex-start; padding: 6px 0 0; border-left: 0; border-top: 1px solid #f0d9dc; }
+  .profile-reward-card .profile-rewards-error { grid-column: 1 / -1; }
+}
+
