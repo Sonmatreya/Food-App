@@ -151,6 +151,14 @@ function MyOrders() {
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Unable to load support messages.");
       setSupportThreads((current) => ({ ...current, [orderId]: data.requests || [] }));
+      // A successful refresh should clear a previous transient load error.
+      setSupportStates((current) => {
+        const previous = current[orderId] || {};
+        if (!previous.loadError) return current;
+        const next = { ...previous };
+        delete next.loadError;
+        return { ...current, [orderId]: next };
+      });
     } catch (error) {
       setSupportStates((current) => ({ ...current, [orderId]: { ...(current[orderId] || {}), loadError: error.message || "Unable to load support messages." } }));
     }
