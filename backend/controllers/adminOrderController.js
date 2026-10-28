@@ -168,7 +168,7 @@ const getAdminOrders = async (req, res) => {
             active: { $sum: { $cond: [{ $in: ["$status", ["placed", "confirmed", "preparing", "ready", "out_for_delivery"]] }, 1, 0] } },
             delivered: { $sum: { $cond: [{ $in: ["$status", ["delivered", "picked_up"]] }, 1, 0] } },
             cancelled: { $sum: { $cond: [{ $eq: ["$status", "cancelled"] }, 1, 0] } },
-            revenue: { $sum: { $cond: [{ $ne: ["$status", "cancelled"] }, "$pricing.grandTotal", 0] } },
+            revenue: { $sum: { $cond: [{ $or: [{ $eq: ["$paymentStatus", "paid"] }, { $and: [{ $eq: ["$paymentMethod", "cod"] }, { $in: ["$status", ["delivered", "picked_up"]] }] }] }, "$pricing.grandTotal", 0] } },
           } },
       ]),
     ]);
@@ -318,7 +318,7 @@ const getAdminDashboardSummary = async (req, res) => {
       Order.countDocuments({}),
       User.countDocuments({ role: "customer" }),
       Order.aggregate([
-        { $match: { createdAt: { $gte: todayStart, $lt: tomorrowStart }, status: { $ne: "cancelled" } } },
+        { $match: { createdAt: { $gte: todayStart, $lt: tomorrowStart }, status: { $ne: "cancelled" }, $or: [{ paymentStatus: "paid" }, { paymentMethod: "cod", status: { $in: ["delivered", "picked_up"] } }] } },
         { $group: { _id: null, total: { $sum: "$pricing.grandTotal" } } },
       ]),
       Order.countDocuments({ status: { $in: ["placed", "confirmed", "preparing", "ready", "out_for_delivery"] } }),
@@ -327,12 +327,12 @@ const getAdminDashboardSummary = async (req, res) => {
         { $group: { _id: "$status", count: { $sum: 1 } } },
       ]),
       Order.aggregate([
-        { $match: { createdAt: { $gte: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000) }, status: { $ne: "cancelled" } } },
+        { $match: { createdAt: { $gte: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000) }, status: { $ne: "cancelled" }, $or: [{ paymentStatus: "paid" }, { paymentMethod: "cod", status: { $in: ["delivered", "picked_up"] } }] } },
         { $group: { _id: { $dateToString: { format: "%Y-%m-%d", date: "$createdAt", timezone: "Asia/Kolkata" } }, orders: { $sum: 1 }, revenue: { $sum: "$pricing.grandTotal" } } },
         { $sort: { _id: 1 } },
       ]),
       Order.aggregate([
-        { $match: { status: { $ne: "cancelled" } } },
+        { $match: { status: { $ne: "cancelled" }, $or: [{ paymentStatus: "paid" }, { paymentMethod: "cod", paymentStatus: "cod_pending" }] } },
         { $unwind: "$items" },
         { $group: {
             _id: "$items.foodId",
