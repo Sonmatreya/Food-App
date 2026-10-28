@@ -59,3 +59,8 @@
   }
 }
 
+
+
+.profile-rewards-error{grid-column:1/-1;margin:0;padding:9px 12px;border:1px solid #f2c7ce;border-radius:9px;background:#fff7f8;color:#a70e2a;font-size:12px}
+.profile-reward-card .summary-content p{max-width:620px;line-height:1.55}
+.profile-reward-card .summary-value strong{font-variant-numeric:tabular-nums}
