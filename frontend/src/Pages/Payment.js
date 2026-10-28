@@ -80,8 +80,12 @@ function Payment() {
     (total, item) => total + item.quantity,
     0
   );
+  const maxRedeemablePoints = Math.min(availableFoodiePoints, Math.floor(Math.max(0, subtotal - discount)) * 10);
+  const safeRedeemedPoints = Math.min(maxRedeemablePoints, Math.max(0, Math.floor(Number(rewardsPointsRedeemed) / 10) * 10));
+  const rewardsDiscount = safeRedeemedPoints / 10;
+  const payableTotal = Math.max(0, grandTotal - rewardsDiscount);
 
-  const handlePlaceOrder = async () => {
+const handlePlaceOrder = async () => {
     if (submissionLock.current || isPlacingOrder) return;
     submissionLock.current = true;
     setOrderError("");
@@ -560,6 +564,16 @@ function Payment() {
 
           </div>
 
+          <section className="foodie-redeem-panel" aria-label="Foodie Rewards redemption">
+            <div><strong>⭐ Foodie Rewards</strong><small>{rewardPointsLoading ? "Checking your balance…" : `${availableFoodiePoints.toLocaleString("en-IN")} points available · 10 points = ₹1`}</small></div>
+            <label htmlFor="foodie-points-redeem">Use points</label>
+            <div className="foodie-redeem-controls">
+              <input id="foodie-points-redeem" type="number" min="0" max={maxRedeemablePoints} step="10" value={safeRedeemedPoints} disabled={rewardPointsLoading || maxRedeemablePoints < 10} onChange={(event) => setRewardsPointsRedeemed(Math.max(0, Math.min(maxRedeemablePoints, Math.floor(Number(event.target.value || 0) / 10) * 10)))} />
+              <button type="button" disabled={rewardPointsLoading || maxRedeemablePoints < 10} onClick={() => setRewardsPointsRedeemed(safeRedeemedPoints === maxRedeemablePoints ? 0 : maxRedeemablePoints)}>{safeRedeemedPoints === maxRedeemablePoints && safeRedeemedPoints > 0 ? "Remove" : "Use max"}</button>
+            </div>
+            {safeRedeemedPoints > 0 && <small className="foodie-redeem-applied">You save ₹{rewardsDiscount.toFixed(2)} with Foodie Points.</small>}
+          </section>
+
           <div className="paymentSummaryDivider"></div>
 
           {/* PRICE DETAILS */}
@@ -641,6 +655,8 @@ function Payment() {
                 🎉 Free delivery applied
               </div>
             )}
+
+          {rewardsDiscount > 0 && <div className="paymentPriceRow discount foodie-rewards-discount"><span>Foodie Points ({safeRedeemedPoints})</span><strong>-₹{rewardsDiscount.toFixed(2)}</strong></div>}
 
           <div className="paymentSummaryDivider"></div>
 
