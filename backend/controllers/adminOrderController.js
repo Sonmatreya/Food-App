@@ -227,6 +227,15 @@ const updateAdminOrderStatus = async (req, res) => {
       return res.status(200).json({ success: true, message: "Order status unchanged", order: buildAdminOrderResponse(await Order.findById(order._id).populate("userId", "_id name email phone").lean()) });
     }
 
+    // Online orders must be paid before kitchen/delivery processing begins.
+    // COD orders are allowed to proceed while paymentStatus is cod_pending.
+    if (requestedStatus !== "cancelled" && order.paymentMethod !== "cod" && order.paymentStatus !== "paid") {
+      return res.status(409).json({
+        success: false,
+        message: "This online order cannot be processed until its payment is verified as paid.",
+      });
+    }
+
     const allowedNextStatuses = [...(STATUS_TRANSITIONS[order.status] || [])];
 
     // A pickup order goes from Ready directly to handover verification.
