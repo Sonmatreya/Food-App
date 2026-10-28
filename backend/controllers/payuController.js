@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 const Order = require("../models/Order");
 const User = require("../models/User");
+const { refundRedeemedFoodiePoints } = require("../services/foodieRewards");
 const { createOrder } = require("./orderController");
 
 const PAYU_TEST_URL = "https://test.payu.in/_payment";
@@ -153,6 +154,7 @@ const processPayUResponse = async (req, res, isWebhook = false) => {
       // and a legitimate retry or delayed verified success callback is not blocked.
       order.paymentStatus = "failed";
       await order.save();
+      await refundRedeemedFoodiePoints(order._id);
     }
 
     if (isWebhook) return res.status(200).send("OK");
