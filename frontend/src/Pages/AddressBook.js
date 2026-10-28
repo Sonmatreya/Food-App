@@ -189,13 +189,13 @@ function AddressBook() {
     event.preventDefault();
     if (saving) return;
 
-    const cleanedPhone = form.phone.trim().replace(/[\\s\\-()]/g, "");
+    const cleanedPhone = form.phone.trim().replace(/[\s\-()]/g, "");
     if (form.name.trim().length < 2 || form.name.trim().length > 50) {
       setMessage("Name must be between 2 and 50 characters.");
       setMessageType("error");
       return;
     }
-    if (!/^\\+?[0-9]{7,15}$/.test(cleanedPhone)) {
+    if (!/^\+?[0-9]{7,15}$/.test(cleanedPhone)) {
       setMessage("Enter a valid phone number with 7–15 digits.");
       setMessageType("error");
       return;
@@ -210,7 +210,7 @@ function AddressBook() {
       setMessageType("error");
       return;
     }
-    if (!/^\\d{6}$/.test(form.pincode.trim())) {
+    if (!/^\d{6}$/.test(form.pincode.trim())) {
       setMessage("Enter a valid 6-digit PIN code.");
       setMessageType("error");
       return;
