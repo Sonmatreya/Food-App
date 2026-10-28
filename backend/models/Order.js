@@ -88,6 +88,7 @@ const orderSchema = new mongoose.Schema(
     pricing: {
       subtotal: { type: Number, required: true, min: 0 },
       discount: { type: Number, required: true, min: 0, default: 0 },
+      rewardsDiscount: { type: Number, min: 0, default: 0 },
       couponCode: {
         type: String,
         trim: true,
@@ -145,6 +146,11 @@ const orderSchema = new mongoose.Schema(
       enum: ["upi", "card", "netbanking", "wallet", null],
       default: null,
     },
+
+    rewardsPointsRedeemed: { type: Number, min: 0, default: 0 },
+    rewardsPointsEarned: { type: Number, min: 0, default: 0 },
+    rewardsPointsRefunded: { type: Boolean, default: false },
+    rewardsAwarded: { type: Boolean, default: false },
 
     paymentStatus: {
       type: String,
