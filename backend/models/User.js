@@ -56,6 +56,9 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+
+    // Foodie Rewards balance; changed only by trusted backend order flows.
+    foodiePoints: { type: Number, min: 0, default: 0 },
   },
   {
     timestamps: true,
