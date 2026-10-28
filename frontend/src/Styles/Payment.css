@@ -1212,3 +1212,18 @@
   .gatewayWalletChoices { grid-template-columns: 1fr; }
   .gatewayAdvancedDemo { margin: 0 17px 15px; }
 }
+
+
+/* Foodie Rewards redemption */
+.foodie-redeem-panel{display:grid;gap:9px;margin:16px 0;padding:14px;border:1px solid #f2c7ce;border-radius:13px;background:linear-gradient(135deg,#fff8f8,#fff)}
+.foodie-redeem-panel>div:first-child{display:flex;flex-direction:column;gap:4px}
+.foodie-redeem-panel>div:first-child strong{font-size:14px;color:#a70e2a}
+.foodie-redeem-panel small{font-size:12px;color:#737780}
+.foodie-redeem-panel>label{font-size:12px;font-weight:700;color:#34383f}
+.foodie-redeem-controls{display:flex;gap:8px}
+.foodie-redeem-controls input{width:100%;min-width:0;padding:10px 12px;border:1px solid #d9dce1;border-radius:9px;background:#fff;color:#24272d;font:inherit}
+.foodie-redeem-controls button{flex-shrink:0;padding:0 14px;border:0;border-radius:9px;background:#e31837;color:#fff;font-weight:800;cursor:pointer}
+.foodie-redeem-controls button:disabled,.foodie-redeem-controls input:disabled{opacity:.55;cursor:not-allowed}
+.foodie-redeem-panel .foodie-redeem-applied{color:#16804a;font-weight:700}
+.foodie-rewards-discount{margin-top:8px}
+@media(max-width:480px){.foodie-redeem-panel{padding:12px}.foodie-redeem-controls button{padding:0 10px}}
