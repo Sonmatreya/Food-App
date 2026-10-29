@@ -27,7 +27,7 @@ const validateFoodPayload = (payload) => {
 
 const getFoods = async (req, res, next) => {
   try {
-    const { search, category, available, featured } = req.query;
+    const { search, category, available, featured, sort } = req.query;
     const filter = {};
 
     if (category && category !== "All") filter.category = category;
@@ -39,17 +39,25 @@ const getFoods = async (req, res, next) => {
 
     const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
     const categories = (await Food.distinct("category")).filter(Boolean).sort();
+    const sortOptions = {
+      featured: { isFeatured: -1, createdAt: -1 },
+      price_asc: { price: 1, name: 1 },
+      price_desc: { price: -1, name: 1 },
+      rating: { rating: -1, ratingCount: -1, createdAt: -1 },
+      newest: { createdAt: -1 },
+    };
+    const sortOrder = sortOptions[sort] || sortOptions.featured;
 
     if (!hasPagination) {
-      const foods = await Food.find(filter).sort({ isFeatured: -1, createdAt: -1 }).lean();
+      const foods = await Food.find(filter).sort(sortOrder).lean();
       return res.json({ success: true, count: foods.length, foods, categories });
     }
 
     const page = Math.max(1, Number.parseInt(req.query.page, 10) || 1);
-    const limit = Math.min(50, Math.max(1, Number.parseInt(req.query.limit, 10) || 10));
+    const limit = Math.min(48, Math.max(1, Number.parseInt(req.query.limit, 10) || 12));
     const [foods, total, availableCount, unavailableCount] = await Promise.all([
       Food.find(filter)
-        .sort({ isFeatured: -1, createdAt: -1 })
+        .sort(sortOrder)
         .skip((page - 1) * limit)
         .limit(limit)
         .lean(),
