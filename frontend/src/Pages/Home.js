@@ -184,6 +184,12 @@ function Home() {
 
   return (
     <main className="homePage">
+      <div className="storefrontAnnouncement" role="note">
+        <span className="storefrontAnnouncementDot" />
+        <strong>GOOD FOOD, ONE EASY ORDER</strong>
+        <span>Browse the live menu and find your next favourite.</span>
+        <Link to="/menu">Shop menu <ArrowForwardIcon /></Link>
+      </div>
 
       {/* ===================================================
           4.1 HERO SECTION
@@ -195,15 +201,14 @@ function Home() {
             GOOD FOOD. GOOD MOOD.
           </div>
           <h1>
-            Make room
+            Your favourites.
             <br />
-            for <em>something</em>
+            Just a few <em>clicks</em>
             <br />
-            delicious.
+            away.
           </h1>
           <p>
-            Your next favourite meal is waiting. Explore the menu, find what
-            you love, and order in a few simple steps.
+            Find the dishes you love, compare prices, and add your picks to the cart. Your next meal starts here.
           </p>
 
           <form className="heroSearch heroEditorialSearch" onSubmit={handleSearch}>
@@ -240,7 +245,6 @@ function Home() {
               onError={(event) => { event.currentTarget.onerror = null; event.currentTarget.src = BannerImage; }}
             />
           </div>
-          <div className="heroEditorialStamp"><span>MADE FOR</span><strong>FOOD<br />LOVERS</strong><i>✳</i></div>
           <article className="heroEditorialFeature">
             <span className="heroEditorialFeatureLabel">
               {featuredFood?.isFeatured ? "FEATURED FROM THE MENU" : "DISCOVER THE MENU"}
@@ -256,7 +260,6 @@ function Home() {
               Discover dish <ArrowForwardIcon />
             </Link>
           </article>
-          <div className="heroEditorialFloating"><span>↗</span><div><strong>Find your favourite</strong><small>Start with the live menu</small></div></div>
         </div>
       </section>
 
@@ -290,6 +293,8 @@ function Home() {
         </div>
       </section>
 
+
+      <PromoBanners />
 
       {/* ===================================================
           4.3 CATEGORY SECTION
@@ -424,94 +429,8 @@ function Home() {
       </section>
 
 
-      {/* ===================================================
-          4.5 WHY CHOOSE US
-          =================================================== */}
-      <section className="whySection">
-        <div className="whyContent">
-          <div className="whyText">
-            <span>THE FOOD APP DIFFERENCE</span>
-            <h2>
-              Good food should feel <em>effortless.</em>
-            </h2>
-            <p>
-              Everything is designed around one simple idea: make ordering
-              great food quick, clear and enjoyable from the first tap to
-              the last bite.
-            </p>
-            <Link to="/menu" className="whyButton">
-              Start ordering
-              <ArrowForwardIcon />
-            </Link>
-          </div>
-
-          <div className="benefitGrid">
-            {benefits.map((benefit) => (
-              <div className="benefitCard" key={benefit.title}>
-                <div className="benefitIcon">{benefit.icon}</div>
-                <h3>{benefit.title}</h3>
-                <p>{benefit.text}</p>
-              </div>
-            ))}
-
-            <div className="benefitQuote">
-              <StarRoundedIcon />
-              <strong>Made for people who take food seriously.</strong>
-              <span>— The Food App team</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-      {/* ===================================================
-          4.6 OFFER SECTION
-          =================================================== */}
-      <section className="offerSection" aria-label="Explore the menu">
-        <div className="offerContent">
-          <span>GOOD FOOD, MADE EASY</span>
-          <h2>
-            Find your next
-            <br />
-            <em>favourite meal.</em>
-          </h2>
-          <p>
-            Explore the live menu, discover available dishes, and order your way.
-          </p>
-          <Link to="/menu" className="offerButton">
-            Explore the menu
-            <ArrowForwardIcon />
-          </Link>
-        </div>
-
-        <div className="offerCircle" aria-label="Discover good food">
-          <span>YUM</span>
-          <small>YOUR WAY</small>
-          <b>EXPLORE • ORDER • ENJOY</b>
-        </div>
-      </section>
-
-
-      {/* ===================================================
-          4.8 FINAL CALL TO ACTION
-          =================================================== */}
-      <section className="finalCta">
-        <div>
-          <span>WHAT ARE YOU WAITING FOR?</span>
-          <h2>
-            There is always room
-            <br />
-            for something delicious.
-          </h2>
-        </div>
-
-        <Link to="/menu" className="finalCtaButton">
-          Browse the menu
-          <ArrowForwardIcon />
-        </Link>
-      </section>
+      <FoodRecommendations title="Picked for your next meal" subtitle="Discover more dishes from the live menu." />
       <RecentlyViewed />
-      <PromoBanners />
     </main>
   );
 }
