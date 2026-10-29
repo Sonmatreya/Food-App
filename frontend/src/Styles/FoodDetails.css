@@ -1355,3 +1355,188 @@ body.dark-mode .buyNowButton {
   .recommendationCard p { font-size: 10px; line-height: 1.4; }
   .recommendationCard strong { float: none; display: block; margin-top: 5px; font-size: 12px; }
 }
+
+
+/* Ecommerce product-page refinement: clear purchase hierarchy and reliable imagery. */
+.foodDetailsPage {
+  background:
+    radial-gradient(circle at 8% 5%, rgba(227, 24, 55, 0.07), transparent 27rem),
+    linear-gradient(180deg, #fffafa 0%, #fff 54%, #fff8f8 100%);
+}
+.foodBreadcrumb {
+  min-height: 20px;
+  margin-bottom: 22px;
+}
+.foodDetailsImageWrapper {
+  min-width: 0;
+}
+.foodDetailsImage {
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+  background: radial-gradient(circle, #fff 0%, #fff2f4 72%, #f8e7ea 100%);
+}
+.foodDetailsPhoto {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 450ms ease;
+}
+.foodDetailsImage:hover .foodDetailsPhoto {
+  transform: scale(1.035);
+}
+.foodDetailsContent {
+  min-width: 0;
+}
+.foodRatingRow {
+  gap: 9px;
+}
+.foodRatingRow strong {
+  color: #3b292d;
+  font-size: 13px;
+}
+.foodPrice {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 11px 15px;
+  border: 1px solid #f4d7dc;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #fff0f3, #fff9fa);
+  color: #c91531;
+}
+.foodDescription {
+  max-width: 58ch;
+}
+.foodInfoGrid {
+  gap: 10px;
+}
+.foodInfoItem {
+  min-width: 0;
+  transition: border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+.foodInfoItem:hover {
+  border-color: #efc1ca;
+  box-shadow: 0 10px 24px rgba(108, 26, 42, .07);
+  transform: translateY(-2px);
+}
+.quantityControls {
+  border-color: #ead7db;
+  box-shadow: 0 4px 12px rgba(65, 24, 31, .035);
+}
+.quantityControls button {
+  min-width: 44px;
+  font-weight: 700;
+}
+.quantityControls span {
+  font-variant-numeric: tabular-nums;
+}
+.orderSummary {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid #f0dfe2;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff, #fff8f9);
+}
+.orderSummary > div {
+  gap: 12px;
+}
+.summaryTotal strong {
+  font-variant-numeric: tabular-nums;
+}
+.addToCartButton {
+  min-height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(110deg, #e31837, #c91531);
+  box-shadow: 0 10px 22px rgba(227, 24, 55, .2);
+}
+.addToCartButton:hover:not(:disabled) {
+  box-shadow: 0 13px 28px rgba(227, 24, 55, .28);
+}
+.buyNowButton {
+  min-height: 50px;
+  border: 1px solid #e31837;
+  background: #fff;
+  color: #c91531;
+}
+.buyNowButton:hover:not(:disabled) {
+  background: #fff0f3;
+  color: #b5122b;
+}
+body.dark-mode .buyNowButton {
+  border-color: #f2b8c2;
+  background: #fff0f3;
+  color: #b5122b;
+}
+.wishlistDetailButton {
+  min-height: 46px;
+  border-color: #ead7db;
+  background: #fff;
+}
+.wishlistDetailButton.active {
+  border-color: #f0c3cc;
+  background: #fff0f3;
+}
+.viewCartButton {
+  border-color: #f0c7ce;
+  color: #bd1730;
+}
+.viewCartButton:hover {
+  border-color: #c91531;
+  background: #c91531;
+  color: #fff;
+}
+.foodReviewsSection {
+  border-top-color: #f0dfe2;
+}
+.reviewForm,
+.reviewItem,
+.reviewsState,
+.foodReviewsAverage,
+.foodExtraCard {
+  box-shadow: 0 8px 24px rgba(65, 24, 31, .035);
+}
+.reviewForm:focus-within {
+  border-color: #edc0c8;
+}
+@media (max-width: 1000px) {
+  .foodDetailsImageWrapper { width: 100%; }
+  .foodDetailsImage { max-height: 560px; }
+}
+@media (max-width: 650px) {
+  .foodDetailsPage {
+    background: linear-gradient(180deg, #fff8f9 0%, #fff 44%);
+  }
+  .foodBreadcrumb { margin-bottom: 16px; }
+  .foodDetailsImage {
+    aspect-ratio: 1.08 / 1;
+    box-shadow: 0 15px 35px rgba(85, 22, 34, .12);
+  }
+  .foodPrice {
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    font-size: 24px;
+  }
+  .orderSummary {
+    margin-top: 14px;
+    padding: 13px;
+    border-radius: 13px;
+  }
+  .addToCartButton { min-height: 50px; }
+  .foodInfoItem:hover { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .foodDetailsPhoto,
+  .foodInfoItem,
+  .addToCartButton,
+  .buyNowButton,
+  .wishlistDetailButton {
+    transition: none;
+  }
+}
