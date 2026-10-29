@@ -261,10 +261,10 @@ function Home() {
                 <h2>{featuredFood?.name || "Something delicious"}</h2>
                 <p>{featuredFood?.category || "Explore available dishes"}</p>
               </div>
-              <strong>₹{Number(featuredFood?.price || 0).toFixed(2)}</strong>
+              {featuredFood && <strong>₹{Number(featuredFood.price || 0).toFixed(2)}</strong>}
             </div>
             <Link to={featuredFood ? "/food/" + (featuredFood._id || featuredFood.id) : "/menu"}>
-              Discover dish <ArrowForwardIcon />
+              {featuredFood ? "View dish" : "Explore menu"} <ArrowForwardIcon />
             </Link>
           </article>
         </div>
@@ -278,24 +278,24 @@ function Home() {
         <div>
           <LocalShippingOutlinedIcon />
           <div>
-            <strong>Delivery options</strong>
-            <span>See available options at checkout</span>
+            <strong>Check delivery at checkout</strong>
+            <span>Available options appear with your order</span>
           </div>
         </div>
 
         <div>
           <VerifiedOutlinedIcon />
           <div>
-            <strong>Simple ordering</strong>
-            <span>Choose items from the live menu</span>
+            <strong>Browse the live menu</strong>
+            <span>See listed dishes and current prices</span>
           </div>
         </div>
 
         <div>
           <AccessTimeOutlinedIcon />
           <div>
-            <strong>Menu availability</strong>
-            <span>Check currently listed dishes</span>
+            <strong>Order with clarity</strong>
+            <span>Review your cart before checkout</span>
           </div>
         </div>
       </section>
@@ -354,8 +354,8 @@ function Home() {
       <section className="popularSection">
         <div className="sectionHeading">
           <div>
-            <span>POPULAR RIGHT NOW</span>
-            <h2>People are loving these</h2>
+            <span>DISCOVER THE MENU</span>
+            <h2>Find your next favourite</h2>
           </div>
           <Link to="/menu" className="viewAllLink">
             View all dishes
