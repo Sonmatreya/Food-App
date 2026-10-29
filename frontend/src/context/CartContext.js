@@ -3,6 +3,7 @@ import React, {
   useContext,
   useEffect,
   useState,
+  useCallback,
 } from "react";
 
 const CartContext = createContext();
@@ -158,9 +159,11 @@ export function CartProvider({ children }) {
   // CLEAR CART (after successful order)
   // ==========================================
 
-  const clearCart = () => {
+  // Keep this callback stable: payment confirmation effects depend on it.
+  // A new function on every render can restart verification and its redirect timer.
+  const clearCart = useCallback(() => {
     setCartItems([]);
-  };
+  }, []);
 
   // ==========================================
   // CALCULATE CART TOTAL
