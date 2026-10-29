@@ -40,7 +40,7 @@ function Menu() {
           limit: "12",
           sort: sortOption === "lowToHigh" ? "price_asc"
             : sortOption === "highToLow" ? "price_desc"
-            : sortOption === "rating" ? "rating" : "featured",
+            : sortOption === "rating" ? "rating" : sortOption === "newest" ? "newest" : "featured",
         });
         if (searchTerm.trim()) query.set("search", searchTerm.trim());
         if (selectedCategory !== "All") query.set("category", selectedCategory);
@@ -130,8 +130,7 @@ function Menu() {
             food
           </h1>
           <p>
-            Explore delicious meals prepared with fresh ingredients
-            and choose something perfect for your next meal.
+            Browse the current menu, compare dishes and prices, then choose what you want to order.
           </p>
         </div>
       </section>
@@ -189,6 +188,7 @@ function Menu() {
             <select id="sort" value={sortOption} onChange={(event) => { setSortOption(event.target.value); setCurrentPage(1); }}>
               <option value="default">Recommended</option>
               <option value="rating">Top Rated</option>
+              <option value="newest">Recently Added</option>
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
             </select>
@@ -234,6 +234,7 @@ function Menu() {
                 category={menuItem.category}
                 rating={menuItem.rating}
                 ratingCount={menuItem.ratingCount}
+                description={menuItem.description}
                 isAvailable={menuItem.isAvailable}
               />
             ))}
