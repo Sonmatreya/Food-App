@@ -894,3 +894,46 @@
     width: 100%;
   }
 }
+
+
+/* CHECKOUT SAVED-ADDRESS RECOVERY */
+.savedAddressLoadFailure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-color: #f0c8cd;
+  background: #fffafb;
+}
+
+.savedAddressLoadFailure h2 {
+  margin: 0 0 6px;
+  color: #292929;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.savedAddressLoadFailure p {
+  margin: 0;
+  color: #6f6f6f;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.retrySavedAddresses {
+  flex-shrink: 0;
+  cursor: pointer;
+  font: inherit;
+}
+
+.retrySavedAddresses:focus-visible {
+  outline: 3px solid rgba(227, 24, 55, .25);
+  outline-offset: 3px;
+}
+
+@media (max-width: 600px) {
+  .savedAddressLoadFailure {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
