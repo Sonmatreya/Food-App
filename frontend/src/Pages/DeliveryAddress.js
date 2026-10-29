@@ -80,6 +80,8 @@ function DeliveryAddress() {
   const locationRequestRef = useRef(0);
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [savedAddressesLoading, setSavedAddressesLoading] = useState(true);
+  const [savedAddressesLoadError, setSavedAddressesLoadError] = useState("");
+  const [savedAddressesRetry, setSavedAddressesRetry] = useState(0);
   const [selectedSavedAddressId, setSelectedSavedAddressId] = useState("");
   const [showSaveAddress, setShowSaveAddress] = useState(false);
   const [saveAddressLabel, setSaveAddressLabel] = useState("Home");
@@ -90,6 +92,7 @@ function DeliveryAddress() {
   useEffect(() => {
     const loadSavedAddresses = async () => {
       setSavedAddressesLoading(true);
+      setSavedAddressesLoadError("");
       try {
         const response = await fetch(
           API_URL + "/api/addresses",
@@ -97,7 +100,9 @@ function DeliveryAddress() {
         );
         if (!response.ok) throw new Error("Unable to load saved addresses.");
         const data = await response.json();
-        const list = data.addresses || [];
+        if (data.success === false) throw new Error(data.message || "Unable to load saved addresses.");
+        const list = Array.isArray(data.addresses) ? data.addresses : [];
+        setSavedAddressesLoadError("");
         setSavedAddresses(list);
 
         const defaultAddress =
@@ -133,13 +138,14 @@ function DeliveryAddress() {
         }
       } catch (error) {
         console.error("Saved addresses error:", error);
+        setSavedAddressesLoadError(error.message || "Unable to load saved addresses. Please try again.");
       } finally {
         setSavedAddressesLoading(false);
       }
     };
 
     loadSavedAddresses();
-  }, [API_URL, checkoutData?.address?.name]);
+  }, [API_URL, checkoutData?.address?.name, savedAddressesRetry]);
 
   // -----------------------------------------
   // If user directly opens /delivery-address
@@ -555,6 +561,16 @@ function DeliveryAddress() {
                   <p>Loading your saved delivery addresses...</p>
                 </div>
               </div>
+            </section>
+          ) : savedAddressesLoadError ? (
+            <section className="deliveryCard savedAddressCheckoutCard savedAddressLoadFailure" role="alert">
+              <div>
+                <h2>Saved addresses couldn't load</h2>
+                <p>{savedAddressesLoadError} Your delivery details below are still available to complete checkout.</p>
+              </div>
+              <button type="button" className="manageSavedAddresses retrySavedAddresses" onClick={() => setSavedAddressesRetry((attempt) => attempt + 1)}>
+                Try Again
+              </button>
             </section>
           ) : savedAddresses.length > 0 ? (
             <section className="deliveryCard savedAddressCheckoutCard">
