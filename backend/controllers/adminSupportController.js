@@ -21,6 +21,11 @@ const listSupportRequests = async (req, res) => {
         { orderNumber: { $regex: escaped, $options: "i" } },
         { message: { $regex: escaped, $options: "i" } },
       ];
+      // Allow admins to find a request from its reference ID or its linked order ID.
+      if (mongoose.Types.ObjectId.isValid(search)) {
+        const exactId = new mongoose.Types.ObjectId(search);
+        filter.$or.push({ _id: exactId }, { orderId: exactId });
+      }
     }
 
     const [requests, total, newCount, inProgressCount, resolvedCount] = await Promise.all([
