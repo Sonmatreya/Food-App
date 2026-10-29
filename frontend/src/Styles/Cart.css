@@ -1224,3 +1224,22 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Keep loyalty redemption visible in the cart-to-checkout journey. */
+.cartRewardsHint {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid #f2d9a8;
+  border-radius: 10px;
+  background: #fffaf0;
+  color: #76541b;
+  font-size: 11px;
+  line-height: 1.5;
+  text-align: center;
+}
+body.dark-mode .cartRewardsHint {
+  border-color: #5a4727;
+  background: #2b2418;
+  color: #e8cc8d;
+}
