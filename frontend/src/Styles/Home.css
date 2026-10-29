@@ -2196,3 +2196,71 @@
   .homePage .foodCardImage img,
   .homePage .categoryCard { transition: none; }
 }
+
+
+/* Real storefront category tiles: use actual menu photography instead of emoji placeholders. */
+.homePage .categoryGrid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 16px;
+}
+.homePage .categoryCard.categoryPhotoCard {
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border: 1px solid #eee2e4;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(35, 16, 20, .04);
+}
+.homePage .categoryPhoto {
+  position: relative;
+  height: 142px;
+  overflow: hidden;
+  background: #f7e9eb;
+}
+.homePage .categoryPhoto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .35s ease;
+}
+.homePage .categoryPhotoShade {
+  position: absolute;
+  inset: 35% 0 0;
+  background: linear-gradient(180deg, transparent, rgba(32, 9, 15, .48));
+  pointer-events: none;
+}
+.homePage .categoryPhotoArrow {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: #b90f2e;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, .12);
+}
+.homePage .categoryPhotoArrow svg { font-size: 17px; }
+.homePage .categoryCard.categoryPhotoCard:hover .categoryPhoto img { transform: scale(1.06); }
+.homePage .categoryCard.categoryPhotoCard .categoryMeta { padding: 13px 14px 15px; }
+.homePage .categoryCard.categoryPhotoCard .categoryMeta h3 { margin: 0 0 5px; font-size: 14px; }
+.homePage .categoryCard.categoryPhotoCard .categoryMeta p { margin: 0; color: #85777b; font-size: 11px; }
+@media (max-width: 1000px) {
+  .homePage .categoryGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .homePage .categoryPhoto { height: 150px; }
+}
+@media (max-width: 700px) {
+  .homePage .categoryGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
+  .homePage .categoryPhoto { height: 130px; }
+  .homePage .categoryCard.categoryPhotoCard .categoryMeta { padding: 11px 12px 13px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .homePage .categoryPhoto img { transition: none; }
+}
