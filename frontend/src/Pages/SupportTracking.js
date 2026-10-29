@@ -14,7 +14,7 @@ export default function SupportTracking() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const fetchRequest = useCallback(async (id, key) => {
+  const fetchRequest = useCallback(async (id, key, options = {}) => {
     if (!id || !key) return;
     setLoading(true);
     setError("");
@@ -28,7 +28,9 @@ export default function SupportTracking() {
       if (!response.ok || !data.success) throw new Error(data.message || "Unable to find this support request.");
       setRequest(data.request);
     } catch (err) {
-      setRequest(null);
+      // Keep the last verified request visible during background refresh failures.
+      // A manual lookup with invalid details still clears stale request data.
+      if (!options.preserveOnError) setRequest(null);
       setError(err.message || "Unable to check this request. Please try again.");
     } finally {
       setLoading(false);
@@ -60,7 +62,7 @@ export default function SupportTracking() {
       fetchRequest(requestId, trackingToken);
     }, 15000);
     return () => window.clearInterval(timer);
-  }, [request, requestId, trackingToken, fetchRequest]);
+  }, [Boolean(request), requestId, trackingToken, fetchRequest]);
 
   return (
     <main className="support-tracking-page">
