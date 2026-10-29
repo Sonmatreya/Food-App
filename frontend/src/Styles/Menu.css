@@ -715,3 +715,375 @@ body.dark-mode .skeletonImage,body.dark-mode .skeletonLine { background:linear-g
     transition: none;
   }
 }
+
+
+/* Modern ecommerce menu: product-first cards, clearer filtering, and tighter rhythm. */
+.menuPage {
+  background: linear-gradient(180deg, #fff8f9 0, #fff 520px, #fffafa 100%);
+}
+.menuHero {
+  min-height: 390px;
+  position: relative;
+  isolation: isolate;
+  background-image:
+    linear-gradient(90deg, rgba(34, 8, 15, .9) 0%, rgba(52, 10, 20, .7) 48%, rgba(40, 8, 15, .2) 100%),
+    url("../assets/pizza.jpeg");
+  background-position: center, 58% 52%;
+}
+.menuHeroContent > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,.24);
+  border-radius: 999px;
+  background: rgba(255,255,255,.1);
+  color: #ffdce2;
+  letter-spacing: 1.7px;
+}
+.menuHeroContent h1 {
+  max-width: 650px;
+  font-size: clamp(42px, 5.4vw, 68px);
+  letter-spacing: -2px;
+}
+.menuHeroContent p {
+  max-width: 520px;
+}
+.menuSection {
+  padding-top: 34px;
+}
+.menuSearchBox {
+  max-width: 850px;
+  height: 66px;
+  margin-top: -68px;
+  margin-bottom: 30px;
+  border-color: #f0dfe2;
+  border-radius: 18px;
+}
+.menuSearchBox > span {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #fff0f3;
+  color: #c91531;
+}
+.menuSearchBox input {
+  font-size: 15px;
+}
+.menuSearchSuggestions {
+  overflow: hidden;
+  box-shadow: 0 20px 48px rgba(65, 18, 30, .14);
+}
+.menuSearchSuggestions button {
+  padding: 13px 16px;
+}
+.menuSearchSuggestions button > span {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  background: #fff0f3;
+}
+.menuToolbar {
+  align-items: center;
+  gap: 18px;
+  margin-bottom: 25px;
+  padding: 14px 0 20px;
+}
+.categoryFilters {
+  gap: 8px;
+}
+.categoryFilter {
+  padding: 10px 15px;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.sortBox {
+  flex-shrink: 0;
+}
+.sortBox label {
+  font-size: 12px;
+  font-weight: 700;
+}
+.sortBox select {
+  min-height: 42px;
+  padding: 0 34px 0 12px;
+  font-size: 13px;
+  font-weight: 650;
+}
+.menuResultHeader {
+  margin: 20px 0 20px;
+}
+.menuResultHeader h2 {
+  margin: 0 0 6px;
+  font-size: clamp(24px, 3vw, 32px);
+  line-height: 1.2;
+}
+.menuResultHeader p {
+  margin: 0;
+  font-size: 13px;
+}
+.menuGrid {
+  align-items: stretch;
+  gap: 22px;
+}
+.menuPage .menuCard {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  border-radius: 18px;
+  box-shadow: 0 7px 24px rgba(70, 18, 31, .055);
+}
+.menuPage .menuCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 38px rgba(70, 18, 31, .12);
+}
+.menuCardVisual {
+  position: relative;
+}
+.menuImage {
+  aspect-ratio: 1.34 / 1;
+  height: auto;
+  border-radius: 0;
+}
+.menuImage > img {
+  object-position: center;
+}
+.menuWishlistButton {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(240, 223, 226, .9);
+  border-radius: 50%;
+  background: rgba(255,255,255,.96);
+  box-shadow: 0 4px 14px rgba(40, 10, 17, .12);
+  transition: transform .18s ease, color .18s ease, background .18s ease;
+}
+.menuWishlistButton:hover {
+  transform: scale(1.06);
+}
+.menuContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 16px 16px 15px;
+}
+.menuMeta {
+  gap: 8px;
+}
+.menuCategory {
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 999px;
+  background: #fff0f3;
+  color: #bd1730;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .35px;
+}
+.menuRating {
+  flex-shrink: 0;
+  color: #8a5b14;
+  font-size: 11px;
+  font-weight: 800;
+}
+.menuContent h2 {
+  display: -webkit-box;
+  min-height: 2.7em;
+  margin: 12px 0 14px;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: -.25px;
+}
+.menuCardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 13px;
+  border-top: 1px solid #f4e9eb;
+}
+.menuPrice {
+  margin: 0;
+  color: #b9122e;
+  font-size: 18px;
+  font-weight: 850;
+  font-variant-numeric: tabular-nums;
+}
+.menuQuickAdd,
+.menuAddButton {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.menuPage .menuQuickAdd:focus-visible,
+.menuPage .menuAddButton:focus-visible,
+.menuPage .menuWishlistButton:focus-visible,
+.menuPage .categoryFilter:focus-visible {
+  outline: 3px solid rgba(227, 24, 55, .25);
+  outline-offset: 3px;
+}
+.menuSkeletonCard {
+  overflow: hidden;
+  border: 1px solid #f0dfe2;
+  border-radius: 18px;
+  background: #fff;
+}
+.noFoodFound {
+  padding: 48px 20px;
+}
+.noFoodFound h2 {
+  margin: 12px 0 8px;
+}
+@media (min-width: 1100px) {
+  .menuGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .menuToolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .sortBox {
+    align-self: flex-end;
+  }
+}
+@media (max-width: 650px) {
+  .menuHero {
+    min-height: 320px;
+    background-position: center, 62% center;
+  }
+  .menuHeroContent {
+    width: calc(100% - 36px);
+  }
+  .menuHeroContent h1 {
+    max-width: 440px;
+    font-size: clamp(37px, 10vw, 52px);
+    letter-spacing: -1.4px;
+  }
+  .menuSection {
+    width: calc(100% - 28px);
+    padding-top: 26px;
+    padding-bottom: 55px;
+  }
+  .menuSearchBox {
+    height: 58px;
+    margin-top: -56px;
+    margin-bottom: 24px;
+    border-radius: 15px;
+  }
+  .menuSearchBox > span {
+    width: 34px;
+    height: 34px;
+  }
+  .menuToolbar {
+    padding-top: 12px;
+    gap: 14px;
+  }
+  .categoryFilters {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 2px 2px 10px;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+  }
+  .categoryFilter {
+    flex: 0 0 auto;
+    padding: 9px 13px;
+    font-size: 12px;
+  }
+  .sortBox {
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .sortBox select {
+    max-width: 210px;
+  }
+  .menuResultHeader {
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .menuGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .menuPage .menuCard {
+    border-radius: 14px;
+  }
+  .menuImage {
+    aspect-ratio: 1 / .88;
+  }
+  .menuWishlistButton {
+    width: 32px;
+    height: 32px;
+  }
+  .menuContent {
+    padding: 10px 10px 11px;
+  }
+  .menuMeta {
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .menuCategory {
+    max-width: 100%;
+    padding: 4px 7px;
+    font-size: 9px;
+  }
+  .menuRating {
+    font-size: 10px;
+  }
+  .menuContent h2 {
+    min-height: 2.7em;
+    margin: 9px 0 11px;
+    font-size: 13px;
+  }
+  .menuCardFooter {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+    padding-top: 10px;
+  }
+  .menuPrice {
+    font-size: 15px;
+  }
+  .menuQuickAdd,
+  .menuAddButton {
+    width: 100%;
+    min-height: 36px;
+    justify-content: center;
+    padding: 0 8px;
+    font-size: 11px;
+  }
+}
+@media (max-width: 360px) {
+  .menuGrid {
+    gap: 9px;
+  }
+  .menuContent {
+    padding: 9px;
+  }
+  .menuContent h2 {
+    font-size: 12px;
+  }
+  .menuPrice {
+    font-size: 14px;
+  }
+}
