@@ -6,6 +6,10 @@ import "../Styles/Menu.css";
 
 function Menu() {
   const [foods, setFoods] = useState([]);
+  const [availableCategories, setAvailableCategories] = useState(["All"]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get("search") || "");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -30,7 +34,18 @@ function Menu() {
         setLoading(true);
         setError("");
 
-        const response = await fetch(`${API_URL}/api/foods?available=true`, {
+        const query = new URLSearchParams({
+          available: "true",
+          page: String(currentPage),
+          limit: "12",
+          sort: sortOption === "lowToHigh" ? "price_asc"
+            : sortOption === "highToLow" ? "price_desc"
+            : sortOption === "rating" ? "rating" : "featured",
+        });
+        if (searchTerm.trim()) query.set("search", searchTerm.trim());
+        if (selectedCategory !== "All") query.set("category", selectedCategory);
+
+        const response = await fetch(`${API_URL}/api/foods?${query.toString()}`, {
           credentials: "include",
         });
         const data = await response.json();
@@ -39,22 +54,30 @@ function Menu() {
           throw new Error(data.message || "Unable to load menu.");
         }
 
-        if (!cancelled) setFoods(Array.isArray(data.foods) ? data.foods : []);
+        if (!cancelled) {
+          setFoods(Array.isArray(data.foods) ? data.foods : []);
+          setAvailableCategories(["All", ...(Array.isArray(data.categories) ? data.categories : [])]);
+          setTotalPages(Math.max(1, Number(data.pagination?.totalPages || 1)));
+          setTotalResults(Math.max(0, Number(data.pagination?.total ?? data.count ?? 0)));
+        }
       } catch (requestError) {
         if (!cancelled) {
           setError(requestError.message || "Unable to load menu.");
           setFoods([]);
+          setTotalPages(1);
+          setTotalResults(0);
         }
       } finally {
         if (!cancelled) setLoading(false);
       }
     };
 
-    loadFoods();
+    const timer = window.setTimeout(loadFoods, 250);
     return () => {
       cancelled = true;
+      window.clearTimeout(timer);
     };
-  }, [reloadFoods]);
+  }, [searchTerm, selectedCategory, sortOption, currentPage, reloadFoods]);
 
 
   const searchSuggestions = useMemo(() => {
@@ -65,36 +88,8 @@ function Menu() {
       .slice(0, 6);
   }, [foods, searchTerm]);
 
-  const categories = useMemo(
-    () => ["All", ...new Set(foods.map((item) => item.category).filter(Boolean))],
-    [foods]
-  );
-
-  const filteredFoods = useMemo(() => {
-    const query = searchTerm.trim().toLowerCase();
-    const result = foods.filter((item) => {
-      const searchableText = `${item.name || ""} ${item.description || ""} ${item.category || ""}`.toLowerCase();
-      const matchesSearch = !query || searchableText.includes(query);
-      const matchesCategory = selectedCategory === "All" || item.category === selectedCategory;
-      return matchesSearch && matchesCategory;
-    });
-
-    if (sortOption === "lowToHigh") return [...result].sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
-    if (sortOption === "highToLow") return [...result].sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
-    if (sortOption === "rating") {
-      return [...result].sort((a, b) => {
-        const ratingDifference = Number(b.rating || 0) - Number(a.rating || 0);
-        return ratingDifference || Number(b.ratingCount || 0) - Number(a.ratingCount || 0);
-      });
-    }
-    return [...result].sort((a, b) => {
-      const featuredDifference = Number(Boolean(b.isFeatured)) - Number(Boolean(a.isFeatured));
-      if (featuredDifference) return featuredDifference;
-      const ratingDifference = Number(b.rating || 0) - Number(a.rating || 0);
-      if (ratingDifference) return ratingDifference;
-      return Number(b.ratingCount || 0) - Number(a.ratingCount || 0);
-    });
-  }, [foods, searchTerm, selectedCategory, sortOption]);
+  const categories = availableCategories;
+  const filteredFoods = foods;
 
   const updateMenuUrl = (nextSearch, nextCategory) => {
     const params = new URLSearchParams();
@@ -105,12 +100,14 @@ function Menu() {
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
+    setCurrentPage(1);
     setShowSuggestions(true);
     updateMenuUrl(value, selectedCategory);
   };
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
+    setCurrentPage(1);
     updateMenuUrl(searchTerm, category);
   };
 
@@ -118,6 +115,7 @@ function Menu() {
     setSearchTerm("");
     setSelectedCategory("All");
     setSortOption("default");
+    setCurrentPage(1);
     setSearchParams({});
   };
 
@@ -188,7 +186,7 @@ function Menu() {
 
           <div className="sortBox">
             <label htmlFor="sort">Sort:</label>
-            <select id="sort" value={sortOption} onChange={(event) => setSortOption(event.target.value)}>
+            <select id="sort" value={sortOption} onChange={(event) => { setSortOption(event.target.value); setCurrentPage(1); }}>
               <option value="default">Recommended</option>
               <option value="rating">Top Rated</option>
               <option value="lowToHigh">Price: Low to High</option>
@@ -201,7 +199,7 @@ function Menu() {
           <div>
             <h2>{selectedCategory === "All" ? "Explore the menu" : selectedCategory}</h2>
             <p role="status" aria-live="polite">
-              {loading ? "Loading menu..." : `${filteredFoods.length} dish${filteredFoods.length !== 1 ? "es" : ""} ${searchTerm.trim() ? "match your search" : "available"}`}
+              {loading ? "Loading menu..." : `${totalResults} dish${totalResults !== 1 ? "es" : ""} ${searchTerm.trim() ? "match your search" : "available"}`}
             </p>
           </div>
           {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default") && (
@@ -249,6 +247,18 @@ function Menu() {
               View All Food
             </button>
           </div>
+        )}
+
+        {!loading && !error && totalPages > 1 && (
+          <nav className="menuPagination" aria-label="Menu pages">
+            <button type="button" onClick={() => setCurrentPage((page) => Math.max(1, page - 1))} disabled={currentPage <= 1}>
+              Previous
+            </button>
+            <span>Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong></span>
+            <button type="button" onClick={() => setCurrentPage((page) => Math.min(totalPages, page + 1))} disabled={currentPage >= totalPages}>
+              Next
+            </button>
+          </nav>
         )}
       </section>
     </div>
