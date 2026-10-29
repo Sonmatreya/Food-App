@@ -115,11 +115,18 @@ function Home() {
       return result;
     }, {});
 
-    return Object.entries(counts).slice(0, 6).map(([name, count]) => ({
-      icon: categoryIcons[name.toLowerCase()] || "🍽️",
-      name,
-      count: `${count} ${count === 1 ? "dish" : "dishes"}`,
-    }));
+    return Object.entries(counts).slice(0, 6).map(([name, count]) => {
+      const representativeFood = source.find(
+        (food) => food.category?.trim() === name && food.image
+      ) || source.find((food) => food.category?.trim() === name);
+      return {
+        icon: categoryIcons[name.toLowerCase()] || "🍽️",
+        name,
+        count: `${count} ${count === 1 ? "dish" : "dishes"}`,
+        image: representativeFood?.image,
+        imageAlt: representativeFood?.name || name,
+      };
+    });
   }, [availableFoods]);
 
   const benefits = [
@@ -315,17 +322,26 @@ function Home() {
           {categories.map((category) => (
             <Link
               to={`/menu?category=${encodeURIComponent(category.name)}`}
-              className="categoryCard"
+              className="categoryCard categoryPhotoCard"
               key={category.name}
             >
-              <div className="categoryIcon">{category.icon}</div>
+              <div className="categoryPhoto">
+                <img
+                  src={resolveFoodImage(category.image) || BannerImage}
+                  alt={category.imageAlt}
+                  loading="lazy"
+                  onError={(event) => {
+                    event.currentTarget.onerror = null;
+                    event.currentTarget.src = BannerImage;
+                  }}
+                />
+                <span className="categoryPhotoShade" />
+                <span className="categoryPhotoArrow"><ArrowForwardIcon /></span>
+              </div>
               <div className="categoryMeta">
                 <h3>{category.name}</h3>
                 <p>{category.count}</p>
               </div>
-              <span className="categoryArrow">
-                <ArrowForwardIcon />
-              </span>
             </Link>
           ))}
         </div>
