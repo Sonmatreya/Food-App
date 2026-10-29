@@ -9,7 +9,7 @@ import { resolveFoodImage } from "../utils/foodImage";
 
 const FALLBACK_FOOD_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=900&q=80";
 
-function MenuItem({ id, image, name, price, category, rating, ratingCount, isAvailable }) {
+function MenuItem({ id, image, name, price, category, rating, ratingCount, description, isAvailable }) {
   const numericPrice = Number(price);
   const numericRating = Number(rating);
   const hasRating = Number.isFinite(numericRating) && numericRating > 0 && Number(ratingCount) > 0;
@@ -154,6 +154,7 @@ function MenuItem({ id, image, name, price, category, rating, ratingCount, isAva
           </div>
 
           <h2>{name}</h2>
+          {description && <p className="menuItemDescription">{description}</p>}
 
           <div className="menuCardFooter">
             <p className="menuPrice">
