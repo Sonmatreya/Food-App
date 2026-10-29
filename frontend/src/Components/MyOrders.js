@@ -187,6 +187,16 @@ function MyOrders() {
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "Unable to send your message.");
+      // Show the server-confirmed request immediately, even if the follow-up
+      // refresh temporarily fails. This avoids a successful send looking lost.
+      if (data.request) {
+        setSupportThreads((current) => {
+          const existing = current[orderId] || [];
+          const requestId = String(data.request.requestId || "");
+          if (requestId && existing.some((request) => String(request.requestId) === requestId)) return current;
+          return { ...current, [orderId]: [data.request, ...existing] };
+        });
+      }
       setSupportDrafts((current) => ({ ...current, [orderId]: "" }));
       setSupportStates((current) => ({ ...current, [orderId]: { ...(current[orderId] || {}), sending: false, submitError: "", notice: "Message sent. Replies will appear here." } }));
       await loadOrderSupport(orderId);
