@@ -487,3 +487,222 @@
   .homePage .liveMenuText span { font-size: 10px; }
   .homePage .liveMenuBand > a { width: 100%; min-height: 40px; }
 }
+
+
+/* Homepage category and dish cards — refined storefront finish */
+.homePage .categorySection {
+  padding-top: 62px;
+}
+.homePage .categoryGrid {
+  gap: 16px;
+}
+.homePage .categoryCard.categoryPhotoCard {
+  position: relative;
+  border-color: #f0dfe2;
+  border-radius: 16px;
+  box-shadow: 0 7px 22px rgba(67, 17, 31, .045);
+}
+.homePage .categoryPhoto {
+  height: 158px;
+  background: linear-gradient(135deg, #fff0f3, #f8e5e8);
+}
+.homePage .categoryPhoto img {
+  transition: transform .5s cubic-bezier(.2,.7,.2,1), filter .3s ease;
+}
+.homePage .categoryCard.categoryPhotoCard:hover .categoryPhoto img {
+  transform: scale(1.075);
+  filter: saturate(1.06);
+}
+.homePage .categoryPhotoShade {
+  inset: 42% 0 0;
+  background: linear-gradient(180deg, transparent, rgba(31, 8, 15, .42));
+}
+.homePage .categoryPhotoArrow {
+  width: 32px;
+  height: 32px;
+  right: 11px;
+  bottom: 11px;
+  transition: transform .2s ease, background .2s ease;
+}
+.homePage .categoryCard.categoryPhotoCard:hover .categoryPhotoArrow {
+  transform: translateX(3px);
+  background: var(--home-accent);
+  color: #fff;
+}
+.homePage .categoryCard.categoryPhotoCard .categoryMeta {
+  min-height: 68px;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.homePage .categoryCard.categoryPhotoCard .categoryMeta h3 {
+  min-width: 0;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.35;
+}
+.homePage .categoryCard.categoryPhotoCard .categoryMeta p {
+  flex: 0 0 auto;
+  padding: 5px 7px;
+  border-radius: 999px;
+  background: #fff1f3;
+  color: #b9122e;
+  font-size: 9px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.homePage .popularSection {
+  background:
+    radial-gradient(ellipse at 8% 0%, rgba(227,24,55,.055), transparent 28rem),
+    linear-gradient(180deg, #fff7f8, #fffafa);
+}
+.homePage .popularSection .sectionHeading {
+  margin-bottom: 27px;
+}
+.homePage .foodGrid {
+  gap: 20px;
+  align-items: stretch;
+}
+.homePage .foodCard {
+  display: flex;
+  flex-direction: column;
+  border-color: #f0dfe2;
+  border-radius: 17px;
+  box-shadow: 0 8px 25px rgba(67, 17, 31, .05);
+}
+.homePage .foodCardImage {
+  aspect-ratio: 1.38 / 1;
+  height: auto;
+  background: linear-gradient(135deg, #fff0f3, #f7e5e8);
+}
+.homePage .foodCardImage img {
+  height: 100%;
+  min-height: 190px;
+  transition: transform .5s cubic-bezier(.2,.7,.2,1), filter .3s ease;
+}
+.homePage .foodCard:hover .foodCardImage img {
+  transform: scale(1.055);
+  filter: saturate(1.05);
+}
+.homePage .foodCardImage::after {
+  content: "";
+  position: absolute;
+  inset: 55% 0 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(30, 8, 15, .14));
+}
+.homePage .foodRating {
+  top: 12px;
+  right: 12px;
+  padding: 7px 9px;
+  border: 1px solid rgba(255,255,255,.75);
+  border-radius: 999px;
+  box-shadow: 0 5px 15px rgba(25, 8, 12, .12);
+}
+.homePage .foodCardContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 16px;
+}
+.homePage .foodCardTopline {
+  min-height: 20px;
+}
+.homePage .foodCategory {
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: #fff0f3;
+  color: #b9122e;
+  font-size: 9px;
+  letter-spacing: .55px;
+}
+.homePage .foodCardTopline > span:last-child {
+  color: #8b747a;
+  font-size: 9px;
+}
+.homePage .foodCardContent h3 {
+  margin: 11px 0 7px;
+  font-size: 16px;
+  letter-spacing: -.2px;
+}
+.homePage .foodCardContent > p {
+  min-height: 3.3em;
+  color: #817176;
+  font-size: 11px;
+  line-height: 1.55;
+}
+.homePage .foodCardBottom {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #f3e7e9;
+}
+.homePage .foodCardBottom > strong {
+  color: #b9122e;
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+}
+.homePage .addFoodButton {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(227,24,55,.15);
+}
+.homePage .addFoodButton:hover {
+  box-shadow: 0 9px 19px rgba(227,24,55,.22);
+}
+.homePage .addFoodButton.added {
+  background: #18794e;
+}
+.homePage .homeMenuNotice {
+  border-color: #efd8dd;
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(67,17,31,.035);
+}
+@media (max-width: 1000px) {
+  .homePage .categoryPhoto { height: 145px; }
+  .homePage .foodCardImage img { min-height: 170px; }
+}
+@media (max-width: 700px) {
+  .homePage .categorySection { padding-top: 39px; }
+  .homePage .categoryGrid { gap: 10px; }
+  .homePage .categoryPhoto { height: 132px; }
+  .homePage .categoryCard.categoryPhotoCard .categoryMeta {
+    min-height: 59px;
+    padding: 10px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .homePage .categoryCard.categoryPhotoCard .categoryMeta h3 { font-size: 12px; }
+  .homePage .categoryCard.categoryPhotoCard .categoryMeta p { padding: 3px 6px; font-size: 8px; }
+  .homePage .popularSection {
+    background: linear-gradient(180deg, #fff7f8, #fffafa);
+  }
+  .homePage .foodGrid { gap: 11px; }
+  .homePage .foodCardImage { aspect-ratio: 1.12 / 1; }
+  .homePage .foodCardImage img { min-height: 0; }
+  .homePage .foodCardContent { padding: 10px; }
+  .homePage .foodCardContent h3 { margin: 9px 0 6px; font-size: 13px; }
+  .homePage .foodCardContent > p { min-height: 3.1em; font-size: 10px; }
+  .homePage .foodCardBottom {
+    padding-top: 10px;
+    gap: 7px;
+  }
+  .homePage .foodCardBottom > strong { font-size: 15px; }
+  .homePage .addFoodButton { min-height: 35px; font-size: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .homePage .categoryPhoto img,
+  .homePage .foodCardImage img,
+  .homePage .categoryPhotoArrow {
+    transition: none;
+  }
+  .homePage .categoryCard.categoryPhotoCard:hover .categoryPhoto img,
+  .homePage .foodCard:hover .foodCardImage img,
+  .homePage .categoryCard.categoryPhotoCard:hover .categoryPhotoArrow {
+    transform: none;
+  }
+}
