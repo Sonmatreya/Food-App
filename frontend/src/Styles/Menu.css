@@ -1158,3 +1158,153 @@ body.dark-mode .skeletonImage,body.dark-mode .skeletonLine { background:linear-g
     padding: 0 12px;
   }
 }
+
+
+/* Advanced food-app filters */
+.menuAdvancedFilters {
+  margin: 0 0 28px;
+  padding: 20px 22px;
+  border: 1px solid #f0dfe2;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #fff 0%, #fff8f9 100%);
+  box-shadow: 0 8px 24px rgba(70, 18, 31, .045);
+}
+.menuFilterHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.menuFilterHeading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.menuFilterHeading > div > span {
+  color: #c91531;
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.5px;
+}
+.menuFilterHeading strong {
+  color: #28171b;
+  font-size: 17px;
+  letter-spacing: -.3px;
+}
+.menuFilterHeading small {
+  color: #8a777d;
+  font-size: 11px;
+}
+.menuFilterControls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(220px, .9fr);
+  gap: 12px;
+}
+.menuFilterControl {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+  color: #6e5c62;
+  font-size: 11px;
+  font-weight: 750;
+}
+.menuFilterControl select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 34px 0 12px;
+  border: 1px solid #ead9dd;
+  border-radius: 11px;
+  outline: none;
+  background: #fff;
+  color: #38252b;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.menuFilterControl select:focus {
+  border-color: #e31837;
+  box-shadow: 0 0 0 3px rgba(227, 24, 55, .08);
+}
+.menuFeaturedToggle {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 12px;
+  border: 1px solid #ead9dd;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease;
+}
+.menuFeaturedToggle input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.menuFeaturedCheck {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: #fff0f3;
+  color: #c91531;
+  font-size: 19px;
+  font-weight: 850;
+}
+.menuFeaturedToggle > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 3px;
+}
+.menuFeaturedToggle strong {
+  color: #38252b;
+  font-size: 11px;
+}
+.menuFeaturedToggle small {
+  color: #8a777d;
+  font-size: 10px;
+}
+.menuFeaturedToggle.active,
+.menuFeaturedToggle:focus-within {
+  border-color: #e31837;
+  background: #fff5f6;
+}
+.menuFeaturedToggle input:focus-visible + .menuFeaturedCheck {
+  outline: 3px solid rgba(227, 24, 55, .22);
+  outline-offset: 3px;
+}
+body.dark-mode .menuAdvancedFilters {
+  border-color: #3a292e;
+  background: linear-gradient(135deg, #1d1719, #241719);
+}
+body.dark-mode .menuFilterHeading strong,
+body.dark-mode .menuFeaturedToggle strong { color: #f5e9ec; }
+body.dark-mode .menuFilterControl { color: #c4adb4; }
+body.dark-mode .menuFilterControl select,
+body.dark-mode .menuFeaturedToggle {
+  border-color: #49343b;
+  background: #211a1c;
+  color: #f4e9ec;
+}
+body.dark-mode .menuFeaturedToggle.active { background: #321b22; }
+@media (max-width: 760px) {
+  .menuFilterControls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .menuFeaturedToggle { grid-column: 1 / -1; }
+}
+@media (max-width: 480px) {
+  .menuAdvancedFilters { margin-bottom: 22px; padding: 15px; border-radius: 15px; }
+  .menuFilterHeading { align-items: flex-start; flex-direction: column; gap: 5px; }
+  .menuFilterHeading strong { font-size: 15px; }
+  .menuFilterControls { grid-template-columns: 1fr; gap: 10px; }
+  .menuFeaturedToggle { grid-column: auto; min-height: 54px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menuFeaturedToggle { transition: none; }
+}
