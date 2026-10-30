@@ -1308,3 +1308,17 @@ body.dark-mode .menuFeaturedToggle.active { background: #321b22; }
 @media (prefers-reduced-motion: reduce) {
   .menuFeaturedToggle { transition: none; }
 }
+
+
+/* Clear, data-backed dietary and heat labels on food cards. */
+.menuFoodAttributes{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 9px;min-height:22px}
+.menuFoodAttributes:empty{display:none}
+.menuFoodAttributes span{display:inline-flex;align-items:center;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:850;letter-spacing:.1px}
+.menuDietaryTag.vegetarian{background:#eaf7ed;color:#18743a;border:1px solid #ccebd3}
+.menuDietaryTag.vegan{background:#e8f5ef;color:#146b50;border:1px solid #c9e7d9}
+.menuDietaryTag.non-vegetarian{background:#fff0f0;color:#b42332;border:1px solid #f4d0d4}
+.menuSpiceTag{background:#fff5e8;color:#9a5812;border:1px solid #f2dfc3}
+body.dark-mode .menuDietaryTag.vegetarian,body.dark-mode .menuDietaryTag.vegan{background:#183326;color:#a6e2bb;border-color:#28573d}
+body.dark-mode .menuDietaryTag.non-vegetarian{background:#3a2024;color:#ffb7bf;border-color:#65343c}
+body.dark-mode .menuSpiceTag{background:#382a1d;color:#ffd19b;border-color:#62472c}
+@media(max-width:650px){.menuFoodAttributes{gap:4px;margin-bottom:7px}.menuFoodAttributes span{padding:3px 6px;font-size:8px}}
