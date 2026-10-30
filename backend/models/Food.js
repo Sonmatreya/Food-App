@@ -36,6 +36,18 @@ const foodSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    dietaryType: {
+      type: String,
+      enum: ["unspecified", "vegetarian", "non-vegetarian", "vegan"],
+      default: "unspecified",
+      index: true,
+    },
+    spiceLevel: {
+      type: String,
+      enum: ["unspecified", "mild", "medium", "hot"],
+      default: "unspecified",
+      index: true,
+    },
     rating: {
       type: Number,
       min: 0,
