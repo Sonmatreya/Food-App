@@ -17,6 +17,8 @@ function Menu() {
   const [priceRange, setPriceRange] = useState("all");
   const [minimumRating, setMinimumRating] = useState("0");
   const [featuredOnly, setFeaturedOnly] = useState(false);
+  const [dietaryType, setDietaryType] = useState("all");
+  const [spiceLevel, setSpiceLevel] = useState("all");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -54,6 +56,8 @@ function Menu() {
         }
         if (minimumRating !== "0") query.set("minRating", minimumRating);
         if (featuredOnly) query.set("featured", "true");
+        if (dietaryType !== "all") query.set("dietaryType", dietaryType);
+        if (spiceLevel !== "all") query.set("spiceLevel", spiceLevel);
 
         const response = await fetch(`${API_URL}/api/foods?${query.toString()}`, {
           credentials: "include",
@@ -87,7 +91,7 @@ function Menu() {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [searchTerm, selectedCategory, sortOption, priceRange, minimumRating, featuredOnly, currentPage, reloadFoods]);
+  }, [searchTerm, selectedCategory, sortOption, priceRange, minimumRating, featuredOnly, dietaryType, spiceLevel, currentPage, reloadFoods]);
 
 
   const searchSuggestions = useMemo(() => {
@@ -128,6 +132,8 @@ function Menu() {
     setPriceRange("all");
     setMinimumRating("0");
     setFeaturedOnly(false);
+    setDietaryType("all");
+    setSpiceLevel("all");
     setCurrentPage(1);
     setSearchParams({});
   };
@@ -224,6 +230,24 @@ function Menu() {
                 <option value="500">₹500 and above</option>
               </select>
             </label>
+            <label className="menuFilterControl" htmlFor="menuDietaryType">
+              <span>Dietary preference</span>
+              <select id="menuDietaryType" value={dietaryType} onChange={(event) => { setDietaryType(event.target.value); setCurrentPage(1); }}>
+                <option value="all">All dietary types</option>
+                <option value="vegetarian">Vegetarian</option>
+                <option value="non-vegetarian">Non-vegetarian</option>
+                <option value="vegan">Vegan</option>
+              </select>
+            </label>
+            <label className="menuFilterControl" htmlFor="menuSpiceLevel">
+              <span>Spice level</span>
+              <select id="menuSpiceLevel" value={spiceLevel} onChange={(event) => { setSpiceLevel(event.target.value); setCurrentPage(1); }}>
+                <option value="all">Any spice level</option>
+                <option value="mild">Mild</option>
+                <option value="medium">Medium</option>
+                <option value="hot">Hot</option>
+              </select>
+            </label>
             <label className="menuFilterControl" htmlFor="menuMinimumRating">
               <span>Customer rating</span>
               <select id="menuMinimumRating" value={minimumRating} onChange={(event) => { setMinimumRating(event.target.value); setCurrentPage(1); }}>
@@ -249,7 +273,7 @@ function Menu() {
               {loading ? "Loading menu..." : `${totalResults} dish${totalResults !== 1 ? "es" : ""} ${searchTerm.trim() ? "match your search" : "available"}`}
             </p>
           </div>
-          {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default" || priceRange !== "all" || minimumRating !== "0" || featuredOnly) && (
+          {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default" || priceRange !== "all" || minimumRating !== "0" || featuredOnly || dietaryType !== "all" || spiceLevel !== "all") && (
             <button type="button" className="menuResetFilters" onClick={resetFilters}>
               Clear filters <span aria-hidden="true">×</span>
             </button>
@@ -283,6 +307,8 @@ function Menu() {
                 ratingCount={menuItem.ratingCount}
                 description={menuItem.description}
                 isAvailable={menuItem.isAvailable}
+                dietaryType={menuItem.dietaryType}
+                spiceLevel={menuItem.spiceLevel}
               />
             ))}
           </div>
