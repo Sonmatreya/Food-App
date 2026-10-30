@@ -291,3 +291,199 @@
   .homePage *, .homePage *::before, .homePage *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
   .homePage .homeFoodSkeletonImage, .homePage .homeFoodSkeletonLine, .homePage .homeFoodSkeletonButton { animation: none; }
 }
+
+
+/* Appetite-led discovery — editorial storefront treatment */
+.homePage .appetiteSection {
+  width: min(1180px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 58px 0 30px;
+}
+.homePage .experienceSectionHead {
+  margin-bottom: 23px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+.homePage .experienceSectionHead > div > span {
+  color: var(--home-accent);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 1.6px;
+}
+.homePage .experienceSectionHead h2 {
+  margin: 8px 0 0;
+  color: var(--home-ink);
+  font-size: clamp(28px, 3.2vw, 39px);
+  line-height: 1.05;
+  letter-spacing: -1.6px;
+}
+.homePage .experienceSectionHead > p {
+  max-width: 360px;
+  margin: 0 0 2px;
+  color: var(--home-muted);
+  font-size: 12px;
+  line-height: 1.75;
+}
+.homePage .appetiteGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+}
+.homePage .appetiteCard {
+  min-width: 0;
+  min-height: 178px;
+  padding: 17px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  box-sizing: border-box;
+  border: 1px solid #f0dfe2;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #fff8f8 0%, #ffedf0 100%);
+  color: var(--home-ink);
+  transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+.homePage .appetiteCard::after {
+  content: "";
+  width: 112px;
+  height: 112px;
+  position: absolute;
+  right: -35px;
+  bottom: -43px;
+  border: 1px solid rgba(227,24,55,.13);
+  border-radius: 50%;
+  box-shadow: 0 0 0 13px rgba(227,24,55,.035), 0 0 0 27px rgba(227,24,55,.025);
+  pointer-events: none;
+}
+.homePage .appetiteCard:hover {
+  transform: translateY(-5px);
+  border-color: #e9aab5;
+  box-shadow: 0 15px 32px rgba(103, 18, 39, .09);
+}
+.homePage .appetiteSymbol {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(227,24,55,.16);
+  border-radius: 11px;
+  background: rgba(255,255,255,.82);
+  color: var(--home-accent);
+  font-size: 21px;
+}
+.homePage .appetiteNote {
+  margin-top: auto;
+  padding-top: 21px;
+  color: #8a6b72;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.homePage .appetiteCard strong {
+  max-width: calc(100% - 16px);
+  margin-top: 5px;
+  color: #321c22;
+  font-size: 15px;
+  line-height: 1.25;
+}
+.homePage .appetiteArrow {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  right: 13px;
+  bottom: 13px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--home-accent);
+  box-shadow: 0 3px 10px rgba(65,12,25,.08);
+  transition: transform .2s ease;
+}
+.homePage .appetiteCard:hover .appetiteArrow { transform: translateX(3px); }
+.homePage .appetiteArrow svg { font-size: 16px; }
+.homePage .appetiteCard-2 { background: linear-gradient(145deg, #fff8f1, #ffede1); border-color: #f3e2d5; }
+.homePage .appetiteCard-2 .appetiteSymbol { color: #d65a27; border-color: #f2d6c7; }
+.homePage .appetiteCard-3 { background: linear-gradient(145deg, #f5fbf5, #eaf5eb); border-color: #e0eee1; }
+.homePage .appetiteCard-3 .appetiteSymbol { color: #39845a; border-color: #d8eadd; }
+.homePage .appetiteCard-4 { background: linear-gradient(145deg, #fff7f4, #fbe9e5); border-color: #f0ded9; }
+.homePage .appetiteCard-4 .appetiteSymbol { color: #bd493b; border-color: #efd7d2; }
+.homePage .appetiteCard-5 { background: linear-gradient(145deg, #f8f8f1, #f0f0df); border-color: #e9e9d9; }
+.homePage .appetiteCard-5 .appetiteSymbol { color: #73823a; border-color: #e1e5cd; }
+
+.homePage .liveMenuBand {
+  width: min(1180px, calc(100% - 48px));
+  min-height: 106px;
+  margin: 0 auto 8px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  box-sizing: border-box;
+  border: 1px solid #ead3d8;
+  border-radius: 16px;
+  background: linear-gradient(105deg, #fff4f5, #fff 70%);
+}
+.homePage .liveMenuMark {
+  width: 57px;
+  height: 57px;
+  flex: 0 0 57px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 13px;
+  background: var(--home-accent);
+  color: #fff;
+  line-height: 1;
+  box-shadow: 0 7px 16px rgba(227,24,55,.17);
+}
+.homePage .liveMenuMark span { font-size: 8px; font-weight: 850; letter-spacing: 1.4px; }
+.homePage .liveMenuMark strong { margin-top: 4px; font-size: 13px; letter-spacing: .4px; }
+.homePage .liveMenuText { min-width: 0; display: flex; flex: 1; flex-direction: column; gap: 5px; }
+.homePage .liveMenuText strong { color: var(--home-ink); font-size: 16px; }
+.homePage .liveMenuText span { color: var(--home-muted); font-size: 11px; line-height: 1.5; }
+.homePage .liveMenuBand > a {
+  min-height: 42px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  background: var(--home-accent);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  transition: background .2s ease, transform .2s ease;
+}
+.homePage .liveMenuBand > a:hover { background: var(--home-accent-dark); transform: translateY(-1px); }
+.homePage .liveMenuBand > a svg { font-size: 16px; }
+
+@media (max-width: 1000px) {
+  .homePage .appetiteGrid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .homePage .appetiteCard { min-height: 155px; }
+}
+@media (max-width: 700px) {
+  .homePage .appetiteSection { width: calc(100% - 28px); padding: 38px 0 22px; }
+  .homePage .experienceSectionHead { align-items: flex-start; flex-direction: column; gap: 9px; margin-bottom: 17px; }
+  .homePage .experienceSectionHead h2 { font-size: 27px; }
+  .homePage .experienceSectionHead > p { max-width: 100%; font-size: 11px; }
+  .homePage .appetiteGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+  .homePage .appetiteCard { min-height: 145px; padding: 13px; border-radius: 12px; }
+  .homePage .appetiteSymbol { width: 33px; height: 33px; font-size: 18px; }
+  .homePage .appetiteNote { padding-top: 15px; font-size: 9px; }
+  .homePage .appetiteCard strong { font-size: 13px; }
+  .homePage .appetiteArrow { right: 10px; bottom: 10px; width: 25px; height: 25px; }
+  .homePage .liveMenuBand { width: calc(100% - 28px); min-height: 0; margin-bottom: 0; padding: 14px; gap: 11px; flex-wrap: wrap; }
+  .homePage .liveMenuMark { width: 47px; height: 47px; flex-basis: 47px; border-radius: 10px; }
+  .homePage .liveMenuText { flex-basis: calc(100% - 65px); }
+  .homePage .liveMenuText strong { font-size: 13px; }
+  .homePage .liveMenuText span { font-size: 10px; }
+  .homePage .liveMenuBand > a { width: 100%; min-height: 40px; }
+}
