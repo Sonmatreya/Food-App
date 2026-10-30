@@ -189,10 +189,10 @@ const generateFood = async (req, res) => {
             content:
               "You generate a draft food catalogue item for a restaurant admin. " +
               "Return ONLY valid JSON, with no markdown and no explanation. " +
-              "Use exactly these keys: name, category, description, ingredients, suggestedPrice, isFeatured. " +
+              "Use exactly these keys: name, category, description, ingredients, suggestedPrice, isFeatured, dietaryType, spiceLevel. " +
               "name must be 2-100 characters. category must be concise. description must be customer-friendly and under 500 characters. " +
               "ingredients must be an array of 3-12 short strings. suggestedPrice must be a positive INR number suitable as a starting suggestion, not a guaranteed market price. " +
-              "isFeatured must be true or false. Do NOT create a customer rating because a new food has no real customer reviews; the application will set its initial rating to 0. " +
+              "isFeatured must be true or false. dietaryType must be vegetarian, non-vegetarian, or vegan. spiceLevel must be mild, medium, or hot. Infer these only when supported by the dish description; otherwise use unspecified. Do NOT create a customer rating because a new food has no real customer reviews; the application will set its initial rating to 0. " +
               "Do not include image URLs. The restaurant admin will review the draft before saving it.",
           },
           { role: "user", content: prompt },
@@ -238,6 +238,8 @@ const generateFood = async (req, res) => {
       : [];
     const suggestedPrice = Number(generated.suggestedPrice);
     const isFeatured = generated.isFeatured === true;
+    const dietaryType = ["vegetarian", "non-vegetarian", "vegan"].includes(generated.dietaryType) ? generated.dietaryType : "unspecified";
+    const spiceLevel = ["mild", "medium", "hot"].includes(generated.spiceLevel) ? generated.spiceLevel : "unspecified";
 
     if (
       name.length < 2 ||
@@ -264,6 +266,8 @@ const generateFood = async (req, res) => {
         rating: 0,
         ratingCount: 0,
         isFeatured,
+        dietaryType,
+        spiceLevel,
       },
     });
   } catch (error) {
