@@ -3,3 +3,9 @@
 
 .admin-menu-ai-generator{grid-column:1/-1;padding:13px;border:1px solid #d7e9df;border-radius:11px;background:#f4fbf7}.admin-menu-ai-generator>div:first-child{display:flex;flex-direction:column;gap:4px}.admin-menu-ai-badge{width:max-content;padding:4px 7px;border-radius:999px;background:#e4f6ec;color:#146c43;font-size:8px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}.admin-menu-ai-generator strong{color:#20252b;font-size:12px}.admin-menu-ai-generator p{margin:0;color:#68727d;font-size:9px;line-height:1.5}.admin-menu-ai-controls{display:flex!important;flex-direction:row!important;gap:7px;margin-top:10px}.admin-menu-ai-controls input{flex:1;min-width:0}.admin-menu-ai-controls button{border:0;border-radius:8px;padding:0 13px;background:#16865a;color:#fff;font:inherit;font-size:10px;font-weight:850;cursor:pointer}.admin-menu-ai-controls button:disabled{opacity:.55;cursor:not-allowed}@media(max-width:560px){.admin-menu-ai-generator{grid-column:auto}.admin-menu-ai-controls{flex-direction:column!important}.admin-menu-ai-controls button{height:40px}}
 @media(prefers-color-scheme:dark){.admin-menu-ai-generator{background:#173629;border-color:#28583f}.admin-menu-ai-generator strong{color:#f2f4f6}.admin-menu-ai-generator p{color:#aeb7bf}.admin-menu-ai-badge{background:#1d4936;color:#8fe0b3}}
+
+
+/* Native selects share the same accessible admin form treatment. */
+.admin-menu-form-grid select{width:100%;box-sizing:border-box;border:1px solid #dce2e7;border-radius:8px;padding:10px;background:#fff;color:#20252b;outline:0;font:inherit;font-size:11px}
+.admin-menu-form-grid select:focus{border-color:#16865a;box-shadow:0 0 0 3px rgba(22,134,90,.08)}
+@media(prefers-color-scheme:dark){.admin-menu-form-grid select{background:#252a2f;border-color:#3b4249;color:#f2f4f6}}
