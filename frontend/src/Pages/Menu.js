@@ -50,7 +50,7 @@ function Menu() {
         if (priceRange !== "all") {
           const [minimum, maximum] = priceRange.split("-");
           if (minimum) query.set("minPrice", minimum);
-          if (maximum) query.set("maxPrice", maximum);
+          if (maximum) query.set("maxPriceExclusive", maximum);
         }
         if (minimumRating !== "0") query.set("minRating", minimumRating);
         if (featuredOnly) query.set("featured", "true");
