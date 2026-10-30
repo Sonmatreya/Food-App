@@ -35,6 +35,20 @@ const getFoods = async (req, res, next) => {
     if (available === "false") filter.isAvailable = false;
     if (featured === "true") filter.isFeatured = true;
 
+    const minPrice = req.query.minPrice === undefined ? null : Number(req.query.minPrice);
+    const maxPrice = req.query.maxPrice === undefined ? null : Number(req.query.maxPrice);
+    const minRating = req.query.minRating === undefined ? null : Number(req.query.minRating);
+    if (minPrice !== null && Number.isFinite(minPrice) && minPrice >= 0) {
+      filter.price = { ...(filter.price || {}), $gte: minPrice };
+    }
+    if (maxPrice !== null && Number.isFinite(maxPrice) && maxPrice >= 0) {
+      filter.price = { ...(filter.price || {}), $lte: maxPrice };
+    }
+    if (minRating !== null && Number.isFinite(minRating) && minRating >= 0 && minRating <= 5) {
+      filter.rating = { $gte: minRating };
+      filter.ratingCount = { $gt: 0 };
+    }
+
     if (search && search.trim()) filter.$text = { $search: search.trim() };
 
     const hasPagination = req.query.page !== undefined || req.query.limit !== undefined;
