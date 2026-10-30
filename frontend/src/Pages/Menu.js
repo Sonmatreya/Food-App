@@ -14,6 +14,9 @@ function Menu() {
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get("search") || "");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("default");
+  const [priceRange, setPriceRange] = useState("all");
+  const [minimumRating, setMinimumRating] = useState("0");
+  const [featuredOnly, setFeaturedOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -44,6 +47,13 @@ function Menu() {
         });
         if (searchTerm.trim()) query.set("search", searchTerm.trim());
         if (selectedCategory !== "All") query.set("category", selectedCategory);
+        if (priceRange !== "all") {
+          const [minimum, maximum] = priceRange.split("-");
+          if (minimum) query.set("minPrice", minimum);
+          if (maximum) query.set("maxPrice", maximum);
+        }
+        if (minimumRating !== "0") query.set("minRating", minimumRating);
+        if (featuredOnly) query.set("featured", "true");
 
         const response = await fetch(`${API_URL}/api/foods?${query.toString()}`, {
           credentials: "include",
@@ -77,7 +87,7 @@ function Menu() {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [searchTerm, selectedCategory, sortOption, currentPage, reloadFoods]);
+  }, [searchTerm, selectedCategory, sortOption, priceRange, minimumRating, featuredOnly, currentPage, reloadFoods]);
 
 
   const searchSuggestions = useMemo(() => {
@@ -115,6 +125,9 @@ function Menu() {
     setSearchTerm("");
     setSelectedCategory("All");
     setSortOption("default");
+    setPriceRange("all");
+    setMinimumRating("0");
+    setFeaturedOnly(false);
     setCurrentPage(1);
     setSearchParams({});
   };
@@ -195,6 +208,40 @@ function Menu() {
           </div>
         </div>
 
+        <section className="menuAdvancedFilters" aria-label="More menu filters">
+          <div className="menuFilterHeading">
+            <div><span>REFINE YOUR CHOICE</span><strong>Find the right dish</strong></div>
+            <small>Filters update the menu automatically</small>
+          </div>
+          <div className="menuFilterControls">
+            <label className="menuFilterControl" htmlFor="menuPriceRange">
+              <span>Price range</span>
+              <select id="menuPriceRange" value={priceRange} onChange={(event) => { setPriceRange(event.target.value); setCurrentPage(1); }}>
+                <option value="all">Any price</option>
+                <option value="0-150">Under ₹150</option>
+                <option value="150-300">₹150 – ₹300</option>
+                <option value="300-500">₹300 – ₹500</option>
+                <option value="500">₹500 and above</option>
+              </select>
+            </label>
+            <label className="menuFilterControl" htmlFor="menuMinimumRating">
+              <span>Customer rating</span>
+              <select id="menuMinimumRating" value={minimumRating} onChange={(event) => { setMinimumRating(event.target.value); setCurrentPage(1); }}>
+                <option value="0">Any rating</option>
+                <option value="3">3★ and above</option>
+                <option value="3.5">3.5★ and above</option>
+                <option value="4">4★ and above</option>
+                <option value="4.5">4.5★ and above</option>
+              </select>
+            </label>
+            <label className={featuredOnly ? "menuFeaturedToggle active" : "menuFeaturedToggle"}>
+              <input type="checkbox" checked={featuredOnly} onChange={(event) => { setFeaturedOnly(event.target.checked); setCurrentPage(1); }} />
+              <span className="menuFeaturedCheck" aria-hidden="true">{featuredOnly ? "✓" : "☆"}</span>
+              <span><strong>Featured dishes</strong><small>Restaurant picks</small></span>
+            </label>
+          </div>
+        </section>
+
         <div className="menuResultHeader">
           <div>
             <h2>{selectedCategory === "All" ? "Explore the menu" : selectedCategory}</h2>
@@ -202,7 +249,7 @@ function Menu() {
               {loading ? "Loading menu..." : `${totalResults} dish${totalResults !== 1 ? "es" : ""} ${searchTerm.trim() ? "match your search" : "available"}`}
             </p>
           </div>
-          {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default") && (
+          {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default" || priceRange !== "all" || minimumRating !== "0" || featuredOnly) && (
             <button type="button" className="menuResetFilters" onClick={resetFilters}>
               Clear filters <span aria-hidden="true">×</span>
             </button>
