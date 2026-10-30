@@ -14,6 +14,8 @@ const sanitizeFoodPayload = (body = {}) => ({
   ratingCount: body.ratingCount === undefined ? 0 : Number(body.ratingCount),
   isAvailable: body.isAvailable !== false,
   isFeatured: body.isFeatured === true,
+  dietaryType: ["vegetarian", "non-vegetarian", "vegan"].includes(body.dietaryType) ? body.dietaryType : "unspecified",
+  spiceLevel: ["mild", "medium", "hot"].includes(body.spiceLevel) ? body.spiceLevel : "unspecified",
 });
 
 const validateFoodPayload = (payload) => {
@@ -34,6 +36,10 @@ const getFoods = async (req, res, next) => {
     if (available === "true") filter.isAvailable = true;
     if (available === "false") filter.isAvailable = false;
     if (featured === "true") filter.isFeatured = true;
+    const dietaryType = ["vegetarian", "non-vegetarian", "vegan"].includes(req.query.dietaryType) ? req.query.dietaryType : null;
+    const spiceLevel = ["mild", "medium", "hot"].includes(req.query.spiceLevel) ? req.query.spiceLevel : null;
+    if (dietaryType) filter.dietaryType = dietaryType;
+    if (spiceLevel) filter.spiceLevel = spiceLevel;
 
     const minPrice = req.query.minPrice === undefined ? null : Number(req.query.minPrice);
     const maxPrice = req.query.maxPrice === undefined ? null : Number(req.query.maxPrice);
