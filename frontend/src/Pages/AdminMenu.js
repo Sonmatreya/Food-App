@@ -14,6 +14,8 @@ const emptyForm = {
   image: "",
   isAvailable: true,
   isFeatured: false,
+  dietaryType: "unspecified",
+  spiceLevel: "unspecified",
 };
 
 const AdminMenu = () => {
@@ -114,6 +116,8 @@ const AdminMenu = () => {
       image: food.image || "",
       isAvailable: food.isAvailable !== false,
       isFeatured: food.isFeatured === true,
+      dietaryType: food.dietaryType || "unspecified",
+      spiceLevel: food.spiceLevel || "unspecified",
     });
     setError("");
     setNotice("");
@@ -158,6 +162,8 @@ const AdminMenu = () => {
           ? generated.ingredients.join(", ")
           : current.ingredients,
         isFeatured: generated.isFeatured === true,
+        dietaryType: generated.dietaryType || current.dietaryType,
+        spiceLevel: generated.spiceLevel || current.spiceLevel,
       }));
 
       setNotice("AI draft generated. Review the details before adding it to MongoDB.");
@@ -193,6 +199,8 @@ const AdminMenu = () => {
       image: form.image.trim(),
       isAvailable: Boolean(form.isAvailable),
       isFeatured: Boolean(form.isFeatured),
+      dietaryType: form.dietaryType,
+      spiceLevel: form.spiceLevel,
     };
 
     try {
@@ -231,6 +239,8 @@ const AdminMenu = () => {
           image: food.image || "",
           isAvailable: !food.isAvailable,
           isFeatured: food.isFeatured === true,
+          dietaryType: food.dietaryType || "unspecified",
+          spiceLevel: food.spiceLevel || "unspecified",
         }),
       });
       setNotice(`${food.name} is now ${food.isAvailable ? "unavailable" : "available"}.`);
@@ -383,6 +393,8 @@ const AdminMenu = () => {
                   <img src={form.image.trim()} alt="Food preview" onError={(event) => { event.currentTarget.style.display = "none"; }} />
                 </div>
               )}
+              <label>Dietary type<select value={form.dietaryType} onChange={(event) => setForm({ ...form, dietaryType: event.target.value })}><option value="unspecified">Not specified</option><option value="vegetarian">Vegetarian</option><option value="non-vegetarian">Non-vegetarian</option><option value="vegan">Vegan</option></select></label>
+              <label>Spice level<select value={form.spiceLevel} onChange={(event) => setForm({ ...form, spiceLevel: event.target.value })}><option value="unspecified">Not specified</option><option value="mild">Mild</option><option value="medium">Medium</option><option value="hot">Hot</option></select></label>
               <label className="wide">Description<textarea rows="3" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} placeholder="Describe the dish for customers" /></label>
               <label className="wide">Ingredients<input value={form.ingredients} onChange={(event) => setForm({ ...form, ingredients: event.target.value })} placeholder="Tomato sauce, mozzarella, basil" /></label>
               <label className="admin-menu-check"><input type="checkbox" checked={form.isAvailable} onChange={(event) => setForm({ ...form, isAvailable: event.target.checked })} /> Available for customers</label>
