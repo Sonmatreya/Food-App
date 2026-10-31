@@ -1426,3 +1426,194 @@ body.dark-mode .menuFilterTrigger.active {
   .menuAdvancedFilters { animation: none; }
   .menuFilterTrigger { transition: none; }
 }
+
+
+
+/* App-style filter sheet with selectable chips (inspired by modern food delivery UX). */
+.menuFilterOverlay {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(24, 12, 16, .56);
+  backdrop-filter: blur(5px);
+  animation: menuFilterFade .18s ease both;
+}
+.menuFilterSheet {
+  display: flex;
+  width: min(620px, 100%);
+  max-height: min(82vh, 760px);
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #f1dfe3;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 28px 90px rgba(30, 8, 15, .28);
+  animation: menuSheetPop .22s cubic-bezier(.2,.8,.2,1) both;
+}
+.menuFilterSheetHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 24px 17px;
+  border-bottom: 1px solid #f2e8ea;
+}
+.menuFilterSheetHeader > div > span {
+  color: #c91531;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+}
+.menuFilterSheetHeader h2 {
+  margin: 5px 0 0;
+  color: #24171b;
+  font-size: 25px;
+  letter-spacing: -.7px;
+}
+.menuFilterClose {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #f7eff1;
+  color: #5d4149;
+  font-size: 25px;
+  cursor: pointer;
+}
+.menuFilterSheetBody {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  overflow-y: auto;
+  padding: 22px 24px;
+}
+.menuChipGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.menuChipGroup > strong {
+  color: #34242a;
+  font-size: 13px;
+  font-weight: 850;
+}
+.menuOptionChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+.menuOptionChip {
+  min-height: 39px;
+  padding: 0 14px;
+  border: 1px solid #e8dfe1;
+  border-radius: 999px;
+  background: #fff;
+  color: #5c4b50;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease, color .16s ease, transform .16s ease;
+}
+.menuOptionChip:hover {
+  border-color: #e31837;
+  color: #bf1531;
+  transform: translateY(-1px);
+}
+.menuOptionChip.selected {
+  border-color: #e31837;
+  background: #fff0f3;
+  color: #b9122e;
+  box-shadow: inset 0 0 0 1px rgba(227,24,55,.08);
+}
+.menuFilterSheet .menuFeaturedToggle {
+  min-height: 58px;
+  border-radius: 14px;
+}
+.menuFilterSheetFooter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 24px calc(16px + env(safe-area-inset-bottom));
+  border-top: 1px solid #f2e8ea;
+  background: #fff;
+}
+.menuFilterClear {
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid #ead9dd;
+  border-radius: 12px;
+  background: #fff;
+  color: #a81931;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.menuFilterApply {
+  flex: 1;
+  min-height: 48px;
+  border: 0;
+  border-radius: 12px;
+  background: #e31837;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 850;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(227,24,55,.2);
+}
+.menuFilterApply:hover { background: #bf1230; }
+body.dark-mode .menuFilterSheet {
+  border-color: #49343b;
+  background: #20191c;
+}
+body.dark-mode .menuFilterSheetHeader,
+body.dark-mode .menuFilterSheetFooter { border-color: #403036; background: #20191c; }
+body.dark-mode .menuFilterSheetHeader h2,
+body.dark-mode .menuChipGroup > strong { color: #f6e9ed; }
+body.dark-mode .menuFilterClose { background: #38282e; color: #f2dce2; }
+body.dark-mode .menuOptionChip {
+  border-color: #4b3940;
+  background: #281f23;
+  color: #e4d5da;
+}
+body.dark-mode .menuOptionChip.selected {
+  border-color: #ed3450;
+  background: #421e29;
+  color: #ffdce3;
+}
+body.dark-mode .menuFilterClear {
+  border-color: #59414a;
+  background: #281f23;
+  color: #ffc4ce;
+}
+@keyframes menuFilterFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes menuSheetPop { from { opacity: 0; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@media (max-width: 600px) {
+  .menuFilterOverlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .menuFilterSheet {
+    width: 100%;
+    max-height: min(88dvh, 780px);
+    border-radius: 22px 22px 0 0;
+    border-bottom: 0;
+    animation: menuSheetRise .24s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .menuFilterSheetHeader { padding: 19px 20px 15px; }
+  .menuFilterSheetBody { gap: 20px; padding: 19px 20px; }
+  .menuFilterSheetFooter { padding: 13px 20px calc(13px + env(safe-area-inset-bottom)); }
+  .menuOptionChip { min-height: 38px; padding: 0 13px; }
+}
+@keyframes menuSheetRise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .menuFilterOverlay, .menuFilterSheet { animation: none; }
+  .menuOptionChip { transition: none; }
+}
