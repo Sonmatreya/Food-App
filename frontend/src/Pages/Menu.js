@@ -232,57 +232,49 @@ function Menu() {
         </div>
 
         {showAdvancedFilters && (
-        <section id="menuAdvancedFiltersPanel" className="menuAdvancedFilters" aria-label="More menu filters">
-          <div className="menuFilterHeading">
-            <div><span>REFINE YOUR CHOICE</span><strong>Find the right dish</strong></div>
-            <small>Filters update the menu automatically</small>
+          <div className="menuFilterOverlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowAdvancedFilters(false); }}>
+            <section id="menuAdvancedFiltersPanel" className="menuAdvancedFilters menuFilterSheet" role="dialog" aria-modal="true" aria-labelledby="menuFilterTitle">
+              <div className="menuFilterSheetHeader">
+                <div><span>PERSONALISE YOUR MENU</span><h2 id="menuFilterTitle">Filters</h2></div>
+                <button type="button" className="menuFilterClose" onClick={() => setShowAdvancedFilters(false)} aria-label="Close filters">×</button>
+              </div>
+              <div className="menuFilterSheetBody">
+                <div className="menuChipGroup">
+                  <strong>Price range</strong>
+                  <div className="menuOptionChips">
+                    {[["all","Any price"],["0-150","Under ₹150"],["150-300","₹150–₹300"],["300-500","₹300–₹500"],["500","₹500+"]].map(([value,label]) => <button type="button" key={value} className={priceRange === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setPriceRange(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <div className="menuChipGroup">
+                  <strong>Dietary preference</strong>
+                  <div className="menuOptionChips">
+                    {[["all","Any"],["vegetarian","🟢 Veg"],["non-vegetarian","🔴 Non-veg"],["vegan","🌱 Vegan"]].map(([value,label]) => <button type="button" key={value} className={dietaryType === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setDietaryType(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <div className="menuChipGroup">
+                  <strong>Spice level</strong>
+                  <div className="menuOptionChips">
+                    {[["all","Any"],["mild","Mild"],["medium","Medium"],["hot","Hot 🔥"]].map(([value,label]) => <button type="button" key={value} className={spiceLevel === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setSpiceLevel(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <div className="menuChipGroup">
+                  <strong>Customer rating</strong>
+                  <div className="menuOptionChips">
+                    {[["0","Any rating"],["3","3.0+ ★"],["3.5","3.5+ ★"],["4","4.0+ ★"],["4.5","4.5+ ★"]].map(([value,label]) => <button type="button" key={value} className={minimumRating === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setMinimumRating(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <label className={featuredOnly ? "menuFeaturedToggle active" : "menuFeaturedToggle"}>
+                  <input type="checkbox" checked={featuredOnly} onChange={(event) => { setFeaturedOnly(event.target.checked); setCurrentPage(1); }} />
+                  <span className="menuFeaturedCheck" aria-hidden="true">{featuredOnly ? "✓" : "☆"}</span>
+                  <span><strong>Featured dishes</strong><small>Restaurant picks</small></span>
+                </label>
+              </div>
+              <div className="menuFilterSheetFooter">
+                <button type="button" className="menuFilterClear" onClick={resetFilters}>Clear all</button>
+                <button type="button" className="menuFilterApply" onClick={() => setShowAdvancedFilters(false)}>Show {totalResults} dishes</button>
+              </div>
+            </section>
           </div>
-          <div className="menuFilterControls">
-            <label className="menuFilterControl" htmlFor="menuPriceRange">
-              <span>Price range</span>
-              <select id="menuPriceRange" value={priceRange} onChange={(event) => { setPriceRange(event.target.value); setCurrentPage(1); }}>
-                <option value="all">Any price</option>
-                <option value="0-150">Under ₹150</option>
-                <option value="150-300">₹150 – ₹300</option>
-                <option value="300-500">₹300 – ₹500</option>
-                <option value="500">₹500 and above</option>
-              </select>
-            </label>
-            <label className="menuFilterControl" htmlFor="menuDietaryType">
-              <span>Dietary preference</span>
-              <select id="menuDietaryType" value={dietaryType} onChange={(event) => { setDietaryType(event.target.value); setCurrentPage(1); }}>
-                <option value="all">All dietary types</option>
-                <option value="vegetarian">Vegetarian</option>
-                <option value="non-vegetarian">Non-vegetarian</option>
-                <option value="vegan">Vegan</option>
-              </select>
-            </label>
-            <label className="menuFilterControl" htmlFor="menuSpiceLevel">
-              <span>Spice level</span>
-              <select id="menuSpiceLevel" value={spiceLevel} onChange={(event) => { setSpiceLevel(event.target.value); setCurrentPage(1); }}>
-                <option value="all">Any spice level</option>
-                <option value="mild">Mild</option>
-                <option value="medium">Medium</option>
-                <option value="hot">Hot</option>
-              </select>
-            </label>
-            <label className="menuFilterControl" htmlFor="menuMinimumRating">
-              <span>Customer rating</span>
-              <select id="menuMinimumRating" value={minimumRating} onChange={(event) => { setMinimumRating(event.target.value); setCurrentPage(1); }}>
-                <option value="0">Any rating</option>
-                <option value="3">3★ and above</option>
-                <option value="3.5">3.5★ and above</option>
-                <option value="4">4★ and above</option>
-                <option value="4.5">4.5★ and above</option>
-              </select>
-            </label>
-            <label className={featuredOnly ? "menuFeaturedToggle active" : "menuFeaturedToggle"}>
-              <input type="checkbox" checked={featuredOnly} onChange={(event) => { setFeaturedOnly(event.target.checked); setCurrentPage(1); }} />
-              <span className="menuFeaturedCheck" aria-hidden="true">{featuredOnly ? "✓" : "☆"}</span>
-              <span><strong>Featured dishes</strong><small>Restaurant picks</small></span>
-            </label>
-          </div>
-        </section>
         )}
 
         <div className="menuResultHeader">
