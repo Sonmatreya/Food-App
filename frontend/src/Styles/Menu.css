@@ -1617,3 +1617,197 @@ body.dark-mode .menuFilterClear {
   .menuFilterOverlay, .menuFilterSheet { animation: none; }
   .menuOptionChip { transition: none; }
 }
+
+
+/* Refined menu discovery toolbar: compact search and one-line category navigation. */
+.menuPage .menuSearchBox {
+  width: min(760px, calc(100% - 32px));
+  max-width: 760px;
+  min-height: 64px;
+  height: 64px;
+  margin: -76px auto 34px;
+  padding: 0 16px;
+  border: 1px solid #f0dce1;
+  border-radius: 18px;
+  box-shadow: 0 14px 36px rgba(47, 14, 23, .13);
+}
+.menuPage .menuSearchBox > span {
+  position: relative;
+  display: block;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  overflow: hidden;
+  border-radius: 13px;
+  background: #fff0f3;
+  color: transparent;
+  font-size: 0;
+}
+.menuPage .menuSearchBox > span::before {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 13px;
+  height: 13px;
+  border: 2px solid #c91531;
+  border-radius: 50%;
+  content: "";
+}
+.menuPage .menuSearchBox > span::after {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  width: 8px;
+  height: 2px;
+  border-radius: 2px;
+  background: #c91531;
+  content: "";
+  transform: rotate(45deg);
+  transform-origin: left center;
+}
+.menuPage .menuSearchBox input {
+  padding-left: 16px;
+  font-size: 15px;
+}
+.menuPage .menuToolbar {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 28px;
+  padding: 0 0 20px;
+}
+.menuPage .categoryFilters {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 9px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 5px 2px 9px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.menuPage .categoryFilters::-webkit-scrollbar { display: none; }
+.menuPage .categoryFilter {
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 0 17px;
+  border-color: #eee0e3;
+  background: #fff;
+  box-shadow: 0 2px 7px rgba(45, 15, 23, .025);
+  white-space: nowrap;
+}
+.menuPage .categoryFilter.active {
+  box-shadow: 0 6px 15px rgba(227, 24, 55, .18);
+}
+.menuPage .menuToolbarActions {
+  flex: 0 0 auto;
+  width: auto;
+  gap: 10px;
+}
+.menuPage .menuFilterTrigger {
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(45, 15, 23, .035);
+}
+.menuPage .sortBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.menuPage .sortBox label {
+  color: #77666c;
+  font-size: 12px;
+  font-weight: 750;
+}
+.menuPage .sortBox select {
+  min-height: 42px;
+  min-width: 164px;
+  padding: 0 34px 0 13px;
+  border: 1px solid #eadde0;
+  border-radius: 999px;
+  background-color: #fff;
+  color: #302128;
+  font-size: 12px;
+  font-weight: 750;
+}
+body.dark-mode .menuPage .categoryFilter {
+  border-color: #49343b;
+  background: #211a1c;
+  color: #e8dce0;
+}
+body.dark-mode .menuPage .categoryFilter.active {
+  border-color: #e31837;
+  background: #e31837;
+  color: #fff;
+}
+body.dark-mode .menuPage .sortBox select {
+  border-color: #49343b;
+  background-color: #211a1c;
+  color: #f4e9ec;
+}
+@media (max-width: 1050px) {
+  .menuPage .menuToolbar {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .menuPage .categoryFilters { width: 100%; }
+  .menuPage .menuToolbarActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+@media (max-width: 600px) {
+  .menuPage .menuSearchBox {
+    width: 100%;
+    min-height: 58px;
+    height: 58px;
+    margin-top: -55px;
+    margin-bottom: 24px;
+    border-radius: 15px;
+  }
+  .menuPage .menuSearchBox > span {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .menuPage .menuSearchBox > span::before { top: 8px; left: 8px; }
+  .menuPage .menuSearchBox > span::after { top: 23px; left: 23px; }
+  .menuPage .menuToolbar {
+    gap: 10px;
+    padding-bottom: 15px;
+  }
+  .menuPage .categoryFilters {
+    margin: 0 -2px;
+    padding: 4px 2px 8px;
+  }
+  .menuPage .categoryFilter {
+    min-height: 38px;
+    padding: 0 14px;
+    font-size: 12px;
+  }
+  .menuPage .menuToolbarActions {
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .menuPage .menuFilterTrigger {
+    min-height: 40px;
+    padding: 0 12px;
+  }
+  .menuPage .sortBox { gap: 6px; }
+  .menuPage .sortBox select {
+    min-width: 0;
+    max-width: 180px;
+    min-height: 40px;
+    padding-left: 11px;
+    font-size: 11px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menuPage .categoryFilter { transition: none; }
+}
