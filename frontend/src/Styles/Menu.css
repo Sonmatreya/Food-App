@@ -1322,3 +1322,107 @@ body.dark-mode .menuDietaryTag.vegetarian,body.dark-mode .menuDietaryTag.vegan{b
 body.dark-mode .menuDietaryTag.non-vegetarian{background:#3a2024;color:#ffb7bf;border-color:#65343c}
 body.dark-mode .menuSpiceTag{background:#382a1d;color:#ffd19b;border-color:#62472c}
 @media(max-width:650px){.menuFoodAttributes{gap:4px;margin-bottom:7px}.menuFoodAttributes span{padding:3px 6px;font-size:8px}}
+
+
+/* Compact modern filter trigger and collapsible refinement panel. */
+.menuToolbarActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+.menuFilterTrigger {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 14px;
+  border: 1px solid #ead9dd;
+  border-radius: 12px;
+  background: #fff;
+  color: #3b252c;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, color .18s ease, box-shadow .18s ease;
+}
+.menuFilterTrigger > span:first-child {
+  color: #c91531;
+  font-size: 19px;
+  line-height: 1;
+}
+.menuFilterTrigger:hover,
+.menuFilterTrigger.active {
+  border-color: #e31837;
+  background: #fff3f5;
+  color: #b9122e;
+}
+.menuFilterTrigger:focus-visible {
+  outline: 3px solid rgba(227,24,55,.2);
+  outline-offset: 3px;
+}
+.menuFilterCount {
+  display: grid;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e31837;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 850;
+}
+.menuFilterChevron {
+  color: #a38b91;
+  font-size: 17px;
+  line-height: 1;
+}
+.menuAdvancedFilters {
+  animation: menuFilterReveal .2s ease both;
+}
+@keyframes menuFilterReveal {
+  from { opacity: 0; transform: translateY(-7px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+body.dark-mode .menuFilterTrigger {
+  border-color: #49343b;
+  background: #211a1c;
+  color: #f4e9ec;
+}
+body.dark-mode .menuFilterTrigger:hover,
+body.dark-mode .menuFilterTrigger.active {
+  border-color: #e31837;
+  background: #321b22;
+  color: #ffdce2;
+}
+@media (max-width: 900px) {
+  .menuToolbarActions {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+@media (max-width: 480px) {
+  .menuToolbarActions {
+    gap: 9px;
+  }
+  .menuFilterTrigger {
+    min-height: 40px;
+    padding: 0 11px;
+    font-size: 12px;
+  }
+  .menuToolbarActions .sortBox {
+    flex: 1;
+    justify-content: flex-end;
+  }
+  .menuToolbarActions .sortBox select {
+    min-width: 0;
+    max-width: 185px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menuAdvancedFilters { animation: none; }
+  .menuFilterTrigger { transition: none; }
+}
