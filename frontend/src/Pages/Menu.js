@@ -19,6 +19,7 @@ function Menu() {
   const [featuredOnly, setFeaturedOnly] = useState(false);
   const [dietaryType, setDietaryType] = useState("all");
   const [spiceLevel, setSpiceLevel] = useState("all");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -202,8 +203,23 @@ function Menu() {
             ))}
           </div>
 
-          <div className="sortBox">
-            <label htmlFor="sort">Sort:</label>
+          <div className="menuToolbarActions">
+            <button
+              type="button"
+              className={showAdvancedFilters ? "menuFilterTrigger active" : "menuFilterTrigger"}
+              aria-expanded={showAdvancedFilters}
+              aria-controls="menuAdvancedFiltersPanel"
+              onClick={() => setShowAdvancedFilters((open) => !open)}
+            >
+              <span aria-hidden="true">☷</span>
+              Filters
+              {(priceRange !== "all" || minimumRating !== "0" || featuredOnly || dietaryType !== "all" || spiceLevel !== "all") && (
+                <span className="menuFilterCount">{[priceRange !== "all", minimumRating !== "0", featuredOnly, dietaryType !== "all", spiceLevel !== "all"].filter(Boolean).length}</span>
+              )}
+              <span className="menuFilterChevron" aria-hidden="true">{showAdvancedFilters ? "−" : "+"}</span>
+            </button>
+            <div className="sortBox">
+              <label htmlFor="sort">Sort:</label>
             <select id="sort" value={sortOption} onChange={(event) => { setSortOption(event.target.value); setCurrentPage(1); }}>
               <option value="default">Recommended</option>
               <option value="rating">Top Rated</option>
@@ -211,10 +227,12 @@ function Menu() {
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
             </select>
+            </div>
           </div>
         </div>
 
-        <section className="menuAdvancedFilters" aria-label="More menu filters">
+        {showAdvancedFilters && (
+        <section id="menuAdvancedFiltersPanel" className="menuAdvancedFilters" aria-label="More menu filters">
           <div className="menuFilterHeading">
             <div><span>REFINE YOUR CHOICE</span><strong>Find the right dish</strong></div>
             <small>Filters update the menu automatically</small>
@@ -265,6 +283,7 @@ function Menu() {
             </label>
           </div>
         </section>
+        )}
 
         <div className="menuResultHeader">
           <div>
