@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import { API_URL } from "../config/api";
 import { useCart } from "../context/CartContext";
 import "../Styles/PaymentSuccess.css";
 
 function PaymentSuccess() {
   const { orderId } = useParams();
-  const navigate = useNavigate();
   const [params] = useSearchParams();
   const { clearCart } = useCart();
   const [order, setOrder] = useState(null);
@@ -15,7 +14,6 @@ function PaymentSuccess() {
 
   useEffect(() => {
     let active = true;
-    let redirectTimer = null;
     const loadOrder = async () => {
       try {
         if (params.get("payment") !== "success") {
@@ -35,11 +33,6 @@ function PaymentSuccess() {
         if (active) {
           setOrder(data.order);
           clearCart();
-          // Keep the payment confirmation visible long enough to read on desktop
-          // as well as mobile, then continue to the full order confirmation page.
-          redirectTimer = window.setTimeout(() => {
-            if (active) navigate(`/order-success/${orderId}?payment=success`, { replace: true });
-          }, 3200);
         }
       } catch (err) {
         if (active) setError(err.message || "Unable to verify your payment.");
@@ -50,9 +43,8 @@ function PaymentSuccess() {
     loadOrder();
     return () => {
       active = false;
-      if (redirectTimer) window.clearTimeout(redirectTimer);
     };
-  }, [orderId, params, clearCart, navigate]);
+  }, [orderId, params, clearCart]);
 
   if (loading) {
     return <main className="paymentSuccessPage"><div className="paymentSuccessCard"><div className="paymentSuccessSpinner" /><h1>Confirming your payment</h1><p>Please wait while we verify your order.</p></div></main>;
