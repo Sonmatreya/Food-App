@@ -81,11 +81,32 @@ const chatWithAssistant = async (req, res) => {
         .lean(),
     ]);
 
-    let latestOrder = null;
+    let recentOrders = [];
     const currentUserId = req.user?.userId || req.user?.id || req.user?._id;
     if (currentUserId) {
-      latestOrder = await Order.findOne({ userId: currentUserId }).sort({ createdAt: -1 }).select("orderNumber status deliveryType createdAt items.name").lean();
+      // Only read a small, privacy-safe summary of this signed-in customer's own orders.
+      recentOrders = await Order.find({ userId: currentUserId })
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .select("orderNumber status createdAt items.name items.category items.quantity")
+        .lean();
     }
+    const purchaseHistory = recentOrders.flatMap((order) =>
+      (order.items || []).map((item) => ({
+        name: item.name,
+        category: item.category || "",
+        quantity: Number(item.quantity || 1),
+        orderStatus: order.status,
+        orderedAt: order.createdAt,
+      }))
+    );
+    const favoriteFoods = Object.values(purchaseHistory.reduce((summary, item) => {
+      const key = String(item.name || "").toLowerCase();
+      if (!key) return summary;
+      if (!summary[key]) summary[key] = { name: item.name, category: item.category, quantity: 0 };
+      summary[key].quantity += item.quantity;
+      return summary;
+    }, {})).sort((a, b) => b.quantity - a.quantity).slice(0, 5);
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
@@ -126,8 +147,9 @@ const chatWithAssistant = async (req, res) => {
               "Use the supplied active coupons to identify applicable offers, but do not claim a coupon was applied unless the customer uses the checkout controls. " +
               "If the user asks for an action such as placing an order or changing an order, explain that they should use the app controls. " +
               "Keep answers concise, friendly, and useful. Use the same currency shown by the catalogue for prices. " +
-              "Catalogue:\n" + JSON.stringify(catalogue) + "\nCustomer cart:\n" + JSON.stringify(req.body?.cartItems || []) + "\nLatest customer order (if logged in):\n" + JSON.stringify(latestOrder || null) + "\nActive coupons:\n" + JSON.stringify(coupons || []),
+              "Catalogue:\n" + JSON.stringify(catalogue) + "\nCustomer cart:\n" + JSON.stringify(req.body?.cartItems || []) + "\nRecent customer order history (signed-in customer only):\n" + JSON.stringify(recentOrders || []) + "\nFrequently ordered foods (derived from recent orders):\n" + JSON.stringify(favoriteFoods || []) + "\nConversation so far:\n" + JSON.stringify((Array.isArray(req.body?.history) ? req.body.history : []).slice(-8)) + "\nActive coupons:\n" + JSON.stringify(coupons || []),
           },
+          ...(Array.isArray(req.body?.history) ? req.body.history.slice(-8).filter((entry) => entry && ["user", "assistant"].includes(entry.role) && typeof entry.content === "string").map((entry) => ({ role: entry.role, content: entry.content.slice(0, 500) })) : []),
           { role: "user", content: message },
         ],
         max_tokens: 500,
