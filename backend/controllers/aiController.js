@@ -99,6 +99,8 @@ const chatWithAssistant = async (req, res) => {
       rating: food.rating,
       ingredients: food.ingredients,
       description: food.description,
+      dietaryType: food.dietaryType,
+      spiceLevel: food.spiceLevel,
       featured: food.isFeatured,
     }));
 
@@ -153,7 +155,6 @@ const chatWithAssistant = async (req, res) => {
       mode: "ai",
     });
   } catch (error) {
-    console.error("AI assistant error:", error);
     console.error("AI assistant request failed; attempting catalogue fallback:", error);
     try {
       const foods = await Food.find({ isAvailable: true })
