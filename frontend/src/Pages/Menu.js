@@ -132,6 +132,9 @@ function Menu() {
           <p>
             Browse the current menu, compare dishes and prices, then choose what you want to order.
           </p>
+          <button type="button" className="menuFoodAiEntry" onClick={() => window.dispatchEvent(new Event("open-food-ai"))}>
+            ✦ Match my taste
+          </button>
         </div>
       </section>
 

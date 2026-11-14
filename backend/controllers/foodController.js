@@ -7,6 +7,10 @@ const sanitizeFoodPayload = (body = {}) => ({
   category: typeof body.category === "string" ? body.category.trim() : body.category,
   price: Number(body.price),
   image: typeof body.image === "string" ? body.image.trim() : "",
+  restaurantName: typeof body.restaurantName === "string" ? body.restaurantName.trim() : "Food App Kitchen",
+  deliveryTime: typeof body.deliveryTime === "string" ? body.deliveryTime.trim() : "20-30 min",
+  distanceKm: body.distanceKm === undefined ? 3.5 : Number(body.distanceKm),
+  offerText: typeof body.offerText === "string" ? body.offerText.trim() : "",
   ingredients: Array.isArray(body.ingredients)
     ? body.ingredients.map((item) => String(item).trim()).filter(Boolean)
     : [],
@@ -22,6 +26,7 @@ const validateFoodPayload = (payload) => {
   if (!Number.isFinite(payload.price) || payload.price < 0) return "Price must be a valid non-negative number.";
   if (!Number.isFinite(payload.rating) || payload.rating < 0 || payload.rating > 5) return "Rating must be between 0 and 5.";
   if (!Number.isInteger(payload.ratingCount) || payload.ratingCount < 0) return "Rating count must be a non-negative integer.";
+  if (!Number.isFinite(payload.distanceKm) || payload.distanceKm < 0) return "Distance must be a valid non-negative number.";
   return null;
 };
 

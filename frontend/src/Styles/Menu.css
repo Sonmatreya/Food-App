@@ -47,6 +47,19 @@
   line-height: 1.7;
 }
 
+.menuFoodAiEntry {
+  margin-top: 20px;
+  padding: 11px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 999px;
+  background: rgba(227, 24, 55, 0.95);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.menuFoodAiEntry:hover { background: #c91530; }
+
 .menuSection {
   width: min(1240px, calc(100% - 48px));
   max-width: 1240px;

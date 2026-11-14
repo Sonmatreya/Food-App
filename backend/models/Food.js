@@ -32,6 +32,29 @@ const foodSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+    restaurantName: {
+      type: String,
+      trim: true,
+      maxlength: 100,
+      default: "Food App Kitchen",
+    },
+    deliveryTime: {
+      type: String,
+      trim: true,
+      maxlength: 30,
+      default: "20-30 min",
+    },
+    distanceKm: {
+      type: Number,
+      min: 0,
+      default: 3.5,
+    },
+    offerText: {
+      type: String,
+      trim: true,
+      maxlength: 120,
+      default: "",
+    },
     ingredients: {
       type: [String],
       default: [],

@@ -2,10 +2,10 @@ const Food = require("../models/Food");
 const Order = require("../models/Order");
 const Coupon = require("../models/Coupon");
 
-const fallbackReply = (message, foods, cartItems = []) => {
+const getRecommendedFoods = (message, foods, cartItems = []) => {
   const text = String(message || "").toLowerCase();
   const available = foods.filter((food) => food.isAvailable !== false);
-  if (!available.length) return "I could not find any available dishes right now. Please check the menu again shortly.";
+  if (!available.length) return [];
 
   const budgetMatch = text.match(/(?:under|below|less than|within|budget(?: of)?|upto|up to)\s*(?:₹|rs\.?|inr|rupees?)?\s*(\d+(?:\.\d+)?)/i);
   const budget = budgetMatch ? Number(budgetMatch[1]) : null;
@@ -42,11 +42,18 @@ const fallbackReply = (message, foods, cartItems = []) => {
     return Number(b.isFeatured === true) - Number(a.isFeatured === true) || ratingDiff || Number(a.price || 0) - Number(b.price || 0);
   }).slice(0, 3);
 
+  return matches;
+};
+
+const fallbackReply = (message, foods, cartItems = []) => {
+  const matches = getRecommendedFoods(message, foods, cartItems);
   if (!matches.length) return "I could not find a matching dish in the current catalogue. Try another category, remove a dietary filter, or increase your budget.";
   const recommendations = matches.map((food) => food.name + " — ₹" + Number(food.price).toFixed(2) + " (" + Number(food.rating || 0).toFixed(1) + "★)").join("\n");
-  const intro = /cart|goes with|pair|add.?on|complement|something else/i.test(text) && cartNames.length
+  const text = String(message || "").toLowerCase();
+  const hasCart = Array.isArray(cartItems) && cartItems.some((item) => item?.name);
+  const intro = /cart|goes with|pair|add.?on|complement|something else/i.test(text) && hasCart
     ? "Based on your cart, here are a few other menu options:"
-    : budget !== null
+    : /(?:under|below|less than|within|budget(?: of)?|upto|up to)\s*(?:rs\.?|inr|rupees?)?\s*\d+/i.test(text)
       ? "Here are a few menu options within your budget:"
       : "Here are a few options from our current menu:";
   return intro + "\n\n" + recommendations + "\n\nOpen the Menu to explore them and choose what you like.";
@@ -59,7 +66,7 @@ const chatWithAssistant = async (req, res) => {
 
     const [foods, coupons] = await Promise.all([
       Food.find({ isAvailable: true })
-        .select("name description category price rating ingredients isFeatured isAvailable")
+        .select("name description category price rating ratingCount image ingredients isFeatured isAvailable")
         .sort({ rating: -1 })
         .limit(60)
         .lean(),
@@ -80,7 +87,7 @@ const chatWithAssistant = async (req, res) => {
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return res.json({ success: true, reply: fallbackReply(message, foods, req.body?.cartItems), mode: "catalogue-fallback" });
+      return res.json({ success: true, reply: fallbackReply(message, foods, req.body?.cartItems), recommendations: getRecommendedFoods(message, foods, req.body?.cartItems), mode: "catalogue-fallback" });
     }
 
     const catalogue = foods.map((food) => ({
@@ -130,6 +137,7 @@ const chatWithAssistant = async (req, res) => {
       return res.json({
         success: true,
         reply: fallbackReply(message, foods, req.body?.cartItems),
+        recommendations: getRecommendedFoods(message, foods, req.body?.cartItems),
         mode: "catalogue-fallback",
       });
     }
@@ -139,6 +147,7 @@ const chatWithAssistant = async (req, res) => {
     return res.json({
       success: true,
       reply: reply || fallbackReply(message, foods, req.body?.cartItems),
+      recommendations: getRecommendedFoods(message, foods, req.body?.cartItems),
       mode: "ai",
     });
   } catch (error) {
