@@ -208,11 +208,11 @@ function Home() {
             GOOD FOOD. GOOD MOOD.
           </div>
           <h1>
-            Your favourites.
+            What sounds
             <br />
-            Just a few <em>clicks</em>
+            good <em>right now?</em>
             <br />
-            away.
+            
           </h1>
           <p>
             Find the dishes you love, compare prices, and add your picks to the cart. Your next meal starts here.
@@ -300,6 +300,24 @@ function Home() {
         </div>
       </section>
 
+
+      <section className="appetiteSection">
+        <div className="experienceSectionHead"><div><span>START WITH A FEELING</span><h2>Pick your appetite.</h2></div><p>Not sure what to order? Start with the kind of food you’re in the mood for.</p></div>
+        <div className="appetiteGrid">
+          {[
+            { label: "Comfort food", query: "comfort", note: "For the cosy days", symbol: "♡" },
+            { label: "Something spicy", query: "spicy", note: "Turn up the flavour", symbol: "✳" },
+            { label: "Fresh & light", query: "healthy", note: "Keep it refreshing", symbol: "✦" },
+            { label: "Pizza night", query: "pizza", note: "A slice of happiness", symbol: "◒" },
+            { label: "Veggie mood", query: "vegetarian", note: "Plant-forward picks", symbol: "❋" },
+          ].map((item, index) => (
+            <Link className={`appetiteCard appetiteCard-${index + 1}`} to={`/menu?search=${encodeURIComponent(item.query)}`} key={item.label}>
+              <span className="appetiteSymbol">{item.symbol}</span><span className="appetiteNote">{item.note}</span><strong>{item.label}</strong><span className="appetiteArrow"><ArrowForwardIcon /></span>
+            </Link>
+          ))}
+        </div>
+      </section>
+      <section className="liveMenuBand"><div className="liveMenuMark"><span>LIVE</span><strong>MENU</strong></div><div className="liveMenuText"><strong>{foodsLoading ? "Finding what’s cooking…" : `${availableFoods.length} dishes to discover`}</strong><span>Explore what’s currently available, with prices straight from the menu.</span></div><Link to="/menu">Explore all dishes <ArrowForwardIcon /></Link></section>
 
       <PromoBanners />
 

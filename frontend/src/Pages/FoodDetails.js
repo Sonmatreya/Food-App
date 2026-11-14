@@ -139,11 +139,27 @@ function FoodDetails() {
 
   if (loading) {
     return (
-      <div className="foodNotFound">
-        <div className="notFoundIcon">🍽️</div>
-        <h1>Loading Food...</h1>
-        <p>Fetching the latest food details.</p>
-      </div>
+      <main className="foodDetailsLoading" aria-label="Loading food details" aria-busy="true">
+        <div className="foodDetailsLoadingBreadcrumb"><span /><span /><span /></div>
+        <section className="foodDetailsLoadingLayout">
+          <div className="foodDetailsLoadingImage" />
+          <div className="foodDetailsLoadingContent">
+            <span className="foodDetailsSkeleton foodDetailsSkeletonEyebrow" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonTitle" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonRating" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonPrice" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonDescription" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonDescription short" />
+            <div className="foodDetailsLoadingInfo"><span /><span /></div>
+            <span className="foodDetailsSkeleton foodDetailsSkeletonSection" />
+            <div className="foodDetailsLoadingIngredients"><span /><span /><span /><span /></div>
+            <span className="foodDetailsSkeleton foodDetailsSkeletonSection" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonRequest" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonButton" />
+            <span className="foodDetailsSkeleton foodDetailsSkeletonButton secondary" />
+          </div>
+        </section>
+      </main>
     );
   }
 

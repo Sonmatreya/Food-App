@@ -14,6 +14,12 @@ function Menu() {
   const [searchTerm, setSearchTerm] = useState(() => searchParams.get("search") || "");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortOption, setSortOption] = useState("default");
+  const [priceRange, setPriceRange] = useState("all");
+  const [minimumRating, setMinimumRating] = useState("0");
+  const [featuredOnly, setFeaturedOnly] = useState(false);
+  const [dietaryType, setDietaryType] = useState("all");
+  const [spiceLevel, setSpiceLevel] = useState("all");
+  const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -44,6 +50,15 @@ function Menu() {
         });
         if (searchTerm.trim()) query.set("search", searchTerm.trim());
         if (selectedCategory !== "All") query.set("category", selectedCategory);
+        if (priceRange !== "all") {
+          const [minimum, maximum] = priceRange.split("-");
+          if (minimum) query.set("minPrice", minimum);
+          if (maximum) query.set("maxPriceExclusive", maximum);
+        }
+        if (minimumRating !== "0") query.set("minRating", minimumRating);
+        if (featuredOnly) query.set("featured", "true");
+        if (dietaryType !== "all") query.set("dietaryType", dietaryType);
+        if (spiceLevel !== "all") query.set("spiceLevel", spiceLevel);
 
         const response = await fetch(`${API_URL}/api/foods?${query.toString()}`, {
           credentials: "include",
@@ -77,7 +92,7 @@ function Menu() {
       cancelled = true;
       window.clearTimeout(timer);
     };
-  }, [searchTerm, selectedCategory, sortOption, currentPage, reloadFoods]);
+  }, [searchTerm, selectedCategory, sortOption, priceRange, minimumRating, featuredOnly, dietaryType, spiceLevel, currentPage, reloadFoods]);
 
 
   const searchSuggestions = useMemo(() => {
@@ -115,6 +130,11 @@ function Menu() {
     setSearchTerm("");
     setSelectedCategory("All");
     setSortOption("default");
+    setPriceRange("all");
+    setMinimumRating("0");
+    setFeaturedOnly(false);
+    setDietaryType("all");
+    setSpiceLevel("all");
     setCurrentPage(1);
     setSearchParams({});
   };
@@ -186,8 +206,23 @@ function Menu() {
             ))}
           </div>
 
-          <div className="sortBox">
-            <label htmlFor="sort">Sort:</label>
+          <div className="menuToolbarActions">
+            <button
+              type="button"
+              className={showAdvancedFilters ? "menuFilterTrigger active" : "menuFilterTrigger"}
+              aria-expanded={showAdvancedFilters}
+              aria-controls="menuAdvancedFiltersPanel"
+              onClick={() => setShowAdvancedFilters((open) => !open)}
+            >
+              <span aria-hidden="true">☷</span>
+              Filters
+              {(priceRange !== "all" || minimumRating !== "0" || featuredOnly || dietaryType !== "all" || spiceLevel !== "all") && (
+                <span className="menuFilterCount">{[priceRange !== "all", minimumRating !== "0", featuredOnly, dietaryType !== "all", spiceLevel !== "all"].filter(Boolean).length}</span>
+              )}
+              <span className="menuFilterChevron" aria-hidden="true">{showAdvancedFilters ? "−" : "+"}</span>
+            </button>
+            <div className="sortBox">
+              <label htmlFor="sort">Sort:</label>
             <select id="sort" value={sortOption} onChange={(event) => { setSortOption(event.target.value); setCurrentPage(1); }}>
               <option value="default">Recommended</option>
               <option value="rating">Top Rated</option>
@@ -195,8 +230,55 @@ function Menu() {
               <option value="lowToHigh">Price: Low to High</option>
               <option value="highToLow">Price: High to Low</option>
             </select>
+            </div>
           </div>
         </div>
+
+        {showAdvancedFilters && (
+          <div className="menuFilterOverlay" onMouseDown={(event) => { if (event.target === event.currentTarget) setShowAdvancedFilters(false); }}>
+            <section id="menuAdvancedFiltersPanel" className="menuAdvancedFilters menuFilterSheet" role="dialog" aria-modal="true" aria-labelledby="menuFilterTitle">
+              <div className="menuFilterSheetHeader">
+                <div><span>PERSONALISE YOUR MENU</span><h2 id="menuFilterTitle">Filters</h2></div>
+                <button type="button" className="menuFilterClose" onClick={() => setShowAdvancedFilters(false)} aria-label="Close filters">×</button>
+              </div>
+              <div className="menuFilterSheetBody">
+                <div className="menuChipGroup">
+                  <strong>Price range</strong>
+                  <div className="menuOptionChips">
+                    {[["all","Any price"],["0-150","Under ₹150"],["150-300","₹150–₹300"],["300-500","₹300–₹500"],["500","₹500+"]].map(([value,label]) => <button type="button" key={value} className={priceRange === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setPriceRange(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <div className="menuChipGroup">
+                  <strong>Dietary preference</strong>
+                  <div className="menuOptionChips">
+                    {[["all","Any"],["vegetarian","🟢 Veg"],["non-vegetarian","🔴 Non-veg"],["vegan","🌱 Vegan"]].map(([value,label]) => <button type="button" key={value} className={dietaryType === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setDietaryType(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <div className="menuChipGroup">
+                  <strong>Spice level</strong>
+                  <div className="menuOptionChips">
+                    {[["all","Any"],["mild","Mild"],["medium","Medium"],["hot","Hot 🔥"]].map(([value,label]) => <button type="button" key={value} className={spiceLevel === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setSpiceLevel(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <div className="menuChipGroup">
+                  <strong>Customer rating</strong>
+                  <div className="menuOptionChips">
+                    {[["0","Any rating"],["3","3.0+ ★"],["3.5","3.5+ ★"],["4","4.0+ ★"],["4.5","4.5+ ★"]].map(([value,label]) => <button type="button" key={value} className={minimumRating === value ? "menuOptionChip selected" : "menuOptionChip"} onClick={() => { setMinimumRating(value); setCurrentPage(1); }}>{label}</button>)}
+                  </div>
+                </div>
+                <label className={featuredOnly ? "menuFeaturedToggle active" : "menuFeaturedToggle"}>
+                  <input type="checkbox" checked={featuredOnly} onChange={(event) => { setFeaturedOnly(event.target.checked); setCurrentPage(1); }} />
+                  <span className="menuFeaturedCheck" aria-hidden="true">{featuredOnly ? "✓" : "☆"}</span>
+                  <span><strong>Featured dishes</strong><small>Restaurant picks</small></span>
+                </label>
+              </div>
+              <div className="menuFilterSheetFooter">
+                <button type="button" className="menuFilterClear" onClick={resetFilters}>Clear all</button>
+                <button type="button" className="menuFilterApply" onClick={() => setShowAdvancedFilters(false)}>Show {totalResults} dishes</button>
+              </div>
+            </section>
+          </div>
+        )}
 
         <div className="menuResultHeader">
           <div>
@@ -205,7 +287,7 @@ function Menu() {
               {loading ? "Loading menu..." : `${totalResults} dish${totalResults !== 1 ? "es" : ""} ${searchTerm.trim() ? "match your search" : "available"}`}
             </p>
           </div>
-          {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default") && (
+          {(searchTerm.trim() || selectedCategory !== "All" || sortOption !== "default" || priceRange !== "all" || minimumRating !== "0" || featuredOnly || dietaryType !== "all" || spiceLevel !== "all") && (
             <button type="button" className="menuResetFilters" onClick={resetFilters}>
               Clear filters <span aria-hidden="true">×</span>
             </button>
@@ -239,6 +321,8 @@ function Menu() {
                 ratingCount={menuItem.ratingCount}
                 description={menuItem.description}
                 isAvailable={menuItem.isAvailable}
+                dietaryType={menuItem.dietaryType}
+                spiceLevel={menuItem.spiceLevel}
               />
             ))}
           </div>
