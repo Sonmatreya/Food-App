@@ -6,45 +6,47 @@ const getRecommendedFoods = (message, foods, cartItems = []) => {
   const text = String(message || "").toLowerCase();
   const available = foods.filter((food) => food.isAvailable !== false);
   if (!available.length) return [];
-
-  const budgetMatch = text.match(/(?:under|below|less than|within|budget(?: of)?|upto|up to)\s*(?:₹|rs\.?|inr|rupees?)?\s*(\d+(?:\.\d+)?)/i);
+  const budgetMatch = text.match(/(?:under|below|less than|within|budget(?: of)?|upto|up to|max(?:imum)?|at most)\s*(?:₹|rs\.?|inr|rupees?)?\s*(\d+(?:\.\d+)?)/i);
   const budget = budgetMatch ? Number(budgetMatch[1]) : null;
-  let matches = available;
-
-  if (/don't eat onions|do not eat onions|no onions|without onions|avoid onions/i.test(text)) {
-    matches = matches.filter((food) => !(food.ingredients || []).some((ingredient) => /onion/i.test(String(ingredient))));
-  }
-  if (/\b(vegetarian|veg food|pure veg|meatless)\b/i.test(text) && !/non.?veg/i.test(text)) {
-    const nonVeg = /chicken|mutton|lamb|beef|pork|fish|prawn|shrimp|seafood|bacon|ham|meat|egg/i;
-    matches = matches.filter((food) => !nonVeg.test([food.name, food.category, food.description, ...(food.ingredients || [])].join(" ")));
-  }
-  if (/\b(spicy|hot|fiery|chilli|chili)\b/i.test(text)) {
-    matches = matches.filter((food) => /spicy|hot|fiery|chilli|chili|pepper|masala|schezwan/i.test([food.name, food.category, food.description, ...(food.ingredients || [])].join(" ")));
-  }
-  if (budget !== null && Number.isFinite(budget)) {
-    matches = matches.filter((food) => Number(food.price) <= budget);
-  }
-
-  const categoryWords = ["pizza", "burger", "pasta", "noodle", "momo", "drink", "beverage", "salad", "dessert", "rice"];
-  const category = categoryWords.find((word) => text.includes(word));
-  if (category) matches = matches.filter((food) => (String(food.name) + " " + String(food.category) + " " + String(food.description)).toLowerCase().includes(category));
-
+  const wantsVegan = /\bvegan\b/i.test(text);
+  const wantsVegetarian = /\b(vegetarian|veg food|pure veg|meatless)\b/i.test(text) && !/non.?veg/i.test(text);
+  const wantsNonVegetarian = /\b(non.?veg|non vegetarian|chicken|mutton|fish|prawn|seafood)\b/i.test(text);
+  const wantsSpicy = /\b(spicy|hot|fiery|chilli|chili)\b/i.test(text);
+  const avoidOnions = /no onions|without onions|avoid onions|onion.?free/i.test(text);
+  const avoidEgg = /no egg|without egg|egg.?free/i.test(text);
+  const categories = ["pizza", "burger", "pasta", "noodle", "momo", "drink", "beverage", "salad", "dessert", "rice", "biryani", "sandwich", "wrap", "cake"];
+  const category = categories.find((word) => text.includes(word));
+  const highestRated = /highest.?rated|best.?rated|top.?rated|most popular|best food|popular dishes/i.test(text);
+  const wantsCheapest = /cheapest|lowest price|least expensive/i.test(text);
   const cartNames = (Array.isArray(cartItems) ? cartItems : []).map((item) => String(item.name || "").toLowerCase()).filter(Boolean);
-  if (/cart|goes with|pair|add.?on|complement|something else/i.test(text) && cartNames.length) {
-    const outsideCart = matches.filter((food) => !cartNames.includes(String(food.name || "").toLowerCase()));
-    if (outsideCart.length) matches = outsideCart;
+  const wantsPairing = /cart|goes with|pair|add.?on|complement|something else|complete (?:my )?meal/i.test(text);
+  let matches = available.filter((food) => {
+    const ingredients = (food.ingredients || []).map(String);
+    const searchable = [food.name, food.category, food.description, ...ingredients].join(" ").toLowerCase();
+    const diet = String(food.dietaryType || "unspecified").toLowerCase();
+    const nonVeg = /chicken|mutton|lamb|beef|pork|fish|prawn|shrimp|seafood|bacon|ham|meat/i.test(searchable);
+    const egg = /\begg\b/i.test(searchable);
+    if (budget !== null && Number.isFinite(budget) && Number(food.price) > budget) return false;
+    if (wantsVegan && diet !== "vegan") return false;
+    if (wantsVegetarian && (diet === "non-vegetarian" || nonVeg || egg)) return false;
+    if (wantsNonVegetarian && !nonVeg && diet !== "non-vegetarian") return false;
+    if (avoidOnions && /onion/i.test(ingredients.join(" "))) return false;
+    if (avoidEgg && egg) return false;
+    if (wantsSpicy && !/spicy|hot|fiery|chilli|chili|pepper|masala|schezwan/i.test(searchable) && !["hot", "medium"].includes(String(food.spiceLevel || "").toLowerCase())) return false;
+    if (category && !searchable.includes(category)) return false;
+    return true;
+  });
+  if (wantsPairing && cartNames.length) {
+    const alternatives = matches.filter((food) => !cartNames.includes(String(food.name || "").toLowerCase()));
+    if (alternatives.length) matches = alternatives;
   }
-
-  const highestRated = /highest.?rated|best.?rated|top.?rated|most popular|best food/i.test(text);
-  matches = [...matches].sort((a, b) => {
-    const ratingDiff = Number(b.rating || 0) - Number(a.rating || 0);
-    if (highestRated && ratingDiff !== 0) return ratingDiff;
-    return Number(b.isFeatured === true) - Number(a.isFeatured === true) || ratingDiff || Number(a.price || 0) - Number(b.price || 0);
-  }).slice(0, 3);
-
-  return matches;
+  matches.sort((a, b) => {
+    if (highestRated && Number(b.rating || 0) !== Number(a.rating || 0)) return Number(b.rating || 0) - Number(a.rating || 0);
+    if (wantsCheapest && Number(a.price || 0) !== Number(b.price || 0)) return Number(a.price || 0) - Number(b.price || 0);
+    return Number(b.isFeatured === true) - Number(a.isFeatured === true) || Number(b.rating || 0) - Number(a.rating || 0) || Number(a.price || 0) - Number(b.price || 0);
+  });
+  return matches.slice(0, 4);
 };
-
 const fallbackReply = (message, foods, cartItems = []) => {
   const matches = getRecommendedFoods(message, foods, cartItems);
   if (!matches.length) return "I could not find a matching dish in the current catalogue. Try another category, remove a dietary filter, or increase your budget.";
@@ -152,10 +154,21 @@ const chatWithAssistant = async (req, res) => {
     });
   } catch (error) {
     console.error("AI assistant error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "FoodAI is temporarily unavailable. Please try again.",
-    });
+    console.error("AI assistant request failed; attempting catalogue fallback:", error);
+    try {
+      const foods = await Food.find({ isAvailable: true })
+        .select("name description category price rating ratingCount image ingredients isFeatured isAvailable dietaryType spiceLevel")
+        .sort({ rating: -1 }).limit(60).lean();
+      return res.json({
+        success: true,
+        reply: fallbackReply(req.body?.message, foods, req.body?.cartItems),
+        recommendations: getRecommendedFoods(req.body?.message, foods, req.body?.cartItems),
+        mode: "catalogue-fallback",
+      });
+    } catch (fallbackError) {
+      console.error("FoodAI catalogue fallback failed:", fallbackError);
+      return res.status(500).json({ success: false, message: "FoodAI is temporarily unavailable. Please try again." });
+    }
   }
 };
 
