@@ -68,7 +68,7 @@ const chatWithAssistant = async (req, res) => {
 
     const [foods, coupons] = await Promise.all([
       Food.find({ isAvailable: true })
-        .select("name description category price rating ratingCount image ingredients isFeatured isAvailable")
+        .select("name description category price rating ratingCount image ingredients isFeatured isAvailable dietaryType spiceLevel")
         .sort({ rating: -1 })
         .limit(60)
         .lean(),
