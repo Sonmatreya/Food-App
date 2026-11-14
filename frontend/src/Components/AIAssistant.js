@@ -88,11 +88,15 @@ export default function AIAssistant() {
         quantity: Math.max(1, Number(item.quantity) || 1),
         price: Math.max(0, Number(item.price) || 0),
       }));
+      const conversationHistory = messages
+        .slice(-8)
+        .filter((item) => ["user", "assistant"].includes(item.role) && typeof item.text === "string")
+        .map((item) => ({ role: item.role, content: item.text.slice(0, 500) }));
       const response = await fetch(`${API_URL}/api/ai/chat`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, cartItems: safeCart }),
+        body: JSON.stringify({ message: text, cartItems: safeCart, history: conversationHistory }),
       });
       const data = await response.json();
       if (!response.ok || !data.success) throw new Error(data.message || "FoodAI is unavailable. Please try again.");
