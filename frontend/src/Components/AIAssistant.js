@@ -8,12 +8,21 @@ import "../Styles/AIAssistant.css";
 
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80";
 const PROMPTS = [
-  "Suggest something under ₹300",
+  "Suggest something under ₹200",
   "Show vegetarian dishes",
   "Find spicy food",
-  "No onions, please",
   "What is highest rated?",
   "Suggest something for my cart",
+  "Show me pizza",
+];
+
+const DISCOVERY = [
+  { label: "Veg Mode", icon: "🌱", prompt: "Show vegetarian dishes" },
+  { label: "Under ₹150", icon: "₹", prompt: "Suggest something under ₹150" },
+  { label: "Top rated", icon: "★", prompt: "Show the highest rated dishes" },
+  { label: "Spicy cravings", icon: "🌶️", prompt: "Find spicy food" },
+  { label: "Pizza", icon: "🍕", prompt: "Show me pizza" },
+  { label: "For my cart", icon: "🛒", prompt: "Suggest something for my cart" },
 ];
 
 function FoodCard({ food, onAdd }) {
@@ -48,6 +57,7 @@ export default function AIAssistant() {
   const [feedLoading, setFeedLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedError, setFeedError] = useState("");
+  const [vegMode, setVegMode] = useState(false);
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -136,11 +146,13 @@ export default function AIAssistant() {
       <main className="foodAiContent" ref={contentRef} aria-live="polite">
         {messages.length === 0 && <section className="foodAiLanding">
           <div className="foodAiHeroIcon">✦</div>
-          <span className="foodAiEyebrow">YOUR PERSONAL FOOD GUIDE</span>
+          <span className="foodAiEyebrow">GOOD FOOD, JUST A QUESTION AWAY</span>
           <h1>What are you<br />craving today?</h1>
-          <p>Tell me your budget, dietary preference or favourite flavour. I’ll look through the available menu.</p>
-          <div className="foodAiPromptGrid">
-            {PROMPTS.map((prompt) => <button type="button" key={prompt} onClick={() => sendMessage(prompt)}>{prompt}<span>›</span></button>)}
+          <p>Discover dishes from our menu. Tell FoodAI your taste, budget or dietary preference and get suggestions picked for you.</p>
+          <div className="foodAiSearchHint"><span>✦</span> Ask for a dish, mood, ingredient or budget below</div>
+          <div className="foodAiDiscoveryHeading"><h2>Explore your way</h2><span>Quick picks</span></div>
+          <div className="foodAiDiscoveryGrid">
+            {DISCOVERY.map((item) => <button type="button" key={item.label} className={item.label === "Veg Mode" && vegMode ? "foodAiDiscovery active" : "foodAiDiscovery"} onClick={() => { if (item.label === "Veg Mode") setVegMode((value) => !value); sendMessage(item.prompt); }}><span>{item.icon}</span><strong>{item.label}</strong><i>›</i></button>)}
           </div>
           <div className="foodAiShelfHeading"><h2>Popular from our menu</h2><span>Available dishes</span></div>
           {feedLoading && <p className="foodAiEmpty">Loading menu suggestions…</p>}
@@ -159,10 +171,10 @@ export default function AIAssistant() {
       {messages.length > 0 && <div className="foodAiQuickPrompts">{PROMPTS.slice(0, 4).map((prompt) => <button type="button" key={prompt} onClick={() => sendMessage(prompt)} disabled={loading}>{prompt}</button>)}</div>}
       <form className="foodAiComposer" onSubmit={(event) => { event.preventDefault(); sendMessage(); }}>
         <button type="button" className="foodAiCartButton" aria-label="Open cart" onClick={() => { setOpen(false); navigate("/cart"); }}>🛒</button>
-        <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Ask about food, budget or ingredients…" maxLength={500} aria-label="Ask FoodAI" />
+        <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Search dishes or ask FoodAI anything…" maxLength={500} aria-label="Ask FoodAI" />
         <button type="submit" disabled={loading || !message.trim()} aria-label="Send message">➤</button>
       </form>
-      <small className="foodAiNote">Recommendations are based on the current menu. Check ingredients and order details before checkout.</small>
+      <small className="foodAiNote">FoodAI uses our available menu to make suggestions. Please check dish details and ingredients before ordering.</small>
     </section>}
   </>;
 }
