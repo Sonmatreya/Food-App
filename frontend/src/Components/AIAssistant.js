@@ -23,6 +23,7 @@ const DISCOVERY = [
   { label: "Spicy cravings", icon: "🌶️", prompt: "Find spicy food" },
   { label: "Pizza", icon: "🍕", prompt: "Show me pizza" },
   { label: "For my cart", icon: "🛒", prompt: "Suggest something for my cart" },
+  { label: "Picked for you", icon: "✦", prompt: "Recommend dishes for me based on my recent orders and preferences" },
 ];
 
 function FoodCard({ food, onAdd }) {
