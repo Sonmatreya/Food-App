@@ -6,40 +6,63 @@ const getRecommendedFoods = (message, foods, cartItems = [], favoriteFoods = [])
   const text = String(message || "").toLowerCase();
   const available = foods.filter((food) => food.isAvailable !== false);
   if (!available.length) return [];
-  const budgetMatch = text.match(/(?:under|below|less than|within|budget(?: of)?|upto|up to|max(?:imum)?|at most)\s*(?:₹|rs\.?|inr|rupees?)?\s*(\d+(?:\.\d+)?)/i);
-  const budget = budgetMatch ? Number(budgetMatch[1]) : null;
+
+  // Parse combined constraints independently so requests such as
+  // "veg pizza under ₹250, spicy" apply every matching filter together.
+  const budgetMatch = text.match(/(?:under|below|less than|within|budget(?: of)?|upto|up to|max(?:imum)?|at most)\s*(?:₹|rs\.?|inr|rupees?)?\s*(\d{1,5}(?:,\d{3})*(?:\.\d+)?)/i)
+    || text.match(/(?:₹|rs\.?|inr|rupees?)\s*(\d{1,5}(?:,\d{3})*(?:\.\d+)?)/i);
+  const budget = budgetMatch ? Number(budgetMatch[1].replace(/,/g, "")) : null;
   const wantsVegan = /\bvegan\b/i.test(text);
-  const wantsVegetarian = /\b(vegetarian|veg food|pure veg|meatless)\b/i.test(text) && !/non.?veg/i.test(text);
-  const wantsNonVegetarian = /\b(non.?veg|non vegetarian|chicken|mutton|fish|prawn|seafood)\b/i.test(text);
-  const wantsSpicy = /\b(spicy|hot|fiery|chilli|chili)\b/i.test(text);
-  const avoidOnions = /no onions|without onions|avoid onions|onion.?free/i.test(text);
-  const avoidEgg = /no egg|without egg|egg.?free/i.test(text);
-  const categories = ["pizza", "burger", "pasta", "noodle", "momo", "drink", "beverage", "salad", "dessert", "rice", "biryani", "sandwich", "wrap", "cake"];
-  const category = categories.find((word) => text.includes(word));
+  const wantsNonVegetarian = /\b(non.?veg|non.?vegetarian|chicken|mutton|fish|prawn|seafood|meat)\b/i.test(text);
+  const wantsVegetarian = !wantsVegan && !wantsNonVegetarian &&
+    /\b(vegetarian|veg|pure veg|meatless)\b/i.test(text);
+  const wantsSpicy = /\b(spicy|hot|fiery|chilli|chili|extra spice|very spicy)\b/i.test(text);
+  const wantsMild = /\b(mild|not spicy|less spicy|no spice)\b/i.test(text);
+  const avoidTerms = [];
+  const avoidPattern = /\b(?:no|without|avoid|exclude|minus)\s+([a-z]+(?:\s+[a-z]+){0,2})/gi;
+  let avoidMatch;
+  while ((avoidMatch = avoidPattern.exec(text)) !== null) {
+    const term = avoidMatch[1].trim().replace(/\b(onions?)\b/g, "onion").replace(/\b(eggs?)\b/g, "egg");
+    if (!["spice", "spicy", "chilli", "chili"].includes(term)) avoidTerms.push(term);
+  }
+  const categories = [
+    ["pizza", /\bpizza\b/], ["burger", /\bburger\b/], ["pasta", /\bpasta\b/],
+    ["noodle", /\bnoodles?\b/], ["momo", /\b(momos?|dumplings?)\b/],
+    ["drink", /\b(drinks?|beverages?|juice|shake|coffee|tea)\b/],
+    ["salad", /\bsalad\b/], ["dessert", /\b(dessert|sweet|ice cream)\b/],
+    ["rice", /\brice\b/], ["biryani", /\bbiryani\b/],
+    ["sandwich", /\bsandwich\b/], ["wrap", /\bwrap\b/], ["cake", /\bcake\b/],
+  ];
+  const category = categories.find(([, pattern]) => pattern.test(text))?.[0];
   const highestRated = /highest.?rated|best.?rated|top.?rated|most popular|best food|popular dishes/i.test(text);
   const wantsCheapest = /cheapest|lowest price|least expensive/i.test(text);
   const cartNames = (Array.isArray(cartItems) ? cartItems : []).map((item) => String(item.name || "").toLowerCase()).filter(Boolean);
   const wantsPairing = /cart|goes with|pair|add.?on|complement|something else|complete (?:my )?meal/i.test(text);
+
   let matches = available.filter((food) => {
     const ingredients = (food.ingredients || []).map(String);
     const searchable = [food.name, food.category, food.description, ...ingredients].join(" ").toLowerCase();
     const diet = String(food.dietaryType || "unspecified").toLowerCase();
-    const nonVeg = /chicken|mutton|lamb|beef|pork|fish|prawn|shrimp|seafood|bacon|ham|meat/i.test(searchable);
+    const nonVeg = /\b(chicken|mutton|lamb|beef|pork|fish|prawn|shrimp|seafood|bacon|ham|meat)\b/i.test(searchable);
     const egg = /\begg\b/i.test(searchable);
     if (budget !== null && Number.isFinite(budget) && Number(food.price) > budget) return false;
     if (wantsVegan && diet !== "vegan") return false;
     if (wantsVegetarian && (diet === "non-vegetarian" || nonVeg || egg)) return false;
     if (wantsNonVegetarian && !nonVeg && diet !== "non-vegetarian") return false;
-    if (avoidOnions && /onion/i.test(ingredients.join(" "))) return false;
-    if (avoidEgg && egg) return false;
-    if (wantsSpicy && !/spicy|hot|fiery|chilli|chili|pepper|masala|schezwan/i.test(searchable) && !["hot", "medium"].includes(String(food.spiceLevel || "").toLowerCase())) return false;
-    if (category && !searchable.includes(category)) return false;
+    if (avoidTerms.some((term) => searchable.includes(term))) return false;
+    if (wantsSpicy && !/spicy|hot|fiery|chilli|chili|pepper|masala|schezwan/i.test(searchable) &&
+      !["hot", "medium"].includes(String(food.spiceLevel || "").toLowerCase())) return false;
+    if (wantsMild && !["mild", "unspecified", ""].includes(String(food.spiceLevel || "").toLowerCase()) &&
+      /hot|spicy|fiery|chilli|chili|schezwan/i.test(searchable)) return false;
+    if (category && !searchable.includes(category === "noodle" ? "nood" : category === "momo" ? "momo" : category)) return false;
     return true;
   });
+
   if (wantsPairing && cartNames.length) {
     const alternatives = matches.filter((food) => !cartNames.includes(String(food.name || "").toLowerCase()));
     if (alternatives.length) matches = alternatives;
   }
+
   const favoriteNames = new Set((favoriteFoods || []).map((item) => String(item.name || "").toLowerCase()));
   const favoriteCategories = new Set((favoriteFoods || []).map((item) => String(item.category || "").toLowerCase()).filter(Boolean));
   const asksPersonalized = /for me|based on my (?:orders|order history|taste|preferences)|my usual|what should i (?:eat|order)|recommend.*me|picked for me/i.test(text);
@@ -51,7 +74,8 @@ const getRecommendedFoods = (message, foods, cartItems = [], favoriteFoods = [])
     }
     if (highestRated && Number(b.rating || 0) !== Number(a.rating || 0)) return Number(b.rating || 0) - Number(a.rating || 0);
     if (wantsCheapest && Number(a.price || 0) !== Number(b.price || 0)) return Number(a.price || 0) - Number(b.price || 0);
-    return Number(b.isFeatured === true) - Number(a.isFeatured === true) || Number(b.rating || 0) - Number(a.rating || 0) || Number(a.price || 0) - Number(b.price || 0);
+    return Number(b.isFeatured === true) - Number(a.isFeatured === true) ||
+      Number(b.rating || 0) - Number(a.rating || 0) || Number(a.price || 0) - Number(b.price || 0);
   });
   return matches.slice(0, 4);
 };
@@ -118,7 +142,7 @@ const chatWithAssistant = async (req, res) => {
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return res.json({ success: true, reply: fallbackReply(message, foods, req.body?.cartItems), recommendations: getRecommendedFoods(message, foods, req.body?.cartItems, favoriteFoods), offers: coupons, personalization: favoriteFoods.length > 0, mode: "catalogue-fallback" });
+      return res.json({ success: true, reply: fallbackReply(message, foods, req.body?.cartItems, favoriteFoods), recommendations: getRecommendedFoods(message, foods, req.body?.cartItems, favoriteFoods), offers: coupons, personalization: favoriteFoods.length > 0, mode: "catalogue-fallback" });
     }
 
     const catalogue = foods.map((food) => ({
@@ -170,7 +194,7 @@ const chatWithAssistant = async (req, res) => {
       console.error("OpenRouter assistant error:", data);
       return res.json({
         success: true,
-        reply: fallbackReply(message, foods, req.body?.cartItems),
+        reply: fallbackReply(message, foods, req.body?.cartItems, favoriteFoods),
         recommendations: getRecommendedFoods(message, foods, req.body?.cartItems, favoriteFoods),
         offers: coupons,
         personalization: favoriteFoods.length > 0,
@@ -196,8 +220,8 @@ const chatWithAssistant = async (req, res) => {
         .sort({ rating: -1 }).limit(60).lean();
       return res.json({
         success: true,
-        reply: fallbackReply(req.body?.message, foods, req.body?.cartItems),
-        recommendations: getRecommendedFoods(req.body?.message, foods, req.body?.cartItems),
+        reply: fallbackReply(req.body?.message, foods, req.body?.cartItems, favoriteFoods),
+        recommendations: getRecommendedFoods(req.body?.message, foods, req.body?.cartItems, favoriteFoods),
         mode: "catalogue-fallback",
       });
     } catch (fallbackError) {
