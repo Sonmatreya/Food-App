@@ -220,8 +220,8 @@ const chatWithAssistant = async (req, res) => {
         .sort({ rating: -1 }).limit(60).lean();
       return res.json({
         success: true,
-        reply: fallbackReply(req.body?.message, foods, req.body?.cartItems, favoriteFoods),
-        recommendations: getRecommendedFoods(req.body?.message, foods, req.body?.cartItems, favoriteFoods),
+        reply: fallbackReply(req.body?.message, foods, req.body?.cartItems),
+        recommendations: getRecommendedFoods(req.body?.message, foods, req.body?.cartItems),
         mode: "catalogue-fallback",
       });
     } catch (fallbackError) {
