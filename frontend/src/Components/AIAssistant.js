@@ -113,6 +113,8 @@ export default function AIAssistant() {
         role: "assistant",
         text: data.reply || "I couldn't prepare a response. Please try another request.",
         foods: Array.isArray(data.recommendations) ? data.recommendations : [],
+        offers: Array.isArray(data.offers) ? data.offers : [],
+        personalized: data.personalization === true,
         mode: data.mode || "ai",
       }]);
     } catch (error) {
@@ -162,8 +164,8 @@ export default function AIAssistant() {
         {messages.map((item, index) => <React.Fragment key={`${item.role}-${index}`}>
           {item.role === "user"
             ? <p className="foodAiUserMessage">{item.text}</p>
-            : <div className={item.error ? "foodAiReply foodAiError" : "foodAiReply"}><span className="foodAiReplyLabel">✦ FoodAI</span><p>{item.text}</p>{item.mode === "catalogue-fallback" && <small className="foodAiFallbackNote">Menu-based suggestions · AI service unavailable</small>}</div>}
-          {item.role === "assistant" && item.foods?.length > 0 && <div className="foodAiResults">{item.foods.map((food) => <FoodCard key={food._id} food={food} onAdd={addFood} />)}</div>}
+            : <div className={item.error ? "foodAiReply foodAiError" : "foodAiReply"}><span className="foodAiReplyLabel">✦ FoodAI</span><p>{item.text}</p>{item.mode === "catalogue-fallback" && <small className="foodAiFallbackNote">Menu-based suggestions · AI service unavailable</small>}{item.personalized && <small className="foodAiPersonalNote">✦ Recommendations can use your recent orders</small>}</div>}
+          {item.role === "assistant" && item.foods?.length > 0 && <div className="foodAiResults">{item.foods.map((food) => <FoodCard key={food._id} food={food} onAdd={addFood} />)}</div>}{item.role === "assistant" && item.offers?.length > 0 && <section className="foodAiOffers"><div><strong>Available offers</strong><small>Check the minimum order and apply at checkout</small></div><div className="foodAiOfferList">{item.offers.slice(0, 4).map((offer) => <article key={offer.code}><b>{offer.code}</b><span>{offer.type === "percentage" ? `${offer.value}% off` : `₹${Number(offer.value).toFixed(0)} off`}</span><small>Minimum order ₹{Number(offer.minimum || 0).toFixed(0)}{offer.maxDiscount ? ` · Max discount ₹${Number(offer.maxDiscount).toFixed(0)}` : ""}</small></article>)}</div></section>}
         </React.Fragment>)}
         {loading && <div className="foodAiThinking"><i>✦</i><span>Checking the menu for you…</span></div>}
       </main>
