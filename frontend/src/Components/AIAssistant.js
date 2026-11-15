@@ -57,7 +57,6 @@ export default function AIAssistant() {
   const [feedLoading, setFeedLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [feedError, setFeedError] = useState("");
-  const [vegMode, setVegMode] = useState(false);
   const contentRef = useRef(null);
 
   useEffect(() => {
@@ -152,7 +151,7 @@ export default function AIAssistant() {
           <div className="foodAiSearchHint"><span>✦</span> Ask for a dish, mood, ingredient or budget below</div>
           <div className="foodAiDiscoveryHeading"><h2>Explore your way</h2><span>Quick picks</span></div>
           <div className="foodAiDiscoveryGrid">
-            {DISCOVERY.map((item) => <button type="button" key={item.label} className={item.label === "Veg Mode" && vegMode ? "foodAiDiscovery active" : "foodAiDiscovery"} onClick={() => { if (item.label === "Veg Mode") setVegMode((value) => !value); sendMessage(item.prompt); }}><span>{item.icon}</span><strong>{item.label}</strong><i>›</i></button>)}
+            {DISCOVERY.map((item) => <button type="button" key={item.label} className="foodAiDiscovery" onClick={() => sendMessage(item.prompt)}><span>{item.icon}</span><strong>{item.label}</strong><i>›</i></button>)}
           </div>
           <div className="foodAiShelfHeading"><h2>Popular from our menu</h2><span>Available dishes</span></div>
           {feedLoading && <p className="foodAiEmpty">Loading menu suggestions…</p>}
