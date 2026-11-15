@@ -2,7 +2,7 @@ const Food = require("../models/Food");
 const Order = require("../models/Order");
 const Coupon = require("../models/Coupon");
 
-const getRecommendedFoods = (message, foods, cartItems = []) => {
+const getRecommendedFoods = (message, foods, cartItems = [], favoriteFoods = []) => {
   const text = String(message || "").toLowerCase();
   const available = foods.filter((food) => food.isAvailable !== false);
   if (!available.length) return [];
@@ -40,15 +40,23 @@ const getRecommendedFoods = (message, foods, cartItems = []) => {
     const alternatives = matches.filter((food) => !cartNames.includes(String(food.name || "").toLowerCase()));
     if (alternatives.length) matches = alternatives;
   }
+  const favoriteNames = new Set((favoriteFoods || []).map((item) => String(item.name || "").toLowerCase()));
+  const favoriteCategories = new Set((favoriteFoods || []).map((item) => String(item.category || "").toLowerCase()).filter(Boolean));
+  const asksPersonalized = /for me|based on my (?:orders|order history|taste|preferences)|my usual|what should i (?:eat|order)|recommend.*me|picked for me/i.test(text);
   matches.sort((a, b) => {
+    if (asksPersonalized) {
+      const score = (food) => (favoriteNames.has(String(food.name || "").toLowerCase()) ? 4 : 0) +
+        (favoriteCategories.has(String(food.category || "").toLowerCase()) ? 2 : 0);
+      if (score(b) !== score(a)) return score(b) - score(a);
+    }
     if (highestRated && Number(b.rating || 0) !== Number(a.rating || 0)) return Number(b.rating || 0) - Number(a.rating || 0);
     if (wantsCheapest && Number(a.price || 0) !== Number(b.price || 0)) return Number(a.price || 0) - Number(b.price || 0);
     return Number(b.isFeatured === true) - Number(a.isFeatured === true) || Number(b.rating || 0) - Number(a.rating || 0) || Number(a.price || 0) - Number(b.price || 0);
   });
   return matches.slice(0, 4);
 };
-const fallbackReply = (message, foods, cartItems = []) => {
-  const matches = getRecommendedFoods(message, foods, cartItems);
+const fallbackReply = (message, foods, cartItems = [], favoriteFoods = []) => {
+  const matches = getRecommendedFoods(message, foods, cartItems, favoriteFoods);
   if (!matches.length) return "I could not find a matching dish in the current catalogue. Try another category, remove a dietary filter, or increase your budget.";
   const recommendations = matches.map((food) => food.name + " — ₹" + Number(food.price).toFixed(2) + " (" + Number(food.rating || 0).toFixed(1) + "★)").join("\n");
   const text = String(message || "").toLowerCase();
@@ -110,7 +118,7 @@ const chatWithAssistant = async (req, res) => {
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return res.json({ success: true, reply: fallbackReply(message, foods, req.body?.cartItems), recommendations: getRecommendedFoods(message, foods, req.body?.cartItems), mode: "catalogue-fallback" });
+      return res.json({ success: true, reply: fallbackReply(message, foods, req.body?.cartItems), recommendations: getRecommendedFoods(message, foods, req.body?.cartItems, favoriteFoods), offers: coupons, personalization: favoriteFoods.length > 0, mode: "catalogue-fallback" });
     }
 
     const catalogue = foods.map((food) => ({
@@ -163,7 +171,9 @@ const chatWithAssistant = async (req, res) => {
       return res.json({
         success: true,
         reply: fallbackReply(message, foods, req.body?.cartItems),
-        recommendations: getRecommendedFoods(message, foods, req.body?.cartItems),
+        recommendations: getRecommendedFoods(message, foods, req.body?.cartItems, favoriteFoods),
+        offers: coupons,
+        personalization: favoriteFoods.length > 0,
         mode: "catalogue-fallback",
       });
     }
@@ -172,8 +182,10 @@ const chatWithAssistant = async (req, res) => {
 
     return res.json({
       success: true,
-      reply: reply || fallbackReply(message, foods, req.body?.cartItems),
-      recommendations: getRecommendedFoods(message, foods, req.body?.cartItems),
+      reply: reply || fallbackReply(message, foods, req.body?.cartItems, favoriteFoods),
+      recommendations: getRecommendedFoods(message, foods, req.body?.cartItems, favoriteFoods),
+      offers: coupons,
+      personalization: favoriteFoods.length > 0,
       mode: "ai",
     });
   } catch (error) {
