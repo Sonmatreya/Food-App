@@ -1,56 +1,61 @@
-.foodAiLauncher{position:fixed;right:22px;bottom:22px;z-index:1200;display:flex;align-items:center;gap:9px;border:0;border-radius:999px;padding:14px 20px;background:linear-gradient(135deg,#e52b50,#b81438);color:#fff;box-shadow:0 12px 32px rgba(150,12,43,.32);font-weight:800;letter-spacing:.1px;cursor:pointer;transition:transform .2s,box-shadow .2s}
-.foodAiLauncher:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(150,12,43,.4)}
+.foodAiLauncher{position:fixed;right:22px;bottom:22px;z-index:1200;display:flex;align-items:center;gap:9px;border:0;border-radius:999px;padding:14px 20px;background:linear-gradient(135deg,#e52b50,#b81438);color:#fff;box-shadow:0 12px 32px rgba(150,12,43,.28);font-weight:800;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.foodAiLauncher:hover{transform:translateY(-3px);box-shadow:0 16px 36px rgba(150,12,43,.35)}
 .foodAiLauncher span{font-size:19px}
-.foodAiScreen{position:fixed;inset:0;z-index:1300;display:flex;flex-direction:column;overflow:hidden;background:#111114;color:#fff;font-family:inherit}
-.foodAiTopbar{height:68px;flex:0 0 68px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:12px;padding:0 max(18px,calc((100vw - 850px)/2));border-bottom:1px solid #30272c;background:#191619}
-.foodAiTopbar button{width:38px;height:38px;border:1px solid #49343c;border-radius:50%;background:#282126;color:#fff;font-size:22px;cursor:pointer}
+.foodAiScreen{position:fixed;inset:0;z-index:1300;display:flex;flex-direction:column;overflow:hidden;background:#fff;color:#242126;font-family:inherit}
+.foodAiTopbar{height:68px;flex:0 0 68px;display:grid;grid-template-columns:44px 1fr 44px;align-items:center;gap:12px;padding:0 max(18px,calc((100vw - 1000px)/2));border-bottom:1px solid #f0e7e9;background:#fff}
+.foodAiTopbar button{width:38px;height:38px;border:1px solid #f0dce1;border-radius:50%;background:#fff7f8;color:#b7193c;font-size:22px;cursor:pointer}
 .foodAiTopbar div{display:flex;flex-direction:column;align-items:center;gap:2px}
-.foodAiTopbar strong{font-size:16px;letter-spacing:.3px}
-.foodAiTopbar small{color:#b9aab0;font-size:11px}
-.foodAiContent{flex:1;overflow-y:auto;width:min(850px,100%);margin:0 auto;box-sizing:border-box;padding:28px 22px 30px;background:radial-gradient(ellipse at 50% 0,rgba(169,28,62,.18),transparent 48%),#111114;scroll-behavior:smooth}
-.foodAiLanding{max-width:760px;margin:0 auto}
-.foodAiHeroIcon{display:grid;place-items:center;width:52px;height:52px;margin:10px auto 18px;border:1px solid rgba(255,93,124,.4);border-radius:17px;background:linear-gradient(145deg,#702038,#321721);color:#ff718d;font-size:27px;box-shadow:0 8px 30px rgba(204,32,75,.18)}
-.foodAiEyebrow{display:block;color:#ff718d;text-align:center;font-size:10px;font-weight:800;letter-spacing:2px}
-.foodAiLanding h1{margin:13px 0 12px;text-align:center;font-size:clamp(36px,6vw,54px);line-height:1.02;letter-spacing:-2px}
-.foodAiLanding>p{max-width:510px;margin:0 auto 26px;color:#c7bbc0;text-align:center;font-size:14px;line-height:1.65}
-.foodAiPromptGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;max-width:650px;margin:0 auto 34px}
-.foodAiPromptGrid button{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:48px;padding:11px 14px;border:1px solid #403038;border-radius:12px;background:#211b20;color:#f5eaf0;text-align:left;font-size:12px;cursor:pointer;transition:border-color .2s,background .2s}
-.foodAiPromptGrid button:hover{border-color:#e64a6b;background:#2d1d25}
-.foodAiPromptGrid button span{color:#ff718d;font-size:19px}
+.foodAiTopbar strong{font-size:16px;letter-spacing:.3px;color:#c51d43}
+.foodAiTopbar small{color:#8b8185;font-size:11px}
+.foodAiContent{flex:1;overflow-y:auto;width:min(1000px,100%);margin:0 auto;box-sizing:border-box;padding:30px 24px 34px;background:linear-gradient(180deg,#fff8f9 0,#fff 330px);scroll-behavior:smooth}
+.foodAiLanding{max-width:900px;margin:0 auto}
+.foodAiHeroIcon{display:grid;place-items:center;width:52px;height:52px;margin:4px auto 17px;border:1px solid #f4cbd4;border-radius:17px;background:linear-gradient(145deg,#ffe5eb,#fff5f7);color:#d3264c;font-size:27px;box-shadow:0 8px 24px rgba(204,32,75,.10)}
+.foodAiEyebrow{display:block;color:#cf254b;text-align:center;font-size:10px;font-weight:900;letter-spacing:2px}
+.foodAiLanding h1{margin:13px 0 10px;text-align:center;color:#252126;font-size:clamp(36px,6vw,54px);line-height:1.02;letter-spacing:-2px}
+.foodAiLanding>p{max-width:540px;margin:0 auto 18px;color:#71676c;text-align:center;font-size:14px;line-height:1.65}
+.foodAiSearchHint{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 auto 30px;color:#a09298;font-size:11px}
+.foodAiSearchHint span{color:#d3264c;font-size:16px}
+.foodAiDiscoveryHeading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 13px}
+.foodAiDiscoveryHeading h2,.foodAiShelfHeading h2{margin:0;color:#292329;font-size:18px}
+.foodAiDiscoveryHeading>span,.foodAiShelfHeading>span{color:#9b8d93;font-size:11px}
+.foodAiDiscoveryGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin-bottom:32px}
+.foodAiDiscovery{display:flex;align-items:center;gap:10px;min-height:58px;padding:11px 13px;border:1px solid #eee3e6;border-radius:13px;background:#fff;color:#373037;text-align:left;cursor:pointer;box-shadow:0 3px 12px rgba(50,20,30,.035);transition:border-color .2s,transform .2s,background .2s}
+.foodAiDiscovery:hover,.foodAiDiscovery.active{border-color:#e7a3b2;background:#fff6f8;transform:translateY(-2px)}
+.foodAiDiscovery>span{display:grid;place-items:center;width:32px;height:32px;flex:0 0 32px;border-radius:10px;background:#fff0f3;color:#c51d43;font-size:17px}
+.foodAiDiscovery strong{flex:1;font-size:12px}
+.foodAiDiscovery i{color:#cf254b;font-size:19px;font-style:normal}
 .foodAiShelfHeading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 13px}
-.foodAiShelfHeading h2{margin:0;font-size:17px}
-.foodAiShelfHeading>span{color:#a99aa1;font-size:11px}
-.foodAiShelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
-.foodAiCard{position:relative;min-width:0;overflow:hidden;border:1px solid #3b3037;border-radius:14px;background:#211c20}
-.foodAiCard img{display:block;width:100%;height:128px;object-fit:cover;background:#30272c}
-.foodAiCardBody{padding:10px 11px 12px}
-.foodAiCard em{display:block;overflow:hidden;margin-bottom:5px;color:#ff8199;font-size:9px;font-style:normal;font-weight:800;letter-spacing:.7px;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
-.foodAiCard strong{display:block;overflow:hidden;color:#fff;font-size:13px;text-overflow:ellipsis;white-space:nowrap}
-.foodAiCard small{display:block;margin-top:5px;color:#c2b4bb;font-size:10px}
-.foodAiCard p{display:-webkit-box;overflow:hidden;min-height:30px;margin:7px 0;color:#b9abb2;font-size:10px;line-height:1.5;-webkit-box-orient:vertical;-webkit-line-clamp:2}
-.foodAiCard .foodAiPrice{display:block;color:#fff;font-size:13px}
-.foodAiCard>button{width:calc(100% - 20px);margin:0 10px 10px;padding:8px;border:1px solid #e34a69;border-radius:8px;background:rgba(218,37,76,.14);color:#ff8299;font-size:11px;font-weight:800;cursor:pointer}
+.foodAiShelf{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.foodAiCard{position:relative;min-width:0;overflow:hidden;border:1px solid #eee5e8;border-radius:14px;background:#fff;box-shadow:0 5px 18px rgba(50,20,30,.055)}
+.foodAiCard img{display:block;width:100%;height:140px;object-fit:cover;background:#f5edef}
+.foodAiCardBody{padding:11px 12px 12px}
+.foodAiCard em{display:block;overflow:hidden;margin-bottom:5px;color:#c32649;font-size:9px;font-style:normal;font-weight:900;letter-spacing:.7px;text-overflow:ellipsis;text-transform:uppercase;white-space:nowrap}
+.foodAiCard strong{display:block;overflow:hidden;color:#292329;font-size:13px;text-overflow:ellipsis;white-space:nowrap}
+.foodAiCard small{display:block;margin-top:5px;color:#81767b;font-size:10px}
+.foodAiCard p{display:-webkit-box;overflow:hidden;min-height:30px;margin:7px 0;color:#82777d;font-size:10px;line-height:1.5;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+.foodAiCard .foodAiPrice{display:block;color:#292329;font-size:13px}
+.foodAiCard>button{width:calc(100% - 22px);margin:0 11px 11px;padding:9px;border:1px solid #d52a4e;border-radius:8px;background:#fff6f8;color:#c51d43;font-size:11px;font-weight:900;cursor:pointer}
 .foodAiCard>button:hover{background:#d9274d;color:#fff}
-.foodAiEmpty{padding:18px;border:1px dashed #51414a;border-radius:12px;color:#c6b8bf;text-align:center;font-size:12px}
-.foodAiUserMessage{width:max-content;max-width:75%;margin:18px 0 20px auto;padding:12px 15px;border:1px solid #733046;border-radius:15px 15px 4px 15px;background:#48202e;color:#fff;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
-.foodAiReply{max-width:90%;margin:16px 0 10px;padding:14px 16px;border:1px solid #3b3037;border-radius:4px 15px 15px 15px;background:#211c20}
-.foodAiReplyLabel{display:block;margin-bottom:7px;color:#ff7892;font-size:10px;font-weight:800;letter-spacing:.5px}
-.foodAiReply p{margin:0;color:#f4edf0;font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
-.foodAiError{border-color:#87404b}
-.foodAiFallbackNote{display:block;margin-top:9px;color:#d6aab5;font-size:10px}
+.foodAiEmpty{padding:18px;border:1px dashed #e7cbd2;border-radius:12px;color:#82777d;text-align:center;font-size:12px}
+.foodAiUserMessage{width:max-content;max-width:75%;margin:18px 0 20px auto;padding:12px 15px;border:1px solid #d72c50;border-radius:15px 15px 4px 15px;background:#d72c50;color:#fff;font-size:14px;line-height:1.5;white-space:pre-wrap;overflow-wrap:anywhere}
+.foodAiReply{max-width:90%;margin:16px 0 10px;padding:14px 16px;border:1px solid #eee3e6;border-radius:4px 15px 15px 15px;background:#fff;color:#302930;box-shadow:0 3px 12px rgba(50,20,30,.035)}
+.foodAiReplyLabel{display:block;margin-bottom:7px;color:#c32649;font-size:10px;font-weight:900;letter-spacing:.5px}
+.foodAiReply p{margin:0;color:#40383d;font-size:14px;line-height:1.7;white-space:pre-wrap;overflow-wrap:anywhere}
+.foodAiError{border-color:#e9b8c2;background:#fff8f9}
+.foodAiFallbackNote{display:block;margin-top:9px;color:#a16a77;font-size:10px}
 .foodAiResults{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0 24px}
-.foodAiThinking{display:flex;align-items:center;gap:12px;min-height:70px;color:#e7dce1;font-size:12px}
-.foodAiThinking i{color:#ff718d;font-size:22px;font-style:normal;animation:foodAiPulse 1.1s infinite ease-in-out}
+.foodAiThinking{display:flex;align-items:center;gap:12px;min-height:70px;color:#786d73;font-size:12px}
+.foodAiThinking i{color:#d3264c;font-size:22px;font-style:normal;animation:foodAiPulse 1.1s infinite ease-in-out}
 @keyframes foodAiPulse{50%{transform:scale(1.4);opacity:.45}}
-.foodAiQuickPrompts{display:flex;gap:8px;overflow-x:auto;width:min(850px,100%);margin:0 auto;padding:8px 18px;box-sizing:border-box;background:#151216}
-.foodAiQuickPrompts button{flex:0 0 auto;padding:8px 11px;border:1px solid #49343c;border-radius:999px;background:#251d22;color:#eee2e8;font-size:10px;cursor:pointer}
+.foodAiQuickPrompts{display:flex;gap:8px;overflow-x:auto;width:min(1000px,100%);margin:0 auto;padding:8px 18px;box-sizing:border-box;background:#fff}
+.foodAiQuickPrompts button{flex:0 0 auto;padding:8px 11px;border:1px solid #f0dce1;border-radius:999px;background:#fff7f8;color:#9f2341;font-size:10px;cursor:pointer}
 .foodAiQuickPrompts button:disabled{opacity:.5}
-.foodAiComposer{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:10px;width:min(810px,calc(100% - 32px));margin:8px auto;padding:9px 11px;border:1px solid #a93653;border-radius:17px;background:#211b20;box-sizing:border-box;box-shadow:0 8px 28px rgba(0,0,0,.2)}
-.foodAiComposer button{width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:#fff;font-size:18px;cursor:pointer}
-.foodAiComposer button:last-child{background:#d9274d}
+.foodAiComposer{display:grid;grid-template-columns:40px minmax(0,1fr) 40px;align-items:center;gap:10px;width:min(960px,calc(100% - 32px));margin:8px auto;padding:9px 11px;border:1px solid #edc5ce;border-radius:17px;background:#fff;box-sizing:border-box;box-shadow:0 7px 25px rgba(70,20,35,.08)}
+.foodAiComposer button{width:38px;height:38px;border:0;border-radius:50%;background:transparent;color:#c51d43;font-size:18px;cursor:pointer}
+.foodAiComposer button:last-child{background:#d9274d;color:#fff}
 .foodAiComposer button:disabled{opacity:.4;cursor:not-allowed}
-.foodAiComposer input{min-width:0;border:0;outline:0;background:transparent;color:#fff;font:inherit;font-size:13px}
-.foodAiComposer input::placeholder{color:#a99aa1}
-.foodAiNote{display:block;padding:2px 12px max(10px,env(safe-area-inset-bottom));background:#151216;color:#9f9298;text-align:center;font-size:9px;line-height:1.5}
-@media(max-width:650px){.foodAiLauncher{right:14px;bottom:14px;padding:12px 16px}.foodAiContent{padding:20px 14px}.foodAiShelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.foodAiCard img{height:112px}.foodAiResults{grid-template-columns:repeat(2,minmax(0,1fr))}.foodAiPromptGrid{gap:8px}.foodAiPromptGrid button{font-size:11px;padding:10px}.foodAiReply{max-width:96%}.foodAiUserMessage{max-width:88%}}
-@media(max-width:380px){.foodAiPromptGrid{grid-template-columns:1fr}.foodAiShelf{grid-template-columns:1fr 1fr}.foodAiCard img{height:96px}.foodAiTopbar{padding:0 12px}}
+.foodAiComposer input{min-width:0;border:0;outline:0;background:transparent;color:#302930;font:inherit;font-size:13px}
+.foodAiComposer input::placeholder{color:#a99da2}
+.foodAiNote{display:block;padding:2px 12px max(10px,env(safe-area-inset-bottom));background:#fff;color:#9b8d93;text-align:center;font-size:9px;line-height:1.5}
+@media(max-width:650px){.foodAiLauncher{right:14px;bottom:14px;padding:12px 16px}.foodAiContent{padding:22px 14px}.foodAiDiscoveryGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.foodAiDiscovery{min-height:54px;padding:9px}.foodAiShelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.foodAiCard img{height:112px}.foodAiResults{grid-template-columns:repeat(2,minmax(0,1fr))}.foodAiReply{max-width:96%}.foodAiUserMessage{max-width:88%}}
+@media(max-width:380px){.foodAiShelf{grid-template-columns:1fr 1fr}.foodAiCard img{height:96px}.foodAiTopbar{padding:0 12px}.foodAiDiscovery strong{font-size:11px}}
